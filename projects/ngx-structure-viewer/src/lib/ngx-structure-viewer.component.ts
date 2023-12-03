@@ -15,7 +15,6 @@ import {
   combineLatestWith,
   from,
   map,
-  of,
   shareReplay,
   switchMap,
 } from 'rxjs';
@@ -65,7 +64,7 @@ export type Contacts<T = string> = Array<Contact<T>>;
   standalone: true,
   imports: [],
   template: `
-    <div style="position: relative" #parent>
+    <div style="position: relative; width: 100%; height: 100%;" #parent>
       <canvas
         style="position: absolute; left: 0; top: 0; width: 100%; height: 100%;"
         #canvas
@@ -172,51 +171,6 @@ export class NgxStructureViewerComponent implements AfterViewInit, OnDestroy {
       // and we do not want the plugin to be re-initialized each time
       shareReplay(1)
     );
-    // // Define current plugin
-    // return from(
-    //   (async () => {
-    //     // Create plugin
-    //     const plugin: PluginContext = await createPluginAsync(parent, settings);
-    //     // Initialize data
-    //     let data: any;
-    //     // Case input URL is defined
-    //     if (this.url) {
-    //       // Fetch data from remote url
-    //       data = await plugin.builders.data.download(
-    //         { url: this.url },
-    //         { state: { isGhost: true } }
-    //       );
-    //     }
-    //     // Case input Blob is defined
-    //     else if (this.blob) {
-    //       // Generate file out of blob
-    //       const file = new File([this.blob], 'structure.cif');
-    //       // Parse data out of file
-    //       data = await plugin.builders.data.readFile({
-    //         file: file as any,
-    //         label: 'structure',
-    //         isBinary: this.compressed,
-    //       });
-    //     }
-    //     // Otherwise
-    //     else {
-    //       // Throw error
-    //       throw new Error('Neither input URL nor Blob data has been defined');
-    //     }
-    //     // TODO Build trajectory out of given data
-    //     const trajectory = await plugin.builders.structure.parseTrajectory(
-    //       data,
-    //       this.format
-    //     );
-    //     // TODO Represent structure
-    //     await plugin.builders.structure.hierarchy.applyPreset(
-    //       trajectory,
-    //       'default'
-    //     );
-    //     // Return generated plugin
-    //     return plugin;
-    //   })()
-    // );
   }
 
   // Define observable for structure initialization
@@ -264,7 +218,13 @@ export class NgxStructureViewerComponent implements AfterViewInit, OnDestroy {
 
   // TODO Define observable for updating representation
   protected updateRepresentation() {
-    return of(void 0);
+    // First, subscribe structure change
+    return this.structure$.pipe(
+      // TODO As well as input loci and contacts change
+      combineLatestWith(this.loci$, this.contacts$),
+      // Return nothing
+      map(() => void 0),
+    );
   }
 
   public ngAfterViewInit(): void {
