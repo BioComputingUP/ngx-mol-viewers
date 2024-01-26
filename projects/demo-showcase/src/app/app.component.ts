@@ -2,11 +2,12 @@ import { NgxStructureViewerComponent } from 'ngx-structure-viewer';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { Component } from '@angular/core';
+import { NgxFeaturesViewerComponent } from '../../../ngx-features-viewer/src/public-api';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, NgxStructureViewerComponent],
+  imports: [CommonModule, RouterOutlet, NgxStructureViewerComponent, NgxFeaturesViewerComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
@@ -14,23 +15,32 @@ export class AppComponent {
   // TODO Define demo title
   title = 'demo-showcase';
   
-  // TODO Define source protein
-  public readonly source = {
-    // Define path to .cif file
-    data: 'https://files.rcsb.org/view/1CU4.cif',
-    // Define label
-    label: '1CU4',
-    // Data is not compressed
-    compressed: false,
-  }
+  // // TODO Define source protein (structure viewer)
+  // public readonly source = {
+  //   // Define path to .cif file
+  //   data: 'https://files.rcsb.org/view/1CU4.cif',
+  //   // Define label
+  //   label: '1CU4',
+  //   // Data is not compressed
+  //   compressed: false,
+  // }
 
-  // Define loci
-  public readonly loci = [
-    { start: '1', end: '10', chain: 'A', color: '#ff0000' },
-    { start: '11', end: '20', chain: 'A', color: '#00ff00' },
-    { start: '21', end: '30', chain: 'A', color: '#0000ff' },
-  ];
+  // // Define loci (structure viewer)
+  // public readonly loci = [
+  //   { start: '1', end: '10', chain: 'A', color: '#ff0000' },
+  //   { start: '11', end: '20', chain: 'A', color: '#00ff00' },
+  //   { start: '21', end: '30', chain: 'A', color: '#0000ff' },
+  // ];
 
-  // TODO Define contacts
-  public readonly contacts = [];
+  // // TODO Define contacts (structure viewer)
+  // public readonly contacts = [];
+
+  // Define sequence (features viewer)
+  public readonly sequence = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
+
+  // Define features (features viewer)
+  public readonly features = [
+    { type: 'continuous' as const, values: [0.4, 18, -4, 6, 3.2, 11, -20] },
+    { type: 'loci' as const, values: [{ start: 1, end: 3 }, { start: 5, end: 6 }] }
+  ]
 }
