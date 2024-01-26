@@ -11,6 +11,10 @@
     "noFallthroughCasesInSwitch": true,
     "esModuleInterop": true,
     "paths": {
+      "ngx-features-viewer": [
+        "./dist/ngx-features-viewer",
+        "./dist/ngx-features-viewer"
+      ],
       "ngx-structure-viewer": [
         "./dist/ngx-structure-viewer"
       ]
