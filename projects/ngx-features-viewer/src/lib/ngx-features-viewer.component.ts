@@ -65,6 +65,12 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, OnDestroy {
   // Margins, clockwise [top, right, bottom, left]
   private readonly margin = { top: 24, right: 32, bottom: 24, left: 64 };
 
+  // Scale (horizontal, vertical)
+  private scale!: {
+    x: d3.ScaleLinear<number, number>,
+    y: d3.ScaleOrdinal<string, number>,
+  }
+
   // Axis (horizontal, vertical)
   private axis!: { 
     y: d3.Selection<SVGGElement, undefined, null, undefined>, 
@@ -148,29 +154,23 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, OnDestroy {
       // TODO Handle sequence change
       switchMap(() => this.sequence$.pipe(
         // Define current horizontal axis
-        map((sequence) => {
-          // Initialize domain, range
-          let domain: string[], range: number[];
+        tap((sequence) => {
           // Compute domain
-          domain = sequence.map((_, i) => i + 1 + '');
-          domain = ['', ...domain, ''];
+          const domain = [0.5, sequence.length + 1.5];
           // Compute range
-          const n = sequence.length; // Define sequence length
-          const c = (this.width - this.margin.right - this.margin.left) / n;  // Define cell size
-          range = sequence.map((_, i) => this.margin.left + c * i + (c / 2));
-          range = [range[0] - (c / 2), ...range, range[n - 1] + (c / 2)];
+          const range = [ this.margin.left, this.width - this.margin.right]
           // Return updated horizontal axis
-          return d3.scaleOrdinal(domain, range);
+          this.scale = { ...this.scale, x: d3.scaleLinear(domain, range) }
         }),
         // Generate axis
-        map((x) => d3.axisBottom(x)),
+        map(() => d3.axisBottom(this.scale.x)),
         // Substitute current horizontal axis
         tap((axis) => this.axis.x.call(axis)),
       )),
       // TODO Handle features change
       switchMap(() => this.features$.pipe(
         // Define current horizontal axis
-        map((features) => {
+        tap((features) => {
           // Declare domain, range
           let domain: string[], range: number[];
           // Define domain
@@ -183,22 +183,53 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, OnDestroy {
           range = [0, ...range, range[n - 1] + (c / 2)];
           // range = [range[0] - (c / 2), ...range, range[n - 1] + (c / 2)];
           // Return updated vertical axis
-          return d3.scaleOrdinal(domain, range);
+          this.scale = { ...this.scale, y: d3.scaleOrdinal(domain, range) };
             // .domain([0, features.length])
             // .range([this.height - this.margin.bottom, this.margin.top]);
         }),
         // Substitute current vertical axis
-        tap((y) => this.axis.y.call(d3.axisLeft(y))),
+        tap(() => this.axis.y.call(d3.axisLeft(this.scale.y))),
         // Substitute grid lines
-        tap((y) => this.grid.y
+        tap(() => this.grid.y
           .selectAll('line')  // Select grid lines
-          .data(y.domain())  // Bind grid lines to ticks
+          .data(this.scale.y.domain())  // Bind grid lines to ticks
           .join('line')  // Render grid lines
           .attr('x1', this.margin.left)
           .attr('x2', this.width - this.margin.right)
-          .attr('y1', d => y(d))
-          .attr('y2', d => y(d))
-        )
+          .attr('y1', d => this.scale.y(d))
+          .attr('y2', d => this.scale.y(d))
+        ),
+        // Handle features
+        tap((features) => {
+          // Loop through each feature index
+          for (let i = 0; i < features.length; i++) {
+            // Define feature and its identifier
+            const feature = { ...features[i], id: 'feature-' + i };
+            // TODO Handle loci features
+            if (feature.type === 'loci') {
+              // Define loci height
+              const height = 10;
+              // Define x, y scales
+              const x = (d: number) => this.scale.x(d);
+              const y = () => this.scale.y(feature.id) - (height / 2);
+              // Attach loci representation to SVG
+              svg
+                // Get currently displayed elements
+                .selectAll(`rect.locus.${feature.id}`)
+                // Bind elements to data (loci)
+                .data(feature.values)
+                // generate div with given class and identifier
+                .join('rect')
+                  .attr('class', `locus ${feature.id}`)
+                  .attr('x', d => x(d.start - 0.5))
+                  .attr('y', y())
+                  .attr('width', d => x(d.end - d.start + 1.0 - 0.5))
+                  .attr('height', height)
+                  .attr('fill', 'teal');
+            }
+            // TODO Handle continuous features
+          }
+        }),
       )),
     );
     // Subscribe to update emission
