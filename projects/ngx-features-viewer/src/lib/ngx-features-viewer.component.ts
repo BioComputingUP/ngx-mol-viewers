@@ -69,10 +69,7 @@ export const CINEMA = {
   selector: 'ngx-features-viewer',
   standalone: true,
   imports: [],
-  template: `<div
-    style="position: relative; width: 100%; height: 100%;"
-    #root
-  ></div>`,
+  template: `<div style="position: relative; display: block; width: 100%; height: 100%;" #root></div>`,
   styleUrl: './ngx-features-viewer.component.scss',
   encapsulation: ViewEncapsulation.None,
 })
@@ -256,9 +253,9 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, OnDestroy {
       ),
     );
     // TODO Update SVG according to inputs
-    this.update$ = svg$.pipe(
+    this.update$ = resize$.pipe(
       // Subscribe to resize event
-      switchMap(() => resize$),
+      switchMap(() => svg$),
       // Subscribe to both sequence and features retrieval
       switchMap(() => combineLatest([sequence$, features$])),
       map(([sequence, features]) => ({ sequence, features })),
@@ -375,33 +372,50 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, OnDestroy {
             values = feature.values.map((value, index) => ({ value, index }));
             values = [{ value: 0, index: -0.5 }, ...values];
             values = [...values, { value: 0, index: feature.values.length - 0.5}]
+            // Generate line accoridng to current feature
+            const line =  d3.line<{ value: number, index: number}>()
+              .curve(d3.curveMonotoneX) // Add interpolation
+              .x(d => x(d.index))
+              .y(d => y(d.value))
             // Attach line representation to SVG
             svg
-              // Generate path
-              .append('path')
+              // Find previous path
+              .selectAll(`path.continuous#${feature.id}`)
+              // Bind to feature object
+              .data([feature])
+              // Generate updated path
+              .join('path')
+                // Generate path
                 .attr('id', feature.id)
-              // Bind data
-              .datum(values)
+                .attr('class', 'continuous')
                 .attr('fill', 'steelblue')
                 .attr('fill-opacity', 0.3)
                 .attr('stroke', 'steelblue')
                 .attr('stroke-opacity', 1)
                 .attr('stroke-width', 1.5)
-                .attr('d', d3.line<{ value: number, index: number}>()
-                  .curve(d3.curveMonotoneX) // Add interpolation
-                  .x(d => x(d.index))
-                  .y(d => y(d.value))
-                );
-            // // Attach marker representation to SVG
-            // svg
-            //   .append('g')
-            //   .selectAll('dot')
-            //   .data(values.slice(1, values.length - 1))
-            //   .join('circle')
-            //     .attr('cx', d => x(d.index))
-            //     .attr('cy', d => y(d.value))
-            //     .attr('r', 4)
-            //     .attr('fill', 'steelblue');
+                .attr('d', line(values));
+            // Attach marker representation to SVG
+            svg
+              // Find previous dots
+              .selectAll(`g.continuous#${feature.id}`)
+              // Bind to feature object
+              .data([feature])
+              // Generate updated group of nodes
+              .join('g')
+                .attr('id', feature.id)
+                .attr('class', 'continuous')
+              // Select all inner dots
+              .selectAll('circle.marker')
+              // Bind to values object
+              .data(values.slice(1, values.length - 1))
+              // Render circle markers
+              .join('circle')
+                .attr('id', d => d.index)
+                .attr('class', 'marker')
+                .attr('cx', d => x(d.index))
+                .attr('cy', d => y(d.value))
+                .attr('r', 4)
+                .attr('fill', 'steelblue');
           }
         }
       })
