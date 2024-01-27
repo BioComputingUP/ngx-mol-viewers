@@ -217,7 +217,7 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, OnDestroy {
         // Compute domain
         const domain = [0, sequence.length + 1];
         // Compute range
-        const range = [this.margin.left, this.width - this.margin.right];
+        const range = [this.margin.left, this.width - this.margin.right -this.margin.right];
         // Return updated horizontal axis
         this.scale = { ...this.scale, x: d3.scaleLinear(domain, range) };
       }),
@@ -268,8 +268,7 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, OnDestroy {
         const x = (d: string, i: number) =>  this.scale.x(i);
         const y = this.scale.y('sequence');
         // Define width, height of each cell
-        const width = x('', 0);
-        const height = 24;
+        const width = x('', 1) - x('', 0), height = 24;
         // Get range
         const range = this.scale.y.range();
         // Color residue according to code
@@ -282,36 +281,36 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, OnDestroy {
           .attr('class', 'residue')
           .attr('x', (d, i) => x(d, i + 0.5))
           .attr('y', 0)
-          .attr('width', width)
+          .attr('width', () => width)
           .attr('height', range[range.length - 1])
           .attr('fill', d => color(d))
           .attr('fill-opacity', 0.1);
-        // Append residues cells to SVG element
-        svg
-          // Get currently displayed elements
-          .selectAll('foreignObject.residue')
-          // Bind elements to data (loci)
-          .data(sequence)
-          // Generate text element for each residue
-          .join('foreignObject')
-            .attr('class', 'residue')
-            .attr('x', (d, i) => x(d, i + 0.5))
-            .attr('y', y - height / 2)
-            .attr('width', width)
-            .attr('height', height)
-          .append('xhtml:div')
-            .style('display', 'flex')
-            .style('align-items', 'center')
-            .style('justify-content', 'center')
-            .style('height', '100%')
-            .style('width', '100%')
-            .style('box-sizing', 'border-box')
-            // .style('border-radius', '.375rem')
-            .style('border', '1px solid black')
-            // .style('background-color', d => color(d))
-            // .style('background-opacity', 0.1)
-            .style('color', 'black')
-            .text(d => d);
+          // Append residues cells to SVG element
+          svg
+            // Get currently displayed elements
+            .selectAll('foreignObject.residue')
+            // Bind elements to data (loci)
+            .data(sequence)
+            // Generate text element for each residue
+            .join('foreignObject')
+              .attr('class', 'residue')
+              .attr('x', (d, i) => x(d, i + 0.5))
+              .attr('y', y - height / 2)
+              .attr('width', () => width)
+              .attr('height', height)
+            .append('xhtml:div')
+              .style('display', 'flex')
+              .style('align-items', 'center')
+              .style('justify-content', 'center')
+              .style('height', '100%')
+              .style('width', '100%')
+              .style('box-sizing', 'border-box')
+              // .style('border-radius', '.375rem')
+              // .style('border', '1px solid black')
+              // .style('background-color', d => color(d))
+              // .style('background-opacity', 0.1)
+              .style('color', 'black')
+              .text(d => d);
       }),
       // Handle features change
       tap(({ features }) => {
@@ -345,7 +344,7 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, OnDestroy {
                 .attr('class', `locus ${feature.id}`)
                 .attr('x', d => x(d.start - 0.5))
                 .attr('y', y)
-                .attr('width', d => x(d.end - d.start))
+                .attr('width', d => x(d.end + 1) - x(d.start))
                 .attr('height', height)
               // Generate child HTML div
               .append('xhtml:div')
@@ -393,16 +392,16 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, OnDestroy {
                   .x(d => x(d.index))
                   .y(d => y(d.value))
                 );
-            // Attach marker representation to SVG
-            svg
-              .append('g')
-              .selectAll('dot')
-              .data(values.slice(1, values.length - 1))
-              .join('circle')
-                .attr('cx', d => x(d.index))
-                .attr('cy', d => y(d.value))
-                .attr('r', 4)
-                .attr('fill', 'steelblue');
+            // // Attach marker representation to SVG
+            // svg
+            //   .append('g')
+            //   .selectAll('dot')
+            //   .data(values.slice(1, values.length - 1))
+            //   .join('circle')
+            //     .attr('cx', d => x(d.index))
+            //     .attr('cy', d => y(d.value))
+            //     .attr('r', 4)
+            //     .attr('fill', 'steelblue');
           }
         }
       })
