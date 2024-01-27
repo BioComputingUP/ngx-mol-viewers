@@ -94,7 +94,7 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, OnDestroy {
   }
 
   // Margins, clockwise [top, right, bottom, left]
-  private readonly margin = { top: 24, right: 32, bottom: 24, left: 64 };
+  private readonly margin = { top: 24, right: 32, bottom: 24, left: 128 };
 
   // Scale (horizontal, vertical)
   private scale!: {
@@ -234,7 +234,7 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, OnDestroy {
         const n = features.length + 1;
         const c = (this.height - this.margin.bottom - this.margin.top) / n;
         range = domain.map((_, i) => this.margin.top + c * i + c / 2);
-        range = [0, ...range, range[n - 1] + c / 2];
+        range = [this.margin.top, ...range, range[n - 1] + c / 2];
         // Update vertical axis
         this.scale = { ...this.scale, y: d3.scaleOrdinal(domain, range) };
       }),
@@ -266,8 +266,8 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, OnDestroy {
         const y = this.scale.y('sequence');
         // Define width, height of each cell
         const width = x('', 1) - x('', 0), height = 24;
-        // Get range
-        const range = this.scale.y.range();
+        // // Get range
+        // const range = this.scale.y.range();
         // Color residue according to code
         const color = (d: string) => CINEMA[d as never] || CINEMA.X;
         // TODO Apend background rectangles to SVG element
@@ -277,9 +277,9 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, OnDestroy {
           .join('rect')
           .attr('class', 'residue')
           .attr('x', (d, i) => x(d, i + 0.5))
-          .attr('y', 0)
+          .attr('y', this.margin.top)
           .attr('width', () => width)
-          .attr('height', range[range.length - 1])
+          .attr('height', this.height - this.margin.top - this.margin.bottom) 
           .attr('fill', d => color(d))
           .attr('fill-opacity', 0.1);
           // Append residues cells to SVG element
@@ -308,6 +308,41 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, OnDestroy {
               // .style('background-opacity', 0.1)
               .style('color', 'black')
               .text(d => d);
+      }),
+      // Feature labels
+      tap(({ sequence, features }) => {
+        // Get horizontal, vertical positioning
+        const x = 0, y = this.scale.y;
+        // TODO Define height, width
+        const height = (this.height - this.margin.top - this.margin.bottom) / (features.length + 1);
+        const width = this.margin.left;
+        // Substitute SVG ticks with labels
+        svg
+          // Select previous ticks
+          .selectAll('foreignObject.label')
+          // Bind labels to sequence and features
+          .data([ { ...sequence, id: 'sequence' }, ...features.map((f, i) => ({ ...f, id: `feature-${i}` })) ])
+          // Render labels as foreign object
+          .join('foreignObject')
+            .attr('id', (_, i) => 'label-' + i)
+            .attr('class', 'label')
+            .attr('y', (d) => y(d.id) - height / 2)
+            .attr('x', x)
+            .attr('height', height)
+            .attr('width', width)
+          // Append actual label
+          .append('xhtml:div')
+            .style('display', 'flex')
+            .style('flex-shrink', 0)
+            .style('flex-grow', 1)
+            .style('justify-content', 'end')
+            .style('align-items', 'center')
+            .style('margin-right', '.5rem')
+            .style('height', '100%')
+            .style('box-sizing', 'border-box')
+            .style('border', '1px solid black')
+            // Define html with caret
+            .html(d => `<span>${d.id} <i class="bi bi-caret-down-fill"></i></span>`);
       }),
       // Handle features change
       tap(({ features }) => {
@@ -418,7 +453,7 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, OnDestroy {
                 .attr('fill', 'steelblue');
           }
         }
-      })
+      }),
     );
     // Subscribe to update emission
     this._update = this.update$.subscribe();
