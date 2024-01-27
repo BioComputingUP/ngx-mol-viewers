@@ -215,7 +215,7 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, OnDestroy {
       // Define current horizontal axis
       tap((sequence) => {
         // Compute domain
-        const domain = [0.5, sequence.length + 1.5];
+        const domain = [0, sequence.length + 1];
         // Compute range
         const range = [this.margin.left, this.width - this.margin.right];
         // Return updated horizontal axis
@@ -238,11 +238,8 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, OnDestroy {
         const c = (this.height - this.margin.bottom - this.margin.top) / n;
         range = domain.map((_, i) => this.margin.top + c * i + c / 2);
         range = [0, ...range, range[n - 1] + c / 2];
-        // range = [range[0] - (c / 2), ...range, range[n - 1] + (c / 2)];
-        // Return updated vertical axis
+        // Update vertical axis
         this.scale = { ...this.scale, y: d3.scaleOrdinal(domain, range) };
-        // .domain([0, features.length])
-        // .range([this.height - this.margin.bottom, this.margin.top]);
       }),
       // Substitute current vertical axis
       tap(() => this.axis.y.call(d3.axisLeft(this.scale.y))),
@@ -268,7 +265,7 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, OnDestroy {
       // Handle sequence change
       tap(({ sequence }) => {
         // Get horizontal, vertical position
-        const x = (d: string, i: number) =>  this.scale.x(i + 1 - 0.5);
+        const x = (d: string, i: number) =>  this.scale.x(i);
         const y = this.scale.y('sequence');
         // Define width, height of each cell
         const width = x('', 0);
@@ -283,7 +280,7 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, OnDestroy {
           .data(sequence)
           .join('rect')
           .attr('class', 'residue')
-          .attr('x', (d, i) => x(d, i))
+          .attr('x', (d, i) => x(d, i + 0.5))
           .attr('y', 0)
           .attr('width', width)
           .attr('height', range[range.length - 1])
@@ -298,7 +295,7 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, OnDestroy {
           // Generate text element for each residue
           .join('foreignObject')
             .attr('class', 'residue')
-            .attr('x', (d, i) => x(d, i))
+            .attr('x', (d, i) => x(d, i + 0.5))
             .attr('y', y - height / 2)
             .attr('width', width)
             .attr('height', height)
