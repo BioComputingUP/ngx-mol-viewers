@@ -345,7 +345,7 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, OnDestroy {
                 .attr('class', `locus ${feature.id}`)
                 .attr('x', d => x(d.start - 0.5))
                 .attr('y', y)
-                .attr('width', d => x(d.end - d.start + 1.0 - 0.5))
+                .attr('width', d => x(d.end - d.start))
                 .attr('height', height)
               // Generate child HTML div
               .append('xhtml:div')
