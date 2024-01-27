@@ -40,7 +40,10 @@ export class AppComponent {
 
   // Define features (features viewer)
   public readonly features = [
-    { type: 'continuous' as const, values: [0.4, 18, -4, 6, 3.2, 11, -20] },
-    { type: 'loci' as const, values: [{ start: 1, end: 3 }, { start: 5, end: 6 }] }
-  ]
+    { id: 0, type: 'continuous' as const, values: [ 0.4, 18, -4, 6, 3.2, 11, -20 ]},
+    { id: 1, type: 'loci' as const, values: [{ start: 1, end: 3 }, { start: 5, end: 6 }] },
+    { id: 2, type: 'pins' as const, values: [ true, true, false, true, false, false, true ], parent: 1 },
+    // { type: 'dssp' as const, values: ['H', 'H', '-', 'E', 'E', 'E', '-'] as Array<'H' | 'E' | '-'>},
+    { id: 1, type: 'loci' as const, values: [{ start: 1, end: 2 }, { start: 3, end: 3 }], parent: 1 },
+  ];
 }

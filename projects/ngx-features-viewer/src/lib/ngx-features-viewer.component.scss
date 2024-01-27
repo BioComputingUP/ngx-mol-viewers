@@ -18,3 +18,35 @@
 .label div {
   cursor: pointer;
 }
+// Style custom DSSP icons
+i.dssp {
+  // Set height
+  width: 100%;
+  height: 48px;
+  // Disable repeat
+  background-repeat: no-repeat;
+  // Style helix
+  &.dssp-helix {
+    background: url('../assets/dssp-helix.svg');
+    background-position:center center;
+    background-size: 100% 48px;
+  }
+  // Style strand start
+  &.dssp-strand-start {
+    background: url('../assets/dssp-strand-start.svg');
+    background-position:center center;
+    background-size: 100% 48px;
+  }
+  // Style strand end
+  &.dssp-strand-end {
+    background: url('../assets/dssp-strand-end.svg');
+    background-position:center center;
+    background-size: 100% 48px;
+  }
+  // Style generic strand
+  &.dssp-strand {
+    background: url('../assets/dssp-strand.svg');
+    background-position:center center;
+    background-size: 100% 48px;
+  }
+}
