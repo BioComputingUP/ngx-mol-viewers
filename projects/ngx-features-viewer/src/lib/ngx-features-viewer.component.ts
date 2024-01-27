@@ -2,6 +2,7 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
+  HostListener,
   Input,
   OnDestroy,
   ViewChild,
@@ -12,7 +13,10 @@ import {
   ReplaySubject,
   Subscription,
   combineLatest,
+  debounceTime,
+  distinctUntilChanged,
   map,
+  mergeWith,
   shareReplay,
   switchMap,
   tap,
@@ -113,6 +117,8 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, OnDestroy {
     y: d3.Selection<SVGGElement, undefined, null, undefined>;
   };
 
+  private readonly resize$ = new ReplaySubject<number>(1);
+
   @Input()
   public set sequence(sequence: Sequence) {
     this.sequence$.next(sequence);
@@ -193,6 +199,17 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, OnDestroy {
       // Cache result
       shareReplay(1)
     );
+    // Handle horizontal resize
+    const resize$ = this.root$.pipe(
+      // Set initial status
+      map(() => this.width),
+      // Merge with resize event, wait some time to avoid flooding
+      mergeWith(this.resize$.pipe(debounceTime(40))),
+      // Avoid emitting same value twice
+      distinctUntilChanged(),
+      // TODO Remove this
+      tap((width) => console.log('Current width', width)),
+    );
     // Handle sequence (x axis) initialization
     const sequence$ = this.sequence$.pipe(
       // Define current horizontal axis
@@ -243,6 +260,8 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, OnDestroy {
     );
     // TODO Update SVG according to inputs
     this.update$ = svg$.pipe(
+      // Subscribe to resize event
+      switchMap(() => resize$),
       // Subscribe to both sequence and features retrieval
       switchMap(() => combineLatest([sequence$, features$])),
       map(([sequence, features]) => ({ sequence, features })),
@@ -403,5 +422,11 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, OnDestroy {
   ngOnDestroy(): void {
     // Unsubscribe from update emission
     this._update.unsubscribe();
+  }
+
+  @HostListener('window:resize')
+  onResize() {
+    // Just emit width of container element
+    this.resize$.next(this.width);
   }
 }
