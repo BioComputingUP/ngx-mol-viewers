@@ -4,7 +4,9 @@ import {
   ElementRef,
   HostListener,
   Input,
+  OnChanges,
   OnDestroy,
+  SimpleChanges,
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
@@ -27,7 +29,7 @@ import * as d3 from 'd3';
 type Sequence = Array<string>;
 
 // TODO Define feature type
-interface Feature<T> {
+export interface Feature<T> {
   // Unique identifier
   id?: number;
   // Define feature name
@@ -36,44 +38,80 @@ interface Feature<T> {
   type: string;
   // Define values
   values: T[];
+  // Define parent feature identifier
+  parent?: number;
 }
 
-interface Continuous extends Feature<number> {
+export interface Continuous extends Feature<number> {
   // Override type
   type: 'continuous';
 }
 
-type Locus = { start: number; end: number };
+export type Locus = { start: number; end: number };
 
-interface Loci extends Feature<Locus> {
+export interface Loci extends Feature<Locus> {
   // Override type
   type: 'loci';
 }
 
-type Features = Array<Continuous | Loci>;
+export interface Pins extends Feature<boolean> {
+  // Override type
+  type: 'pins';
+}
+
+// Define interface for Secondary Structure features
+// NOTE It uses DSSP values { helix: G/H/I, strand: E/B, loop: S/T/C, undefined: - }
+export interface DSSP
+  extends Feature<'G' | 'H' | 'I' | 'E' | 'B' | 'S' | 'T' | 'C' | '-'> {
+  // Override type
+  type: 'dssp';
+}
+
+export type Features = Array<Continuous | Loci | Pins | DSSP>;
 
 // TODO This should not be there
 export const CINEMA = {
-  'H': 'blue', 'K': 'blue', 'R': 'blue',  // Polar, positive
-  'D': 'red', 'E': 'red',  // Polar, negative
-  'S': 'green', 'T': 'green', 'N': 'green', 'Q': 'green',  // Polar, neutral
-  'A': 'white', 'V': 'white', 'L': 'white', 'I': 'white', 'M': 'white',  // Non polar, aliphatic
-  'F': 'magenta', 'W': 'magenta', 'Y': 'magenta',  // Non polar, aromatic
-  'P': 'brown', 'G': 'brown',
-  'C': 'yellow',
-  'B': 'grey', 'Z': 'grey', 'X': 'grey', '-': 'grey',  // Special characters
-}
+  H: 'blue',
+  K: 'blue',
+  R: 'blue', // Polar, positive
+  D: 'red',
+  E: 'red', // Polar, negative
+  S: 'green',
+  T: 'green',
+  N: 'green',
+  Q: 'green', // Polar, neutral
+  A: 'white',
+  V: 'white',
+  L: 'white',
+  I: 'white',
+  M: 'white', // Non polar, aliphatic
+  F: 'magenta',
+  W: 'magenta',
+  Y: 'magenta', // Non polar, aromatic
+  P: 'brown',
+  G: 'brown',
+  C: 'yellow',
+  B: 'grey',
+  Z: 'grey',
+  X: 'grey',
+  '-': 'grey', // Special characters
+};
 
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'ngx-features-viewer',
   standalone: true,
   imports: [],
-  template: `<div style="position: relative; display: block; width: 100%; height: 100%;" #root></div>`,
+  template: `<div
+    style="position: relative; display: block; width: 100%; height: 100%;"
+    #root
+  ></div>`,
   styleUrl: './ngx-features-viewer.component.scss',
   encapsulation: ViewEncapsulation.None,
 })
-export class NgxFeaturesViewerComponent implements AfterViewInit, OnDestroy {
+export class NgxFeaturesViewerComponent
+  implements AfterViewInit, OnChanges, OnDestroy
+{
   @ViewChild('root')
   public _root!: ElementRef;
 
@@ -124,9 +162,7 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, OnDestroy {
   private readonly sequence$ = new ReplaySubject<Sequence>(1);
 
   @Input()
-  public set features(features: Features) {
-    this.features$.next(features);
-  }
+  public features!: Features;
 
   private readonly features$ = new ReplaySubject<Features>(1);
 
@@ -205,7 +241,7 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, OnDestroy {
       // Avoid emitting same value twice
       distinctUntilChanged(),
       // TODO Remove this
-      tap((width) => console.log('Current width', width)),
+      tap((width) => console.log('Current width', width))
     );
     // Handle sequence (x axis) initialization
     const sequence$ = this.sequence$.pipe(
@@ -214,7 +250,10 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, OnDestroy {
         // Compute domain
         const domain = [0, sequence.length + 1];
         // Compute range
-        const range = [this.margin.left, this.width - this.margin.right -this.margin.right];
+        const range = [
+          this.margin.left,
+          this.width - this.margin.right - this.margin.right,
+        ];
         // Return updated horizontal axis
         this.scale = { ...this.scale, x: d3.scaleLinear(domain, range) };
       }),
@@ -250,7 +289,7 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, OnDestroy {
           .attr('x2', this.width - this.margin.right)
           .attr('y1', (d) => this.scale.y(d))
           .attr('y2', (d) => this.scale.y(d))
-      ),
+      )
     );
     // TODO Update SVG according to inputs
     this.update$ = resize$.pipe(
@@ -262,10 +301,11 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, OnDestroy {
       // Handle sequence change
       tap(({ sequence }) => {
         // Get horizontal, vertical position
-        const x = (d: string, i: number) =>  this.scale.x(i);
+        const x = (d: string, i: number) => this.scale.x(i);
         const y = this.scale.y('sequence');
         // Define width, height of each cell
-        const width = x('', 1) - x('', 0), height = 24;
+        const width = x('', 1) - x('', 0),
+          height = 24;
         // // Get range
         // const range = this.scale.y.range();
         // Color residue according to code
@@ -279,23 +319,185 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, OnDestroy {
           .attr('x', (d, i) => x(d, i + 0.5))
           .attr('y', this.margin.top)
           .attr('width', () => width)
-          .attr('height', this.height - this.margin.top - this.margin.bottom) 
-          .attr('fill', d => color(d))
+          .attr('height', this.height - this.margin.top - this.margin.bottom)
+          .attr('fill', (d) => color(d))
           .attr('fill-opacity', 0.1);
-          // Append residues cells to SVG element
-          svg
-            // Get currently displayed elements
-            .selectAll('foreignObject.residue')
-            // Bind elements to data (loci)
-            .data(sequence)
-            // Generate text element for each residue
-            .join('foreignObject')
-              .attr('class', 'residue')
-              .attr('x', (d, i) => x(d, i + 0.5))
-              .attr('y', y - height / 2)
-              .attr('width', () => width)
+        // Append residues cells to SVG element
+        svg
+          // Get currently displayed elements
+          .selectAll('foreignObject.residue')
+          // Bind elements to data (loci)
+          .data(sequence)
+          // Generate text element for each residue
+          .join('foreignObject')
+          .attr('class', 'residue')
+          .attr('x', (d, i) => x(d, i + 0.5))
+          .attr('y', y - height / 2)
+          .attr('width', () => width)
+          .attr('height', height)
+          .append('xhtml:div')
+          .style('display', 'flex')
+          .style('align-items', 'center')
+          .style('justify-content', 'center')
+          .style('height', '100%')
+          .style('width', '100%')
+          .style('box-sizing', 'border-box')
+          // .style('border-radius', '.375rem')
+          // .style('border', '1px solid black')
+          // .style('background-color', d => color(d))
+          // .style('background-opacity', 0.1)
+          .style('color', 'black')
+          .text((d) => d);
+      }),
+      // Feature labels
+      tap(({ sequence, features }) => {
+        // Get horizontal, vertical positioning
+        const x = 0,
+          y = this.scale.y;
+        // TODO Define height, width
+        const height =
+          (this.height - this.margin.top - this.margin.bottom) /
+          (features.length + 1);
+        const width = this.margin.left;
+        // Substitute SVG ticks with labels
+        svg
+          // Select previous ticks
+          .selectAll('foreignObject.label')
+          // Bind labels to sequence and features
+          .data([
+            { ...sequence, id: 'sequence' },
+            ...features.map((f, i) => ({ ...f, id: `feature-${i}` })),
+          ])
+          // Render labels as foreign object
+          .join('foreignObject')
+          .attr('id', (_, i) => 'label-' + i)
+          .attr('class', 'label')
+          .attr('y', (d) => y(d.id) - height / 2)
+          .attr('x', x)
+          .attr('height', height)
+          .attr('width', width)
+          // Append actual label
+          .append('xhtml:div')
+          .style('display', 'flex')
+          .style('flex-shrink', 0)
+          .style('flex-grow', 1)
+          .style('justify-content', 'end')
+          .style('align-items', 'center')
+          .style('margin-right', '.5rem')
+          .style('height', '100%')
+          .style('box-sizing', 'border-box')
+          .style('border', '1px solid black')
+          // Define event on cick
+          .on('click', (e, d) => this.onLabelClick(e, d))
+          // Define html with caret
+          .html(
+            (d) => `<span>${d.id} <i class="bi bi-caret-down-fill"></i></span>`
+          );
+      }),
+      // Handle features change
+      tap(({ features }) => {
+        // Generate features
+        const groups = svg
+          // For each feature, generate an SVG group
+          .selectAll('g.feature')
+          .data(features)
+          .join('g')
+          .attr('id', (d) => `feature-${d.id}`)
+          .attr('class', 'feature');
+        // Define reference to class
+        const { scale } = this;
+        // For each feature group, generate feature representation
+        groups.each(function (_, i) {
+          // Define group
+          const svg = d3.select(this); 
+          // Define feature and its identifier
+          const feature = { ...features[i], id: 'feature-' + i };
+          // Handle loci features
+          if (feature.type === 'loci') {
+            // Define loci height
+            const height = 24;
+            // Define x, y scales
+            const x = (d: number) => scale.x(d);
+            const y = scale.y(feature.id) - height / 2;
+            // Attach loci representation to SVG
+            svg
+              // Get currently rendered elements
+              .selectAll(`foreignObject.locus.${feature.id}`)
+              // Bind elements to data (loci)
+              .data(feature.values)
+              // Generate parent foreign object
+              .join('foreignObject')
+              .attr('class', `locus ${feature.id}`)
+              .attr('x', (d) => x(d.start - 0.5))
+              .attr('y', y)
+              .attr('width', (d) => x(d.end + 1) - x(d.start))
               .attr('height', height)
-            .append('xhtml:div')
+              // Generate child HTML div
+              .append('xhtml:div')
+              .style('display', 'flex')
+              .style('align-items', 'center')
+              .style('justify-content', 'center')
+              .style('height', '100%')
+              .style('width', '100%')
+              .style('box-sizing', 'border-box')
+              .style('border-radius', '.375rem')
+              .style('border', '1px solid black')
+              .text((d) => `[${d.start}, ${d.end}]`);
+          }
+          // Handle pins features
+          else if (feature.type === 'pins') {
+            // Define loci height
+            const height = 24;
+            // Define x, y scales
+            const x = (d: number) => scale.x(d);
+            const y = scale.y(feature.id) - height;
+            // Attach loci representation to SVG
+            svg
+              // Get currently rendered elements
+              .selectAll(`foreignObject.pin.${feature.id}`)
+              // Bind elements to data (loci)
+              .data(feature.values)
+              // Generate parent foreign object
+              .join('foreignObject')
+              .attr('class', `pin ${feature.id}`)
+              .attr('x', (_, i) => x(i + 0.5))
+              .attr('y', y)
+              .attr('width', (_, i) => x(i) - x(i - 1))
+              .attr('height', height)
+              // Generate child HTML div
+              .append('xhtml:div')
+              .style('display', 'flex')
+              .style('align-items', 'end')
+              .style('justify-content', 'center')
+              .style('height', '100%')
+              .style('width', '100%')
+              .style('box-sizing', 'border-box')
+              // .style('border-radius', '.375rem')
+              // .style('border', '1px solid black')
+              .html((d) => (d ? '<i class="bi bi-pin"></i>' : ''));
+          }
+          // TODO Handle DSSP features
+          else if (feature.type === 'dssp') {
+            // Define loci height
+            const height = 24;
+            // Define x, y scales
+            const x = (d: number) => scale.x(d);
+            const y = scale.y(feature.id) - height / 2;
+            // Attach loci representation to SVG
+            svg
+              // Get currently rendered elements
+              .selectAll(`foreignObject.dssp.${feature.id}`)
+              // Bind elements to data (loci)
+              .data(feature.values)
+              // Generate parent foreign object
+              .join('foreignObject')
+              .attr('class', `dssp ${feature.id}`)
+              .attr('x', (_, i) => x(i + 0.5))
+              .attr('y', y)
+              .attr('width', (_, i) => x(i) - x(i - 1))
+              .attr('height', height)
+              // Generate child HTML div
+              .append('xhtml:div')
               .style('display', 'flex')
               .style('align-items', 'center')
               .style('justify-content', 'center')
@@ -304,114 +506,61 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, OnDestroy {
               .style('box-sizing', 'border-box')
               // .style('border-radius', '.375rem')
               // .style('border', '1px solid black')
-              // .style('background-color', d => color(d))
-              // .style('background-opacity', 0.1)
-              .style('color', 'black')
-              .text(d => d);
-      }),
-      // Feature labels
-      tap(({ sequence, features }) => {
-        // Get horizontal, vertical positioning
-        const x = 0, y = this.scale.y;
-        // TODO Define height, width
-        const height = (this.height - this.margin.top - this.margin.bottom) / (features.length + 1);
-        const width = this.margin.left;
-        // Substitute SVG ticks with labels
-        svg
-          // Select previous ticks
-          .selectAll('foreignObject.label')
-          // Bind labels to sequence and features
-          .data([ { ...sequence, id: 'sequence' }, ...features.map((f, i) => ({ ...f, id: `feature-${i}` })) ])
-          // Render labels as foreign object
-          .join('foreignObject')
-            .attr('id', (_, i) => 'label-' + i)
-            .attr('class', 'label')
-            .attr('y', (d) => y(d.id) - height / 2)
-            .attr('x', x)
-            .attr('height', height)
-            .attr('width', width)
-          // Append actual label
-          .append('xhtml:div')
-            .style('display', 'flex')
-            .style('flex-shrink', 0)
-            .style('flex-grow', 1)
-            .style('justify-content', 'end')
-            .style('align-items', 'center')
-            .style('margin-right', '.5rem')
-            .style('height', '100%')
-            .style('box-sizing', 'border-box')
-            .style('border', '1px solid black')
-            // Define html with caret
-            .html(d => `<span>${d.id} <i class="bi bi-caret-down-fill"></i></span>`);
-      }),
-      // Handle features change
-      tap(({ features }) => {
-        // Loop through each feature index
-        for (let i = 0; i < features.length; i++) {
-          // Define feature and its identifier
-          const feature = { ...features[i], id: 'feature-' + i };
-          // Handle loci features
-          if (feature.type === 'loci') {
-            // Define loci height
-            const height = 24;
-            // Define x, y scales
-            const x = (d: number) => this.scale.x(d);
-            const y = this.scale.y(feature.id) - height / 2;
-            // Attach loci representation to SVG
-            svg
-              // Get currently rendered elements
-              .selectAll(`foreignObject.locus.${feature.id}`)
-              // Bind elements to data (loci)
-              .data(feature.values)
-              // generate div with given class and identifier
-              // .join('rect')
-              //   .attr('class', `locus ${feature.id}`)
-              //   .attr('x', d => x(d.start - 0.5))
-              //   .attr('y', y())
-              //   .attr('width', d => x(d.end - d.start + 1.0 - 0.5))
-              //   .attr('height', height)
-              //   .attr('fill', 'teal');
-              // Generate parent foreign object
-              .join('foreignObject')
-                .attr('class', `locus ${feature.id}`)
-                .attr('x', d => x(d.start - 0.5))
-                .attr('y', y)
-                .attr('width', d => x(d.end + 1) - x(d.start))
-                .attr('height', height)
-              // Generate child HTML div
-              .append('xhtml:div')
-                .style('display', 'flex')
-                .style('align-items', 'center')
-                .style('justify-content', 'center')
-                .style('height', '100%')
-                .style('width', '100%')
-                .style('box-sizing', 'border-box')
-                .style('border-radius', '.375rem')
-                .style('border', '1px solid black')
-                .text(d => `[${d.start}, ${d.end}]`);                  
+              .html((d, i) => {
+                // Handle helices
+                if (d === 'G' || d === 'H' || d === 'I')
+                  return '<i class="dssp dssp-helix"></i>';
+                // Handle strands
+                else if (d === 'E' || d === 'B') {
+                  // Get feature values
+                  const { values } = feature;
+                  // Define function for detecting strand
+                  const strand = (d: unknown) => d === 'E' || d === 'B';
+                  // Get previous, next DSSP item
+                  const p = i > 0 ? values[i - 1] : undefined;
+                  const n = i < values.length ? values[i + 1] : undefined;
+                  // Case previous is not strand, then current is first
+                  if (!strand(p))
+                    return '<i class="dssp dssp-strand-start"></i>';
+                  // Case next is not strand, then current is last
+                  if (!strand(n)) return '<i class="dssp dssp-strand-end"></i>';
+                  // Case next is not strand, then
+                  return '<i class="dssp dssp-strand"></i>';
+                }
+                // Handle loops
+                else if (d === 'C' || d === 'S' || d === 'T')
+                  return '<i class="dssp dssp-loop"></i>';
+                // Otherwise, let empty
+                return '';
+              });
           }
           // Handle continuous features
-          if (feature.type === 'continuous') {
+          else if (feature.type === 'continuous') {
             // Define feature heigh
             const height = 128;
             // Extract feature identifier
             const { id: _id } = feature;
             // Compute minimum, maximum values
-            const min = Math.min(...feature.values), max = Math.max(...feature.values);
+            const min = Math.min(...feature.values),
+              max = Math.max(...feature.values);
             // Define horizontal, vertical scales
-            const x = (d: number) => this.scale.x(d + 1);
-            const y = (d: number) => this.scale.y(_id) - (d / (max - min) * height)
+            const x = (d: number) => scale.x(d + 1);
+            const y = (d: number) => scale.y(_id) - (d / (max - min)) * height;
             // Define actual values to be represented
             // NOTE Must add initial and final zero values
-            let values: Array<{ value: number, index: number }>;
+            let values: Array<{ value: number; index: number }>;
             values = feature.values.map((value, index) => ({ value, index }));
             values = [{ value: 0, index: -0.5 }, ...values];
-            values = [...values, { value: 0, index: feature.values.length - 0.5}]
+            values = [
+              ...values,
+              { value: 0, index: feature.values.length - 0.5 },
+            ];
             // Generate line accoridng to current feature
-            const line =  d3.line<{ value: number, index: number}>()
+            const line = d3
+              .line<{ value: number; index: number }>()
               .curve(d3.curveMonotoneX) // Add interpolation
-              .x(d => x(d.index))
-              .y(d => y(d.value))
+              .x((d) => x(d.index))
+              .y((d) => y(d.value));
             // Attach line representation to SVG
             svg
               // Find previous path
@@ -420,15 +569,15 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, OnDestroy {
               .data([feature])
               // Generate updated path
               .join('path')
-                // Generate path
-                .attr('id', feature.id)
-                .attr('class', 'continuous')
-                .attr('fill', 'steelblue')
-                .attr('fill-opacity', 0.3)
-                .attr('stroke', 'steelblue')
-                .attr('stroke-opacity', 1)
-                .attr('stroke-width', 1.5)
-                .attr('d', line(values));
+              // Generate path
+              .attr('id', feature.id)
+              .attr('class', 'continuous')
+              .attr('fill', 'steelblue')
+              .attr('fill-opacity', 0.3)
+              .attr('stroke', 'steelblue')
+              .attr('stroke-opacity', 1)
+              .attr('stroke-width', 1.5)
+              .attr('d', line(values));
             // Attach marker representation to SVG
             svg
               // Find previous dots
@@ -437,26 +586,34 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, OnDestroy {
               .data([feature])
               // Generate updated group of nodes
               .join('g')
-                .attr('id', feature.id)
-                .attr('class', 'continuous')
+              .attr('id', feature.id)
+              .attr('class', 'continuous')
               // Select all inner dots
               .selectAll('circle.marker')
               // Bind to values object
               .data(values.slice(1, values.length - 1))
               // Render circle markers
               .join('circle')
-                .attr('id', d => d.index)
-                .attr('class', 'marker')
-                .attr('cx', d => x(d.index))
-                .attr('cy', d => y(d.value))
-                .attr('r', 4)
-                .attr('fill', 'steelblue');
+              .attr('id', (d) => d.index)
+              .attr('class', 'marker')
+              .attr('cx', (d) => x(d.index))
+              .attr('cy', (d) => y(d.value))
+              .attr('r', 4)
+              .attr('fill', 'steelblue');
           }
-        }
-      }),
+        });
+      })
     );
     // Subscribe to update emission
     this._update = this.update$.subscribe();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    // Case input features changed
+    if (changes && changes['features']) {
+      // Emit new features
+      this.features$.next(this.features);
+    }
   }
 
   ngAfterViewInit(): void {
@@ -473,5 +630,24 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, OnDestroy {
   onResize() {
     // Just emit width of container element
     this.resize$.next(this.width);
+  }
+
+  // Handle click on label
+  onLabelClick(event: MouseEvent, parent: { id?: string }) {
+    // TODO Check whether current label is active or not
+    // Get current parent identifier
+    const _id = parseInt(parent.id!.replace(/^[^\d]+/, ''));
+    // Filter out child features, emit updated list
+    const features = this.features.filter((child) => {
+      // Case child parent is defined
+      if (child.parent !== undefined) {
+        // Compare child identifier with parent identifier
+        return child.parent !== _id;
+      }
+      // Otherwise, always return true
+      return true;
+    });
+    // Emit updated features
+    this.features$.next(features);
   }
 }
