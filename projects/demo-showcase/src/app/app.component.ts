@@ -1,4 +1,4 @@
-import { NgxStructureViewerComponent } from 'ngx-structure-viewer';
+// import { NgxStructureViewerComponent } from 'ngx-structure-viewer';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { Component } from '@angular/core';
@@ -7,7 +7,7 @@ import { NgxFeaturesViewerComponent } from '../../../ngx-features-viewer/src/pub
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, NgxStructureViewerComponent, NgxFeaturesViewerComponent],
+  imports: [CommonModule, RouterOutlet, NgxFeaturesViewerComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })

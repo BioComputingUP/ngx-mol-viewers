@@ -185,7 +185,7 @@ export class NgxFeaturesViewerComponent
     let svg: d3.Selection<SVGSVGElement, undefined, null, undefined>;
     // Define initialization observable
     const svg$ = this.root$.pipe(
-      // TODO Cast reference to HTML element
+      // Cast reference to HTML element
       map((root) => root.nativeElement as HTMLDivElement),
       // Attach SVG to HTML element
       map((root) => {
@@ -206,7 +206,19 @@ export class NgxFeaturesViewerComponent
         // Otherwise, throw error
         throw new Error('Could not create SVG node');
       }),
-      // TODO Initialize horizontal, vertical axis
+      // // Initialize zoom event
+      // tap((svg) => {
+      //   // Define zoom behavior
+      //   const zoom = d3.zoom<SVGSVGElement, unknown>()
+      //     // Bind zoom event
+      //     .on('zoom', function (event) { 
+      //       // Apply transformation
+      //       svg.attr('transform', event.transform);
+      //     });
+      //   // Append zoom behavior to SVG element
+      //   svg.call(zoom as never);
+      // }),
+      // Initialize horizontal, vertical axis
       tap((svg) => {
         // Define horizontal axis
         const x = svg
@@ -250,8 +262,8 @@ export class NgxFeaturesViewerComponent
       mergeWith(this.resize$.pipe(debounceTime(40))),
       // Avoid emitting same value twice
       distinctUntilChanged(),
-      // TODO Remove this
-      tap((width) => console.log('Current width', width))
+      // // Change SVG width
+      // tap((width) => svg.attr('width', width)),
     );
     // Handle sequence (x axis) initialization
     const sequence$ = this.sequence$.pipe(
@@ -291,7 +303,6 @@ export class NgxFeaturesViewerComponent
           // Otherwise, add feature to domain anyway
           else domain.push(`feature-${feature.id}`);
         });
-        // domain = features.map((_, i) => 'feature-' + i);
         // Update domain with initial and final values
         domain = ['', 'sequence', ...domain, ''];
         // Compute range
@@ -320,6 +331,8 @@ export class NgxFeaturesViewerComponent
     this.update$ = resize$.pipe(
       // Subscribe to resize event
       switchMap(() => svg$),
+      // On resize, changes SVG size
+      tap(() => svg.attr('width', this.width).attr('height', this.height)),
       // Subscribe to both sequence and features retrieval
       switchMap(() => combineLatest([sequence$, features$])),
       map(([sequence, features]) => ({ sequence, features })),
