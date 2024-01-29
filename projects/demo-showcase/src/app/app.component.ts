@@ -44,6 +44,6 @@ export class AppComponent {
     { id: 1, type: 'loci' as const, values: [{ start: 1, end: 3 }, { start: 5, end: 6 }] },
     { id: 2, type: 'pins' as const, values: [ true, true, false, true, false, false, true ], parent: 1 },
     // { type: 'dssp' as const, values: ['H', 'H', '-', 'E', 'E', 'E', '-'] as Array<'H' | 'E' | '-'>},
-    { id: 1, type: 'loci' as const, values: [{ start: 1, end: 2 }, { start: 3, end: 3 }], parent: 1 },
+    { id: 3, type: 'loci' as const, values: [{ start: 1, end: 2 }, { start: 3, end: 3 }], parent: 1 },
   ];
 }

@@ -40,6 +40,8 @@ export interface Feature<T> {
   values: T[];
   // Define parent feature identifier
   parent?: number;
+  // Whether feature is active (children are visible) or not (children not visible)
+  active?: boolean;
 }
 
 export interface Continuous extends Feature<number> {
@@ -265,12 +267,27 @@ export class NgxFeaturesViewerComponent
       // Define current horizontal axis
       tap((features) => {
         // Declare domain, range
-        let domain: string[], range: number[];
+        let domain: string[] = [], range: number[] = [];
         // Define domain
-        domain = features.map((_, i) => 'feature-' + i);
+        features.forEach((feature) => {
+          // Case feature parent feature is active
+          if (feature.parent !== undefined) {
+            // Then, add current feature to domain iff parent feature is active
+            const parent = this.features[feature.parent];
+            // Check whether parent feature is active
+            if (parent.active === true) {
+              // Then add current feature to domain, otherwise skip it
+              domain.push(`feature-${feature.id}`);
+            }
+          }
+          // Otherwise, add feature to domain anyway
+          else domain.push(`feature-${feature.id}`);
+        });
+        // domain = features.map((_, i) => 'feature-' + i);
+        // Update domain with initial and final values
         domain = ['', 'sequence', ...domain, ''];
         // Compute range
-        const n = features.length + 1;
+        const n = domain.length - 2;
         const c = (this.height - this.margin.bottom - this.margin.top) / n;
         range = domain.map((_, i) => this.margin.top + c * i + c / 2);
         range = [this.margin.top, ...range, range[n - 1] + c / 2];
@@ -352,26 +369,20 @@ export class NgxFeaturesViewerComponent
       // Feature labels
       tap(({ sequence, features }) => {
         // Get horizontal, vertical positioning
-        const x = 0,
-          y = this.scale.y;
+        const x = 0, y = this.scale.y;
         // TODO Define height, width
-        const height =
-          (this.height - this.margin.top - this.margin.bottom) /
-          (features.length + 1);
+        const height = (this.height - this.margin.top - this.margin.bottom) / (features.length + 1);
         const width = this.margin.left;
         // Substitute SVG ticks with labels
         svg
           // Select previous ticks
           .selectAll('foreignObject.label')
           // Bind labels to sequence and features
-          .data([
-            { ...sequence, id: 'sequence' },
-            ...features.map((f, i) => ({ ...f, id: `feature-${i}` })),
-          ])
+          .data([{ ...sequence, id: 'sequence' }, ...features.map((f, i) => ({ ...f, id: `feature-${i}` })) ])
           // Render labels as foreign object
           .join('foreignObject')
           .attr('id', (_, i) => 'label-' + i)
-          .attr('class', 'label')
+          .attr('class', 'label active')
           .attr('y', (d) => y(d.id) - height / 2)
           .attr('x', x)
           .attr('height', height)
@@ -611,6 +622,11 @@ export class NgxFeaturesViewerComponent
   ngOnChanges(changes: SimpleChanges): void {
     // Case input features changed
     if (changes && changes['features']) {
+      // Initialize input features
+      this.features.forEach((feature) => {
+        // Set feature as active
+        feature.active = feature.active === undefined ? true : feature.active;
+      });
       // Emit new features
       this.features$.next(this.features);
     }
@@ -634,20 +650,15 @@ export class NgxFeaturesViewerComponent
 
   // Handle click on label
   onLabelClick(event: MouseEvent, parent: { id?: string }) {
-    // TODO Check whether current label is active or not
     // Get current parent identifier
     const _id = parseInt(parent.id!.replace(/^[^\d]+/, ''));
-    // Filter out child features, emit updated list
-    const features = this.features.filter((child) => {
-      // Case child parent is defined
-      if (child.parent !== undefined) {
-        // Compare child identifier with parent identifier
-        return child.parent !== _id;
-      }
-      // Otherwise, always return true
-      return true;
-    });
+    // // Get label element
+    // const label = event.target as HTMLDivElement;
+    // Toggle active flag on current feature
+    const feature = this.features[_id];
+    // Invert current active sign
+    feature.active = !feature.active;
     // Emit updated features
-    this.features$.next(features);
+    this.features$.next([...this.features]);
   }
 }
