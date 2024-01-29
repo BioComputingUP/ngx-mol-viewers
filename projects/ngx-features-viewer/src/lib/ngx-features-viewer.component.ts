@@ -190,10 +190,9 @@ export class NgxFeaturesViewerComponent
       // Attach SVG to HTML element
       map((root) => {
         // Define SVG element
-        svg = d3
-          .create('svg')
-          .attr('height', this.height)
-          .attr('width', this.width);
+        svg = d3.create('svg');
+          // .attr('height', this.height)
+          // .attr('width', this.width);
         // Get SVG node
         const node = svg.node();
         // Case node exists
@@ -262,8 +261,8 @@ export class NgxFeaturesViewerComponent
       mergeWith(this.resize$.pipe(debounceTime(40))),
       // Avoid emitting same value twice
       distinctUntilChanged(),
-      // // Change SVG width
-      // tap((width) => svg.attr('width', width)),
+      // On resize, changes SVG size
+      tap(() => svg.attr('width', this.width).attr('height', this.height)),
     );
     // Handle sequence (x axis) initialization
     const sequence$ = this.sequence$.pipe(
@@ -328,11 +327,9 @@ export class NgxFeaturesViewerComponent
       )
     );
     // TODO Update SVG according to inputs
-    this.update$ = resize$.pipe(
+    this.update$ = svg$.pipe(
       // Subscribe to resize event
-      switchMap(() => svg$),
-      // On resize, changes SVG size
-      tap(() => svg.attr('width', this.width).attr('height', this.height)),
+      switchMap(() => resize$),
       // Subscribe to both sequence and features retrieval
       switchMap(() => combineLatest([sequence$, features$])),
       map(([sequence, features]) => ({ sequence, features })),
