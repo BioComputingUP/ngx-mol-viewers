@@ -18,10 +18,12 @@ import {
   Subscription,
   combineLatest,
   debounceTime,
+  distinct,
   distinctUntilChanged,
   map,
   mergeWith,
   shareReplay,
+  startWith,
   switchMap,
   tap,
 } from 'rxjs';
@@ -113,9 +115,8 @@ export const CINEMA = {
   styleUrl: './ngx-features-viewer.component.scss',
   encapsulation: ViewEncapsulation.None,
 })
-export class NgxFeaturesViewerComponent
-  implements AfterViewInit, OnChanges, OnDestroy
-{
+export class NgxFeaturesViewerComponent implements AfterViewInit, OnChanges, OnDestroy {
+  
   @ViewChild('root')
   public _root!: ElementRef;
 
@@ -156,6 +157,8 @@ export class NgxFeaturesViewerComponent
     y: d3.Selection<SVGGElement, undefined, null, undefined>;
   };
 
+  private readonly zoom$ = new ReplaySubject<number>(1);
+
   private readonly resize$ = new ReplaySubject<number>(1);
 
   @Input()
@@ -191,8 +194,8 @@ export class NgxFeaturesViewerComponent
       map((root) => {
         // Define SVG element
         svg = d3.create('svg');
-          // .attr('height', this.height)
-          // .attr('width', this.width);
+        // .attr('height', this.height)
+        // .attr('width', this.width);
         // Get SVG node
         const node = svg.node();
         // Case node exists
@@ -205,18 +208,49 @@ export class NgxFeaturesViewerComponent
         // Otherwise, throw error
         throw new Error('Could not create SVG node');
       }),
-      // // Initialize zoom event
-      // tap((svg) => {
-      //   // Define zoom behavior
-      //   const zoom = d3.zoom<SVGSVGElement, unknown>()
-      //     // Bind zoom event
-      //     .on('zoom', function (event) { 
-      //       // Apply transformation
-      //       svg.attr('transform', event.transform);
-      //     });
-      //   // Append zoom behavior to SVG element
-      //   svg.call(zoom as never);
-      // }),
+      // Initialize inner scaffold for zoom
+      // https://d3-graph-gallery.com/graph/interactivity_zoom.html
+      tap(() => {
+        // Define object storage in <defs> (definitions) tag
+        const defs = svg.append('defs');
+        // Define clip path: everything out of this area won't be drawn
+        defs.append('SVG:clipPath')
+          // Set clip identifier, required in <defs>
+          .attr('id', 'clip')
+          // Add inner rectange
+          .append('SVG:rect')
+          // Set dimensions
+          .attr('height', '100%')
+          .attr('width', '100%')
+          // Set positioning
+          .attr('x', 0)
+          .attr('y', 0);
+        // Define features group
+        svg.append('g')
+          // Bind features group to clip path
+          .attr('class', 'features')
+          .attr('clip-path', `url(#clip)`);
+        // Define zoom event
+        const zoom = d3.zoom<SVGSVGElement, unknown>()
+          // Define zoom properties
+          .scaleExtent([.5, 20])
+          .extent([[0, 0], [this.width, this.height]])
+          // Define zoom behavior
+          .on('zoom', (event) => this.onFeaturesZoom(event));
+        // Add an invisible rectangle on top of the chart.
+        // This, can recover pointer events: it is necessary to understand when the user zoom.
+        svg.append('rect')
+          // NOTE This rectangle must match visible one
+          .attr('height', this.height - this.margin.top - this.margin.bottom)
+          .attr('width', this.width - this.margin.left - this.margin.right)
+          // Set style to appear invisible, but catch events
+          .style('fill', 'none')
+          .style('pointer-events', 'all')
+          // Set correct positioning
+          .attr('transform', `translate(${this.margin.left}, ${this.margin.top})`)
+          // Set zoom behavior
+          .call(zoom as never);
+      }),
       // Initialize horizontal, vertical axis
       tap((svg) => {
         // Define horizontal axis
@@ -239,19 +273,19 @@ export class NgxFeaturesViewerComponent
       tap((svg) => {
         // Define vertical grid (horizontal lines)
         const y = svg.append('g').attr('class', 'y axis-grid');
-        // Initialize grid
-        this.grid = {
-          x: undefined as unknown as d3.Selection<
-            SVGGElement,
-            undefined,
-            null,
-            undefined
-          >,
-          y,
-        };
+        // prettier-ignore
+        this.grid = { x: undefined as unknown as d3.Selection<SVGGElement, undefined, null, undefined>, y };
       }),
       // Cache result
       shareReplay(1)
+    );
+    // Handle zoom event, avoid event flooding
+    const zoom$ = this.zoom$.pipe(
+      // After zoom, update axis
+      debounceTime(40),
+      distinctUntilChanged(),
+      // Substitute current horizontal axis
+      tap(() => this.axis.x.call(d3.axisBottom(this.scale.x)))
     );
     // Handle horizontal resize
     const resize$ = this.root$.pipe(
@@ -278,8 +312,13 @@ export class NgxFeaturesViewerComponent
         // Return updated horizontal axis
         this.scale = { ...this.scale, x: d3.scaleLinear(domain, range) };
       }),
-      // Substitute current horizontal axis
-      tap(() => this.axis.x.call(d3.axisBottom(this.scale.x)))
+      // Merge width zoom event
+      switchMap((sequence) => zoom$.pipe(
+        // Pass on sequence
+        map(() => sequence),
+        // TODO Emit initial value
+         startWith(sequence),
+      )),
     );
     // Handle features (y axis) initialization
     const features$ = this.features$.pipe(
@@ -315,15 +354,14 @@ export class NgxFeaturesViewerComponent
       // Substitute current vertical axis
       tap(() => this.axis.y.call(d3.axisLeft(this.scale.y))),
       // Substitute grid lines
-      tap(() =>
-        this.grid.y
-          .selectAll('line') // Select grid lines
-          .data(this.scale.y.domain()) // Bind grid lines to ticks
-          .join('line') // Render grid lines
-          .attr('x1', this.margin.left)
-          .attr('x2', this.width - this.margin.right)
-          .attr('y1', (d) => this.scale.y(d))
-          .attr('y2', (d) => this.scale.y(d))
+      tap(() => this.grid.y
+        .selectAll('line') // Select grid lines
+        .data(this.scale.y.domain()) // Bind grid lines to ticks
+        .join('line') // Render grid lines
+        .attr('x1', this.margin.left)
+        .attr('x2', this.width - this.margin.right)
+        .attr('y1', (d) => this.scale.y(d))
+        .attr('y2', (d) => this.scale.y(d))
       )
     );
     // TODO Update SVG according to inputs
@@ -335,6 +373,8 @@ export class NgxFeaturesViewerComponent
       map(([sequence, features]) => ({ sequence, features })),
       // Handle sequence change
       tap(({ sequence }) => {
+        // Get root (zoomable) element
+        const root = svg.select('g.features'); 
         // Get horizontal, vertical position
         const x = (d: string, i: number) => this.scale.x(i);
         const y = this.scale.y('sequence');
@@ -346,7 +386,7 @@ export class NgxFeaturesViewerComponent
         // Color residue according to code
         const color = (d: string) => CINEMA[d as never] || CINEMA.X;
         // TODO Apend background rectangles to SVG element
-        svg
+        root
           .selectAll('rect.residue')
           .data(sequence)
           .join('rect')
@@ -358,7 +398,7 @@ export class NgxFeaturesViewerComponent
           .attr('fill', (d) => color(d))
           .attr('fill-opacity', 0.1);
         // Append residues cells to SVG element
-        svg
+        root
           // Get currently displayed elements
           .selectAll('foreignObject.residue')
           // Bind elements to data (loci)
@@ -396,7 +436,7 @@ export class NgxFeaturesViewerComponent
           // Select previous ticks
           .selectAll('foreignObject.label')
           // Bind labels to sequence and features
-          .data([{ ...sequence, id: 'sequence', active: false }, ...features.map((f) => ({ ...f, id: `feature-${f.id}` })) ])
+          .data([{ ...sequence, id: 'sequence', active: false }, ...features.map((f) => ({ ...f, id: `feature-${f.id}` }))])
           // Render labels as foreign object
           .join('foreignObject')
           // Set feature identifier
@@ -434,8 +474,11 @@ export class NgxFeaturesViewerComponent
       }),
       // Handle features change
       tap(({ features }) => {
+        // Define SVG parent group
+        // NOTE This inserts features into the clip path
+        const root = svg.select('g.features');
         // Generate features
-        const groups = svg
+        const groups = root
           // For each feature, generate an SVG group
           .selectAll('g.feature')
           .data(features)
@@ -447,7 +490,7 @@ export class NgxFeaturesViewerComponent
         // For each feature group, generate feature representation
         groups.each(function (_, i) {
           // Define group
-          const svg = d3.select(this); 
+          const svg = d3.select(this);
           // Define feature and its identifier
           const feature = { ...features[i], id: 'feature-' + i };
           // Handle loci features
@@ -688,5 +731,21 @@ export class NgxFeaturesViewerComponent
     this.features$.next([...this.features]);
     // Emit selected feature
     this.feature.emit(feature);
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  onFeaturesZoom(event: any) {
+    // TODO Remove this
+    console.log('Zoomed', event);
+    // Get horizontal, vertical scale
+    let x = this.scale.x;
+    // Update horizontal scale
+    x = event.transform.rescaleX(x);
+    // Update horizontal, vertical scale
+    this.scale = { ...this.scale, x };
+    // // Update horizontal axis
+    // this.axis.x.call(d3.axisBottom(x));
+    // Emit zoom event
+    this.zoom$.next(event.transform.x);
   }
 }
