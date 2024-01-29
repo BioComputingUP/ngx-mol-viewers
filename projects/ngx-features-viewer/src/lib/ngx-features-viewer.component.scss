@@ -50,3 +50,12 @@ i.dssp {
     background-size: 100% 48px;
   }
 }
+// Style labels
+.label.sequence i {
+  display: none;
+}
+.label:not(.active) i::before {
+  // Rotate icon with effect
+  transition: transform 0.4s;
+  transform: rotate(-90deg);
+}

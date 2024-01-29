@@ -2,10 +2,12 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
+  EventEmitter,
   HostListener,
   Input,
   OnChanges,
   OnDestroy,
+  Output,
   SimpleChanges,
   ViewChild,
   ViewEncapsulation,
@@ -171,6 +173,12 @@ export class NgxFeaturesViewerComponent
   private update$: Observable<unknown>;
 
   private _update: Subscription;
+
+  @Output()
+  public readonly feature = new EventEmitter<Features[number]>();
+
+  @Output()
+  public readonly region = new EventEmitter<Sequence>();   // TODO Emit selected sequence region
 
   constructor() {
     // Define reference to svg
@@ -378,11 +386,20 @@ export class NgxFeaturesViewerComponent
           // Select previous ticks
           .selectAll('foreignObject.label')
           // Bind labels to sequence and features
-          .data([{ ...sequence, id: 'sequence' }, ...features.map((f, i) => ({ ...f, id: `feature-${i}` })) ])
+          .data([{ ...sequence, id: 'sequence', active: false }, ...features.map((f) => ({ ...f, id: `feature-${f.id}` })) ])
           // Render labels as foreign object
           .join('foreignObject')
-          .attr('id', (_, i) => 'label-' + i)
-          .attr('class', 'label active')
+          // Set feature identifier
+          .attr('id', (f) => f.id.replace('feature', 'label'))
+          // TODO Define open/closed class
+          .attr('class', d => {
+            // Case current feature is actually the sequence
+            if (d.id === 'sequence') return 'label sequence';
+            // Case current feature is active
+            else if (d.active === true) return 'label active';
+            // Otherwise, return just label
+            else return 'label';
+          })
           .attr('y', (d) => y(d.id) - height / 2)
           .attr('x', x)
           .attr('height', height)
@@ -648,7 +665,6 @@ export class NgxFeaturesViewerComponent
     this.resize$.next(this.width);
   }
 
-  // Handle click on label
   onLabelClick(event: MouseEvent, parent: { id?: string }) {
     // Get current parent identifier
     const _id = parseInt(parent.id!.replace(/^[^\d]+/, ''));
@@ -660,5 +676,7 @@ export class NgxFeaturesViewerComponent
     feature.active = !feature.active;
     // Emit updated features
     this.features$.next([...this.features]);
+    // Emit selected feature
+    this.feature.emit(feature);
   }
 }
