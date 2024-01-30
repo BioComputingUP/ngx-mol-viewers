@@ -1,4 +1,4 @@
-import { Observable, ReplaySubject, debounceTime, distinctUntilChanged, map, startWith, tap } from 'rxjs';
+import { Observable, ReplaySubject, debounceTime, distinctUntilChanged, map, shareReplay, startWith, tap } from 'rxjs';
 import { Injectable } from '@angular/core';
 import * as d3 from 'd3';
 
@@ -14,7 +14,7 @@ export class ZoomService {
 
   public scale!: Scale;
 
-  public scaled!: Scale
+  public scaled!: Scale;
 
   // Define zoom event
   public readonly zoom$ = new ReplaySubject<d3.D3ZoomEvent<SVGSVGElement, undefined>>(1);
@@ -44,6 +44,8 @@ export class ZoomService {
       startWith(this.scale),
       // Store updated scale
       tap((scaled) => this.scaled = scaled),
+      // Cache result
+      shareReplay(1),
     );
   }
 
