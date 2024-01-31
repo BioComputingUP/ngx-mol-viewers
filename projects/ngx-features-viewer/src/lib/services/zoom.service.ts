@@ -30,9 +30,9 @@ export class ZoomService {
     // Define zoom pipeline
     // NOTE It is run only on horizontal axis
     this.zoomed$ = this.zoom$.pipe(
-      // Avoid events flooding
-      debounceTime(40),
-      distinctUntilChanged((p, c) => p.transform.x === c.transform.x),
+      // // Avoid events flooding
+      // debounceTime(40),
+      // distinctUntilChanged((p, c) => p.transform.x === c.transform.x),
       // Use zoom event to rescale original axis
       map((event) => {
         // Get original horiziontal, vertical scale
