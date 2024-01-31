@@ -209,9 +209,9 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, OnChanges, OnD
         const { width, height, margin } = this.resizeService;
         // Update extent (in pixel)
         this.zoom
-          // .extent([[0, 0], [width - margin.left - margin.right, height - margin.top - margin.bottom]])
-          .scaleExtent([1, 20])
-          .translateExtent([[0, 0], [width - margin.left - margin.right, height - margin.top - margin.bottom]])
+          .extent([[0, 0], [width - margin.left - margin.right, height - margin.top - margin.bottom]])
+          .scaleExtent([1, 10])
+          .translateExtent([[0, 0], [width - margin.right, height - margin.top - margin.bottom]])
       }),
       // Update vertical axis range
       tap(() => {

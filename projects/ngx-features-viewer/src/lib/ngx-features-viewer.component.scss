@@ -51,11 +51,22 @@ i.dssp {
   }
 }
 // Style labels
-.label.sequence i {
-  display: none;
+.label {
+  // Hide caret for sequence label
+  &.sequence i {
+    display: none;
+  }
+  // Set transition for caret
+  & i::before {
+    transition: transform 0.4s;
+  }
+  // Set active status
+  &.active i::before {
+    transform: roate(0deg);
+  }
+  // Set non-active status
+  &:not(.active) i::before {
+    transform: rotate(-90deg);
+  }
 }
-.label:not(.active) i::before {
-  // Rotate icon with effect
-  transition: transform 0.4s;
-  transform: rotate(-90deg);
-}
+
