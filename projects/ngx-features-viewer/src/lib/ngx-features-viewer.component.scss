@@ -6,8 +6,7 @@
   stroke: gray;
 }
 // Do not show line for sequence
-.axis-grid line:nth-child(1),
-.axis-grid line:nth-child(2) {
+.axis-grid line:nth-child(1) {
   stroke-opacity: 0 !important;
 }
 // Hide default y-axis ticks
@@ -69,4 +68,3 @@ i.dssp {
     transform: rotate(-90deg);
   }
 }
-

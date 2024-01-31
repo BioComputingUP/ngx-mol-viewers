@@ -1,4 +1,4 @@
-import { Observable, ReplaySubject, debounceTime, distinctUntilChanged, map, shareReplay, startWith, tap } from 'rxjs';
+import { Observable, ReplaySubject, map, tap, shareReplay, startWith, debounceTime } from 'rxjs';
 import { Injectable } from '@angular/core';
 import * as d3 from 'd3';
 
@@ -30,9 +30,8 @@ export class ZoomService {
     // Define zoom pipeline
     // NOTE It is run only on horizontal axis
     this.zoomed$ = this.zoom$.pipe(
-      // // Avoid events flooding
-      // debounceTime(40),
-      // distinctUntilChanged((p, c) => p.transform.x === c.transform.x),
+      // Setup event flooding prevention
+      debounceTime(10),
       // Use zoom event to rescale original axis
       map((event) => {
         // Get original horiziontal, vertical scale
@@ -44,8 +43,10 @@ export class ZoomService {
       startWith(this.scale),
       // Store updated scale
       tap((scaled) => this.scaled = scaled),
-      // Cache result
-      shareReplay(1),
+      // TODO Remove this
+      tap(() => console.log('Zoomed!')),
+      // // Cache result
+      // shareReplay(1),
     );
   }
 

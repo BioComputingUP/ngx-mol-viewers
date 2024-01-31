@@ -1,4 +1,4 @@
-import { Observable, ReplaySubject, switchMap, debounceTime, distinctUntilChanged, map, startWith } from 'rxjs';
+import { Observable, ReplaySubject, switchMap, debounceTime, distinctUntilChanged, map, startWith, tap } from 'rxjs';
 import { InitializeService } from './initialize.service';
 import { Injectable } from '@angular/core';
 
@@ -78,6 +78,8 @@ export class ResizeService {
         resize(this.init.clip, size, this.margin);
         resize(this.init.events, size, this.margin);
       }),
+      // TODO Remove this
+      tap(() => console.log('Resized!')),
     );
   }
 }
