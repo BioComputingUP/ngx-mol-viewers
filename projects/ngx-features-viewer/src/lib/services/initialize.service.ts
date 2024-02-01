@@ -10,6 +10,19 @@ type Rect = d3.Selection<SVGRectElement, undefined, null, undefined>;
 
 type Zoom = d3.ZoomBehavior<SVGSVGElement, unknown>;
 
+export interface Margin {
+  // Define margins clockwise
+  top: number;
+  right: number;
+  bottom: number;
+  left: number;
+}
+
+export interface Scale {
+  x: d3.ScaleLinear<number, number>,
+  y: d3.ScaleOrdinal<string, number>
+}
+
 export interface Axes {
   y: Group;
   x: Group;
@@ -36,8 +49,24 @@ export class InitializeService {
     return this.root.nativeElement as HTMLDivElement;
   }
 
+  get height() {
+    // return (this._root.nativeElement as HTMLDivElement).clientHeight; // Does not include border height
+    return this.div.offsetHeight; // Includes border height
+  }
+
+  get width() {
+    // return (this._root.nativeElement as HTMLDivElement).clientWidth; // Does not include border width
+    return this.div.offsetWidth; // Includes border width
+  }
+
   // Get main SVG element
   public svg!: SVG;
+
+  // Define margin
+  public margin!: Margin;
+
+  // Define horizontal, vertical scales
+  public scale!: Scale;
 
   // Define horizontal, vertical axis
   public axes!: Axes;
@@ -80,7 +109,7 @@ export class InitializeService {
       }),
       // Store SVG element
       tap((svg) => this.svg = svg),
-      // GenerateSVG container (draw)
+      // Generate SVG container (draw)
       tap((svg) => {
         // Define object storage in <defs> (definitions) tag
         const defs = svg.append('defs');
@@ -90,12 +119,6 @@ export class InitializeService {
           .attr('id', 'clip')
           // Add inner rectange
           .append('SVG:rect')
-          // // Set dimensions
-          // .attr('height', this.height - this.margin.top - this.margin.bottom)
-          // .attr('width', this.width - this.margin.left - this.margin.right)
-          // // Set positioning
-          // .attr('x', this.margin.left)
-          // .attr('y', this.margin.top);
         // Define features group
         this.draw = svg.append('g')
           // Bind features group to clip path
@@ -103,22 +126,12 @@ export class InitializeService {
           .attr('clip-path', `url(#clip)`);
         // // Define zoom event
         this.zoom = d3.zoom<SVGSVGElement, unknown>();
-        //   // Define zoom properties
-        //   .scaleExtent([10, 1000])
-        //   .extent([[0, 0], [this.width, this.height]])
-        //   // Define zoom behavior
-        //   .on('zoom', (event) => this.onFeaturesZoom(event));
         // Add an invisible rectangle on top of the chart.
         // This, can recover pointer events: it is necessary to understand when the user zoom.
         this.events = svg.append('rect')
-          // // NOTE This rectangle must match visible one
-          // .attr('height', this.height - this.margin.top - this.margin.bottom)
-          // .attr('width', this.width - this.margin.left - this.margin.right)
           // Set style to appear invisible, but catch events
           .style('fill', 'none')
           .style('pointer-events', 'all')
-          // // Set correct positioning
-          // .attr('transform', `translate(${this.margin.left}, ${this.margin.top})`)
           // Set zoom behavior
           .call(this.zoom as never);
       }),
@@ -145,6 +158,8 @@ export class InitializeService {
         // prettier-ignore
         this.grid = { x: x as never, y };
       }),
+      // Initialize horizontal, vertical scale
+      tap(() => this.scale = { x: d3.scaleLinear(), y: d3.scaleOrdinal() }),
       // Avoid re-drawing the graph each time anothe observable subscribes
       shareReplay(1)
     );

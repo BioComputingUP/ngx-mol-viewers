@@ -1,9 +1,7 @@
 import { Observable, ReplaySubject, map, shareReplay, switchMap, tap } from 'rxjs';
-import { EventEmitter, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 // Custom providers
 import { InitializeService } from './initialize.service';
-import { ResizeService } from './resize.service';
-import { ZoomService } from './zoom.service';
 // Custom features
 import Continuous from '../features/continuous';
 import DSSP from '../features/dssp';
@@ -74,6 +72,22 @@ export class DrawService {
     return this.initService.draw;
   }
 
+  public get scale() {
+    return this.initService.scale;
+  }
+
+  public get height() {
+    return this.initService.height;
+  }
+
+  public get width() {
+    return this.initService.width;
+  }
+
+  public get margin() {
+    return this.initService.margin;
+  }
+
   public residues!: ResidueGroup;
 
   public features!: FeatureGroup;
@@ -89,8 +103,6 @@ export class DrawService {
    */
   public readonly draw$: Observable<void>;
 
-  public scale = this.zoomService.scaled;
-
   /** Update features
    * 
    * This pipeline moves previously initialized features within the
@@ -103,11 +115,18 @@ export class DrawService {
 
   constructor(
     private initService: InitializeService,
-    private resizeService: ResizeService,
-    private zoomService: ZoomService,
   ) {
     // Define draw initialization
     this.draw$ = this.sequence$.pipe(
+       // Update horizontal scale domain
+       tap((sequence) => {
+        // Get horizontal scale
+        const { x } = this.scale;
+        // Generate horizontal domain for sequence
+        const domain = [0, sequence.length + 0.5];
+        // Update horizontal scale
+        x.domain(domain);
+      }),
       // Draw sequence
       map((sequence) => {
         // Color residue according to code
@@ -168,6 +187,15 @@ export class DrawService {
         // Otherwise, show feature
         return true;
       })),
+      // Update vertical scale domain
+      tap((features) => {
+        // Get vertical scale
+        const { y } = this.scale;
+        // Generate vertical domain for features
+        const domain = features.map(({ id }) => 'feature-' + id);
+        // Update vertical scale according to features and sequence
+        y.domain(['first', 'sequence', ...domain, 'last']);
+      }),
       // Draw labels, without setting position but saving references
       tap((features) => {
         // // Get SVG insctance
@@ -416,10 +444,10 @@ export class DrawService {
       // Move sequence residues in correct position
       map(() => {
         // Get height, width, margins
-        const margin = this.resizeService.margin;
-        const height = this.resizeService.height;
+        const margin = this.initService.margin;
+        const height = this.initService.height;
         // Get scale (x, y axis)
-        const { x, y } = this.zoomService.scaled;
+        const { x, y } = this.initService.scale!;
         // Define width, height of each cell
         const width = x(1) - x(0);
         // Update size, position of residue background
@@ -445,11 +473,11 @@ export class DrawService {
       // Move labels in correct position
       map(() => {
         // Get scale (x, y axis)
-        const { y } = this.zoomService.scaled;
+        const { y } = this.scale;
         // Get height, width, margins
-        const margin = this.resizeService.margin;
+        const margin = this.margin;
         // Define outer height (SVG)
-        const outer = this.resizeService.height;
+        const outer = this.height;
         // Define inner height (row)
         const inner = (outer - margin.top - margin.bottom) / (y.domain().length - 1)
         // Update each label
@@ -466,9 +494,9 @@ export class DrawService {
         // Get feature values
         const _values = this.values;
         // Get height, width, margins
-        const margin = this.resizeService.margin;
+        const margin = this.margin;
         // Get scale (x, y axis)
-        const { x, y } = this.zoomService.scaled;
+        const { x, y } = this.scale!;
         // Loop through each feature
         this.features.each((feature) => {
           // Get feature values

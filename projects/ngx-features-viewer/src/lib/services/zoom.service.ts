@@ -1,52 +1,75 @@
-import { Observable, ReplaySubject, map, tap, shareReplay, startWith, debounceTime } from 'rxjs';
+import { Observable, ReplaySubject, map, shareReplay, startWith, switchMap } from 'rxjs';
 import { Injectable } from '@angular/core';
+// Custom providers
+import { Scale, InitializeService } from './initialize.service';
+// D3 library
 import * as d3 from 'd3';
-
-export interface Scale {
-  x: d3.ScaleLinear<number, number>,
-  y: d3.ScaleOrdinal<string, number>
-}
 
 @Injectable({
   providedIn: 'root'
 })
 export class ZoomService {
+  /** Zoom handler service
+   * 
+   * 1. Store a copy of the original scale provided during initialization
+   * 2. Intercept zoom event, which contains a transformation on the original scale
+   * 3. Generate an updated scale, using transformation provided by the intercepted event
+   * 4. Store updated scale, so it can be used during drawing
+   * N. Update axes by calling updated scale on them
+   */
 
-  public scale!: Scale;
+  private _scale!: Scale;
 
-  public scaled!: Scale;
+  // public scaled? = this.initService.scale;
 
-  // Define zoom event
   public readonly zoom$ = new ReplaySubject<d3.D3ZoomEvent<SVGSVGElement, undefined>>(1);
 
-  public readonly zoomed$: Observable<Scale>;
+  public readonly zoomed$: Observable<void>;
 
-  constructor() {
-    // Initialize scale
-    const x = d3.scaleLinear<number, number>();
-    const y = d3.scaleOrdinal<string, number>();
-    // Set original scale
-    this.scale = { x, y };
-    // Define zoom pipeline
-    // NOTE It is run only on horizontal axis
-    this.zoomed$ = this.zoom$.pipe(
-      // Setup event flooding prevention
-      debounceTime(10),
-      // Use zoom event to rescale original axis
-      map((event) => {
-        // Get original horiziontal, vertical scale
-        const { x, y } = this.scale;
-        // Return updated scale
-        return { x: event.transform.rescaleX(x), y };
+  constructor(private initService: InitializeService) {
+    // Define pipeline for scale initialization
+    const initialized$: Observable<Scale> = this.initService.initialized$.pipe(
+      // Store scale into service
+      map(() => this._scale = {
+        x: this.initService.scale.x.copy(),
+        y: this.initService.scale.y.copy()
       }),
-      // Start with initial scale
-      startWith(this.scale),
-      // Store updated scale
-      tap((scaled) => this.scaled = scaled),
-      // TODO Remove this
-      tap(() => console.log('Zoomed!')),
-      // // Cache result
-      // shareReplay(1),
+      // Cache results
+      shareReplay(),
+    );
+    // Define pipeline for intercepting zoom event
+    const scaled$: Observable<Scale> = initialized$.pipe(
+      // Subscribe to zoom event
+      switchMap(() => this.zoom$),
+      // Transform original scale
+      map((event) => {
+        // Get current horizontal, vertical scale
+        const { x } = this.initService.scale;
+        // Get horizontal scale, change its domain
+        const _x = event.transform.rescaleX(this._scale.x);
+        // Update scaled in place
+        x.domain(_x.domain());
+        // Return original scale
+        return this.initService.scale;
+      }),
+      // Start with current scale
+      startWith(this.initService.scale),
+      // // Cache results
+      // shareReplay(),
+    );
+    // Always subscribe to same scale
+    this.zoomed$ = scaled$.pipe(
+      // Update axes according to scale
+      map(() => {
+        // Get current axes
+        const axes = this.initService.axes;
+        // Get initial scale
+        const scale = this.initService.scale;
+        // Update vertical axis
+        axes.y.call(d3.axisLeft(scale.y));
+        // Update horizontal axis
+        axes.x.call(d3.axisBottom(scale.x));
+      }),
     );
   }
 

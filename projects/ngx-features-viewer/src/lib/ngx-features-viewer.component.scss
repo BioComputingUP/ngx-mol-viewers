@@ -9,10 +9,10 @@
 .axis-grid line:nth-child(1) {
   stroke-opacity: 0 !important;
 }
-// Hide default y-axis ticks
-.y.axis .tick text {
-  display: none;
-}
+// // Hide default y-axis ticks
+// .y.axis .tick text {
+//   display: none;
+// }
 // Style custom y-axis ticks
 .label div {
   cursor: pointer;
