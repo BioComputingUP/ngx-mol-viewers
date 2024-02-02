@@ -9,6 +9,8 @@ export default interface Feature<T> {
     values: T[];
     // Define parent feature identifier
     parent?: number;
+    // Define color for feature
+    color?: string;
     // Whether feature is active (children are visible) or not (children not visible)
     active?: boolean;
 }

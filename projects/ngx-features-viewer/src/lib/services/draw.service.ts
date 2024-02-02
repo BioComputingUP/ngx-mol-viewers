@@ -1,7 +1,10 @@
 import { Observable, ReplaySubject, map, shareReplay, switchMap, tap, of } from 'rxjs';
 import { Injectable } from '@angular/core';
+// TODO Remove from there
+import { Features } from '../ngx-features-viewer.component';
 // Custom providers
 import { InitializeService } from './initialize.service';
+import { ResizeService } from './resize.service';
 // Custom features
 import Continuous from '../features/continuous';
 import DSSP from '../features/dssp';
@@ -9,8 +12,7 @@ import Pins from '../features/pins';
 import Loci from '../features/loci';
 // D3 library
 import * as d3 from 'd3';
-import { Features } from '../ngx-features-viewer.component';
-import { ResizeService } from './resize.service';
+
 
 export type Sequence = string[];
 
@@ -65,6 +67,135 @@ export const identity = (f: unknown) => (f as { id: any }).id;
 
 // Define function for extracting index out of unknown object
 export const index = (f: unknown, i: number) => i;
+
+function createLoci(group: d3.Selection<d3.BaseType | SVGGElement, unknown, null, undefined>, feature: Loci) {
+  // Generate foreign object(s)
+  const foreignObject = group
+    // Get currently rendered elements
+    .selectAll(`foreignObject.locus`)
+    // Bind elements to data (loci)
+    .data(feature.values, index)
+    // Generate parent foreign object
+    .join('foreignObject')
+    .attr('class', `locus ${feature.id}`);
+  // Define foreground (border) color
+  const color = feature.color || 'black';
+  // Define background color, fall back to transparent eventually
+  const background = feature.color || 'transparent';
+  // Add background HTML div
+  // NOTE This element has decrease opacity, just shows the background color.
+  // NOTE It must be created before the foreground in ordeer to behave correctly
+  foreignObject.append('xhtml:div')
+    .attr('class', 'background')
+    .style('background-color', background);
+  // Add foreground HTML div
+  // NOTE This element shows both border and text, hence has full opacity
+  foreignObject.append('xhtml:div')
+    .attr('class', 'foreground')
+    .style('border-color', color)
+  // .style('color', color);
+  // Return foreign object
+  return foreignObject;
+}
+
+function updateLoci(group: d3.Selection<d3.BaseType | SVGGElement, unknown, null, undefined>, feature: Loci) {
+  // Generate foreign object(s)
+  const foreignObject = group
+    // Get currently rendered elements
+    .selectAll(`foreignObject.locus`)
+    // Bind elements to data (loci)
+    .data(feature.values, index)
+    // Generate parent foreign object
+    .join('foreignObject')
+    .attr('class', `locus ${feature.id}`);
+  // Define foreground (border) color
+  const color = feature.color || 'black';
+  // Define background color, fall back to transparent eventually
+  const background = feature.color || 'transparent';
+  // Define border radius
+  const radius = '.375rem';
+  // Update foreign object
+  foreignObject
+    // Add background HTML div
+    // NOTE This element has decrease opacity, just shows the background color.
+    // NOTE It must be created before the foreground in ordeer to behave correctly
+    .append('xhtml:div')
+    .attr('class', 'background')
+    .style('display', 'block')
+    .style('height', '100%')
+    .style('width', '100%')
+    .style('box-sizing', 'border-box')
+    .style('background-color', background)
+    .style('border-radius', radius)
+    .style('opacity', 0.3)
+    // Add foreground HTML div
+    // NOTE This element shows both border and text, hence has full opacity
+    .append('xhtml:div')
+    .attr('class', 'foreground')
+    .style('display', 'flex')
+    .style('align-items', 'center')
+    .style('justify-content', 'center')
+    .style('height', '100%')
+    .style('width', '100%')
+    .style('box-sizing', 'border-box')
+    .style('border-style', 'solid')
+    .style('border-radius', '.375rem')
+    .style('border-color', color)
+    .style('border-width', 2)
+    .style('background-color', 'transparent')
+    .style('opacity', 1);
+  // Return foreign object
+  return foreignObject;
+}
+
+function createPins(group: d3.Selection<d3.BaseType | SVGGElement, unknown, null, undefined>, feature: Pins) {
+  // Map pins to loci
+  const loci = feature.values.map((pin) => ({ ...pin, end: pin.start }));
+  // Generate loci
+  const foreignObject = createLoci(group, { ...feature, type: 'loci', values: loci });
+  // Update class for foreign object
+  foreignObject
+    .attr('class', `pin ${feature.id}`);
+  // Remove background
+  foreignObject
+    .select('div.background')
+    .remove();
+  // Substitute text with pin
+  foreignObject
+    .select('div.foreground')
+    .html((d) => (d ? '<i class="bi bi-pin"></i>' : ''));
+  // Return generated foreign object
+  return foreignObject;
+}
+
+function createDSSP(group: d3.Selection<d3.BaseType | SVGGElement, unknown, null, undefined>, feature: DSSP) {
+  // Generate loci
+  const foreignObject = createLoci(group, { ...feature, type: 'loci' });
+  // Update class for foreign object
+  foreignObject.attr('class', `dssp ${feature.id}`);
+  // Remove background
+  foreignObject.select('div.background').remove();
+  // Substitute text with pin
+  foreignObject.select('div.foreground').html((d: unknown) => {
+    // Get DSSP locus
+    const locus = d as DSSP['values'][number];
+    // Handle helices
+    if (locus.code === 'G' || locus.code === 'H' || locus.code === 'I') {
+      return '<i class="dssp dssp-helix"></i>';
+    }
+    // Handle strands
+    else if (locus.code === 'E' || locus.code === 'B') {
+      return '<i class="dssp dssp-strand"></i>';
+    }
+    // Handle loops
+    else if (locus.code === 'C' || locus.code === 'S' || locus.code === 'T')
+      return '<i class="dssp dssp-loop"></i>';
+    // Otherwise, let empty
+    return '';
+  });
+  // Return generated foreign object
+  return foreignObject;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -317,100 +448,83 @@ export class DrawService {
           // Handle loci features
           else if (feature.type === 'loci') {
             // Define locus container
-            const foreignObject = group
-              // Get currently rendered elements
-              .selectAll(`foreignObject.locus`)
-              // Bind elements to data (loci)
-              .data(feature.values, index)
-              // Generate parent foreign object
-              .join('foreignObject')
-              .attr('class', `locus ${feature.id}`);
-            // Define locus content
-            foreignObject
-              // Generate child HTML div
-              .append('xhtml:div')
-              .style('display', 'flex')
-              .style('align-items', 'center')
-              .style('justify-content', 'center')
-              .style('height', '100%')
-              .style('width', '100%')
-              .style('box-sizing', 'border-box')
-              .style('border-radius', '.375rem')
-              .style('border', '1px solid black');
+            const foreignObject = createLoci(group, feature);
+            // .style('background-color', color)
+            // .style('opacity', 0.3);
             // Attach loci representation to SVG
             values.set(feature, foreignObject);
           }
           // Handle pins features
           else if (feature.type === 'pins') {
-            // Define pin container
-            const foreignObject = group
-              // Get currently rendered elements
-              .selectAll(`foreignObject.pin`)
-              // Bind elements to data (loci)
-              .data(feature.values, index)
-              // Generate parent foreign object
-              .join('foreignObject')
-              .attr('class', `pin ${feature.id}`)
-            // Update pin content
-            foreignObject
-              .append('xhtml:div')
-              .style('display', 'flex')
-              .style('align-items', 'end')
-              .style('justify-content', 'center')
-              .style('height', '100%')
-              .style('width', '100%')
-              .style('box-sizing', 'border-box')
-              .html((d) => (d ? '<i class="bi bi-pin"></i>' : ''));
+            // // Define pin container
+            // const foreignObject = group
+            //   // Get currently rendered elements
+            //   .selectAll(`foreignObject.pin`)
+            //   // Bind elements to data (loci)
+            //   .data(feature.values, index)
+            //   // Generate parent foreign object
+            //   .join('foreignObject')
+            //   .attr('class', `pin ${feature.id}`)
+            // // Update pin content
+            // foreignObject
+            //   .append('xhtml:div')
+            //   .style('display', 'flex')
+            //   .style('align-items', 'end')
+            //   .style('justify-content', 'center')
+            //   .style('height', '100%')
+            //   .style('width', '100%')
+            //   .style('box-sizing', 'border-box')
+            //   .html((d) => (d ? '<i class="bi bi-pin"></i>' : ''));
             // Store pin container
-            values.set(feature, foreignObject);
+            values.set(feature, createPins(group, feature));
           }
           // TODO Handle DSSP features
           else if (feature.type === 'dssp') {
             // Define container for feature value (foreign object)
-            const foreignObject = group
-              // Get currently rendered elements
-              .selectAll(`foreignObject.dssp`)
-              // Bind elements to data (loci)
-              .data(feature.values, index)
-              // Generate parent foreign object
-              .join('foreignObject')
-              .attr('class', `dssp ${feature.id}`);
-            // Update content of feature value
-            foreignObject
-              .append('xhtml:div')
-              .style('display', 'flex')
-              .style('align-items', 'center')
-              .style('justify-content', 'center')
-              .style('height', '100%')
-              .style('width', '100%')
-              .style('box-sizing', 'border-box')
-              .html((d, i) => {
-                // Handle helices
-                if (d === 'G' || d === 'H' || d === 'I')
-                  return '<i class="dssp dssp-helix"></i>';
-                // Handle strands
-                else if (d === 'E' || d === 'B') {
-                  // Get feature values
-                  const { values } = feature;
-                  // Define function for detecting strand
-                  const strand = (d: unknown) => d === 'E' || d === 'B';
-                  // Get previous, next DSSP item
-                  const p = i > 0 ? values[i - 1] : undefined;
-                  const n = i < values.length ? values[i + 1] : undefined;
-                  // Case previous is not strand, then current is first
-                  if (!strand(p))
-                    return '<i class="dssp dssp-strand-start"></i>';
-                  // Case next is not strand, then current is last
-                  if (!strand(n)) return '<i class="dssp dssp-strand-end"></i>';
-                  // Case next is not strand, then
-                  return '<i class="dssp dssp-strand"></i>';
-                }
-                // Handle loops
-                else if (d === 'C' || d === 'S' || d === 'T')
-                  return '<i class="dssp dssp-loop"></i>';
-                // Otherwise, let empty
-                return '';
-              });
+            const foreignObject = createDSSP(group, feature);
+            //   // Get currently rendered elements
+            //   .selectAll(`foreignObject.dssp`)
+            //   // Bind elements to data (loci)
+            //   .data(feature.values, index)
+            //   // Generate parent foreign object
+            //   .join('foreignObject')
+            //   .attr('class', `dssp ${feature.id}`);
+            // // Update content of feature value
+            // foreignObject
+            //   .append('xhtml:div')
+            //   .style('display', 'flex')
+            //   .style('align-items', 'center')
+            //   .style('justify-content', 'center')
+            //   .style('height', '100%')
+            //   .style('width', '100%')
+            //   .style('box-sizing', 'border-box')
+            //   .html((d, i) => {
+            //     // Handle helices
+            //     if (d === 'G' || d === 'H' || d === 'I')
+            //       return '<i class="dssp dssp-helix"></i>';
+            //     // Handle strands
+            //     else if (d === 'E' || d === 'B') {
+            //       // Get feature values
+            //       const { values } = feature;
+            //       // Define function for detecting strand
+            //       const strand = (d: unknown) => d === 'E' || d === 'B';
+            //       // Get previous, next DSSP item
+            //       const p = i > 0 ? values[i - 1] : undefined;
+            //       const n = i < values.length ? values[i + 1] : undefined;
+            //       // Case previous is not strand, then current is first
+            //       if (!strand(p))
+            //         return '<i class="dssp dssp-strand-start"></i>';
+            //       // Case next is not strand, then current is last
+            //       if (!strand(n)) return '<i class="dssp dssp-strand-end"></i>';
+            //       // Case next is not strand, then
+            //       return '<i class="dssp dssp-strand"></i>';
+            //     }
+            //     // Handle loops
+            //     else if (d === 'C' || d === 'S' || d === 'T')
+            //       return '<i class="dssp dssp-loop"></i>';
+            //     // Otherwise, let empty
+            //     return '';
+            //   });
             // Attach loci representation to SVG
             values.set(feature, foreignObject);
           }
@@ -531,40 +645,33 @@ export class DrawService {
             // Update line in scatterplot
             scatter.attr('d', line(xy))
           }
-          else if (feature.type === 'loci') {
+          else if (feature.type === 'loci' || feature.type === 'dssp' || feature.type === 'pins') {
             // Define default locus height
             const height = 24;
+            // Define vertical position
+            const vertical = y('feature-' + feature.id) - height / 2; 
             // Update foreign object
-            (values as FeatureObject<Loci>)
+            const foreignObject = (values as FeatureObject<Loci>)
               // Update position
               .attr('x', (d) => x(d.start - 0.5))
-              .attr('y', y('feature-' + feature.id) - height / 2)
+              .attr('y', vertical)
               // Update size
               .attr('width', (d) => x(d.end + 1) - x(d.start))
-              .attr('height', height)
-              // Update content according to size
-              .select('div')
-              .text((d) => (x(d.end + 1) - x(d.start)) > (REM * 2.5) ? `[${d.start}, ${d.end}]` : '');
-          }
-          else if (feature.type === 'pins') {
-            // Define default pin height
-            const height = 24;
-            // Update foreign object
-            (values as FeatureObject<Pins>)
-              .attr('x', (_, i) => x(i + 0.5))
-              .attr('y', () => y('feature-' + feature.id) - height)
-              .attr('width', (_, i) => x(i) - x(i - 1))
-              .attr('height', height)
-          }
-          else if (feature.type === 'dssp') {
-            // Dfeine default height of DSSP value
-            const height = 24;
-            // Update foreign object
-            (values as FeatureObject<DSSP>)
-              .attr('x', (_, i) => x(i + 0.5))
-              .attr('y', () => y('feature-' + feature.id) - height / 2)
-              .attr('width', (_, i) => x(i) - x(i - 1))
-              .attr('height', height)
+              .attr('height', height);
+            // Case feature is loci
+            if (feature.type === 'loci') {
+              // Then, check content size
+              foreignObject
+                // Update content according to size
+                .select('div.foreground')
+                .text((d) => (x(d.end + 1) - x(d.start)) > (REM * 2.5) ? `[${d.start}, ${d.end}]` : '');
+            }
+            // Case feature is pins
+            else if (feature.type === 'pins') {
+              // Update vertical positioning
+              foreignObject
+                .attr('y', vertical - height / 2);
+            }
           }
         });
       }),

@@ -7,19 +7,19 @@ import { Component } from '@angular/core';
 
 // Define example sequence
 // >sp|P05067|A4_HUMAN Amyloid-beta precursor protein OS=Homo sapiens OX=9606 GN=APP PE=1 SV=3
-const P05067 ='MLPGLALLLLAAWTARALEVPTDGNAGLLAEPQIAMFCGRLNMHMNVQNGKWDSDPSGTK' +
-              'TCIDTKEGILQYCQEVYPELQITNVVEANQPVTIQNWCKRGRKQCKTHPHFVIPYRCLVG' +
-              'EFVSDALLVPDKCKFLHQERMDVCETHLHWHTVAKETCSEKSTNLHDYGMLLPCGIDKFR' +
-              'GVEFVCCPLAEESDNVDSADAEEDDSDVWWGGADTDYADGSEDKVVEVAEEEEVAEVEEE' +
-              'EADDDEDDEDGDEVEEEAEEPYEEATERTTSIATTTTTTTESVEEVVREVCSEQAETGPC' +
-              'RAMISRWYFDVTEGKCAPFFYGGCGGNRNNFDTEEYCMAVCGSAMSQSLLKTTQEPLARD' +
-              'PVKLPTTAASTPDAVDKYLETPGDENEHAHFQKAKERLEAKHRERMSQVMREWEEAERQA' +
-              'KNLPKADKKAVIQHFQEKVESLEQEAANERQQLVETHMARVEAMLNDRRRLALENYITAL' +
-              'QAVPPRPRHVFNMLKKYVRAEQKDRQHTLKHFEHVRMVDPKKAAQIRSQVMTHLRVIYER' +
-              'MNQSLSLLYNVPAVAEEIQDEVDELLQKEQNYSDDVLANMISEPRISYGNDALMPSLTET' +
-              'KTTVELLPVNGEFSLDDLQPWHSFGADSVPANTENEVEPVDARPAADRGLTTRPGSGLTN' +
-              'IKTEEISEVKMDAEFRHDSGYEVHHQKLVFFAEDVGSNKGAIIGLMVGGVVIATVIVITL' +
-              'VMLKKKQYTSIHHGVVEVDAAVTPEERHLSKMQQNGYENPTYKFFEQMQN';
+const P05067 = 'MLPGLALLLLAAWTARALEVPTDGNAGLLAEPQIAMFCGRLNMHMNVQNGKWDSDPSGTK' +
+  'TCIDTKEGILQYCQEVYPELQITNVVEANQPVTIQNWCKRGRKQCKTHPHFVIPYRCLVG' +
+  'EFVSDALLVPDKCKFLHQERMDVCETHLHWHTVAKETCSEKSTNLHDYGMLLPCGIDKFR' +
+  'GVEFVCCPLAEESDNVDSADAEEDDSDVWWGGADTDYADGSEDKVVEVAEEEEVAEVEEE' +
+  'EADDDEDDEDGDEVEEEAEEPYEEATERTTSIATTTTTTTESVEEVVREVCSEQAETGPC' +
+  'RAMISRWYFDVTEGKCAPFFYGGCGGNRNNFDTEEYCMAVCGSAMSQSLLKTTQEPLARD' +
+  'PVKLPTTAASTPDAVDKYLETPGDENEHAHFQKAKERLEAKHRERMSQVMREWEEAERQA' +
+  'KNLPKADKKAVIQHFQEKVESLEQEAANERQQLVETHMARVEAMLNDRRRLALENYITAL' +
+  'QAVPPRPRHVFNMLKKYVRAEQKDRQHTLKHFEHVRMVDPKKAAQIRSQVMTHLRVIYER' +
+  'MNQSLSLLYNVPAVAEEIQDEVDELLQKEQNYSDDVLANMISEPRISYGNDALMPSLTET' +
+  'KTTVELLPVNGEFSLDDLQPWHSFGADSVPANTENEVEPVDARPAADRGLTTRPGSGLTN' +
+  'IKTEEISEVKMDAEFRHDSGYEVHHQKLVFFAEDVGSNKGAIIGLMVGGVVIATVIVITL' +
+  'VMLKKKQYTSIHHGVVEVDAAVTPEERHLSKMQQNGYENPTYKFFEQMQN';
 
 @Component({
   selector: 'app-root',
@@ -31,7 +31,7 @@ const P05067 ='MLPGLALLLLAAWTARALEVPTDGNAGLLAEPQIAMFCGRLNMHMNVQNGKWDSDPSGTK' +
 export class AppComponent {
   // TODO Define demo title
   title = 'demo-showcase';
-  
+
   // // TODO Define source protein (structure viewer)
   // public readonly source = {
   //   // Define path to .cif file
@@ -57,11 +57,11 @@ export class AppComponent {
 
   // Define features (features viewer)
   public readonly features = [
-    { id: 0, type: 'continuous' as const, values: this.sequence.map(() => Math.random())},
-    { id: 1, type: 'loci' as const, values: [{ start: 1, end: 3 }, { start: 5, end: 6 }] },
-    { id: 2, type: 'pins' as const, values: [ true, true, false, true, false, false, true ], parent: 1 },
-    // { type: 'dssp' as const, values: ['H', 'H', '-', 'E', 'E', 'E', '-'] as Array<'H' | 'E' | '-'>},
-    { id: 3, type: 'loci' as const, values: [{ start: 10, end: 20 }, { start: 30, end: 70 }], parent: 1 },
-    { id: 4, type: 'loci' as const, values: [{ start: 100, end: 300}] }
+    { id: 0, type: 'continuous' as const, color: 'blue', values: this.sequence.map(() => Math.random()), parent: undefined },
+    { id: 1, type: 'loci' as const, color: 'red', values: [{ start: 1, end: 3 }, { start: 5, end: 6 }], parent: undefined },
+    { id: 2, type: 'pins' as const, color: 'green', values: [{ start: 5 }, { start: 100, color: 'blue' }, { start: 400, color: 'red' }], parent: 1 },
+    { id: 3, type: 'loci' as const, color: 'orange', values: [{ start: 10, end: 20 }, { start: 30, end: 70 }], parent: 1 },
+    { id: 4, type: 'loci' as const, color: 'purple', values: [{ start: 100, end: 300 }], parent: undefined },
+    { id: 5, type: 'dssp' as const, color: 'black', values: [{ start: 30, end: 90, code: 'H' as const, color: 'yellow' }, { start: 120, end: 300, code: 'E' as const, color: 'purple' }], parent: undefined },
   ];
 }

@@ -1,8 +1,11 @@
 import Feature from "./feature";
 
 export interface Locus<T = number> { 
-    start: T; 
-    end: T 
+  // Define start, end position  
+  start: T; 
+  end: T;
+  // Define color of loci
+  color?: string; 
 }
 
 export default interface Loci extends Feature<Locus> {

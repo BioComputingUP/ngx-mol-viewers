@@ -1,0 +1,29 @@
+// Style generic locus feature
+foreignObject.dssp {
+    // Style foreground (visible)
+    div.foreground {
+        // Define positioning
+        position: relative;
+        // Define visualization
+        display: flex;
+        height: 100%;
+        width: 100%;
+        // Style content
+        justify-content: center;
+        align-items: end;
+        // Define border
+        box-sizing: border-box;
+    }
+    // Style DSSP helix icon
+    i.dssp.dssp-helix {
+        background: url('../assets/dssp-helix.svg');
+        background-position:center center;
+        background-size: 100% 48px;
+    }
+    // Style DSSP strand icon
+    i.dssp.dssp-strand {
+        background: url('../assets/dssp-strand-end.svg');
+        background-position:center center;
+        background-size: 100% 48px;
+    }
+}
