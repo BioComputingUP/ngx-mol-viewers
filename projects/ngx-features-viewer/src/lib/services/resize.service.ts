@@ -1,4 +1,4 @@
-import { Observable, ReplaySubject, debounceTime, distinctUntilChanged, map, startWith } from 'rxjs';
+import { Observable, ReplaySubject, debounceTime, distinctUntilChanged, map, startWith, tap } from 'rxjs';
 import { Injectable } from '@angular/core';
 // Custom providers
 import { InitializeService, Margin } from './initialize.service';
@@ -112,7 +112,7 @@ export class ResizeService {
         // Unpack horizontal, vertical axis
         const { x, y } = this.axes;
         // Translate horizontal axis
-        x.attr('transform', `translate(0, ${this.height - this.margin.bottom - this.margin.top})`);
+        x.attr('transform', `translate(0, ${this.height - this.margin.top})`);
         // Translate vertical axis
         y.attr('transform', `translate(${this.margin.left}, 0)`);
       }),
@@ -136,21 +136,21 @@ export class ResizeService {
         const domain = y.domain();
         // Get top, bottom positions
         const top = this.margin.top;
-        const bottom = this.height - this.margin.bottom - this.margin.top;
-        // Define row height
-        const height = bottom / (domain.length - 1);
-        // Define range by looping into domain
-        const range = domain.map((id, i) => {
-          // Handle first tick
-          if (id === 'first') return top; 
-          // Hanlde last tick
-          if (id === 'last') return bottom;
-          // Handle any other tick
-          return (i * height);
+        const bottom = this.height - this.margin.bottom;
+        // Define outer height (drawable area)
+        const outer = bottom - top;
+        // Define inner height (axis tick)
+        const inner = outer / domain.length;
+        // Compute range
+        const range = domain.map((_, i) => {
+          // Define position of y axis tick
+          return top + (inner / 2) + (i * inner);
         });
         // Update vertical axis range
         y.range(range);
       }),
+      // TODO Remove this
+      tap(() => console.log('Resized!')),
     );
   }
 }

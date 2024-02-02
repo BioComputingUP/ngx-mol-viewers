@@ -1,4 +1,4 @@
-import { Observable, ReplaySubject, map, shareReplay, startWith, switchMap } from 'rxjs';
+import { Observable, ReplaySubject, debounceTime, map, shareReplay, startWith, switchMap, tap } from 'rxjs';
 import { Injectable } from '@angular/core';
 // Custom providers
 import { Scale, InitializeService } from './initialize.service';
@@ -35,12 +35,14 @@ export class ZoomService {
         y: this.initService.scale.y.copy()
       }),
       // Cache results
-      shareReplay(),
+      shareReplay(1),
     );
     // Define pipeline for intercepting zoom event
     const scaled$: Observable<Scale> = initialized$.pipe(
       // Subscribe to zoom event
       switchMap(() => this.zoom$),
+      // Set debounce time
+      debounceTime(10),
       // Transform original scale
       map((event) => {
         // Get current horizontal, vertical scale
@@ -54,8 +56,6 @@ export class ZoomService {
       }),
       // Start with current scale
       startWith(this.initService.scale),
-      // // Cache results
-      // shareReplay(),
     );
     // Always subscribe to same scale
     this.zoomed$ = scaled$.pipe(
@@ -70,6 +70,8 @@ export class ZoomService {
         // Update horizontal axis
         axes.x.call(d3.axisBottom(scale.x));
       }),
+      // TODO Remove this
+      tap(() => console.log('Zoomed!')),
     );
   }
 

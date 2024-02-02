@@ -92,21 +92,35 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, OnChanges, OnD
     public drawService: DrawService,
   ) {
     // TODO Remove this
-    this.margin = { top: 24, right: 64, bottom: 24, left: 128 };
+    this.margin = { top: 24, right: 24, bottom: 24, left: 128 };
     // TODO Update SVG according to inputs
     this.update$ = this.initService.initialized$.pipe(
       // Initialize callback on zoom event
-      tap(() => this.zoom.on('zoom', (event) => { this.onFeaturesZoom(event) })),
-      // // Initialize callback on label click
-      // tap(() => this.labels.on('click', (event, feature) => { this.onLabelClick(feature) }))
+      tap(() => {
+        // Get zoom event handler
+        this.zoom
+          // Define zoom extent
+          .scaleExtent([1, 100])
+          // Define zoom callback
+          .on('zoom', (event) => { this.onFeaturesZoom(event); })
+      }),
       // TODO Initialize drawings
       switchMap(() => this.drawService.draw$),
+      // Initialize callback on label click
+      tap(() => this.labels.on('click', (_, feature) => { this.onLabelClick(feature) })),
       // Subscribe to resize event (set width, height)
       switchMap(() => this.resizeService.resized$),
-      // tap(() => console.log('Resized', this.initService.scale)),
+      // // On each resize, set zoom borders
+      // tap(() => {
+      //   // Get world-start (top-left) position
+      //   const start: [number, number] = [this.margin.left, this.margin.top];
+      //   // Get world-end (bottom-right) position
+      //   const end: [number, number] = [this.width - this.margin.right, this.height - this.margin.bottom];
+      //   // Update limit on translation
+      //   this.zoom.translateExtent([start, end]);
+      // }),
       // Subscribe to zoom event
       switchMap(() => this.zoomService.zoomed$),
-      // tap(() => console.log('Zoomed', this.initService.scale)),
       // Finally, update representation
       switchMap(() => this.drawService.drawn$),
     );
@@ -150,16 +164,16 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, OnChanges, OnD
     this.resizeService.resize$.next(event);
   }
 
-  // onLabelClick(_feature: { id?: number }) {
-  //   // // Get label element
-  //   // const label = event.target as HTMLDivElement;
-  //   // Toggle active flag on current feature
-  //   const feature = this.features[_feature.id!];
-  //   // Invert current active sign
-  //   feature.active = !feature.active;
-  //   // Emit updated features
-  //   this.features$.next([...this.features]);
-  // }
+  onLabelClick(_feature: { id?: number }) {
+    // // Get label element
+    // const label = event.target as HTMLDivElement;
+    // Toggle active flag on current feature
+    const feature = this.features[_feature.id!];
+    // Invert current active sign
+    feature.active = !feature.active;
+    // Emit updated features
+    this.features$.next([...this.features]);
+  }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onFeaturesZoom(event: any) {
