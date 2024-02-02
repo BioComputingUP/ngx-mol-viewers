@@ -59,14 +59,14 @@ export class ZoomService {
     );
     // Always subscribe to same scale
     this.zoomed$ = scaled$.pipe(
-      // Update axes according to scale
+      // Update horizontal axis according to scale
       map(() => {
         // Get current axes
         const axes = this.initService.axes;
         // Get initial scale
         const scale = this.initService.scale;
-        // Update vertical axis
-        axes.y.call(d3.axisLeft(scale.y));
+        // // Update vertical axis
+        // axes.y.call(d3.axisLeft(scale.y));
         // Update horizontal axis
         axes.x.call(d3.axisBottom(scale.x));
       }),

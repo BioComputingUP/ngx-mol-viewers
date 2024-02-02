@@ -1,4 +1,4 @@
-import { Observable, ReplaySubject, map, shareReplay, switchMap, tap } from 'rxjs';
+import { Observable, ReplaySubject, map, shareReplay, switchMap, tap, of } from 'rxjs';
 import { Injectable } from '@angular/core';
 // Custom providers
 import { InitializeService } from './initialize.service';
@@ -10,6 +10,7 @@ import Loci from '../features/loci';
 // D3 library
 import * as d3 from 'd3';
 import { Features } from '../ngx-features-viewer.component';
+import { ResizeService } from './resize.service';
 
 export type Sequence = string[];
 
@@ -59,6 +60,12 @@ export const CINEMA = {
 // https://stackoverflow.com/questions/36532307/rem-px-in-javascript
 export const REM = parseFloat(getComputedStyle(document.documentElement).fontSize);
 
+// Define function for extracting identifier out of unknown object
+export const identity = (f: unknown) => (f as { id: any }).id;
+
+// Define function for extracting index out of unknown object
+export const index = (f: unknown, i: number) => i;
+
 @Injectable({
   providedIn: 'root'
 })
@@ -101,7 +108,7 @@ export class DrawService {
    * This pipeline initialize features within the drawable aread
    * of the main SVG container, defined by the `draw` property.
    */
-  public readonly draw$: Observable<void>;
+  public readonly draw$: Observable<unknown>;
 
   /** Update features
    * 
@@ -109,12 +116,13 @@ export class DrawService {
    * drawable area, according to given scale (the one produced 
    * after the zoom event took place)
    */
-  public readonly drawn$: Observable<void>;
+  public readonly drawn$: Observable<unknown>;
 
   // public readonly label$ = new EventEmitter<Feature>();
 
   constructor(
     private initService: InitializeService,
+    private resizeService: ResizeService,
   ) {
     // Define draw initialization
     this.draw$ = this.sequence$.pipe(
@@ -136,7 +144,7 @@ export class DrawService {
           // Select previous residues group
           .selectAll('g.sequence')
           // Bind residues group to sequence
-          .data([sequence])
+          .data<Sequence>([sequence])
           // Create current residues group
           .join('g')
           .attr('class', 'sequence');
@@ -176,11 +184,11 @@ export class DrawService {
       // Switch to features emission
       switchMap(() => this.features$),
       // Filter out inactive features
-      map((features) => features.filter((child) => {
+      map((features) => features.filter((feature) => {
         // Case parent identifier is defined
-        if (child.parent !== undefined) {
+        if (feature.parent !== undefined) {
           // Then, get parent feeature
-          const parent = features[child.parent];
+          const parent = features[feature.parent];
           // Check whether parent feature is active or not
           return parent.active === true;
         }
@@ -188,35 +196,44 @@ export class DrawService {
         return true;
       })),
       // Update vertical scale domain
-      tap((features) => {
-        // Get vertical scale
-        const { y } = this.scale;
-        // Generate vertical domain for features
-        const domain = features.map(({ id }) => 'feature-' + id);
-        // Update vertical scale according to features and sequence
-        y.domain(['sequence', ...domain]);
-      }),
+      tap((features) => this.updateDomainY(features)),
+      // Update vertical scale range
+      tap((features) => this.updateRangeY(features)),
       // Draw labels, without setting position but saving references
-      tap((features) => {
+      tap((features_) => {
         // Define labels group
         const group = this.initService.svg
           // Select previous labels group
           .selectAll('g.labels')
           // Bind group to current features
-          .data([features])
+          .data([features_])
           // Create current labels group
           .join('g')
           .attr('class', 'labels');
+        // Generate features list
+        const features = [
+          // First, append sequence
+          { id: 'sequence', active: false, parent: undefined },
+          // Then, append all other features
+          ...features_
+        ] as Feature[];
         // Add labels to their group
         this.labels = group
           // Select previous labels (foreignObjects)
           .selectAll('foreignObject.label')
           // Bind label object to associated data
-          .data([{ id: 'sequence', active: false }, ...features.map((f) => ({ ...f }))] as Features)
+          .data<Feature>(features, identity)
           // Create current labels (foreignObject)
           .join('foreignObject')
           .attr('id', d => 'label-' + d.id!)
-          .attr('class', d => `label ${d.active ? 'active' : ''}`);
+          .attr('class', d => `label ${d.active ? 'active' : ''}`)
+          // TODO Remove this
+          .attr('x', function (d) {
+            const label = d3.select(this);
+            console.log(`Feature ${d.id}, x = ${label.attr('x')}, y = ${label.attr('y')}`)
+            console.log('x', label.attr('x'));
+            return 0;
+          });
         // Append inner div to  each label
         this.labels.append('xhtml:div')
           // Append actual label
@@ -246,13 +263,11 @@ export class DrawService {
           // Select previous groups
           .selectAll('g.feature')
           // Bind each feature group (SVG) to a feature instance
-          .data(features)
+          .data(features, identity)
           // Create current groups
           .join('g')
           .attr('id', (d) => `feature-${d.id}`)
           .attr('class', 'feature');
-        // TODO Remove this
-        const { x, y } = this.scale!, height = this.height, margin = this.margin;
         // For each feature group, generate feature representation
         this.features.each(function (feature) {
           // Define group
@@ -264,7 +279,7 @@ export class DrawService {
               // Find previous path
               .selectAll(`path.continuous`)
               // Bind to feature object
-              .data([feature])
+              .data([feature], identity)
               // Generate updated path
               .join('path')
               // Generate path
@@ -273,8 +288,7 @@ export class DrawService {
               .attr('fill-opacity', 0.3)
               .attr('stroke', 'steelblue')
               .attr('stroke-opacity', 1)
-              .attr('stroke-width', 1.5)
-            // .attr('d', line(xy));
+              .attr('stroke-width', 1.5);
             // Store scatterplot
             values.set(feature, scatter);
             // // Initialize markers representation
@@ -307,7 +321,7 @@ export class DrawService {
               // Get currently rendered elements
               .selectAll(`foreignObject.locus`)
               // Bind elements to data (loci)
-              .data(feature.values)
+              .data(feature.values, index)
               // Generate parent foreign object
               .join('foreignObject')
               .attr('class', `locus ${feature.id}`);
@@ -323,10 +337,6 @@ export class DrawService {
               .style('box-sizing', 'border-box')
               .style('border-radius', '.375rem')
               .style('border', '1px solid black');
-            // Update content according to size
-            foreignObject
-              .select('div')
-              .text((d) => (x(d.end + 1) - x(d.start)) > (REM * 2.5) ? `[${d.start}, ${d.end}]` : '');  
             // Attach loci representation to SVG
             values.set(feature, foreignObject);
           }
@@ -337,7 +347,7 @@ export class DrawService {
               // Get currently rendered elements
               .selectAll(`foreignObject.pin`)
               // Bind elements to data (loci)
-              .data(feature.values)
+              .data(feature.values, index)
               // Generate parent foreign object
               .join('foreignObject')
               .attr('class', `pin ${feature.id}`)
@@ -361,7 +371,7 @@ export class DrawService {
               // Get currently rendered elements
               .selectAll(`foreignObject.dssp`)
               // Bind elements to data (loci)
-              .data(feature.values)
+              .data(feature.values, index)
               // Generate parent foreign object
               .join('foreignObject')
               .attr('class', `dssp ${feature.id}`);
@@ -405,8 +415,6 @@ export class DrawService {
             values.set(feature, foreignObject);
           }
         });
-        // TODO Remove this
-        console.log('Draw!');
       }),
       // Cache results
       // NOTE This is required to avoid re-drawing everything on each resize/zoom event
@@ -455,7 +463,7 @@ export class DrawService {
         // Draw a line for each feature
         this.initService.grid.y
           .selectAll('line')
-          .data(y.domain())
+          .data(y.domain(), index)
           .join('line')
           // Set start, end positions
           .attr('x1', this.margin.left)
@@ -478,7 +486,9 @@ export class DrawService {
           .attr('x', 0)
           // Update sizes
           .attr('height', inner)
-          .attr('width', margin.left)
+          .attr('width', margin.left);
+        // TODO
+        console.log('Vaffanculo');
       }),
       // Move feature values in correct position
       map(() => {
@@ -561,5 +571,21 @@ export class DrawService {
       // TODO Remove this
       tap(() => console.log('Re-drawn!')),
     );
+  }
+
+  public updateDomainY(features: Features): void {
+    // Get vertical scale
+    const { y } = this.scale;
+    // // Get current axes
+    // const axes = this.initService.axes;
+    // Generate vertical domain for features
+    const domain = features.map(({ id }) => 'feature-' + id);
+    // Update vertical scale according to features and sequence
+    y.domain(['sequence', ...domain]);
+  }
+
+  public updateRangeY(features: Features): void {
+    // Just call the same event called by resize event
+    this.resizeService.updateRangeY();
   }
 }
