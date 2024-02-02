@@ -1,8 +1,9 @@
+// Import custom components
+import { NgxFeaturesViewerComponent } from '@ngx-features-viewer';
 // import { NgxStructureViewerComponent } from 'ngx-structure-viewer';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { Component } from '@angular/core';
-import { NgxFeaturesViewerComponent } from '../../../ngx-features-viewer/src/public-api';
 
 // Define example sequence
 // >sp|P05067|A4_HUMAN Amyloid-beta precursor protein OS=Homo sapiens OX=9606 GN=APP PE=1 SV=3
@@ -60,6 +61,7 @@ export class AppComponent {
     { id: 1, type: 'loci' as const, values: [{ start: 1, end: 3 }, { start: 5, end: 6 }] },
     { id: 2, type: 'pins' as const, values: [ true, true, false, true, false, false, true ], parent: 1 },
     // { type: 'dssp' as const, values: ['H', 'H', '-', 'E', 'E', 'E', '-'] as Array<'H' | 'E' | '-'>},
-    { id: 3, type: 'loci' as const, values: [{ start: 1, end: 2 }, { start: 3, end: 3 }], parent: 1 },
+    { id: 3, type: 'loci' as const, values: [{ start: 10, end: 20 }, { start: 30, end: 70 }], parent: 1 },
+    { id: 4, type: 'loci' as const, values: [{ start: 100, end: 300}] }
   ];
 }

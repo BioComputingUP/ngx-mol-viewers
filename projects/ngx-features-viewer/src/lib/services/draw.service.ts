@@ -118,8 +118,8 @@ export class DrawService {
   ) {
     // Define draw initialization
     this.draw$ = this.sequence$.pipe(
-       // Update horizontal scale domain
-       tap((sequence) => {
+      // Update horizontal scale domain
+      tap((sequence) => {
         // Get horizontal scale
         const { x } = this.scale;
         // Generate horizontal domain for sequence
@@ -172,7 +172,7 @@ export class DrawService {
           .style('color', 'black');
       }),
       // Cache result
-      shareReplay(),
+      shareReplay(1),
       // Switch to features emission
       switchMap(() => this.features$),
       // Filter out inactive features
@@ -194,17 +194,10 @@ export class DrawService {
         // Generate vertical domain for features
         const domain = features.map(({ id }) => 'feature-' + id);
         // Update vertical scale according to features and sequence
-        y.domain(['first', 'sequence', ...domain, 'last']);
+        y.domain(['sequence', ...domain]);
       }),
       // Draw labels, without setting position but saving references
       tap((features) => {
-        // // Get SVG insctance
-        // const { svg } = this.initService;
-        // // Get horizontal, vertical positioning
-        // const x = 0, y = (d: string) => this.margin.top + this.scaled.y(d);
-        // // TODO Define height, width
-        // const height = (this.height - this.margin.top - this.margin.bottom) / (features.length + 1);
-        // const width = this.margin.left;
         // Define labels group
         const group = this.initService.svg
           // Select previous labels group
@@ -219,7 +212,7 @@ export class DrawService {
           // Select previous labels (foreignObjects)
           .selectAll('foreignObject.label')
           // Bind label object to associated data
-          .data([{ id: 'sequence', active: false }, ...features] as Features)
+          .data([{ id: 'sequence', active: false }, ...features.map((f) => ({ ...f }))] as Features)
           // Create current labels (foreignObject)
           .join('foreignObject')
           .attr('id', d => 'label-' + d.id!)
@@ -236,8 +229,6 @@ export class DrawService {
           .style('height', '100%')
           .style('box-sizing', 'border-box')
           .style('border', '1px solid black')
-          // // Define event on cick
-          // .on('click', (e, d) => this.onLabelClick(e, d))
           // Define html with caret
           .html((d) => {
             // Define feature identifier
@@ -260,16 +251,12 @@ export class DrawService {
           .join('g')
           .attr('id', (d) => `feature-${d.id}`)
           .attr('class', 'feature');
-        // // Get zoomable scale
-        // const scale = this.scaled, margin = this.margin;
-        // // Define feature height, using the height of the sequence feature (as it is the first one)
-        // const height = scale.y('sequence');
+        // TODO Remove this
+        const { x, y } = this.scale!, height = this.height, margin = this.margin;
         // For each feature group, generate feature representation
         this.features.each(function (feature) {
           // Define group
           const group = d3.select(this);
-          // // Define feature and its identifier
-          // const feature = { ...features[i], id: 'feature-' + i };
           // TODO Handle continuous features
           if (feature.type === 'continuous') {
             // Initialize scatterplot representation
@@ -315,11 +302,6 @@ export class DrawService {
           }
           // Handle loci features
           else if (feature.type === 'loci') {
-            // // Define loci height
-            // const height = 24;
-            // // Define x, y scales
-            // const x = (d: number) => scale.x(d);
-            // const y = margin.top + scale.y(feature.id) - height / 2;
             // Define locus container
             const foreignObject = group
               // Get currently rendered elements
@@ -328,11 +310,7 @@ export class DrawService {
               .data(feature.values)
               // Generate parent foreign object
               .join('foreignObject')
-              .attr('class', `locus ${feature.id}`)
-            // .attr('x', (d) => x(d.start - 0.5))
-            // .attr('y', y)
-            // .attr('width', (d) => x(d.end + 1) - x(d.start))
-            // .attr('height', height);
+              .attr('class', `locus ${feature.id}`);
             // Define locus content
             foreignObject
               // Generate child HTML div
@@ -345,16 +323,15 @@ export class DrawService {
               .style('box-sizing', 'border-box')
               .style('border-radius', '.375rem')
               .style('border', '1px solid black');
+            // Update content according to size
+            foreignObject
+              .select('div')
+              .text((d) => (x(d.end + 1) - x(d.start)) > (REM * 2.5) ? `[${d.start}, ${d.end}]` : '');  
             // Attach loci representation to SVG
             values.set(feature, foreignObject);
           }
           // Handle pins features
           else if (feature.type === 'pins') {
-            // // Define loci height
-            // const height = 24;
-            // // Define x, y scales
-            // const x = (d: number) => scale.x(d);
-            // const y = margin.top + scale.y(feature.id) - height;
             // Define pin container
             const foreignObject = group
               // Get currently rendered elements
@@ -363,7 +340,7 @@ export class DrawService {
               .data(feature.values)
               // Generate parent foreign object
               .join('foreignObject')
-              .attr('class', `pin ${feature.id}`);
+              .attr('class', `pin ${feature.id}`)
             // Update pin content
             foreignObject
               .append('xhtml:div')
@@ -373,19 +350,12 @@ export class DrawService {
               .style('height', '100%')
               .style('width', '100%')
               .style('box-sizing', 'border-box')
-              // .style('border-radius', '.375rem')
-              // .style('border', '1px solid black')
               .html((d) => (d ? '<i class="bi bi-pin"></i>' : ''));
             // Store pin container
             values.set(feature, foreignObject);
           }
           // TODO Handle DSSP features
           else if (feature.type === 'dssp') {
-            // // Define loci height
-            // const height = 24;
-            // // Define x, y scales
-            // const x = (d: number) => scale.x(d);
-            // const y = margin.top + scale.y(feature.id) - height / 2;
             // Define container for feature value (foreign object)
             const foreignObject = group
               // Get currently rendered elements
@@ -435,8 +405,11 @@ export class DrawService {
             values.set(feature, foreignObject);
           }
         });
+        // TODO Remove this
+        console.log('Draw!');
       }),
-      // Cache result for multiple subscriptions
+      // Cache results
+      // NOTE This is required to avoid re-drawing everything on each resize/zoom event
       shareReplay(1),
     );
     // Define draw update
@@ -462,13 +435,33 @@ export class DrawService {
           // Style outer foreignObject
           .select('foreignObject.name')
           .attr('x', (_, i) => x(i + 0.5))
-          .attr('y', y('sequence') + 24 / 2)
+          .attr('y', y('sequence') - (24 / 2))
           .attr('width', () => width)
           .attr('height', 24)
           // Style inner div
           .select('div')
+          .style('display', 'flex')
+          .style('justify-content', 'center')
+          .style('align-content', 'center')
+          .style('width', '100%')
+          .style('height', '100%')
           // Hide if width is not sufficient
           .text((d) => width > (0.75 * REM) ? d : ' ');
+      }),
+      // Move grid in correct position
+      map(() => {
+        // Get vertical scale
+        const y = this.scale.y;
+        // Draw a line for each feature
+        this.initService.grid.y
+          .selectAll('line')
+          .data(y.domain())
+          .join('line')
+          // Set start, end positions
+          .attr('x1', this.margin.left)
+          .attr('x2', this.width - this.margin.right)
+          .attr('y1', (d) => y(d))
+          .attr('y2', (d) => y(d));
       }),
       // Move labels in correct position
       map(() => {
@@ -476,14 +469,12 @@ export class DrawService {
         const { y } = this.scale;
         // Get height, width, margins
         const margin = this.margin;
-        // Define outer height (SVG)
-        const outer = this.height;
         // Define inner height (row)
-        const inner = (outer - margin.top - margin.bottom) / (y.domain().length - 1)
+        const inner = (y('sequence') - margin.top) * 2;
         // Update each label
         this.labels
           // Update positions
-          .attr('y', d => margin.top + y((d.id + '' === 'sequence') ? ('' + d.id) : ('feature-' + d.id)) - inner / 2)
+          .attr('y', d => y((d.id + '' === 'sequence') ? ('' + d.id) : ('feature-' + d.id)) - inner / 2)
           .attr('x', 0)
           // Update sizes
           .attr('height', inner)
@@ -493,12 +484,12 @@ export class DrawService {
       map(() => {
         // Get feature values
         const _values = this.values;
-        // Get height, width, margins
-        const margin = this.margin;
-        // Get scale (x, y axis)
-        const { x, y } = this.scale!;
+        // Get scale (x, y axis) and margin (top, bottom, left, right)
+        const { x, y } = this.scale!, margin = this.margin;
         // Loop through each feature
-        this.features.each((feature) => {
+        this.features.each(function (feature) {
+          // Get current group
+          const group = d3.select(this);
           // Get feature values
           const values = _values.get(feature);
           // Ensure that values are defined
@@ -506,7 +497,7 @@ export class DrawService {
           // Then, update feature values according to feature type
           if (feature.type === 'continuous') {
             // Define feature height, using the height of the sequence feature (as it is the first one)
-            const height = y('sequence');
+            const height = y('sequence') - margin.top;
             // Get (scatterplot) from feature
             const scatter = values as FeatureObject<Continuous>;
             // Get number of values
@@ -522,11 +513,11 @@ export class DrawService {
             // Cast index, value to x, y coordinates
             xy = [...xy, ...feature.values.map((y, x) => [x + 1, (y - min) / (max - min)] as [number, number])];
             // Define last value
-            xy = [...xy, [n - 0.5, 0]];
+            xy = [...xy, [n + 0.5, 0]];
             // Initialize line accoridng to current feature
             const line = d3.line<[number, number]>().curve(d3.curveMonotoneX)
               .x((d) => x(d[0]))
-              .y((d) => margin.top + y('feature-' + feature.id) - d[1] * height);
+              .y((d) => y('feature-' + feature.id) - d[1] * height);
             // Update line in scatterplot
             scatter.attr('d', line(xy))
           }
@@ -537,7 +528,7 @@ export class DrawService {
             (values as FeatureObject<Loci>)
               // Update position
               .attr('x', (d) => x(d.start - 0.5))
-              .attr('y', margin.top + y('feature-' + feature.id) - height / 2)
+              .attr('y', y('feature-' + feature.id) - height / 2)
               // Update size
               .attr('width', (d) => x(d.end + 1) - x(d.start))
               .attr('height', height)
@@ -551,7 +542,7 @@ export class DrawService {
             // Update foreign object
             (values as FeatureObject<Pins>)
               .attr('x', (_, i) => x(i + 0.5))
-              .attr('y', () => margin.top + y('feature-' + feature.id) - height)
+              .attr('y', () => y('feature-' + feature.id) - height)
               .attr('width', (_, i) => x(i) - x(i - 1))
               .attr('height', height)
           }
@@ -561,18 +552,14 @@ export class DrawService {
             // Update foreign object
             (values as FeatureObject<DSSP>)
               .attr('x', (_, i) => x(i + 0.5))
-              .attr('y', () => margin.top + y('feature-' + feature.id) - height / 2)
+              .attr('y', () => y('feature-' + feature.id) - height / 2)
               .attr('width', (_, i) => x(i) - x(i - 1))
               .attr('height', height)
           }
         });
       }),
+      // TODO Remove this
+      tap(() => console.log('Re-drawn!')),
     );
   }
-
-  // // Define label click callback
-  // private onLabelClick(event: MouseEvent, feature: Feature) {
-  //   // Emit label selection event
-  //   this.label$.emit(feature);
-  // }
 }

@@ -11,13 +11,14 @@
     "noFallthroughCasesInSwitch": true,
     "esModuleInterop": true,
     "paths": {
-      "ngx-features-viewer": [
-        "./dist/ngx-features-viewer",
-        "./dist/ngx-features-viewer"
-      ],
-      "ngx-structure-viewer": [
-        "./dist/ngx-structure-viewer"
-      ]
+      "@ngx-structure-viewer": [ "./projects/ngx-structure-viewer/src/public-api" ],
+      "@ngx-features-viewer": [ "./projects/ngx-features-viewer/src/public-api" ],
+      // "ngx-features-viewer": [
+      //   "./dist/ngx-features-viewer",
+      // ],
+      // "ngx-structure-viewer": [
+      //   "./dist/ngx-structure-viewer"
+      // ]
     },
     "sourceMap": true,
     "declaration": false,
