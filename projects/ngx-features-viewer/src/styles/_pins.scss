@@ -1,0 +1,22 @@
+// Style generic locus feature
+foreignObject.pin {
+    // Style foreground (visible)
+    div.foreground {
+        // Define positioning
+        position: relative;
+        // Define visualization
+        display: flex;
+        height: 100%;
+        width: 100%;
+        // Style content
+        justify-content: center;
+        align-items: end;
+        // Define border
+        box-sizing: border-box;
+        // border-radius: inherit;
+        // border-width: 1px;
+        // border-style: solid;
+        // // Set fully visible
+        // opacity: 1;
+    }
+}
