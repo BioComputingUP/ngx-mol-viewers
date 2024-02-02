@@ -2,6 +2,8 @@ import { Observable, ReplaySubject, debounceTime, distinctUntilChanged, map, sta
 import { Injectable } from '@angular/core';
 // Custom providers
 import { InitializeService, Margin } from './initialize.service';
+// D3 library
+import * as d3 from 'd3';
 
 
 export interface Size {
@@ -74,83 +76,88 @@ export class ResizeService {
   ) {
     // Trigger resize event
     const resize$: Observable<void> = this.resize$.pipe(
-      // Map to void
-      map(() => void 0),
-      // Emit initially
-      startWith(void 0)
-    );
-    // Define SVG size from size of parent HTML DIV
-    const size$ = resize$.pipe(
       // Get width, height from root HTML div
       map(() => ({ width: this.width, height: this.height })),
       // Add some delay, avoid flooding of resize events
       debounceTime(100),
       // Check that width value actually changed
       distinctUntilChanged((p: Size, c: Size) => p.width === c.width),
+      // Map to void
+      map(() => void 0),
+      // Emit initially
+      startWith(void 0),
     );
     // Define resize pipeline
-    this.resized$ = size$.pipe(
+    this.resized$ = resize$.pipe(
       // 1. Resize root SVG element
-      map(() => {
-        this.svg
-          .attr('height', this.height)
-          .attr('width', this.width);
-      }),
+      map(() => this.updateRoot()),
       // 2. Resize inner SVG containers
-      map(() => {
-        // Initialize horizontal, vertical size
-        const size = { width: 0, height: 0 };
-        // Update horizontal, vertical size
-        size.height = this.height - this.margin.top - this.margin.bottom;
-        size.width = this.width - this.margin.left - this.margin.right;
-        // Resize inner clip container
-        resize(this.initService.clip, size, this.margin);
-        resize(this.initService.events, size, this.margin);
-      }),
+      map(() => this.updateDraw()),
       // 3. Update horizontal, vertical axes positions
-      map(() => {
-        // Unpack horizontal, vertical axis
-        const { x, y } = this.axes;
-        // Translate horizontal axis
-        x.attr('transform', `translate(0, ${this.height - this.margin.top})`);
-        // Translate vertical axis
-        y.attr('transform', `translate(${this.margin.left}, 0)`);
-      }),
+      map(() => this.updateAxes()),
       // 4.1 Update horizontal range
-      map(() => {
-        // Get horizontal scale
-        const x = this.scale.x;
-        // Get width of root SVG element
-        const width = this.width;
-        // Get left, right margin of root SVG element
-        const { left, right } = this.margin;
-        // Update range in scale according to horizontal margins
-        x.range([left, width - right]);
-      }),
+      map(() => this.updateRangeX()),
       // 4.2 Update vertical range
-      map(() => {
-        // Get vertical scale
-        const y = this.scale.y;
-        // Get domain, as previously defined in draw pipeline
-        // NOTE It includes start, end empty positions
-        const domain = y.domain();
-        // Get top, bottom positions
-        const top = this.margin.top;
-        const bottom = this.height - this.margin.bottom;
-        // Define outer height (drawable area)
-        const outer = bottom - top;
-        // Define inner height (axis tick)
-        const inner = outer / domain.length;
-        // Compute range
-        const range = domain.map((_, i) => {
-          // Define position of y axis tick
-          return top + (inner / 2) + (i * inner);
-        });
-        // Update vertical axis range
-        y.range(range);
-      }),
+      map(() => this.updateRangeY()),
       // TODO Remove this
       tap(() => console.log('Resized!')),
     );
+  }
+
+  public updateRoot(): void {
+    this.svg.attr('height', this.height).attr('width', this.width);
+  }
+
+  public updateDraw(): void {
+    // Initialize horizontal, vertical size
+    const size = { width: 0, height: 0 };
+    // Update horizontal, vertical size
+    size.height = this.height - this.margin.top - this.margin.bottom;
+    size.width = this.width - this.margin.left - this.margin.right;
+    // Resize inner clip container
+    resize(this.initService.clip, size, this.margin);
+    resize(this.initService.events, size, this.margin);
+  }
+
+  public updateAxes(): void {
+    // Unpack horizontal, vertical axis
+    const { x, y } = this.axes;
+    // Translate horizontal axis
+    x.attr('transform', `translate(0, ${this.height - this.margin.top})`);
+    // Translate vertical axis
+    y.attr('transform', `translate(${this.margin.left}, 0)`);
+  }
+
+  public updateRangeX(): void {
+    // Get horizontal scale
+    const x = this.scale.x;
+    // Get width of root SVG element
+    const width = this.width;
+    // Get left, right margin of root SVG element
+    const { left, right } = this.margin;
+    // Update range in scale according to horizontal margins
+    x.range([left, width - right]);
+  }
+
+  public updateRangeY(): void {
+    // Get vertical scale
+    const y = this.scale.y;
+    // Get domain, as previously defined in draw pipeline
+    // NOTE It includes start, end empty positions
+    const domain = y.domain();
+    // Get top, bottom positions
+    const top = this.margin.top;
+    const bottom = this.height - this.margin.bottom;
+    // Define outer height (drawable area)
+    const outer = bottom - top;
+    // Define inner height (axis tick)
+    const inner = outer / domain.length;
+    // Compute range
+    const range = domain.map((_, i) => {
+      // Define position of y axis tick
+      return top + (inner / 2) + (i * inner);
+    });
+    // Update vertical axis range
+    y.range(range);
   }
 }

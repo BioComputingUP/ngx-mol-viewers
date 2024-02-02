@@ -110,15 +110,6 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, OnChanges, OnD
       tap(() => this.labels.on('click', (_, feature) => { this.onLabelClick(feature) })),
       // Subscribe to resize event (set width, height)
       switchMap(() => this.resizeService.resized$),
-      // // On each resize, set zoom borders
-      // tap(() => {
-      //   // Get world-start (top-left) position
-      //   const start: [number, number] = [this.margin.left, this.margin.top];
-      //   // Get world-end (bottom-right) position
-      //   const end: [number, number] = [this.width - this.margin.right, this.height - this.margin.bottom];
-      //   // Update limit on translation
-      //   this.zoom.translateExtent([start, end]);
-      // }),
       // Subscribe to zoom event
       switchMap(() => this.zoomService.zoomed$),
       // Finally, update representation
