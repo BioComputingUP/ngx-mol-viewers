@@ -143,8 +143,6 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, OnChanges, OnD
   }
 
   ngOnDestroy(): void {
-    // // Unsubscribe from label emission
-    // this._label.unsubscribe();
     // Unsubscribe from update emission
     this._update.unsubscribe();
   }

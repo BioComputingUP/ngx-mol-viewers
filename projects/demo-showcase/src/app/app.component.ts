@@ -62,6 +62,6 @@ export class AppComponent {
     { id: 2, type: 'pins' as const, color: 'green', values: [{ start: 5 }, { start: 100, color: 'blue' }, { start: 400, color: 'red' }], parent: 1 },
     { id: 3, type: 'loci' as const, color: 'orange', values: [{ start: 10, end: 20 }, { start: 30, end: 70 }], parent: 1 },
     { id: 4, type: 'loci' as const, color: 'purple', values: [{ start: 100, end: 300 }], parent: undefined },
-    { id: 5, type: 'dssp' as const, color: 'black', values: [{ start: 30, end: 90, code: 'H' as const, color: 'yellow' }, { start: 120, end: 300, code: 'E' as const, color: 'purple' }], parent: undefined },
+    { id: 5, type: 'dssp' as const, color: 'black', values: [{ start: 30, end: 90, code: 'H' as const, color: 'orange' }, { start: 120, end: 300, code: 'E' as const, color: 'purple' }], parent: undefined },
   ];
 }

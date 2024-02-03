@@ -1,4 +1,4 @@
-import { Observable, ReplaySubject, map, shareReplay, switchMap, tap, of } from 'rxjs';
+import { Observable, ReplaySubject, map, shareReplay, switchMap, tap } from 'rxjs';
 import { Injectable } from '@angular/core';
 // TODO Remove from there
 import { Features } from '../ngx-features-viewer.component';
@@ -63,6 +63,7 @@ export const CINEMA = {
 export const REM = parseFloat(getComputedStyle(document.documentElement).fontSize);
 
 // Define function for extracting identifier out of unknown object
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const identity = (f: unknown) => (f as { id: any }).id;
 
 // Define function for extracting index out of unknown object
@@ -85,68 +86,74 @@ function createLoci(group: d3.Selection<d3.BaseType | SVGGElement, unknown, null
   // Add background HTML div
   // NOTE This element has decrease opacity, just shows the background color.
   // NOTE It must be created before the foreground in ordeer to behave correctly
-  foreignObject.append('xhtml:div')
+  foreignObject
+    .selectAll('div.background')
+    .data(d => [d], index)
+    .join('xhtml:div')
     .attr('class', 'background')
     .style('background-color', background);
   // Add foreground HTML div
   // NOTE This element shows both border and text, hence has full opacity
-  foreignObject.append('xhtml:div')
+  foreignObject
+    .selectAll('div.foreground')
+    .data(d => [d])
+    .join('xhtml:div')
     .attr('class', 'foreground')
-    .style('border-color', color)
+    .style('border-color', color);
   // .style('color', color);
   // Return foreign object
   return foreignObject;
 }
 
-function updateLoci(group: d3.Selection<d3.BaseType | SVGGElement, unknown, null, undefined>, feature: Loci) {
-  // Generate foreign object(s)
-  const foreignObject = group
-    // Get currently rendered elements
-    .selectAll(`foreignObject.locus`)
-    // Bind elements to data (loci)
-    .data(feature.values, index)
-    // Generate parent foreign object
-    .join('foreignObject')
-    .attr('class', `locus ${feature.id}`);
-  // Define foreground (border) color
-  const color = feature.color || 'black';
-  // Define background color, fall back to transparent eventually
-  const background = feature.color || 'transparent';
-  // Define border radius
-  const radius = '.375rem';
-  // Update foreign object
-  foreignObject
-    // Add background HTML div
-    // NOTE This element has decrease opacity, just shows the background color.
-    // NOTE It must be created before the foreground in ordeer to behave correctly
-    .append('xhtml:div')
-    .attr('class', 'background')
-    .style('display', 'block')
-    .style('height', '100%')
-    .style('width', '100%')
-    .style('box-sizing', 'border-box')
-    .style('background-color', background)
-    .style('border-radius', radius)
-    .style('opacity', 0.3)
-    // Add foreground HTML div
-    // NOTE This element shows both border and text, hence has full opacity
-    .append('xhtml:div')
-    .attr('class', 'foreground')
-    .style('display', 'flex')
-    .style('align-items', 'center')
-    .style('justify-content', 'center')
-    .style('height', '100%')
-    .style('width', '100%')
-    .style('box-sizing', 'border-box')
-    .style('border-style', 'solid')
-    .style('border-radius', '.375rem')
-    .style('border-color', color)
-    .style('border-width', 2)
-    .style('background-color', 'transparent')
-    .style('opacity', 1);
-  // Return foreign object
-  return foreignObject;
-}
+// function updateLoci(group: d3.Selection<d3.BaseType | SVGGElement, unknown, null, undefined>, feature: Loci) {
+//   // Generate foreign object(s)
+//   const foreignObject = group
+//     // Get currently rendered elements
+//     .selectAll(`foreignObject.locus`)
+//     // Bind elements to data (loci)
+//     .data(feature.values, index)
+//     // Generate parent foreign object
+//     .join('foreignObject')
+//     .attr('class', `locus ${feature.id}`);
+//   // Define foreground (border) color
+//   const color = feature.color || 'black';
+//   // Define background color, fall back to transparent eventually
+//   const background = feature.color || 'transparent';
+//   // Define border radius
+//   const radius = '.375rem';
+//   // Update foreign object
+//   foreignObject
+//     // Add background HTML div
+//     // NOTE This element has decrease opacity, just shows the background color.
+//     // NOTE It must be created before the foreground in ordeer to behave correctly
+//     .append('xhtml:div')
+//     .attr('class', 'background')
+//     .style('display', 'block')
+//     .style('height', '100%')
+//     .style('width', '100%')
+//     .style('box-sizing', 'border-box')
+//     .style('background-color', background)
+//     .style('border-radius', radius)
+//     .style('opacity', 0.3)
+//     // Add foreground HTML div
+//     // NOTE This element shows both border and text, hence has full opacity
+//     .append('xhtml:div')
+//     .attr('class', 'foreground')
+//     .style('display', 'flex')
+//     .style('align-items', 'center')
+//     .style('justify-content', 'center')
+//     .style('height', '100%')
+//     .style('width', '100%')
+//     .style('box-sizing', 'border-box')
+//     .style('border-style', 'solid')
+//     .style('border-radius', '.375rem')
+//     .style('border-color', color)
+//     .style('border-width', 2)
+//     .style('background-color', 'transparent')
+//     .style('opacity', 1);
+//   // Return foreign object
+//   return foreignObject;
+// }
 
 function createPins(group: d3.Selection<d3.BaseType | SVGGElement, unknown, null, undefined>, feature: Pins) {
   // Map pins to loci
@@ -179,17 +186,19 @@ function createDSSP(group: d3.Selection<d3.BaseType | SVGGElement, unknown, null
   foreignObject.select('div.foreground').html((d: unknown) => {
     // Get DSSP locus
     const locus = d as DSSP['values'][number];
+    // Get background color
+    const background = locus.color || feature.color || 'black';
     // Handle helices
     if (locus.code === 'G' || locus.code === 'H' || locus.code === 'I') {
-      return '<i class="dssp dssp-helix"></i>';
+      return `<i class="dssp dssp-helix" style="background-color: ${background}"></i>`;
     }
     // Handle strands
     else if (locus.code === 'E' || locus.code === 'B') {
-      return '<i class="dssp dssp-strand"></i>';
+      return `<i class="dssp dssp-strand" style="background-color: ${background}"></i>`;
     }
     // Handle loops
     else if (locus.code === 'C' || locus.code === 'S' || locus.code === 'T')
-      return '<i class="dssp dssp-loop"></i>';
+      return `<i class="dssp dssp-loop" style="background-color: ${background}"></i>`;
     // Otherwise, let empty
     return '';
   });
@@ -357,14 +366,7 @@ export class DrawService {
           // Create current labels (foreignObject)
           .join('foreignObject')
           .attr('id', d => 'label-' + d.id!)
-          .attr('class', d => `label ${d.active ? 'active' : ''}`)
-          // TODO Remove this
-          .attr('x', function (d) {
-            const label = d3.select(this);
-            console.log(`Feature ${d.id}, x = ${label.attr('x')}, y = ${label.attr('y')}`)
-            console.log('x', label.attr('x'));
-            return 0;
-          });
+          .attr('class', d => `label ${d.active ? 'active' : ''}`);
         // Append inner div to  each label
         this.labels.append('xhtml:div')
           // Append actual label
@@ -456,25 +458,6 @@ export class DrawService {
           }
           // Handle pins features
           else if (feature.type === 'pins') {
-            // // Define pin container
-            // const foreignObject = group
-            //   // Get currently rendered elements
-            //   .selectAll(`foreignObject.pin`)
-            //   // Bind elements to data (loci)
-            //   .data(feature.values, index)
-            //   // Generate parent foreign object
-            //   .join('foreignObject')
-            //   .attr('class', `pin ${feature.id}`)
-            // // Update pin content
-            // foreignObject
-            //   .append('xhtml:div')
-            //   .style('display', 'flex')
-            //   .style('align-items', 'end')
-            //   .style('justify-content', 'center')
-            //   .style('height', '100%')
-            //   .style('width', '100%')
-            //   .style('box-sizing', 'border-box')
-            //   .html((d) => (d ? '<i class="bi bi-pin"></i>' : ''));
             // Store pin container
             values.set(feature, createPins(group, feature));
           }
@@ -482,49 +465,6 @@ export class DrawService {
           else if (feature.type === 'dssp') {
             // Define container for feature value (foreign object)
             const foreignObject = createDSSP(group, feature);
-            //   // Get currently rendered elements
-            //   .selectAll(`foreignObject.dssp`)
-            //   // Bind elements to data (loci)
-            //   .data(feature.values, index)
-            //   // Generate parent foreign object
-            //   .join('foreignObject')
-            //   .attr('class', `dssp ${feature.id}`);
-            // // Update content of feature value
-            // foreignObject
-            //   .append('xhtml:div')
-            //   .style('display', 'flex')
-            //   .style('align-items', 'center')
-            //   .style('justify-content', 'center')
-            //   .style('height', '100%')
-            //   .style('width', '100%')
-            //   .style('box-sizing', 'border-box')
-            //   .html((d, i) => {
-            //     // Handle helices
-            //     if (d === 'G' || d === 'H' || d === 'I')
-            //       return '<i class="dssp dssp-helix"></i>';
-            //     // Handle strands
-            //     else if (d === 'E' || d === 'B') {
-            //       // Get feature values
-            //       const { values } = feature;
-            //       // Define function for detecting strand
-            //       const strand = (d: unknown) => d === 'E' || d === 'B';
-            //       // Get previous, next DSSP item
-            //       const p = i > 0 ? values[i - 1] : undefined;
-            //       const n = i < values.length ? values[i + 1] : undefined;
-            //       // Case previous is not strand, then current is first
-            //       if (!strand(p))
-            //         return '<i class="dssp dssp-strand-start"></i>';
-            //       // Case next is not strand, then current is last
-            //       if (!strand(n)) return '<i class="dssp dssp-strand-end"></i>';
-            //       // Case next is not strand, then
-            //       return '<i class="dssp dssp-strand"></i>';
-            //     }
-            //     // Handle loops
-            //     else if (d === 'C' || d === 'S' || d === 'T')
-            //       return '<i class="dssp dssp-loop"></i>';
-            //     // Otherwise, let empty
-            //     return '';
-            //   });
             // Attach loci representation to SVG
             values.set(feature, foreignObject);
           }
@@ -601,8 +541,6 @@ export class DrawService {
           // Update sizes
           .attr('height', inner)
           .attr('width', margin.left);
-        // TODO
-        console.log('Vaffanculo');
       }),
       // Move feature values in correct position
       map(() => {
@@ -612,8 +550,6 @@ export class DrawService {
         const { x, y } = this.scale!, margin = this.margin;
         // Loop through each feature
         this.features.each(function (feature) {
-          // Get current group
-          const group = d3.select(this);
           // Get feature values
           const values = _values.get(feature);
           // Ensure that values are defined
@@ -691,7 +627,8 @@ export class DrawService {
     y.domain(['sequence', ...domain]);
   }
 
-  public updateRangeY(features: Features): void {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public updateRangeY(_features: Features): void {
     // Just call the same event called by resize event
     this.resizeService.updateRangeY();
   }
