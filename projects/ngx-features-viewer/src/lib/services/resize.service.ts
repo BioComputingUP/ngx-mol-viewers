@@ -71,9 +71,7 @@ export class ResizeService {
 
   public readonly resized$: Observable<void>;
 
-  constructor(
-    public readonly initService: InitializeService,
-  ) {
+  constructor(public readonly initService: InitializeService) {
     // Trigger resize event
     const resize$: Observable<void> = this.resize$.pipe(
       // Get width, height from root HTML div
