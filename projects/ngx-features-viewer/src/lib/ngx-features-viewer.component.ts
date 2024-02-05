@@ -107,9 +107,32 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, OnChanges, OnD
       // TODO Initialize drawings
       switchMap(() => this.drawService.draw$),
       // Initialize callback on label click
-      tap(() => this.labels.on('click', (_, feature) => { this.onLabelClick(feature) })),
+      tap(() => {
+        this.labels.on('click', (_, feature) => { this.onLabelClick(feature) })
+      }),
+      // Initialize zoom scale
+      tap(() => {
+        // Define number of residues in sequnce
+        const n = this.sequence.length + 1;
+        //
+        // Apply scale limit to 5 residues
+        this.zoom.scaleExtent([1, n / 5]);
+      }),
       // Subscribe to resize event (set width, height)
       switchMap(() => this.resizeService.resized$),
+      // // TODO Update pan extent according to boundaries graph boundaries
+      // tap(() => {
+      //   // Get current height, width and margins
+      //   const margin = this.margin;
+      //   const height = this.height;
+      //   const width = this.width;
+      //   // Get top-left point
+      //   const tl: [number, number] = [0, 0];
+      //   // Get bottom-right point
+      //   const br: [number, number] = [width, height];
+      //   // Apply limitations on pan
+      //   this.zoom.translateExtent([tl, br]);
+      // }),
       // Subscribe to zoom event
       switchMap(() => this.zoomService.zoomed$),
       // Finally, update representation
