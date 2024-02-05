@@ -1,4 +1,5 @@
 @import '~bootstrap-icons/font/bootstrap-icons.css';
+@import '../styles/labels';
 @import '../styles/loci';
 @import '../styles/pins';
 @import '../styles/dssp';
@@ -17,26 +18,4 @@
 .y.axis .tick text {
   display: none;
 }
-// Style custom y-axis ticks
-.label div {
-  cursor: pointer;
-}
-// Style labels
-.label {
-  // Hide caret for sequence label
-  &.sequence i {
-    display: none;
-  }
-  // Set transition for caret
-  & i::before {
-    transition: transform 0.4s;
-  }
-  // Set active status
-  &.active i::before {
-    transform: roate(0deg);
-  }
-  // Set non-active status
-  &:not(.active) i::before {
-    transform: rotate(-90deg);
-  }
-}
+

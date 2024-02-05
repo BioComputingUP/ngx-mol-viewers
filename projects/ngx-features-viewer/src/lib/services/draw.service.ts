@@ -24,7 +24,7 @@ type FeatureObject<F extends Feature> = d3.Selection<d3.BaseType, F['values'][nu
 
 type ResidueGroup = d3.Selection<SVGGElement | d3.BaseType, string, SVGGElement | d3.BaseType, Sequence>;
 
-type LabelGroup = d3.Selection<SVGForeignObjectElement | d3.BaseType, Feature, SVGGElement | d3.BaseType, Feature[]>;
+type LabelGroup = d3.Selection<SVGGElement | d3.BaseType, Feature, SVGGElement | d3.BaseType, Feature[]>;
 
 type FeatureGroup = d3.Selection<SVGGElement | d3.BaseType, Feature, SVGGElement, undefined>;
 
@@ -206,6 +206,9 @@ function createDSSP(group: d3.Selection<d3.BaseType | SVGGElement, unknown, null
   return foreignObject;
 }
 
+// // TODO Define function for creating labels
+// function createLabel() {}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -238,6 +241,10 @@ export class DrawService {
   public residues!: ResidueGroup;
 
   public features!: FeatureGroup;
+
+  public depth!: Map<Feature, number>;
+
+  public children!: Map<Feature, Feature[]>;
 
   public values!: Map<Feature, ValuesGroup>;
 
@@ -323,6 +330,64 @@ export class DrawService {
       shareReplay(1),
       // Switch to features emission
       switchMap(() => this.features$),
+      // Compute number of child features fore each parent feature
+      tap((features) => {
+        // Initialize children
+        this.children = new Map();
+        // Loop through each feature, define number of children
+        features.forEach((feature) => {
+          // Set children for current feature
+          this.children.set(feature, this.children.get(feature) || []);
+          // Get parent feature, if any
+          if (feature.parent !== undefined) {
+            // Get parent feature
+            const parent = features[feature.parent];
+            // Get children of current feature
+            const children = this.children.get(parent) || [];
+            // Update list of children
+            children.push(feature);
+            // Update childrens' map
+            this.children.set(parent, children);
+          }
+        });
+        // TODO Remove this
+        console.log('Children', this.children);
+      }),
+      // Compute depth of each feature
+      tap((features) => {
+        // Initialize empty map
+        this.depth = new Map();
+        // Execute until depth has been computed for all features
+        while (this.depth.size < features.length) {
+          // Loop through each feature
+          features.forEach((feature) => {
+            // Get depth for current feature
+            let depth = this.depth.get(feature);
+            // Skip feature if depth is already available
+            if (depth === undefined) {
+              // Case parent feature does not exist
+              if (feature.parent === undefined) {
+                // Then, set depth to 0
+                this.depth.set(feature, 0);
+              }
+              // Otherwise, parent feature exists
+              else {
+                // Then, get parent feature
+                const parent = features[feature.parent!];
+                // Get depth fro parent feature
+                depth = this.depth.get(parent);
+                // Case depth for parent is available
+                if (depth !== undefined) {
+                  // Then, set updated depth according to parent's one
+                  this.depth.set(feature, depth + 1);
+                }
+              }
+            }
+          });
+        }
+      }),
+      // Cache result
+      shareReplay(1),
       // Filter out inactive features
       map((features) => features.filter((feature) => {
         // Case parent identifier is defined
@@ -340,56 +405,91 @@ export class DrawService {
       // Update vertical scale range
       tap((features) => this.updateRangeY(features)),
       // Draw labels, without setting position but saving references
-      tap((features_) => {
+      tap((features) => {
         // Define labels group
         const group = this.initService.svg
           // Select previous labels group
           .selectAll('g.labels')
           // Bind group to current features
-          .data([features_])
+          .data([features], index)
           // Create current labels group
           .join('g')
           .attr('class', 'labels');
-        // Generate features list
-        const features = [
-          // First, append sequence
-          { id: 'sequence', active: false, parent: undefined },
-          // Then, append all other features
-          ...features_
-        ] as Feature[];
         // Add labels to their group
         this.labels = group
           // Select previous labels (foreignObjects)
-          .selectAll('foreignObject.label')
+          .selectAll('g.label')
           // Bind label object to associated data
-          .data<Feature>(features, identity)
+          .data<Feature>([{ id: 'sequence', active: false, parent: undefined }, ...features] as Features, identity)
           // Create current labels (foreignObject)
+          .join('g')
+          .attr('id', (d: Feature) => 'label-' + d.id!)
+          .attr('class', (d: Feature) => `label ${d.active ? 'active' : ''}`);
+        // Add parent foreignObject
+        const parent = this.labels
+          // Bind parent to foreign object
+          .selectAll('foreignObject.parent')
+          .data(d => [d], index)
           .join('foreignObject')
-          .attr('id', d => 'label-' + d.id!)
-          .attr('class', d => `label ${d.active ? 'active' : ''}`);
-        // Append inner div to  each label
-        this.labels.append('xhtml:div')
-          // Append actual label
-          .style('display', 'flex')
-          .style('flex-shrink', 0)
-          .style('flex-grow', 1)
-          .style('justify-content', 'end')
-          .style('align-items', 'center')
-          .style('margin-right', '.5rem')
-          .style('height', '100%')
-          .style('box-sizing', 'border-box')
-          // Define html with caret
-          .html((d) => {
+          .attr('class', 'parent');
+        // Add content to parent foreign object
+        parent
+          .selectAll('div')
+          .data(d => [d], index)
+          .join('xhtml:div')
+          // Add depth, children classes
+          // NOTE This is required to make css aware of those properties 
+          .attr('class', (d: Feature) => {
+            // Get feature depth
+            const depth = this.depth.get(d) || 0;
+            // Get number of children
+            const children = (this.children.get(d) || []).length;
+            // Return classes string
+            return `depth-${depth} children-${children}`;
+          })
+          // Add label HTML content
+          .html((d: Feature) => {
             // Define feature identifier
             const _id = ('' + d.id === 'sequence') ? '' + d.id : 'feature ' + d.id;
             // Return HTML content
             return `<span>${_id} <i class="bi bi-caret-down-fill"></i></span>`;
           });
+        // Add children group
+        this.labels
+          // Bind children to group
+          .selectAll('g.children')
+          .data(d => [d], index)
+          .join('g')
+          .attr('class', 'children');
+        // Map labels to their feature identifier
+        this.labels.each(function (feature) {
+          // Get current label element
+          const label = d3.select(this);
+          // // TODO Remove this
+          // console.log('Label', label);
+          // Case current feature does have parent feature 
+          if (feature.parent !== undefined) {
+            // // Then detach label, as it needs to be appended to its parent group
+            // label = label.remove();
+            // Select parent node
+            const parent = group.selectAll(`g.label#label-${feature.parent}`)!;
+            // Get childreb container
+            const children = parent.selectAll('g.children').node() as SVGGElement;
+            // Select child node
+            const child = label.node() as SVGForeignObjectElement;
+            // Append child node to parent node
+            children.appendChild(child);
+            // TODO Remove this
+            console.log('Parent', parent);
+            console.log('Child', child);
+          }
+        });
       }),
       // Draw features, without setting position but saving references
-      map((features) => {
+      map((features: Features) => {
         // Initialize values map
         const values = this.values = new Map();
+        // TODO Select parent according to 
         // Generate and store feature groups
         this.features = this.draw
           // Select previous groups
@@ -404,6 +504,7 @@ export class DrawService {
         this.features.each(function (feature) {
           // Define group
           const group = d3.select(this);
+          // TODO Remove feature from 
           // TODO Handle continuous features
           if (feature.type === 'continuous') {
             // Initialize scatterplot representation
@@ -534,6 +635,8 @@ export class DrawService {
         const inner = (y('sequence') - margin.top) * 2;
         // Update each label
         this.labels
+          // Select all inner foreign objects
+          .select('foreignObject.parent')
           // Update positions
           .attr('y', d => y((d.id + '' === 'sequence') ? ('' + d.id) : ('feature-' + d.id)) - inner / 2)
           .attr('x', 0)

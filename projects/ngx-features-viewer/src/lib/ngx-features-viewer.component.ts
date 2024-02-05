@@ -122,16 +122,16 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, OnChanges, OnD
       switchMap(() => this.resizeService.resized$),
       // // TODO Update pan extent according to boundaries graph boundaries
       // tap(() => {
-      //   // Get current height, width and margins
-      //   const margin = this.margin;
-      //   const height = this.height;
-      //   const width = this.width;
-      //   // Get top-left point
-      //   const tl: [number, number] = [0, 0];
-      //   // Get bottom-right point
-      //   const br: [number, number] = [width, height];
+      //   // Get current scales
+      //   const { x, y } = this.initService.scale;
+      //   // Get sequence length
+      //   const n = this.sequence.length;
+      //   // // Get top-left point
+      //   // const tl: [number, number] = [0, 0];
+      //   // // Get bottom-right point
+      //   // const br: [number, number] = [width, height];
       //   // Apply limitations on pan
-      //   this.zoom.translateExtent([tl, br]);
+      //   this.zoom.translateExtent([[x(1) - this.margin.left, 0], [x(n + 1), Infinity]]);
       // }),
       // Subscribe to zoom event
       switchMap(() => this.zoomService.zoomed$),
