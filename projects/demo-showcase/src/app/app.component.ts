@@ -57,8 +57,8 @@ export class AppComponent {
 
   // Define features (features viewer)
   public readonly features = [
-    { id: 0, type: 'continuous' as const, color: 'blue', values: this.sequence.map(() => Math.random()), parent: undefined },
-    { id: 1, type: 'loci' as const, color: 'red', values: [{ start: 1, end: 3 }, { start: 5, end: 6 }], parent: undefined },
+    { id: 0, type: 'continuous' as const, color: 'blue', values: this.sequence.map(() => Math.random()), parent: undefined, height: 128 },
+    { id: 1, type: 'loci' as const, color: 'red', values: [{ start: 1, end: 3 }, { start: 5, end: 6 }], parent: undefined, height: 96 },
     { id: 2, type: 'pins' as const, color: 'green', values: [{ start: 5 }, { start: 100, color: 'blue' }, { start: 400, color: 'red' }], parent: 1 },
     { id: 3, type: 'loci' as const, color: 'orange', values: [{ start: 10, end: 20 }, { start: 30, end: 70 }], parent: 1 },
     { id: 4, type: 'loci' as const, color: 'purple', values: [{ start: 100, end: 300 }], parent: undefined },
