@@ -13,4 +13,6 @@ export default interface Feature<T> {
     color?: string;
     // Whether feature is active (children are visible) or not (children not visible)
     active?: boolean;
+    // Define height of current feature row
+    height?: number;
 }

@@ -49,10 +49,10 @@ export class InitializeService {
     return this.root.nativeElement as HTMLDivElement;
   }
 
-  get height() {
-    // return (this._root.nativeElement as HTMLDivElement).clientHeight; // Does not include border height
-    return this.div.offsetHeight; // Includes border height
-  }
+  // get height() {
+  //   // return (this._root.nativeElement as HTMLDivElement).clientHeight; // Does not include border height
+  //   return this.div.offsetHeight; // Includes border height
+  // }
 
   get width() {
     // return (this._root.nativeElement as HTMLDivElement).clientWidth; // Does not include border width
@@ -64,6 +64,9 @@ export class InitializeService {
 
   // Define margin
   public margin!: Margin;
+
+  // Define map between feature (identifier) and its height
+  public height!: Map<string, number>;
 
   // Define horizontal, vertical scales
   public scale!: Scale;

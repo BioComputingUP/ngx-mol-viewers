@@ -103,7 +103,18 @@ export class ResizeService {
   }
 
   public updateRoot(): void {
-    this.svg.attr('height', this.height).attr('width', this.width);
+    // Get vertical scale
+    const { y } = this.scale;
+    // Get vertical range
+    const range = y.range();
+    // Compute height as the difference between the first and the last value in range
+    const height = range.at(-1)! + this.margin.bottom;
+    // Get current width
+    const width = this.width;
+    // Set updated height and width
+    this.svg
+      .attr('height', height)
+      .attr('width', width);
   }
 
   public updateDraw(): void {
@@ -143,19 +154,38 @@ export class ResizeService {
     // Get domain, as previously defined in draw pipeline
     // NOTE It includes start, end empty positions
     const domain = y.domain();
-    // Get top, bottom positions
-    const top = this.margin.top;
-    const bottom = this.height - this.margin.bottom;
-    // Define outer height (drawable area)
-    const outer = bottom - top;
-    // Define inner height (axis tick)
-    const inner = outer / domain.length;
+    // const bottom = this.height - this.margin.bottom;
+    // // Define outer height (drawable area)
+    // const outer = bottom - top;
+    // // Define inner height (axis tick)
+    // const inner = outer / domain.length;
+    // Get map between feature identifier and its height
+    const height = this.initService.height;
     // Compute range
-    const range = domain.map((_, i) => {
-      // Define position of y axis tick
-      return top + (inner / 2) + (i * inner);
-    });
+    const range = domain.reduce((range: number[], id: string, i: number) => {
+      // Initialize offset
+      let offset = 0;
+      // Case on first feature (sequence)
+      if (i === 0 && id === 'sequence') {
+        // Update offset adding initial top margin
+        offset += this.margin.top;
+        offset += height.get(id)! / 2;
+      }
+      // Otherwise
+      else {
+        // Get height according to previous element
+        offset += range[i - 1]!;
+        offset += height.get(domain[i-1])! / 2;
+        offset += height.get(domain[i])! / 2;
+      }
+      // Finally, update range
+      return [...range, offset];
+    }, []);
+    // Add last offset
+    let offset = 0;
+    offset += range.at(-1)!;
+    offset += height.get(domain.at(-1)!)! / 2;
     // Update vertical axis range
-    y.range(range);
+    y.range([...range, offset]);
   }
 }
