@@ -649,8 +649,10 @@ export class DrawService {
       map(() => {
         // Get feature values
         const _values = this.values;
+        // Get height map
+        const _height = this.initService.height;
         // Get scale (x, y axis) and margin (top, bottom, left, right)
-        const { x, y } = this.scale!, margin = this.margin;
+        const { x, y } = this.scale!;
         // Loop through each feature
         this.features.each(function (feature) {
           // Get feature values
@@ -660,7 +662,7 @@ export class DrawService {
           // Then, update feature values according to feature type
           if (feature.type === 'continuous') {
             // Define feature height, using the height of the sequence feature (as it is the first one)
-            const height = y('sequence') - margin.top;
+            const height = _height.get(`feature-${feature.id}`)! / 2;
             // Get (scatterplot) from feature
             const scatter = values as FeatureObject<Continuous>;
             // Get number of values
