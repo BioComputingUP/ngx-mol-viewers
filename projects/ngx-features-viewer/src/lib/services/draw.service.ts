@@ -69,16 +69,16 @@ export const identity = (f: unknown) => (f as { id: any }).id;
 // Define function for extracting index out of unknown object
 export const index = (f: unknown, i: number) => i;
 
-function createLoci(group: d3.Selection<d3.BaseType | SVGGElement, unknown, null, undefined>, feature: Loci) {
+function createLoci(group: d3.Selection<d3.BaseType | SVGGElement, unknown, null, undefined>, feature: Omit<Loci, 'type'> & Pick<Loci | Pins | DSSP, 'type'>) {
   // Generate foreign object(s)
   const foreignObject = group
     // Get currently rendered elements
-    .selectAll(`foreignObject.locus`)
+    .selectAll(`foreignObject.${feature.type}`)
     // Bind elements to data (loci)
     .data(feature.values, index)
     // Generate parent foreign object
     .join('foreignObject')
-    .attr('class', `locus ${feature.id}`);
+    .attr('class', `${feature.type} ${feature.id}`);
   // Define foreground (border) color
   const color = feature.color || 'black';
   // Define background color, fall back to transparent eventually
@@ -96,7 +96,7 @@ function createLoci(group: d3.Selection<d3.BaseType | SVGGElement, unknown, null
   // NOTE This element shows both border and text, hence has full opacity
   foreignObject
     .selectAll('div.foreground')
-    .data(d => [d])
+    .data(d => [d], index)
     .join('xhtml:div')
     .attr('class', 'foreground')
     .style('border-color', color);
@@ -159,10 +159,7 @@ function createPins(group: d3.Selection<d3.BaseType | SVGGElement, unknown, null
   // Map pins to loci
   const loci = feature.values.map((pin) => ({ ...pin, end: pin.start }));
   // Generate loci
-  const foreignObject = createLoci(group, { ...feature, type: 'loci', values: loci });
-  // Update class for foreign object
-  foreignObject
-    .attr('class', `pin ${feature.id}`);
+  const foreignObject = createLoci(group, { ...feature, values: loci });
   // Remove background
   foreignObject
     .select('div.background')
@@ -177,31 +174,34 @@ function createPins(group: d3.Selection<d3.BaseType | SVGGElement, unknown, null
 
 function createDSSP(group: d3.Selection<d3.BaseType | SVGGElement, unknown, null, undefined>, feature: DSSP) {
   // Generate loci
-  const foreignObject = createLoci(group, { ...feature, type: 'loci' });
-  // Update class for foreign object
-  foreignObject.attr('class', `dssp ${feature.id}`);
+  const foreignObject = createLoci(group, { ...feature });
   // Remove background
-  foreignObject.select('div.background').remove();
+  foreignObject
+    .select('div.background')
+    .remove();
   // Substitute text with pin
-  foreignObject.select('div.foreground').html((d: unknown) => {
-    // Get DSSP locus
-    const locus = d as DSSP['values'][number];
-    // Get background color
-    const background = locus.color || feature.color || 'black';
-    // Handle helices
-    if (locus.code === 'G' || locus.code === 'H' || locus.code === 'I') {
-      return `<i class="dssp dssp-helix" style="background-color: ${background}"></i>`;
-    }
-    // Handle strands
-    else if (locus.code === 'E' || locus.code === 'B') {
-      return `<i class="dssp dssp-strand" style="background-color: ${background}"></i>`;
-    }
-    // Handle loops
-    else if (locus.code === 'C' || locus.code === 'S' || locus.code === 'T')
-      return `<i class="dssp dssp-loop" style="background-color: ${background}"></i>`;
-    // Otherwise, let empty
-    return '';
-  });
+  foreignObject
+    .select('div.foreground')
+    .html((d: unknown) => {
+      // Get DSSP locus
+      const locus = d as DSSP['values'][number];
+      // Get background color
+      const background = locus.color || feature.color || 'black';
+      // Handle helices
+      if (locus.code === 'G' || locus.code === 'H' || locus.code === 'I') {
+        return `<i class="dssp dssp-helix" style="background-color: ${background}"></i>`;
+      }
+      // Handle strands
+      else if (locus.code === 'E' || locus.code === 'B') {
+        return `<i class="dssp dssp-strand" style="background-color: ${background}"></i>`;
+      }
+      // Handle loops
+      else if (locus.code === 'C' || locus.code === 'S' || locus.code === 'T') {
+        return `<i class="dssp dssp-loop" style="background-color: ${background}"></i>`;
+      }
+      // Otherwise, let empty
+      return '';
+    });
   // Return generated foreign object
   return foreignObject;
 }
@@ -585,7 +585,7 @@ export class DrawService {
             // Define default locus height
             const height = 24;
             // Define vertical position
-            const vertical = y('feature-' + feature.id) - height / 2; 
+            const vertical = y('feature-' + feature.id) - height / 2;
             // Update foreign object
             const foreignObject = (values as FeatureObject<Loci>)
               // Update position
