@@ -9,27 +9,10 @@
     // Reset cursor
     cursor: default;
   }
-  // Style parent label
-  .label .parent div {
-    // Set positioning
-    position: relative;
-    // Set display
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-    align-items: center;
-    // Set sizes
-    box-sizing: border-box;
-    height: 100%;
-    width: 100%;
-    // Style cursor
-    cursor: pointer;
-  }
   // Style active (open) or not status
   .label {
     // Case feature has no children
-    .children-0 > span > i {
+    .children-0 > i {
       // Then, set invisible
       visibility: hidden;
     }
@@ -47,16 +30,32 @@
     }
   }
   // Style depth
-  .label div span {
+  .label div {
     // Set display
     display: flex;
     flex-direction: row;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     justify-content: space-between;
     align-items: center;
+    // Set sizes
+    box-sizing: border-box;
     // Span must occupy the whole width
-    height: auto;
+    height: 100%;
     width: 100%;
+    // Style cursor
+    cursor: pointer;
+
+    span {
+      text-wrap: wrap;
+      line-break: anywhere;
+      flex-shrink: 1;
+      flex-grow: 1;
+    }
+
+    i {
+      flex-shrink: 0;
+      flex-grow: 0;
+    }
   }
   // Define allowed depths
   $depths: 0, 1, 2, 3, 4, 5;

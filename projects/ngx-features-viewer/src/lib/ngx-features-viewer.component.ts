@@ -35,7 +35,6 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, OnChanges, OnD
   public _root!: ElementRef;
 
   // Margins, clockwise [top, right, bottom, left]
-  @Input()
   public set margin(margin: Margin) {
     // Just set inner margins
     this.initService.margin = margin;
@@ -45,9 +44,8 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, OnChanges, OnD
     return this.resizeService.margin;
   }
 
-  public get height() {
-    return this.resizeService.height;
-  }
+  @Input()
+  public height!: number;
 
   public get width() {
     return this.resizeService.width;
@@ -114,7 +112,6 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, OnChanges, OnD
       tap(() => {
         // Define number of residues in sequnce
         const n = this.sequence.length + 1;
-        //
         // Apply scale limit to 5 residues
         this.zoom.scaleExtent([1, n / 5]);
       }),
@@ -149,11 +146,17 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, OnChanges, OnD
       this.sequence$.next(this.sequence);
     }
     // Case input features changed
-    if (changes && changes['features']) {
+    if (changes && (changes['features'] || changes['height'])) {
+      // Initialize map between feature and its height
+      const height = this.initService.height = new Map();
+      // TODO Define sequence height
+      height.set('sequence', this.height || 56);
       // Initialize input features
       this.features.forEach((feature) => {
         // Set feature as active
         feature.active = feature.active === undefined ? true : feature.active;
+        // Store feature height
+        height.set('feature-' + feature.id!, feature.height || this.height || 56);
       });
       // Emit new features
       this.features$.next(this.features);

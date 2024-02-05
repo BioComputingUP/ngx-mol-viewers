@@ -452,7 +452,7 @@ export class DrawService {
             // Define feature identifier
             const _id = ('' + d.id === 'sequence') ? '' + d.id : 'feature ' + d.id;
             // Return HTML content
-            return `<span>${_id} <i class="bi bi-caret-down-fill"></i></span>`;
+            return `<span>${_id} </span><i class="bi bi-caret-down-fill"></i>`;
           });
         // Add children group
         this.labels
@@ -580,18 +580,19 @@ export class DrawService {
       map(() => {
         // Get height, width, margins
         const margin = this.initService.margin;
-        const height = this.initService.height;
+        // const height = this.initService.height;
         // Get scale (x, y axis)
         const { x, y } = this.initService.scale!;
         // Define width, height of each cell
         const width = x(1) - x(0);
+        // const height = y.range().at(-1)! - y.range().at(0)!;
         // Update size, position of residue background
         this.residues
           .select('rect.color')
           .attr('x', (_, i) => x(i + 0.5))
           .attr('y', margin.top)
           .attr('width', () => width)
-          .attr('height', height - margin.top - margin.bottom);
+          .attr('height', '100%');
         // Update size, position of residue names
         this.residues
           // Style outer foreignObject
