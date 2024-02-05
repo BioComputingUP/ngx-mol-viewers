@@ -378,7 +378,6 @@ export class DrawService {
           .style('margin-right', '.5rem')
           .style('height', '100%')
           .style('box-sizing', 'border-box')
-          .style('border', '1px solid black')
           // Define html with caret
           .html((d) => {
             // Define feature identifier
