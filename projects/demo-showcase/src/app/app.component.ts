@@ -30,27 +30,7 @@ const P05067 = 'MLPGLALLLLAAWTARALEVPTDGNAGLLAEPQIAMFCGRLNMHMNVQNGKWDSDPSGTK' +
 })
 export class AppComponent {
   // TODO Define demo title
-  title = 'demo-showcase';
-
-  // // TODO Define source protein (structure viewer)
-  // public readonly source = {
-  //   // Define path to .cif file
-  //   data: 'https://files.rcsb.org/view/1CU4.cif',
-  //   // Define label
-  //   label: '1CU4',
-  //   // Data is not compressed
-  //   compressed: false,
-  // }
-
-  // // Define loci (structure viewer)
-  // public readonly loci = [
-  //   { start: '1', end: '10', chain: 'A', color: '#ff0000' },
-  //   { start: '11', end: '20', chain: 'A', color: '#00ff00' },
-  //   { start: '21', end: '30', chain: 'A', color: '#0000ff' },
-  // ];
-
-  // // TODO Define contacts (structure viewer)
-  // public readonly contacts = [];
+  title = 'ngx-bio-tools';
 
   // Define sequence (features viewer)
   public readonly sequence = P05067.split('');
