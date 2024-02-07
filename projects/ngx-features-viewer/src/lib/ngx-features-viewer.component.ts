@@ -1,5 +1,5 @@
 // prettier-ignore 
-import {AfterViewInit, Component, ElementRef, HostListener, Input, OnChanges, OnDestroy, SimpleChanges, ViewChild, ViewEncapsulation } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, Input, OnChanges, OnDestroy, SimpleChanges, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Observable, Subscription, tap, switchMap } from 'rxjs';
 // Custom providers
 import { Margin, InitializeService } from './services/initialize.service';
@@ -93,43 +93,34 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, OnChanges, OnD
     this.margin = { top: 24, right: 24, bottom: 24, left: 128 };
     // TODO Update SVG according to inputs
     this.update$ = this.initService.initialized$.pipe(
-      // Initialize callback on zoom event
-      tap(() => {
-        // Get zoom event handler
-        this.zoom
-          // Define zoom extent
-          .scaleExtent([1, 100])
-          // Define zoom callback
-          .on('zoom', (event) => { this.onFeaturesZoom(event); })
-      }),
       // TODO Initialize drawings
       switchMap(() => this.drawService.draw$),
       // Initialize callback on label click
       tap(() => {
-        this.labels.on('click', (_, feature) => { this.onLabelClick(feature) })
-      }),
-      // Initialize zoom scale
-      tap(() => {
-        // Define number of residues in sequnce
-        const n = this.sequence.length + 1;
-        // Apply scale limit to 5 residues
-        this.zoom.scaleExtent([1, n / 5]);
+        this.labels.on('click', (_, feature) => {
+          this.onLabelClick(feature);
+        })
       }),
       // Subscribe to resize event (set width, height)
       switchMap(() => this.resizeService.resized$),
-      // // TODO Update pan extent according to boundaries graph boundaries
-      // tap(() => {
-      //   // Get current scales
-      //   const { x, y } = this.initService.scale;
-      //   // Get sequence length
-      //   const n = this.sequence.length;
-      //   // // Get top-left point
-      //   // const tl: [number, number] = [0, 0];
-      //   // // Get bottom-right point
-      //   // const br: [number, number] = [width, height];
-      //   // Apply limitations on pan
-      //   this.zoom.translateExtent([[x(1) - this.margin.left, 0], [x(n + 1), Infinity]]);
-      // }),
+      // Initialize zoom scale
+      tap(() => {
+        // Get current width
+        const { margin, width } = this;
+        // Define number of residues in sequnce
+        const n = this.sequence.length + 1;
+        // Apply scale limit to 5 residues
+        this.zoom
+          .extent([[margin.left, 0], [width - margin.right, Infinity]])
+          .scaleExtent([1, n / 5])
+          .translateExtent([[margin.left, 0], [width - margin.right, 0]])
+          .on('zoom', (event) => {
+            // // TODO remove this
+            // console.log('Zoom event handler', this.zoom);
+            // Call zoom features on update
+            this.onFeaturesZoom(event);
+          })
+      }),
       // Subscribe to zoom event
       switchMap(() => this.zoomService.zoomed$),
       // Finally, update representation
