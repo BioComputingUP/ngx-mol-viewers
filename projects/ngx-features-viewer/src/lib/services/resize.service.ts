@@ -24,7 +24,7 @@ export function resize<E extends d3.Selection<any, undefined, null, undefined>,>
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'platform'
 })
 export class ResizeService {
   /** Resize handler for SVG container

@@ -34,7 +34,7 @@ export interface Grid {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'platform',
 })
 export class InitializeService {
 

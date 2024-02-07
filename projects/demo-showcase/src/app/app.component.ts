@@ -2,7 +2,7 @@
 import { NgxFeaturesViewerComponent } from '@ngx-features-viewer';
 // import { NgxStructureViewerComponent } from 'ngx-structure-viewer';
 import { CommonModule } from '@angular/common';
-import { RouterOutlet } from '@angular/router';
+import { RouterModule, RouterOutlet } from '@angular/router';
 import { Component } from '@angular/core';
 
 // Define example sequence
@@ -24,7 +24,7 @@ const P05067 = 'MLPGLALLLLAAWTARALEVPTDGNAGLLAEPQIAMFCGRLNMHMNVQNGKWDSDPSGTK' +
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, NgxFeaturesViewerComponent],
+  imports: [CommonModule, RouterModule, RouterOutlet, NgxFeaturesViewerComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
