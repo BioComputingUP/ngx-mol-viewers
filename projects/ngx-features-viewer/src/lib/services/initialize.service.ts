@@ -127,7 +127,7 @@ export class InitializeService {
           // Bind features group to clip path
           .attr('class', 'features')
           .attr('clip-path', `url(#clip)`);
-        // // Define zoom event
+        // Define zoom event
         this.zoom = d3.zoom<SVGSVGElement, unknown>();
         // Add an invisible rectangle on top of the chart.
         // This, can recover pointer events: it is necessary to understand when the user zoom.

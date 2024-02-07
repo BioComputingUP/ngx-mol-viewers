@@ -350,8 +350,6 @@ export class DrawService {
             this.children.set(parent, children);
           }
         });
-        // TODO Remove this
-        console.log('Children', this.children);
       }),
       // Compute depth of each feature
       tap((features) => {
@@ -479,9 +477,6 @@ export class DrawService {
             const child = label.node() as SVGForeignObjectElement;
             // Append child node to parent node
             children.appendChild(child);
-            // TODO Remove this
-            console.log('Parent', parent);
-            console.log('Child', child);
           }
         });
       }),

@@ -22,6 +22,10 @@ export class ZoomService {
 
   // public scaled? = this.initService.scale;
 
+  private get draw() {
+    return this.initService.draw;
+  }
+
   public readonly zoom$ = new ReplaySubject<d3.D3ZoomEvent<SVGSVGElement, undefined>>(1);
 
   public readonly zoomed$: Observable<void>;
@@ -43,14 +47,41 @@ export class ZoomService {
       switchMap(() => this.zoom$),
       // // Set debounce time
       // debounceTime(10),
+      // // Filter wheel evente
+      // filter((event) => event.sourceEvent.type === 'wheel'),
       // Transform original scale
       map((event) => {
-        // Get current horizontal, vertical scale
-        const { x } = this.initService.scale;
-        // Get horizontal scale, change its domain
-        const _x = event.transform.rescaleX(this._scale.x);
-        // Update scaled in place
-        x.domain(_x.domain());
+        // Get initial horizontal scale
+        const { x: initial } = this._scale;
+        // Get current horizontal scale (the one to be updated)
+        const { x: current } = this.initService.scale;
+        // Get updated scale (apply transformations on initial scale)
+        const updated = event.transform.rescaleX(initial);
+        // Add transformation to drawed elements
+        this.draw.attr('transform', event.transform.toString());
+        // // // const { x: translate, k: scale } = event.transform;
+        // // Get minimum, maximum value for domain
+        // const [min, max] = initial.domain();
+        // Get start, end domain
+        const [start, end] = updated.domain();
+
+        // // TODO Remove this
+        // console.log('Transform', event.transform.toString());
+        // const new_transform = event.transform.translate(Math.max(0, event.transform.x), Infinity);
+
+        // // Get updated domain start, end
+        // let [start, end] = updated.domain();
+        // console.log('Transform { x: ' + event.transform.x + ', k: ' + event.transform.k + '}');
+        // console.log('Before [start: ' + start + ', end: ' + end + ']');
+        // // Compute width, bounded to maximum, initial width
+        // const width = end - start;
+        // // Update start position according to initial start position and actual width
+        // start = Math.min(max - width, Math.max(min, start));
+        // // Update end position according to updated start positiona and actual width
+        // end = start + width;
+        // console.log('After [start: ' + start + ', end: ' + end + ']');
+        // Update current domain, in place
+        current.domain([start, end]);
         // Return original scale
         return this.initService.scale;
       }),
