@@ -25,6 +25,12 @@ export type Features = Array<Continuous | Loci | Pins | DSSP>;
   selector: 'ngx-features-viewer',
   standalone: true,
   imports: [],
+  providers: [
+    InitializeService,
+    ResizeService,
+    DrawService,
+    ZoomService,
+  ],
   template: `<div style="position: relative; display: block; width: 100%; height: 100%;" #root></div>`,
   styleUrl: './ngx-features-viewer.component.scss',
   encapsulation: ViewEncapsulation.None,

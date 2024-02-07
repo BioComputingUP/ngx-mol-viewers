@@ -210,7 +210,7 @@ function createDSSP(group: d3.Selection<d3.BaseType | SVGGElement, unknown, null
 // function createLabel() {}
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'platform'
 })
 export class DrawService {
 

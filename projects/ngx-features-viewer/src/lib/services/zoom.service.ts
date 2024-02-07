@@ -6,7 +6,7 @@ import { Scale, InitializeService } from './initialize.service';
 import * as d3 from 'd3';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'platform'
 })
 export class ZoomService {
   /** Zoom handler service

@@ -1,0 +1,61 @@
+$dark: #212529;
+
+.d-flex {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.flex-col {
+    flex-direction: column;
+}
+
+.flex-row {
+    flex-direction: row;
+}
+
+.flex-center {
+    justify-content: center;
+    align-items: center;
+}
+
+.d-flex-center {
+    @extend .d-flex;
+    @extend .flex-center;
+}
+
+.vh-100 {
+    height: 100vh;
+}
+
+.vw-100 {
+    width: 100vw;
+}
+
+.font-monospace {
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: lighter;
+    font-kerning: normal;
+    font-size: medium;
+    color: $dark;
+}
+
+#ngx-features-viewer,
+#ngx-structure-viewer {
+    // Style subtitles
+    h2 {
+        margin-bottom: 0.5rem;
+        margin-top: 1.5rem
+    }
+    // Style thumbnails
+    img {
+        position: relative;
+        display: block;
+        border-radius: .75rem;
+        border: 1px solid $dark;
+        cursor: pointer;
+        // Hover effect
+        &:hover {
+            outline: 1px solid $dark;
+        }
+    }
+}

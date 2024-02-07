@@ -1,1 +1,18 @@
-<p>page-home works!</p>
+<!-- Outer scaffold -->
+<div class="d-flex flex-col flex-center font-monospace">
+    <!-- Page title -->
+    <div class="d-flex flex-row flex-center">
+        <img src="assets/ngx-bio-tools.svg" alt="ngx-bio-tools" height="48" />
+        <h1>ngx-bio-tools</h1>
+    </div>
+    <!-- Feature viewer -->
+    <div id="ngx-features-viewer">
+        <h2>Features viewer</h2>
+        <img [ngSrc]="'assets/ngx-features-viewer.png'" alt="ngx-features-viewer" [width]="586" [height]="320" routerLink="/features" priority/>
+    </div>
+    <!-- Sequence viewer -->
+    <div class="d-flex flex-col" id="ngx-structure-viewer">
+        <h2>Structure viewer</h2>
+        <img [ngSrc]="'assets/ngx-structure-viewer.png'" alt="ngx-structure-viewer" [width]="586" [height]="320" routerLink="/structure" priority/>
+    </div>
+</div>
