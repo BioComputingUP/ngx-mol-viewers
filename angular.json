@@ -3,48 +3,6 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "ngx-structure-viewer": {
-      "projectType": "library",
-      "root": "projects/ngx-structure-viewer",
-      "sourceRoot": "projects/ngx-structure-viewer/src",
-      "prefix": "lib",
-      "architect": {
-        "build": {
-          "builder": "@angular-devkit/build-angular:ng-packagr",
-          "options": {
-            "project": "projects/ngx-structure-viewer/ng-package.json"
-          },
-          "configurations": {
-            "production": {
-              "tsConfig": "projects/ngx-structure-viewer/tsconfig.lib.prod.json"
-            },
-            "development": {
-              "tsConfig": "projects/ngx-structure-viewer/tsconfig.lib.json"
-            }
-          },
-          "defaultConfiguration": "production"
-        },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "tsConfig": "projects/ngx-structure-viewer/tsconfig.spec.json",
-            "polyfills": [
-              "zone.js",
-              "zone.js/testing"
-            ]
-          }
-        },
-        "lint": {
-          "builder": "@angular-eslint/builder:lint",
-          "options": {
-            "lintFilePatterns": [
-              "projects/ngx-structure-viewer/**/*.ts",
-              "projects/ngx-structure-viewer/**/*.html"
-            ]
-          }
-        }
-      }
-    },
     "demo-showcase": {
       "projectType": "application",
       "schematics": {
@@ -143,6 +101,48 @@
             "lintFilePatterns": [
               "projects/demo-showcase/**/*.ts",
               "projects/demo-showcase/**/*.html"
+            ]
+          }
+        }
+      }
+    },
+    "ngx-structure-viewer": {
+      "projectType": "library",
+      "root": "projects/ngx-structure-viewer",
+      "sourceRoot": "projects/ngx-structure-viewer/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/ngx-structure-viewer/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/ngx-structure-viewer/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/ngx-structure-viewer/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "tsConfig": "projects/ngx-structure-viewer/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "projects/ngx-structure-viewer/**/*.ts",
+              "projects/ngx-structure-viewer/**/*.html"
             ]
           }
         }
