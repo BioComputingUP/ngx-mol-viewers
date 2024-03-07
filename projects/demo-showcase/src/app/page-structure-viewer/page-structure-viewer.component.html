@@ -12,14 +12,40 @@
 </div>
 <!-- Section: try it out -->
 <div>
-    <h2>Try it out</h2>
-    <!-- TODO Show input -->
-    <code>
-        const source = {{ source | json }}<br>
-        const loci = {{ loci | json }}
-    </code>
-    <!-- TODO Show output -->
-    <div style="display: block; height: 600px; width: 600px;">
-        <ngx-structure-viewer [source]="source" [loci]="loci"></ngx-structure-viewer>
+    <div style="margin-bottom: .75rem">
+        <!-- Show title -->
+        <h2>Try it out</h2>
+        <!-- Show input -->
+        <code>
+            const source = {{ source | json }}<br>
+            const loci = {{ loci | json }}<br>
+            const highlight = {{ highlight | json }}<br>
+        </code>
     </div>
+    <!-- TODO Show output -->
+    <div style="display: flex; flex-direction: row;">
+        <!-- Structure viewer -->
+        <div style="display: block; height: 600px; width: 600px;">
+            <ngx-structure-viewer [settings]="settings" [source]="source" [loci]="loci" [highlight]="highlight" [select]="select"></ngx-structure-viewer>
+        </div>
+        <!-- Command palette -->
+        <div style="display: block; margin-left: 1rem;">
+            <!-- Handle highlight -->
+            <div style="display: flex; flex-direction: row; align-items: baseline; margin-bottom: 1rem;">
+                <span style="margin-right: .25rem;">Highlight locus 10-20 on chain A</span>
+                <button type="button" (click)="highlight={ start: '10', end: '20', chain: 'A' }">Highlight!</button>
+            </div>
+            <!-- TODO Handle zoom -->
+            <div style="display: flex; flex-direction: row; align-items: baseline; margin-bottom: 1rem;">
+                <span style="margin-right: .25rem;">Focus locus 30-40 on chain A</span>
+                <button type="button" disabled>Focus!</button>
+            </div>
+            <!-- Handle selection -->
+            <div style="display: flex; flex-direction: row; align-items: baseline; margin-bottom: 1rem;">
+                <span style="margin-right: .25rem;">Select locus 55-65 on chain A</span>
+                <button type="button" (click)="select={ start: '55', end: '65', chain: 'A' }">Select!</button>
+            </div>
+        </div>
+    </div>
+
 </div>
