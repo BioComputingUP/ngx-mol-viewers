@@ -1,6 +1,6 @@
 import { NgxFeaturesViewerComponent, Features } from '@ngx-features-viewer';
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 // Define example sequence
 // >sp|P05067|A4_HUMAN Amyloid-beta precursor protein OS=Homo sapiens OX=9606 GN=APP PE=1 SV=3
@@ -19,11 +19,16 @@ const P05067 = 'MLPGLALLLLAAWTARALEVPTDGNAGLLAEPQIAMFCGRLNMHMNVQNGKWDSDPSGTK' +
   'VMLKKKQYTSIHHGVVEVDAAVTPEERHLSKMQQNGYENPTYKFFEQMQN';
 
 @Component({
-  selector: 'app-page-features-viewer',
-  standalone: true,
+  // eslint-disable-next-line @angular-eslint/component-selector
+  selector: 'page-features-viewer',
+  // Handle dependencies
   imports: [CommonModule, NgxFeaturesViewerComponent],
+  standalone: true,
+  // Handle representation
   templateUrl: './page-features-viewer.component.html',
-  styleUrl: './page-features-viewer.component.scss'
+  styleUrl: './page-features-viewer.component.scss',
+  // Handle changes
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PageFeaturesViewerComponent {
   // Define default height (in pixel)

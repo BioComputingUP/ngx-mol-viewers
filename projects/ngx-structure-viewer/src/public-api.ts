@@ -1,7 +1,4 @@
-/*
- * Public API Surface of ngx-structure-viewer
- */
-
-export {NgxStructureViewerComponent} from './lib/ngx-structure-viewer.component';
-export * from './lib/source';
-export * from './lib/loci';
+export { NgxStructureViewerComponent } from './lib/ngx-structure-viewer.component';
+export * from './lib/entities/settings';
+export * from './lib/entities/source';
+export * from './lib/entities/loci';

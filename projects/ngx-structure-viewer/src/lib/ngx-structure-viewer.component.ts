@@ -1,20 +1,27 @@
-// prettier-ignore
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnDestroy, Output, ViewChild } from '@angular/core';
 import { Observable, ReplaySubject, Subscription, combineLatestWith, from, map, of, shareReplay, switchMap, tap } from 'rxjs';
+import { AfterViewInit, Component, ElementRef, Input, OnDestroy, Output, ViewChild } from '@angular/core';
 // Mol* data structures
 import { Structure, StructureElement, StructureProperties, StructureSelection } from 'molstar/lib/mol-model/structure';
 import { MolScriptBuilder as MS } from "molstar/lib/mol-script/language/builder";
 import { DefaultPluginSpec, PluginSpec } from 'molstar/lib/mol-plugin/spec';
+import { StateTransforms } from 'molstar/lib/mol-plugin-state/transforms';
 import { Expression } from 'molstar/lib/mol-script/language/expression';
+import { PluginBehaviors } from 'molstar/lib/mol-plugin/behavior';
 import { PluginContext } from 'molstar/lib/mol-plugin/context';
 import { Overpaint } from 'molstar/lib/mol-theme/overpaint';
 import { Script } from 'molstar/lib/mol-script/script';
 import { Asset } from 'molstar/lib/mol-util/assets';
-import { Color } from 'molstar/lib/mol-util/color';
+// import { Color } from 'molstar/lib/mol-util/color';
+// Custom services
+import { SettingsService } from './services/settings.service';
 // Custom data structures
-import { Source } from './source';
-import { Loci, Locus } from './loci';
-import { StateTransforms } from 'molstar/lib/mol-plugin-state/transforms';
+import { fromHexString } from './entities/colors';
+import { Loci, Locus } from './entities/loci';
+import { Settings } from './entities/settings';
+import { Source } from './entities/source';
+import { Color } from 'molstar/lib/mol-util/color';
+
+
 
 // // Define single contact between loci
 // export type Contact<T = string> = Omit<
@@ -74,8 +81,10 @@ function getFilteredBundle(layers: Overpaint.BundleLayer[], structure: Structure
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'ngx-structure-viewer',
-  standalone: true,
+  // Handle dependencies
   imports: [],
+  standalone: true,
+  // Handle representation
   template: `
     <div style="position: relative; width: 100%; height: 100%;" #outer>
       <canvas style="position: absolute; left: 0; top: 0; width: 100%; height: 100%;" #inner></canvas>
@@ -145,13 +154,43 @@ export class NgxStructureViewerComponent implements AfterViewInit, OnDestroy {
   // Define update subscription
   protected _update: Subscription;
 
-  // Define output selection
-  @Output() selected = new EventEmitter<Locus>();
+  protected select$ = new ReplaySubject<Locus | null>();
 
-  // Define output highlights
-  @Output() highlighted = new EventEmitter<Locus>();
+  @Input() set select(locus: Locus | null) {
+    // Emit selected locus
+    this.select$.next(locus);
+  }
 
-  constructor() {
+  @Output() selected: Observable<Locus | null>;
+
+  protected _selected: Subscription;
+
+  protected highlight$ = new ReplaySubject<Locus | null>();
+
+  @Input() set highlight(locus: Locus | null) {
+    // Emit highlighted locus
+    this.highlight$.next(locus);
+  }
+
+  @Output() highlighted: Observable<Locus | null>;
+
+  protected _highlighted: Subscription; 
+
+  @Input() set settings(settings: Settings) {
+    // Define settings
+    this.settingsService.settings = settings;
+  }
+
+  get settings(): Settings {
+    // Retrieve current settings
+    return this.settingsService.settings;
+  }
+
+  readonly settings$ = this.settingsService.settings$;
+
+  constructor(
+    public settingsService: SettingsService,
+  ) {
     // Define pipeline for plugin initialization
     this.plugin$ = this.initPlugin();
     // Define pipeline for structure initialization
@@ -160,6 +199,90 @@ export class NgxStructureViewerComponent implements AfterViewInit, OnDestroy {
     this.update$ = this.updateRepresentation();
     // Subscribe to update pipeline
     this._update = this.update$.subscribe();
+
+    // Emit selected locus
+    this.selected = this.select$.pipe(
+      // Get structure instance
+      combineLatestWith(this.structure$),
+      // Get plugin instance
+      combineLatestWith(this.plugin$),
+      // Wrap everythin together
+      map(([[locus, structure], plugin]) => ({ plugin, structure, locus })),
+      // TODO Cast locus to list of residues
+      map(({ plugin, structure, locus: prev }) => {
+        // Initialize current locus
+        let curr = { start: '', end: '', chain: '', ids: [] as string[] };
+        // Case previous locus is not empty
+        if (prev) {
+          // Get residue identifiers
+          const ids = [...this.i2r.values()];
+          // Get numeric start index
+          const start = this.r2i.get(prev.chain + prev.start)!;
+          const end = this.r2i.get(prev.chain + prev.end)!;
+          // Add residue identifier to current locus
+          curr = { ...prev, ids: ids.slice(start, end + 1) };
+        }
+        // Return updated loci, as well as structure (data) and plugin
+        return { structure, locus: curr, plugin };
+      }),
+      // TODO Generate locus from list
+      map(({ plugin, structure, locus }) => {
+        // Case selected locus is defined
+        if (locus.ids.length > 0) {
+          // Map object locus to Mol* locus
+          const _locus = getLocusFromSet(locus.ids, structure);
+          // Update highlights
+          plugin.managers.structure.selection.fromLoci('set', _locus);
+        }
+        // Return input locus, if defined
+        return locus.start ? locus as Locus : null;
+      }),
+    );
+    // Subscribe to select
+    this._selected = this.selected.subscribe();
+
+    // Emit highlighted locus
+    this.highlighted = this.highlight$.pipe(
+      // Get structure instance
+      combineLatestWith(this.structure$),
+      // Get plugin instance
+      combineLatestWith(this.plugin$),
+      // TODO Remove this
+      // Wrap everythin together
+      map(([[locus, structure], plugin]) => ({ plugin, structure, locus })),
+      // TODO Cast locus to list of residues
+      map(({ plugin, structure, locus: prev }) => {
+        // Initialize current locus
+        let curr = { start: '', end: '', chain: '', ids: [] as string[] };
+        // Case previous locus is not empty
+        if (prev) {
+          // Get residue identifiers
+          const ids = [...this.i2r.values()];
+          // Get numeric start index
+          const start = this.r2i.get(prev.chain + prev.start)!;
+          const end = this.r2i.get(prev.chain + prev.end)!;
+          // Add residue identifier to current locus
+          curr = { ...prev, ids: ids.slice(start, end + 1) };
+        }
+        // Return updated loci, as well as structure (data) and plugin
+        return { structure, locus: curr, plugin };
+      }),
+      // TODO Generate locus from list
+      map(({ plugin, structure, locus }) => {
+        // Case locus is defined
+        if (locus.ids.length > 0) {
+          // Map object locus to Mol* locus
+          const _locus = getLocusFromSet(locus.ids, structure);
+          // Update highlights
+          // plugin.managers.camera.focusLoci(_locus);
+          plugin.managers.interactivity.lociHighlights.highlightOnly({ loci: _locus });
+        }
+        // Return input locus, if defined
+        return locus.start ? locus as Locus : null;
+      }),
+    );
+    // Subscribe to highlight
+    this._highlighted = this.highlighted.subscribe();
   }
 
   public initPlugin(): Observable<PluginContext> {
@@ -167,7 +290,25 @@ export class NgxStructureViewerComponent implements AfterViewInit, OnDestroy {
     const settings: PluginSpec = {
       // Unpack default configuration
       ...DefaultPluginSpec(),
-      // config: [[PluginConfig.VolumeStreaming.Enabled, false]],
+      // Define behaviors
+      behaviors: [
+        PluginSpec.Behavior(PluginBehaviors.Representation.HighlightLoci, { mark: true }),
+        PluginSpec.Behavior(PluginBehaviors.Representation.DefaultLociLabelProvider),
+        PluginSpec.Behavior(PluginBehaviors.Camera.FocusLoci),
+        PluginSpec.Behavior(PluginBehaviors.Representation.FocusLoci),
+        // PluginSpec.Behavior(PluginBehaviors.CustomProps.Interactions),
+        PluginSpec.Behavior(PluginBehaviors.Representation.HighlightLoci),
+        PluginSpec.Behavior(PluginBehaviors.Representation.SelectLoci),
+        PluginSpec.Behavior(PluginBehaviors.Representation.FocusLoci),
+        PluginSpec.Behavior(PluginBehaviors.Camera.FocusLoci),
+        PluginSpec.Behavior(PluginBehaviors.Camera.CameraAxisHelper),
+        PluginSpec.Behavior(PluginBehaviors.CustomProps.StructureInfo),
+        PluginSpec.Behavior(PluginBehaviors.CustomProps.AccessibleSurfaceArea),
+        PluginSpec.Behavior(PluginBehaviors.CustomProps.Interactions),
+        PluginSpec.Behavior(PluginBehaviors.CustomProps.SecondaryStructure),
+        PluginSpec.Behavior(PluginBehaviors.CustomProps.ValenceModel),
+        PluginSpec.Behavior(PluginBehaviors.CustomProps.CrossLinkRestraint),
+      ]
     };
     // Subscribe to parent HTML element initialization first
     return this.outer$.pipe(
@@ -198,10 +339,27 @@ export class NgxStructureViewerComponent implements AfterViewInit, OnDestroy {
     return this.plugin$.pipe(
       // Then, subscribe to changes in source
       combineLatestWith(this.source$),
+      // Then, subscribe to settings emission
+      combineLatestWith(this.settings$),
       // Cast combined values to object
-      map(([plugin, source]) => ({ plugin, source })),
+      map(([[plugin, source], settings]) => ({ plugin, settings, source })),
+      // Update background color
+      tap(({ plugin, settings }) => {
+        // Get background color
+        const [ color, alpha ] = fromHexString(settings.background);
+        // Set background color
+        plugin.canvas3d?.setProps({
+          // Define background transparency
+          transparentBackground: alpha == 0.5,
+          // Change background color
+          renderer: { 
+            backgroundColor: color, 
+            pickingAlphaThreshold: alpha,
+          }
+        })
+      }),
       // Retrieve data
-      switchMap(({ plugin, source }) => {
+      switchMap(({ plugin, settings, source }) => {
         // Define data retrieval pipeline
         const data$ = from((async () => {
           const label = source.label;
@@ -210,6 +368,8 @@ export class NgxStructureViewerComponent implements AfterViewInit, OnDestroy {
           if (source.type === 'local') {
             // Case source data is string, no need to read data as file
             if (typeof source.data === 'string') {
+              // // TODO Remove this
+              // console.log(source.data);
               // Read file from string
               return plugin.builders.data.rawData({ data: source.data, label });
             }
@@ -250,13 +410,13 @@ export class NgxStructureViewerComponent implements AfterViewInit, OnDestroy {
           // Wrap data into object
           map((data) => ({ data })),
           // Combine with initial values
-          combineLatestWith(of({ plugin, source })),
+          combineLatestWith(of({ plugin, settings, source })),
           // Combine all into the same object
-          map(([{ data }, { plugin, source }]) => ({ plugin, source, data })),
+          map(([{ data }, { plugin, settings, source }]) => ({ plugin, settings, source, data })),
         );
       }),
       // Draw trajectory
-      switchMap(({ plugin, source, data }) => {
+      switchMap(({ plugin, settings, source, data }) => {
         // Unpack source parameters
         const { label, format } = source;
         // Cast Promise to Observable
@@ -272,13 +432,13 @@ export class NgxStructureViewerComponent implements AfterViewInit, OnDestroy {
           });
           // Create component for the whole structure
           const component = await plugin.builders.structure.tryCreateComponentStatic(structure, 'polymer', { label });
+          // Define color
+          const [ value ] = fromHexString(settings.color);
           // Initialize white representation
           await plugin.builders.structure.representation.addRepresentation(component!, {
             type: 'cartoon',
             color: 'uniform',
-            colorParams: {
-              value: Color(0xffffff)
-            }
+            colorParams: { value },
           });
           // Return structure data
           return structure.cell?.obj?.data as Structure;
@@ -310,9 +470,6 @@ export class NgxStructureViewerComponent implements AfterViewInit, OnDestroy {
             index++;
           },
         }));
-        // TODO Remove this
-        console.log('Residue to index', r2i);
-        console.log('Index to residue', i2r);
       }),
       // Cache results
       shareReplay(1),
@@ -330,7 +487,7 @@ export class NgxStructureViewerComponent implements AfterViewInit, OnDestroy {
       map(([structure, loci]) => ({ structure, loci, plugin: this.plugin })),
       // First, cast string loci to numeric loci
       // Then, cast numeric loci to array of residue identifiers
-      map(({ structure, loci: prev, plugin}) => {
+      map(({ structure, loci: prev, plugin }) => {
         // Get residue identifiers
         const ids = [...this.i2r.values()];
         // Initialize loci as list of residue ranges
@@ -356,10 +513,7 @@ export class NgxStructureViewerComponent implements AfterViewInit, OnDestroy {
           // Define current Mol* bundle
           const bundle = StructureElement.Bundle.fromLoci(locus);
           // Compute color
-          const color = Color.fromHexStyle(hex || '#000000');
-          // // TODO Remove this
-          // console.log('Locus', { start, end, color: hex});
-          // console.log('Color', color);
+          const [ color ] = fromHexString(hex || this.settings.color);
           // Define and store current layer
           layers.push({ bundle, color, clear: false });
         }
@@ -381,6 +535,18 @@ export class NgxStructureViewerComponent implements AfterViewInit, OnDestroy {
                   // TODO Types not working
                   Overpaint.toBundle(bundle as never)
                 );
+              // TODO Define locus for all residues
+              const _locus = getLocusFromSet([...this.i2r.values()], structure);
+              const _bundle = StructureElement.Bundle.fromLoci(_locus);
+              // eslint-disable-next-line @typescript-eslint/no-unused-vars
+              const [ _color, alpha ] = fromHexString(this.settings.color); 
+              // TODO Apply transparency to representation
+              update
+                .to(representationRef.cell.transform.ref)
+                .apply(
+                  StateTransforms.Representation.TransparencyStructureRepresentation3DFromBundle,
+                  { layers: [{ bundle: _bundle, value: alpha }] },
+                );
             }
           }
         }
@@ -400,5 +566,7 @@ export class NgxStructureViewerComponent implements AfterViewInit, OnDestroy {
   public ngOnDestroy(): void {
     // Unsubscribe
     this._update.unsubscribe();
+    this._selected.unsubscribe();
+    this._highlighted.unsubscribe();
   }
 }
