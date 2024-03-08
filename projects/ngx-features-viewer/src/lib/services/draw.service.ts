@@ -448,9 +448,11 @@ export class DrawService {
           // Add label HTML content
           .html((d: Feature) => {
             // Define feature identifier
-            const _id = ('' + d.id === 'sequence') ? '' + d.id : 'feature ' + d.id;
+            const _id = ('' + d.id === 'sequence') ? 'Sequence' : 'feature ' + d.id;
+            // Define label
+            const label = d.label !== undefined ? d.label : _id; 
             // Return HTML content
-            return `<span>${_id} </span><i class="bi bi-caret-down-fill"></i>`;
+            return `<span>${label} </span><i class="bi bi-caret-down-fill"></i>`;
           });
         // Add children group
         this.labels
