@@ -96,7 +96,7 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, OnChanges, OnD
     public drawService: DrawService,
   ) {
     // TODO Remove this
-    this.margin = { top: 24, right: 24, bottom: 24, left: 128 };
+    this.margin = { top: 24, right: 24, bottom: 24, left: 280 };
     // TODO Update SVG according to inputs
     this.update$ = this.initService.initialized$.pipe(
       // TODO Initialize drawings

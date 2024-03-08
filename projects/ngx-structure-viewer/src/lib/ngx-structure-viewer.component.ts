@@ -349,8 +349,8 @@ export class NgxStructureViewerComponent implements AfterViewInit, OnDestroy {
         const [ color, alpha ] = fromHexString(settings.background);
         // Set background color
         plugin.canvas3d?.setProps({
-          // Define background transparency
-          transparentBackground: alpha == 0.5,
+          // TODO Define background transparency
+          // transparentBackground: alpha == 0.5,
           // Change background color
           renderer: { 
             backgroundColor: color, 

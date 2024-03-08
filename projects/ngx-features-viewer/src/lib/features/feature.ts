@@ -1,10 +1,12 @@
 export default interface Feature<T> {
     // Unique identifier
     id?: number;
-    // Define feature name
-    name?: string;
     // Feature type
     type: string;
+    // Define feature name
+    name?: string;
+    // Define feature label
+    label?: string;
     // Define values
     values: T[];
     // Define parent feature identifier
