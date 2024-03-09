@@ -3,5 +3,6 @@
   "dest": "../../dist/ngx-structure-viewer",
   "lib": {
     "entryFile": "src/public-api.ts"
-  }
+  },
+  "assets": ["LICENSE.*"]
 }

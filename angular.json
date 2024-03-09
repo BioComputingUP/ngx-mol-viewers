@@ -27,7 +27,8 @@
             "inlineStyleLanguage": "scss",
             "assets": [
               "projects/demo-showcase/src/favicon.ico",
-              "projects/demo-showcase/src/assets"
+              "projects/demo-showcase/src/assets",
+              { "input": "./", "glob": "LICENSE.*", "output": "./" }
             ],
             "styles": [
               "projects/demo-showcase/src/styles.scss"
