@@ -588,7 +588,9 @@ export class DrawService {
       .attr('y', y('sequence') + lh / 2)
       .attr('width', () => width)
       .attr('height', lh)
-      .attr('dominant-baseline', 'central');
+      // Style positioning
+      .attr('dominant-baseline', 'central')
+      .style('text-anchor', 'middle')
     // // TODO Hide if width is not sufficient
     // .text((d) => width > (1 * REM) ? d : ' ');
   }
@@ -610,9 +612,9 @@ export class DrawService {
       .selectAll('g.label')
       .data([{ id: 'sequence', label: 'Sequence', visible: true }, ...traces] as Traces, identity)
       .join('g')
-      .attr('id', (d) => 'label-' + String(d.id));
-    // .attr('class', (d) => `label ${d.visible ? 'label-visible' : ''}`);
-    // TODO Remove this
+      .attr('id', (d) => 'label-' + String(d.id))
+      .attr('class', 'label');
+    // Remove this
     this.labels
       .selectAll('rect')
       .data(d => [d], index)
@@ -626,9 +628,39 @@ export class DrawService {
       .selectAll('text')
       .data(d => [d], index)
       .join('text')
-      .text((d) => d.label || '')
+      .text((d) => (d.label || '') + ' ' + (d.visible ? '(visible)' : '(hidden)'))
       .attr('height', (d) => d['line-height'] || settings['line-height'])
       .attr('width', () => ml)
+      // Filter out sequence
+      .filter((trace) => trace.id !== 'sequence')
+      // TODO Set click event
+      .on('click', (_, trace) => {
+        // Update flag for current trace
+        trace.visible = trace.visible === false;
+        // Get current traces
+        const traces = Array.from(this.featuresService.traces.values());
+        // Initialize excluded traces
+        const excluded = new Array<Trace<Feature>>();
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        for (const trace of traces) {
+          // Extract identifier, visibility id out of trace
+          const { visible } = { visible: true, ...trace };
+          // Case trace is not visible
+          if (visible !== true) {
+            // Then, get branch for current trace
+            const branch = this.featuresService.getBranch(trace).slice(1);
+            // Insert branch into excluded list
+            excluded.push(...branch);
+          }
+        }
+        // Filter out excluded features
+        this.traces$.next(traces.filter((trace) => !excluded.includes(trace)) as Traces);
+
+        // // Re-insert traces according to original list
+        // const traces = Array.from(this.featuresService.traces.values());
+        // Emit updated traces
+        
+      });
     // .attr('alignment-baseline', 'middle');
   }
 
@@ -752,11 +784,11 @@ export class DrawService {
             .join('path')
             // Generate path
             .attr('class', 'continuous')
-            .attr('fill', 'steelblue')
-            .attr('fill-opacity', 0.3)
-            .attr('stroke', 'steelblue')
+            .attr('fill', 'pink')
+            .attr('fill-opacity', 0)
+            .attr('stroke', '#ff1493')
             .attr('stroke-opacity', 1)
-            .attr('stroke-width', 1.5);
+            .attr('stroke-width', 2);
         }
         // Handle discrete features
         else {
@@ -820,12 +852,6 @@ export class DrawService {
   }
 
   public updateTraces(): void {
-    // // Get feature values
-    // const _values = this.values;
-    // // Get height map
-    // const _height = this.initService.height;
-    // // Get scale (x, y axis) and margin (top, bottom, left, right)
-    // const { x, y } = this.scale!;
     const scale = this.initializeService.scale;
     const settings = this.initializeService.settings;
     // Loop through each trace
@@ -848,14 +874,14 @@ export class DrawService {
         if (feature.type === 'continuous') {
           // Get values for feature
           const values = feature.values;
-          const n = values.length;
+          // const n = values.length;
           // Difine minimum, maximum value
           const min = feature.min !== undefined ? feature.min : Math.min(...feature.values);
           const max = feature.max !== undefined ? feature.max : Math.max(...feature.values);
           // Initialize horizontal, vertical values
-          let xy: [number, number][] = values.map((v, i) => [i + 0.5, ((v - min) / (max - min))]);
-          // Add initial, final values
-          xy = [[0.5, 0], ...xy, [n + 0.5, 0]];
+          const xy: [number, number][] = values.map((v, i) => [i + 1, 1 - (v - min) / (max - min)]);
+          // // Add initial, final values
+          // xy = [[0.5, 1.0], ...xy, [n + 1.0, 0]];
           // Get path
           const path = group.select('path.continuous');
           // Define line function

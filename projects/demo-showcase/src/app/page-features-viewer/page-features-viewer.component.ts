@@ -82,9 +82,9 @@ export class PageFeaturesViewerComponent {
       type: 'trace', 
       position: 'overlap', 
       values: [
-        {type: 'continuous', values: [3.2, 1.1, 0.7, 0.9, 2.2]},
         {type: 'loci', values: [{start: 3, end: 5}]},
         {type: 'loci', values: [{start: 1, end: 4}]},
+        {type: 'continuous', values: [3.2, 1.1, 0.7, 0.9, 2.2]},
       ]
     },
     // Test nested
