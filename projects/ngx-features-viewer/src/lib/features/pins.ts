@@ -1,9 +1,7 @@
-import Feature from "./feature";
-import { Locus } from "./loci";
+import { Feature } from './feature';
+import { Locus } from './loci';
 
-export type Pin = Pick<Locus, 'start' | 'color'>;
-
-export default interface Pins extends Feature<Pin> {
+export interface Pins extends Feature<Pick<Locus, 'start' | 'color'>> {
     // Override type
     type: 'pins';
 }

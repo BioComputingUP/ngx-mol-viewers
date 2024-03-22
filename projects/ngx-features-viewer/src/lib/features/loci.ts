@@ -1,4 +1,4 @@
-import Feature from "./feature";
+import { Feature } from './feature';
 
 export interface Locus<T = number> { 
   // Define start, end position  
@@ -8,7 +8,7 @@ export interface Locus<T = number> {
   color?: string; 
 }
 
-export default interface Loci extends Feature<Locus> {
+export interface Loci extends Feature<Locus> {
   // Override type
   type: 'loci';
 }

@@ -57,8 +57,8 @@ export class ZoomService {
         const { x: current } = this.initService.scale;
         // Get updated scale (apply transformations on initial scale)
         const updated = event.transform.rescaleX(initial);
-        // Add transformation to drawed elements
-        this.draw.attr('transform', event.transform.toString());
+        // // Add transformation to drawed elements
+        // this.draw.attr('transform', event.transform.toString());
         // // // const { x: translate, k: scale } = event.transform;
         // // Get minimum, maximum value for domain
         // const [min, max] = initial.domain();

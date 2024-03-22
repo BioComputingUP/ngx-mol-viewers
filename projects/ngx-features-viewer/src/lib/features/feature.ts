@@ -1,20 +1,10 @@
-export default interface Feature<T> {
-    // Unique identifier
-    id?: number;
-    // Feature type
-    type: string;
-    // Define feature name
-    name?: string;
-    // Define feature label
-    label?: string;
-    // Define values
-    values: T[];
-    // Define parent feature identifier
-    parent?: number;
-    // Define color for feature
-    color?: string;
-    // Whether feature is active (children are visible) or not (children not visible)
-    active?: boolean;
-    // Define height of current feature row
-    height?: number;
+import { Settings } from '../settings';
+
+export interface Feature<T> extends Partial<Settings> {
+  // Define label for current feature
+  label?: string;
+  // Define feature type
+  type?: string;
+  // Define values for current feature
+  values: T[];
 }

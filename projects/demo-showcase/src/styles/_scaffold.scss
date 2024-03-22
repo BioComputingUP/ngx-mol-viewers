@@ -1,0 +1,32 @@
+html, body {
+  height: 100vh;
+  // width: 100vw;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+}
+
+header {
+  flex-shrink: 0;
+  flex-grow: 0;
+}
+
+main {
+  // Allow to grow
+  flex-shrink: 0;
+  flex-grow: 1;
+  // Push footer on bottom
+  margin-bottom: auto;
+  margin-top: 0;
+}
+
+footer {
+  flex-shrink: 0;
+  flex-grow: 0;
+  // Push footer on bottom
+  margin-bottom: 0;
+  margin-top: auto;
+}

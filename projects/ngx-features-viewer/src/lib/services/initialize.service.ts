@@ -1,6 +1,7 @@
 import { Observable, ReplaySubject, map, shareReplay, tap } from 'rxjs';
 import { ElementRef, Injectable } from '@angular/core';
 import * as d3 from 'd3';
+import { Settings } from '../settings';
 
 type SVG = d3.Selection<SVGSVGElement, undefined, null, undefined>;
 
@@ -9,14 +10,6 @@ type Group = d3.Selection<SVGGElement, undefined, null, undefined>;
 type Rect = d3.Selection<SVGRectElement, undefined, null, undefined>;
 
 type Zoom = d3.ZoomBehavior<SVGSVGElement, unknown>;
-
-export interface Margin {
-  // Define margins clockwise
-  top: number;
-  right: number;
-  bottom: number;
-  left: number;
-}
 
 export interface Scale {
   x: d3.ScaleLinear<number, number>,
@@ -62,11 +55,18 @@ export class InitializeService {
   // Get main SVG element
   public svg!: SVG;
 
-  // Define margin
-  public margin!: Margin;
+  // Define settings
+  public settings!: Settings;
 
-  // Define map between feature (identifier) and its height
-  public height!: Map<string, number>;
+  public get margin() {
+    // Unpack settings
+    const { 'margin-top': top, 'margin-right': right, 'margin-bottom': bottom, 'margin-left': left, } = this.settings;
+    // Return margins
+    return { top, right, bottom, left };
+  }
+
+  // // Define map between feature (identifier) and its height
+  // public height!: Map<string, number>;
 
   // Define horizontal, vertical scales
   public scale!: Scale;
