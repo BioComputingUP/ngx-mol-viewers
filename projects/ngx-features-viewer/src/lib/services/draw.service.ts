@@ -722,8 +722,15 @@ export class DrawService {
       // Set start, end positions
       .attr('x', margin.left)
       .attr('y', (trace) => {
-        // Get first feature
-        const feature = trace.values[0];
+        // Sort features
+        const features = trace.values.sort((a, b) => {
+          if (a.type === 'continuous') return -1;
+          if (b.type === 'continuous') return +1;
+          // Otherwise, return same order
+          return 0;
+        });
+        // get first feature
+        const feature = features[0];
         // Compute offsets
         const mt = y(String(trace.id));
         const lh = feature['line-height'] || trace['line-height'] || settings['line-height'];
