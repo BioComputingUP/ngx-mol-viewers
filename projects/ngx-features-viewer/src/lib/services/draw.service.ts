@@ -24,6 +24,8 @@ type LabelGroup = d3.Selection<SVGGElement | d3.BaseType, Traces[number], SVGGEl
 
 type TraceGroup = d3.Selection<SVGGElement | d3.BaseType, Traces[number], SVGGElement, undefined>;
 
+type GridLines = d3.Selection<SVGLineElement | SVGRectElement | d3.BaseType, Traces[number], SVGGElement | d3.BaseType, Traces>;
+
 // type ValueGroup = d3.Selection<d3.BaseType, Feature['values'][number], SVGGElement | d3.BaseType, undefined>;
 
 // TODO This should not be there
@@ -189,6 +191,8 @@ export class DrawService {
 
   public traces!: TraceGroup;
 
+  public grid!: GridLines;
+
   /** Draw features
    * 
    * This pipeline initialize features within the drawable aread
@@ -218,54 +222,12 @@ export class DrawService {
         // Get horizontal scale
         const x = this.initializeService.scale.x;
         // Generate horizontal domain for sequence
-        const domain = [0, sequence.length + 0.5];
+        const domain = [0, sequence.length + 1];
         // Update horizontal scale
         x.domain(domain);
       }),
       // Draw sequence
-      map((sequence) => {
-        // Color residue according to code
-        const color = (d: string) => CINEMA[d as never] || CINEMA.X;
-        // Intiialize residues group
-        const group = this.initializeService.draw
-          // Select previous residues group
-          .selectAll('g.sequence')
-          // Bind residues group to sequence
-          .data<Sequence>([sequence])
-          // Create current residues group
-          .join('g')
-          .attr('class', 'sequence');
-        // TODO Append background rectangles to SVG element
-        this.residues = group
-          // Select previous residue groups
-          .selectAll('g.residue')
-          // Bind residue one-letter-code to each group
-          .data(sequence)
-          // Generate group
-          .join('g')
-          .attr('id', (_, i) => `residue-${i + 1}`)
-          .attr('class', 'residue');
-        // Add background rectangle to each resdiue group
-        this.residues
-          .append('rect')
-          .attr('class', 'color')
-          .attr('fill', (d) => color(d))
-          .attr('fill-opacity', 0.1);
-        // .text((d) => d);
-        // Add residue one-letter-code to each residue group
-        this.residues
-          .append('foreignObject')
-          .attr('class', 'name')
-          // Append inner DIV
-          .append('xhtml:div')
-          .style('display', 'flex')
-          .style('align-items', 'center')
-          .style('justify-content', 'center')
-          .style('height', '100%')
-          .style('width', '100%')
-          .style('box-sizing', 'border-box')
-          .style('color', 'black');
-      }),
+      map((sequence) => this.createSequence(sequence)),
       // Cache result
       shareReplay(1),
       // Switch to traces emission
@@ -353,7 +315,10 @@ export class DrawService {
       //   });
       // }),
       tap((traces) => this.createLabels(traces)),
-      // // Draw features, without setting position but saving references
+      // Draw grid, without setting position but saving references
+      tap((traces) => this.createGrid(traces)),
+      // Draw features, without setting position but saving references
+      tap((traces) => this.createTraces(traces)),
       // map((features: Features) => {
       //   // Initialize values map
       //   const values = this.values = new Map();
@@ -423,55 +388,13 @@ export class DrawService {
     // Define draw update
     this.drawn$ = this.draw$.pipe(
       // Move sequence residues in correct position
-      map(() => {
-        // Get height, width, margins
-        const margin = this.initializeService.margin;
-        // Get scale (x, y axis)
-        const { x, y } = this.initializeService.scale;
-        // Define width, height of each cell
-        const width = x(1) - x(0);
-        // Update size, position of residue background
-        this.residues
-          .select('rect.color')
-          .attr('x', (_, i) => x(i + 0.5))
-          .attr('y', margin.top)
-          .attr('width', () => width)
-          .attr('height', '100%');
-        // Update size, position of residue names
-        this.residues
-          // Style outer foreignObject
-          .select('foreignObject.name')
-          .attr('x', (_, i) => x(i + 0.5))
-          .attr('y', y('sequence') - (24 / 2))
-          .attr('width', () => width)
-          .attr('height', 24)
-          // Style inner div
-          .select('div')
-          .style('display', 'flex')
-          .style('justify-content', 'center')
-          .style('align-content', 'center')
-          .style('width', '100%')
-          .style('height', '100%')
-          // Hide if width is not sufficient
-          .text((d) => width > (0.75 * REM) ? d : ' ');
-      }),
-      // // Move grid in correct position
-      // map(() => {
-      //   // Get vertical scale
-      //   const y = this.initializeService.scale.y;
-      //   // Draw a line for each feature
-      //   this.initializeService.grid.y
-      //     .selectAll('line')
-      //     .data(y.domain(), index)
-      //     .join('line')
-      //     // Set start, end positions
-      //     .attr('x1', this.initializeService.margin.left)
-      //     .attr('x2', this.width - this.initializeService.margin.right)
-      //     .attr('y1', (d) => y(d))
-      //     .attr('y2', (d) => y(d));
-      // }),
+      map(() => this.updateSequence()),
+      // Move grid in correct position
+      map(() => this.updateGrid()),
       // Move labels in correct position
       map(() => this.updateLabels()),
+      // Move traces in correct position
+      map(() => this.updateTraces()),
       // map(() => {
       //   // Get scale (x, y axis)
       //   const { y } = this.initializeService.scale;
@@ -580,7 +503,7 @@ export class DrawService {
         const lh = this.initializeService.settings['line-height'];
         const mt = this.initializeService.settings['margin-top'];
         // Update range
-        return [...range, mt, mt + lh];
+        return [mt, mt + lh];
       }
       // Get current trace
       const trace = this.featuresService.getTrace(+id);
@@ -605,8 +528,73 @@ export class DrawService {
     y.domain(domain).range(range);
   }
 
+  // TODO Use sequence type
+  public createSequence(sequence: string[]) {
+    // Color residue according to code
+    const color = (d: string) => CINEMA[d as never] || CINEMA.X;
+    // Intiialize residues group
+    const group = this.initializeService.draw
+      // Select previous residues group
+      .selectAll('g.sequence')
+      // Bind residues group to sequence
+      .data<Sequence>([sequence])
+      // Create current residues group
+      .join('g')
+      .attr('class', 'sequence');
+    // TODO Append background rectangles to SVG element
+    this.residues = group
+      // Select previous residue groups
+      .selectAll('g.residue')
+      // Bind residue one-letter-code to each group
+      .data(sequence)
+      // Generate group
+      .join('g')
+      .attr('id', (_, i) => `residue-${i + 1}`)
+      .attr('class', 'residue');
+    // Add background rectangle to each resdiue group
+    this.residues
+      .append('rect')
+      .attr('class', 'color')
+      .attr('fill', (d) => color(d))
+      .attr('fill-opacity', 0.1);
+    // Add text to each residue group
+    this.residues
+      .append('text')
+      .attr('class', 'name')
+      .text((d) => '' + d);
+  }
+
+  public updateSequence() {
+    // Get line height
+    const lh = this.initializeService.settings['line-height'];
+    // Get height, width, margins
+    const margin = this.initializeService.margin;
+    // Get scale (x, y axis)
+    const { x, y } = this.initializeService.scale;
+    // Define width, height of each cell
+    const width = x(1) - x(0);
+    // Update size, position of residue background
+    this.residues
+      .select('rect.color')
+      .attr('x', (_, i) => x(i + 0.5))
+      .attr('y', margin.top)
+      .attr('width', () => width)
+      .attr('height', '100%');
+    // Update size, position of residue names
+    this.residues
+      // Style outer foreignObject
+      .select('text.name')
+      .attr('x', (_, i) => x(i + 1))
+      .attr('y', y('sequence') + lh / 2)
+      .attr('width', () => width)
+      .attr('height', lh)
+      .attr('dominant-baseline', 'central');
+    // // TODO Hide if width is not sufficient
+    // .text((d) => width > (1 * REM) ? d : ' ');
+  }
+
   public createLabels(traces: Traces): void {
-    const { 'line-height': lh } = this.initializeService.settings;
+    const settings = this.initializeService.settings;
     const { left: ml } = this.initializeService.margin;
     // Initialize labels SVG group
     const group = this.initializeService.svg
@@ -620,39 +608,286 @@ export class DrawService {
     // Add labels to their group
     this.labels = group
       .selectAll('g.label')
-      .data([{ id: 'sequence', label: 'sequence', visible: true }, ...traces] as Traces, identity)
+      .data([{ id: 'sequence', label: 'Sequence', visible: true }, ...traces] as Traces, identity)
       .join('g')
       .attr('id', (d) => 'label-' + String(d.id));
-      // .attr('class', (d) => `label ${d.visible ? 'label-visible' : ''}`);
+    // .attr('class', (d) => `label ${d.visible ? 'label-visible' : ''}`);
+    // TODO Remove this
+    this.labels
+      .selectAll('rect')
+      .data(d => [d], index)
+      .join('rect')
+      .attr('height', (d) => d['line-height'] || settings['line-height'])
+      .attr('width', () => ml)
+      .attr('fill', 'none')
+      .attr('stroke', '#D3D3D380');
     // Add text to labels
     this.labels
       .selectAll('text')
       .data(d => [d], index)
       .join('text')
       .text((d) => d.label || '')
-      .attr('height', (d) => d['line-height'] || lh)
-      .attr('width', () => ml);
+      .attr('height', (d) => d['line-height'] || settings['line-height'])
+      .attr('width', () => ml)
+    // .attr('alignment-baseline', 'middle');
   }
 
   public updateLabels(): void {
     // Get vertical scale
     const y = this.initializeService.scale.y;
     const settings = this.initializeService.settings;
+    // TODO Remove this
+    this.labels
+      // Select all inner foreign objects
+      .select('rect')
+      // Update positions
+      .attr('y', trace => y(String(trace.id)))
+      .attr('x', 0);
     // Update each label
     this.labels
       // Select all inner foreign objects
       .select('text')
       // Update positions
-      .attr('y', d => y(String(d.id)) + (d['line-height'] || settings['line-height']) / 2)
-      .attr('x', 0);
+      .attr('y', (trace) => {
+        // Define offset, line height and content size
+        const mt = y(String(trace.id));
+        const lh = trace['line-height'] || settings['line-height'];
+        // const cs = trace['content-size'] || settings['content-size'];
+        // Compute text offset
+        return mt + lh / 2;
+      })
+      // .attr('y', d => y(String(d.id)))
+      .attr('x', 0)
+      // Set text alignment
+      .attr('dominant-baseline', 'central');
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public createGrid(traces: Traces): void {
+    // Define labels group
+    const group = this.initializeService.svg
+      // Create parent grid element
+      .selectAll('g.grid')
+      .data([traces], index)
+      .join('g')
+      .attr('class', 'grid');
+    // Add labels to their group
+    this.grid = group
+      .selectAll('rect.grid-line')
+      .data(traces, identity)
+      .join('rect')
+      .attr('id', (d) => 'grid-' + String(d.id))
+      .attr('class', 'grid-line');
+  }
+
+  public updateGrid(): void {
+    const y = this.initializeService.scale.y;
+    const width = this.initializeService.width;
+    const margin = this.initializeService.margin;
+    const settings = this.initializeService.settings;
+    // Draw a line for each feature
+    this.grid
+      // Set start, end positions
+      .attr('x', margin.left)
+      .attr('y', (trace) => {
+        // Get first feature
+        const feature = trace.values[0];
+        // Compute offsets
+        const mt = y(String(trace.id));
+        const lh = feature['line-height'] || trace['line-height'] || settings['line-height'];
+        const cs = feature['content-size'] || trace['content-size'] || settings['content-size'];
+        // Compute vertical position for discrete feature
+        if (feature.type !== 'continuous') {
+          return mt + lh / 2 - 0.5
+        }
+        // Compute vertical position for continuous feature
+        return mt + lh / 2 - cs / 2;
+      })
+      // Set positions
+      .attr('width', width - margin.left - margin.right)
+      .attr('height', (trace) => {
+        // TODO
+        const feature = trace.values[0];
+        // Handle continuous feature
+        if (feature.type === 'continuous') {
+          // Get line height, content size
+          // const lh = feature['line-height'] || trace['line-height'] || settings['line-height'];
+          const cs = feature['content-size'] || trace['content-size'] || settings['content-size'];
+          // Return content size
+          return cs;
+        }
+        // Handle discrete features
+        return 1;
+      })
+      // TODO Set custom color
+      .attr('fill', '#D3D3D380');
+  }
+
   public createTraces(traces: Traces): void {
-    throw new Error('Method not implemented.');
+    // // Generate and store traces groups
+    this.traces = this.initializeService.draw
+      .selectAll('g.trace')
+      .data(traces, identity)
+      .join('g')
+      .attr('id', (t) => 'trace-' + String(t.id))
+      .attr('class', 'trace');
+    // For each feature group, generate feature representation
+    this.traces.each(function (trace) {
+      // Define features elements
+      const groups = d3.select(this)
+        .selectAll('g.feature')
+        .data(trace.values, index)
+        .join('g')
+        .attr('class', 'feature');
+      // Loop through each feature
+      groups.each(function (feature) {
+        // Get current feature element
+        const group = d3.select(this);
+        // Handle continuous features
+        if (feature.type === 'continuous') {
+          // Bind scatterplot
+          group
+            .selectAll('path.continuous')
+            .data([feature], index)
+            .join('path')
+            // Generate path
+            .attr('class', 'continuous')
+            .attr('fill', 'steelblue')
+            .attr('fill-opacity', 0.3)
+            .attr('stroke', 'steelblue')
+            .attr('stroke-opacity', 1)
+            .attr('stroke-width', 1.5);
+        }
+        // Handle discrete features
+        else {
+          // Generate rectangles
+          group
+            .selectAll('rect.locus')
+            .data(feature.values, index)
+            // Generate rectangle
+            .join('rect')
+            .attr('class', 'locus')
+            .attr('fill', 'steelblue')
+            .attr('fill-opacity', 0.3)
+            .attr('stroke', 'steelblue')
+            .attr('stroke-opacity', 1)
+            .attr('stroke-width', 1.5);
+        }
+      });
+      // // TODO Remove feature from 
+      // // TODO Handle continuous features
+      // if (feature.type === 'continuous') {
+      //   // Initialize scatterplot representation
+      //   const scatter = group
+      //     // Find previous path
+      //     .selectAll(`path.continuous`)
+      //     // Bind to feature object
+      //     .data([feature], identity)
+      //     // Generate updated path
+      //     .join('path')
+      //     // Generate path
+      //     .attr('class', 'continuous')
+      //     .attr('fill', 'steelblue')
+      //     .attr('fill-opacity', 0.3)
+      //     .attr('stroke', 'steelblue')
+      //     .attr('stroke-opacity', 1)
+      //     .attr('stroke-width', 1.5);
+      //   // Store scatterplot
+      //   values.set(feature, scatter);
+      // }
+      // // Handle loci features
+      // else if (feature.type === 'loci') {
+      //   // Define locus container
+      //   const foreignObject = createLoci(group, feature);
+      //   // .style('background-color', color)
+      //   // .style('opacity', 0.3);
+      //   // Attach loci representation to SVG
+      //   values.set(feature, foreignObject);
+      // }
+      // // Handle pins features
+      // else if (feature.type === 'pins') {
+      //   // Store pin container
+      //   values.set(feature, createPins(group, feature));
+      // }
+      // // TODO Handle DSSP features
+      // else if (feature.type === 'dssp') {
+      //   // Define container for feature value (foreign object)
+      //   const foreignObject = createDSSP(group, feature);
+      //   // Attach loci representation to SVG
+      //   values.set(feature, foreignObject);
+      // }
+    });
   }
 
   public updateTraces(): void {
-    throw new Error('Method not implemented');
+    // // Get feature values
+    // const _values = this.values;
+    // // Get height map
+    // const _height = this.initService.height;
+    // // Get scale (x, y axis) and margin (top, bottom, left, right)
+    // const { x, y } = this.scale!;
+    const scale = this.initializeService.scale;
+    const settings = this.initializeService.settings;
+    // Loop through each trace
+    this.traces.each(function (trace) {
+      // Define features for current trace
+      const features = trace.values;
+      // Get feature groups
+      const groups = d3.select(this).selectAll('g.feature');
+      // Loop through each group
+      groups.each(function (_, i) {
+        // Get feature group
+        const group = d3.select(this);
+        // Get data bound to group (through index)
+        const feature = features[i];
+        // Get line height, content size
+        const mt = scale.y(String(trace.id));
+        const lh = feature['line-height'] || trace['line-height'] || settings['line-height'];
+        const cs = feature['content-size'] || trace['content-size'] || settings['content-size'];
+        // Handle continuous feature
+        if (feature.type === 'continuous') {
+          // Get values for feature
+          const values = feature.values;
+          const n = values.length;
+          // Difine minimum, maximum value
+          const min = feature.min !== undefined ? feature.min : Math.min(...feature.values);
+          const max = feature.max !== undefined ? feature.max : Math.max(...feature.values);
+          // Initialize horizontal, vertical values
+          let xy: [number, number][] = values.map((v, i) => [i + 0.5, ((v - min) / (max - min))]);
+          // Add initial, final values
+          xy = [[0.5, 0], ...xy, [n + 0.5, 0]];
+          // Get path
+          const path = group.select('path.continuous');
+          // Define line function
+          const line = d3.line<[number, number]>().curve(d3.curveMonotoneX)
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            .x(([x, y]) => scale.x(x))
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            .y(([x, y]) => mt + lh / 2 - cs / 2 + cs * y);
+          // Update path
+          path.attr('d', line(xy));
+        }
+        // Handle discrete feature
+        else {
+          // Define cell width
+          const cw = scale.x(1) - scale.x(0);
+          // Get rectangles
+          group
+            .selectAll('rect.locus')
+            .data(feature.values, index)
+            // Set position
+            .attr('x', (locus) => scale.x(locus.start - 0.5))
+            .attr('y', mt + lh / 2 - cs / 2)
+            // Set size
+            .attr('height', cs)
+            .attr('width', (locus) => {
+              // Define start, end position
+              const { start, end } = { end: locus.start + 1, ...locus };
+              // Compute width
+              return cw * (end - start);
+            });
+        }
+      });
+    });
   }
 }
