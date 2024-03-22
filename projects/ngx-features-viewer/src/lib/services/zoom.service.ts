@@ -57,29 +57,8 @@ export class ZoomService {
         const { x: current } = this.initService.scale;
         // Get updated scale (apply transformations on initial scale)
         const updated = event.transform.rescaleX(initial);
-        // // Add transformation to drawed elements
-        // this.draw.attr('transform', event.transform.toString());
-        // // // const { x: translate, k: scale } = event.transform;
-        // // Get minimum, maximum value for domain
-        // const [min, max] = initial.domain();
         // Get start, end domain
         const [start, end] = updated.domain();
-
-        // // TODO Remove this
-        // console.log('Transform', event.transform.toString());
-        // const new_transform = event.transform.translate(Math.max(0, event.transform.x), Infinity);
-
-        // // Get updated domain start, end
-        // let [start, end] = updated.domain();
-        // console.log('Transform { x: ' + event.transform.x + ', k: ' + event.transform.k + '}');
-        // console.log('Before [start: ' + start + ', end: ' + end + ']');
-        // // Compute width, bounded to maximum, initial width
-        // const width = end - start;
-        // // Update start position according to initial start position and actual width
-        // start = Math.min(max - width, Math.max(min, start));
-        // // Update end position according to updated start positiona and actual width
-        // end = start + width;
-        // console.log('After [start: ' + start + ', end: ' + end + ']');
         // Update current domain, in place
         current.domain([start, end]);
         // Return original scale
@@ -96,10 +75,17 @@ export class ZoomService {
         const axes = this.initService.axes;
         // Get initial scale
         const scale = this.initService.scale;
-        // // Update vertical axis
-        // axes.y.call(d3.axisLeft(scale.y));
+        // Define horizontal axis ticks
+        const ticks = scale.x
+          .ticks()
+          .filter((d) => Number.isInteger(d))
+          .slice(1, -1);
+        // Define orizontal axis
+        const axis = d3.axisBottom(scale.x)
+          .tickValues(ticks)
+          .tickFormat(d3.format('.0f'));
         // Update horizontal axis
-        axes.x.call(d3.axisBottom(scale.x));
+        axes.x.call(axis);
       }),
       // TODO Remove this
       tap(() => console.log('Zoomed!')),

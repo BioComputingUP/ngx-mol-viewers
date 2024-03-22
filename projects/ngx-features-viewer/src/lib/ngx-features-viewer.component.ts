@@ -78,12 +78,6 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, OnChanges, OnD
     this.update$ = this.initService.initialized$.pipe(
       // TODO Initialize drawings
       switchMap(() => this.drawService.draw$),
-      // // Initialize callback on label click
-      // tap(() => {
-      //   this.drawService.labels.on('click', (_, feature) => {
-      //     this.onLabelClick(feature);
-      //   })
-      // }),
       // Subscribe to resize event (set width, height)
       switchMap(() => this.resizeService.resized$),
       // Initialize zoom scale
@@ -136,17 +130,6 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, OnChanges, OnD
     // Just emit width of container element
     this.resizeService.resize$.next(event);
   }
-
-  // onLabelClick(_feature: { id?: number }) {
-  //   // // Get label element
-  //   // const label = event.target as HTMLDivElement;
-  //   // Toggle active flag on current feature
-  //   const feature = this.features[_feature.id!];
-  //   // Invert current active sign
-  //   feature.active = !feature.active;
-  //   // Emit updated features
-  //   this.features$.next([...this.features]);
-  // }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onFeaturesZoom(event: any) {

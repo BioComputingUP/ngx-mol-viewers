@@ -40,43 +40,39 @@ export class FeaturesService {
     this._traces = new Map<number, Trace<Feature>>();
     // Initialize parent hashmap
     this._parent = new Map<Trace<Feature>, number>();
-    // Loop through each 
-    while (hierarchy.length > 0) {
-      // Extract first element
-      const { nested, ...first } = { nested: [], type: undefined, ...hierarchy.pop() };
-      // Case first element exists
-      if (first.type) {
-        // Eventually, wrap current feature in trace
-        const parent = asTrace(first);
-        // Store parent trace
-        this._traces.set(index, parent);
-        // Eventually, wrap nested features in traces
-        nested.forEach((feature) => {
-          // Check nested feature type
-          const child = asTrace(feature);
-          // Associate child to parent trace
-          this._parent.set(child, index);
-          // Push child traces in hierarchy
-          hierarchy.push(child);
-        });
-        // Update index
-        index++;
-      }
-    }
-
     // Initialize children hashmap
     this._children = new Map<Trace<Feature>, number[]>();
-    // Loop through each child (to parent) 
-    this._traces.forEach((child, index) => {
-      // Get parent index
-      const parent = this.getParent(child);
-      // Get children
-      const children = this._children.get(parent) || [];
-      // Update children list
-      children.push(index);
-      // Update children map
-      this._children.set(parent, children);
-    });
+    // Loop through each 
+    while (hierarchy.length > 0) {
+      // Get first trace / feature
+      const first = hierarchy.splice(0, 1).at(0) as Hierarchy[number];
+      // Get nested features
+      const { nested, ...params } = first;
+      // Cast trace / feature to trace
+      const trace = Object.assign(first, asTrace(params)) as Trace<Feature>;
+      // Initialize children for current parent
+      this._children.set(trace, []);
+      // Loop through each nested trace / feature
+      for (const child of (nested || [])) {
+        // Associate current child to parent
+        this._parent.set(child as Trace<Feature>, index);
+        // Push child traces in hierarchy
+        hierarchy.push(child);
+      }
+      // Get parent, if any
+      const parent = this.getParent(trace);
+      // Case parent exists
+      if (parent) {
+        // Get children for current parent
+        const children = this._children.get(parent) as number[];
+        // Store index of current trace as child
+        children.push(index);
+      }
+      // Store parent
+      this._traces.set(index, trace);
+      // Finally, update index
+      index++;
+    }
   }
 
   public get traces() {
@@ -87,11 +83,11 @@ export class FeaturesService {
     return this.traces.get(id);
   }
 
-  public getParent(trace: Trace<Feature>): Trace<Feature> {
+  public getParent(trace: Trace<Feature>) {
     // Get parent index
-    const index = this._parent.get(trace) as number;
+    const index = this._parent.get(trace);
     // Return parent trace
-    return this._traces.get(index) as Trace<Feature>;
+    return index && this._traces.get(index);
   }
 
   public getBranch(trace: Trace<Feature>): Trace<Feature>[] {

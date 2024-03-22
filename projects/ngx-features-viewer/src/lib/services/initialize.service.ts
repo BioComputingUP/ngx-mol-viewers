@@ -21,11 +21,6 @@ export interface Axes {
   x: Group;
 }
 
-export interface Grid {
-  x: Group;
-  y: Group;
-}
-
 @Injectable({
   providedIn: 'platform',
 })
@@ -73,9 +68,6 @@ export class InitializeService {
 
   // Define horizontal, vertical axis
   public axes!: Axes;
-
-  // Define horizontal, vertical grid
-  public grid!: Grid;
 
   // TODO Define graph content (everything drawed)
   public draw!: Group;
@@ -151,15 +143,6 @@ export class InitializeService {
           // .attr('transform', `translate(${this.margin.left}, 0)`);
         // Initialize axis
         this.axes = { x, y };
-      }),
-      // Initialize horizontal, vertical grid
-      tap((svg) => {
-        // Define horizontal grid (vertical lines). This is not really defined.
-        const x = undefined;
-        // Define vertical grid (horizontal lines)
-        const y = svg.append('g').attr('class', 'y axis-grid');
-        // prettier-ignore
-        this.grid = { x: x as never, y };
       }),
       // Initialize horizontal, vertical scale
       tap(() => this.scale = { x: d3.scaleLinear(), y: d3.scaleOrdinal() }),
