@@ -1,0 +1,705 @@
+{
+  "version": "6.0",
+  "nxVersion": "17.2.8",
+  "deps": {
+    "@angular/animations": "^17.1.2",
+    "@angular/common": "^17.1.2",
+    "@angular/compiler": "^17.1.2",
+    "@angular/core": "^17.1.2",
+    "@angular/forms": "^17.1.2",
+    "@angular/platform-browser": "^17.1.2",
+    "@angular/platform-browser-dynamic": "^17.1.2",
+    "@angular/router": "^17.1.2",
+    "@types/d3": "^7.4.3",
+    "bootstrap": "^5.3.3",
+    "bootstrap-icons": "^1.11.3",
+    "d3": "^7.8.5",
+    "molstar": "^3.44.0",
+    "rxjs": "~7.8.1",
+    "tslib": "^2.6.2",
+    "zone.js": "~0.14.3",
+    "@angular-devkit/build-angular": "^17.1.2",
+    "@angular-eslint/builder": "17.2.1",
+    "@angular-eslint/eslint-plugin": "17.2.1",
+    "@angular-eslint/eslint-plugin-template": "17.2.1",
+    "@angular-eslint/schematics": "17.2.1",
+    "@angular-eslint/template-parser": "17.2.1",
+    "@angular/cli": "^17.1.2",
+    "@angular/compiler-cli": "^17.1.2",
+    "@types/jasmine": "~5.1.4",
+    "@typescript-eslint/eslint-plugin": "6.20.0",
+    "@typescript-eslint/parser": "6.20.0",
+    "angular-cli-ghpages": "^1.0.7",
+    "eslint": "^8.56.0",
+    "jasmine-core": "~5.1.1",
+    "karma": "~6.4.2",
+    "karma-chrome-launcher": "~3.2.0",
+    "karma-coverage": "~2.2.1",
+    "karma-jasmine": "~5.1.0",
+    "karma-jasmine-html-reporter": "~2.1.0",
+    "ng-packagr": "^17.1.2",
+    "typescript": "~5.3.3"
+  },
+  "pathMappings": {
+    "@ngx-structure-viewer": [
+      "./projects/ngx-structure-viewer/src/public-api"
+    ],
+    "@ngx-features-viewer": [
+      "./projects/ngx-features-viewer/src/public-api"
+    ]
+  },
+  "nxJsonPlugins": [],
+  "fileMap": {
+    "projectFileMap": {},
+    "nonProjectFiles": [
+      {
+        "file": ".editorconfig",
+        "hash": "6686520031028425313"
+      },
+      {
+        "file": ".eslintrc.json",
+        "hash": "17117732178709211847"
+      },
+      {
+        "file": ".gitignore",
+        "hash": "13044518069027839699"
+      },
+      {
+        "file": ".nvmrc",
+        "hash": "16619934995508064680"
+      },
+      {
+        "file": ".vscode/launch.json",
+        "hash": "812665994472464995"
+      },
+      {
+        "file": "LICENSE.txt",
+        "hash": "11275800166450889676"
+      },
+      {
+        "file": "README.md",
+        "hash": "16558668099234289956"
+      },
+      {
+        "file": "angular.json",
+        "hash": "1152314324134407302"
+      },
+      {
+        "file": "docs/3rdpartylicenses.txt",
+        "hash": "5844966238857124487"
+      },
+      {
+        "file": "docs/LICENSE.txt",
+        "hash": "11275800166450889676"
+      },
+      {
+        "file": "docs/assets/android-chrome-192x192.png",
+        "hash": "5440823836287203583"
+      },
+      {
+        "file": "docs/assets/android-chrome-512x512.png",
+        "hash": "4613647483696142397"
+      },
+      {
+        "file": "docs/assets/apple-touch-icon.png",
+        "hash": "3048412624798952940"
+      },
+      {
+        "file": "docs/assets/browserconfig.xml",
+        "hash": "7995991678371446473"
+      },
+      {
+        "file": "docs/assets/favicon-16x16.png",
+        "hash": "13377455914429701974"
+      },
+      {
+        "file": "docs/assets/favicon-32x32.png",
+        "hash": "7478586056572315166"
+      },
+      {
+        "file": "docs/assets/favicon.ico",
+        "hash": "4865155010011743003"
+      },
+      {
+        "file": "docs/assets/logo-dna.png",
+        "hash": "7170015604493329256"
+      },
+      {
+        "file": "docs/assets/logo-white.png",
+        "hash": "1147613677517884223"
+      },
+      {
+        "file": "docs/assets/logo.png",
+        "hash": "2127879289327692178"
+      },
+      {
+        "file": "docs/assets/mstile-144x144.png",
+        "hash": "5942037849107924594"
+      },
+      {
+        "file": "docs/assets/mstile-150x150.png",
+        "hash": "14310723325961073130"
+      },
+      {
+        "file": "docs/assets/mstile-310x150.png",
+        "hash": "12554480741003523811"
+      },
+      {
+        "file": "docs/assets/mstile-310x310.png",
+        "hash": "7342048317779370819"
+      },
+      {
+        "file": "docs/assets/mstile-70x70.png",
+        "hash": "1837727134748870792"
+      },
+      {
+        "file": "docs/assets/ngx-bio-tools.svg",
+        "hash": "14371074903368285626"
+      },
+      {
+        "file": "docs/assets/ngx-features-viewer.png",
+        "hash": "6716889490419922558"
+      },
+      {
+        "file": "docs/assets/ngx-structure-viewer.png",
+        "hash": "16388175170446379626"
+      },
+      {
+        "file": "docs/assets/safari-pinned-tab.svg",
+        "hash": "8180021128899015085"
+      },
+      {
+        "file": "docs/assets/site.webmanifest",
+        "hash": "15907017148257468797"
+      },
+      {
+        "file": "docs/bootstrap-icons.70a9dee9e5ab72aa.woff",
+        "hash": "11169927779025988686"
+      },
+      {
+        "file": "docs/bootstrap-icons.bfa90bda92a84a6a.woff2",
+        "hash": "1189438657480015469"
+      },
+      {
+        "file": "docs/dssp-helix.74d0a47e4d7ed27e.svg",
+        "hash": "2060405902066254435"
+      },
+      {
+        "file": "docs/dssp-strand-head.85a295955fb4c220.svg",
+        "hash": "4797940735050968344"
+      },
+      {
+        "file": "docs/dssp-strand-tail.783864b28823e2c7.svg",
+        "hash": "4986274415892735578"
+      },
+      {
+        "file": "docs/favicon.ico",
+        "hash": "3988961587069885523"
+      },
+      {
+        "file": "docs/index.html",
+        "hash": "14351552370758500549"
+      },
+      {
+        "file": "docs/main.96e828e6a78c13ae.js",
+        "hash": "1458779185275802643"
+      },
+      {
+        "file": "docs/polyfills.e2b1099c71faaebd.js",
+        "hash": "10522793276551255232"
+      },
+      {
+        "file": "docs/runtime.9d86f2421e75c000.js",
+        "hash": "350885097638489665"
+      },
+      {
+        "file": "docs/styles.ef46db3751d8e999.css",
+        "hash": "3244421341483603138"
+      },
+      {
+        "file": "package-lock.json",
+        "hash": "3025164651911180177"
+      },
+      {
+        "file": "package.json",
+        "hash": "5148488186459724940"
+      },
+      {
+        "file": "projects/demo-showcase/.eslintrc.json",
+        "hash": "18150697129470418428"
+      },
+      {
+        "file": "projects/demo-showcase/README.md",
+        "hash": "14197072821785328783"
+      },
+      {
+        "file": "projects/demo-showcase/src/app/app.component.html",
+        "hash": "8038994049626201920"
+      },
+      {
+        "file": "projects/demo-showcase/src/app/app.component.scss",
+        "hash": "1383807674195227575"
+      },
+      {
+        "file": "projects/demo-showcase/src/app/app.component.spec.ts",
+        "hash": "11288995719265942972"
+      },
+      {
+        "file": "projects/demo-showcase/src/app/app.component.ts",
+        "hash": "8506415797253881592"
+      },
+      {
+        "file": "projects/demo-showcase/src/app/app.config.ts",
+        "hash": "15048358342169118554"
+      },
+      {
+        "file": "projects/demo-showcase/src/app/app.routes.ts",
+        "hash": "2233623982859237955"
+      },
+      {
+        "file": "projects/demo-showcase/src/app/page-features-viewer/page-features-viewer.component.html",
+        "hash": "18215864765518663631"
+      },
+      {
+        "file": "projects/demo-showcase/src/app/page-features-viewer/page-features-viewer.component.scss",
+        "hash": "6077348188403841777"
+      },
+      {
+        "file": "projects/demo-showcase/src/app/page-features-viewer/page-features-viewer.component.spec.ts",
+        "hash": "5286232088978903072"
+      },
+      {
+        "file": "projects/demo-showcase/src/app/page-features-viewer/page-features-viewer.component.ts",
+        "hash": "3181484194613040407"
+      },
+      {
+        "file": "projects/demo-showcase/src/app/page-home/page-home.component.html",
+        "hash": "14560201102622426232"
+      },
+      {
+        "file": "projects/demo-showcase/src/app/page-home/page-home.component.scss",
+        "hash": "16589632100700323873"
+      },
+      {
+        "file": "projects/demo-showcase/src/app/page-home/page-home.component.spec.ts",
+        "hash": "11616761098479982182"
+      },
+      {
+        "file": "projects/demo-showcase/src/app/page-home/page-home.component.ts",
+        "hash": "5089018368161062808"
+      },
+      {
+        "file": "projects/demo-showcase/src/app/page-structure-viewer/page-structure-viewer.component.html",
+        "hash": "2416247765855395894"
+      },
+      {
+        "file": "projects/demo-showcase/src/app/page-structure-viewer/page-structure-viewer.component.scss",
+        "hash": "3244421341483603138"
+      },
+      {
+        "file": "projects/demo-showcase/src/app/page-structure-viewer/page-structure-viewer.component.spec.ts",
+        "hash": "3473254050753921113"
+      },
+      {
+        "file": "projects/demo-showcase/src/app/page-structure-viewer/page-structure-viewer.component.ts",
+        "hash": "5147302390328605716"
+      },
+      {
+        "file": "projects/demo-showcase/src/assets/.gitkeep",
+        "hash": "3244421341483603138"
+      },
+      {
+        "file": "projects/demo-showcase/src/assets/android-chrome-192x192.png",
+        "hash": "5440823836287203583"
+      },
+      {
+        "file": "projects/demo-showcase/src/assets/android-chrome-512x512.png",
+        "hash": "4613647483696142397"
+      },
+      {
+        "file": "projects/demo-showcase/src/assets/apple-touch-icon.png",
+        "hash": "3048412624798952940"
+      },
+      {
+        "file": "projects/demo-showcase/src/assets/biocomp.svg",
+        "hash": "14723442699264415186"
+      },
+      {
+        "file": "projects/demo-showcase/src/assets/browserconfig.xml",
+        "hash": "7995991678371446473"
+      },
+      {
+        "file": "projects/demo-showcase/src/assets/favicon-16x16.png",
+        "hash": "13377455914429701974"
+      },
+      {
+        "file": "projects/demo-showcase/src/assets/favicon-32x32.png",
+        "hash": "7478586056572315166"
+      },
+      {
+        "file": "projects/demo-showcase/src/assets/favicon.ico",
+        "hash": "4865155010011743003"
+      },
+      {
+        "file": "projects/demo-showcase/src/assets/logo-dna.png",
+        "hash": "7170015604493329256"
+      },
+      {
+        "file": "projects/demo-showcase/src/assets/logo-white.png",
+        "hash": "1147613677517884223"
+      },
+      {
+        "file": "projects/demo-showcase/src/assets/logo.png",
+        "hash": "2127879289327692178"
+      },
+      {
+        "file": "projects/demo-showcase/src/assets/mstile-144x144.png",
+        "hash": "5942037849107924594"
+      },
+      {
+        "file": "projects/demo-showcase/src/assets/mstile-150x150.png",
+        "hash": "14310723325961073130"
+      },
+      {
+        "file": "projects/demo-showcase/src/assets/mstile-310x150.png",
+        "hash": "12554480741003523811"
+      },
+      {
+        "file": "projects/demo-showcase/src/assets/mstile-310x310.png",
+        "hash": "7342048317779370819"
+      },
+      {
+        "file": "projects/demo-showcase/src/assets/mstile-70x70.png",
+        "hash": "1837727134748870792"
+      },
+      {
+        "file": "projects/demo-showcase/src/assets/ngx-bio-tools.svg",
+        "hash": "14371074903368285626"
+      },
+      {
+        "file": "projects/demo-showcase/src/assets/ngx-biocomp-up-white.svg",
+        "hash": "4738009670878793619"
+      },
+      {
+        "file": "projects/demo-showcase/src/assets/ngx-biocomp-up.svg",
+        "hash": "6777242495592409407"
+      },
+      {
+        "file": "projects/demo-showcase/src/assets/ngx-features-viewer.png",
+        "hash": "6716889490419922558"
+      },
+      {
+        "file": "projects/demo-showcase/src/assets/ngx-structure-viewer.png",
+        "hash": "16388175170446379626"
+      },
+      {
+        "file": "projects/demo-showcase/src/assets/safari-pinned-tab.svg",
+        "hash": "8180021128899015085"
+      },
+      {
+        "file": "projects/demo-showcase/src/assets/site.webmanifest",
+        "hash": "15907017148257468797"
+      },
+      {
+        "file": "projects/demo-showcase/src/assets/unipd.svg",
+        "hash": "1474303074825766670"
+      },
+      {
+        "file": "projects/demo-showcase/src/favicon.ico",
+        "hash": "3988961587069885523"
+      },
+      {
+        "file": "projects/demo-showcase/src/index.html",
+        "hash": "17308936607142792256"
+      },
+      {
+        "file": "projects/demo-showcase/src/main.ts",
+        "hash": "4927504514031276065"
+      },
+      {
+        "file": "projects/demo-showcase/src/styles.scss",
+        "hash": "11011004221727257921"
+      },
+      {
+        "file": "projects/demo-showcase/src/styles/_background.scss",
+        "hash": "1436484652717490068"
+      },
+      {
+        "file": "projects/demo-showcase/src/styles/_scaffold.scss",
+        "hash": "14519913642150541366"
+      },
+      {
+        "file": "projects/demo-showcase/src/styles/_variables.scss",
+        "hash": "4055606894390288348"
+      },
+      {
+        "file": "projects/demo-showcase/tsconfig.app.json",
+        "hash": "14176067227322044330"
+      },
+      {
+        "file": "projects/demo-showcase/tsconfig.spec.json",
+        "hash": "8046768446203215749"
+      },
+      {
+        "file": "projects/ngx-features-viewer/.eslintrc.json",
+        "hash": "14363505610686800042"
+      },
+      {
+        "file": "projects/ngx-features-viewer/LICENSE.txt",
+        "hash": "11275800166450889676"
+      },
+      {
+        "file": "projects/ngx-features-viewer/README.md",
+        "hash": "18245774805461822948"
+      },
+      {
+        "file": "projects/ngx-features-viewer/ng-package.json",
+        "hash": "16879807320388827626"
+      },
+      {
+        "file": "projects/ngx-features-viewer/package.json",
+        "hash": "15065055014510564228"
+      },
+      {
+        "file": "projects/ngx-features-viewer/src/assets/dssp-helix-back.svg",
+        "hash": "9606949530157776525"
+      },
+      {
+        "file": "projects/ngx-features-viewer/src/assets/dssp-helix-front.svg",
+        "hash": "13362322880325710968"
+      },
+      {
+        "file": "projects/ngx-features-viewer/src/assets/dssp-helix.svg",
+        "hash": "2060405902066254435"
+      },
+      {
+        "file": "projects/ngx-features-viewer/src/assets/dssp-strand-head.svg",
+        "hash": "4797940735050968344"
+      },
+      {
+        "file": "projects/ngx-features-viewer/src/assets/dssp-strand-tail.svg",
+        "hash": "4986274415892735578"
+      },
+      {
+        "file": "projects/ngx-features-viewer/src/lib/features.ts",
+        "hash": "7693889014410602410"
+      },
+      {
+        "file": "projects/ngx-features-viewer/src/lib/features/continuous.ts",
+        "hash": "12549490484076358487"
+      },
+      {
+        "file": "projects/ngx-features-viewer/src/lib/features/dssp.ts",
+        "hash": "15536674355305185519"
+      },
+      {
+        "file": "projects/ngx-features-viewer/src/lib/features/feature.ts",
+        "hash": "601654519948175672"
+      },
+      {
+        "file": "projects/ngx-features-viewer/src/lib/features/loci.ts",
+        "hash": "7590058217597655817"
+      },
+      {
+        "file": "projects/ngx-features-viewer/src/lib/features/pins.ts",
+        "hash": "9402169082274144284"
+      },
+      {
+        "file": "projects/ngx-features-viewer/src/lib/features/trace.ts",
+        "hash": "18353328613901724924"
+      },
+      {
+        "file": "projects/ngx-features-viewer/src/lib/hierarchy.ts",
+        "hash": "5940530565106401048"
+      },
+      {
+        "file": "projects/ngx-features-viewer/src/lib/ngx-features-viewer.component.scss",
+        "hash": "11517350306086707606"
+      },
+      {
+        "file": "projects/ngx-features-viewer/src/lib/ngx-features-viewer.component.spec.ts",
+        "hash": "11704767498809461111"
+      },
+      {
+        "file": "projects/ngx-features-viewer/src/lib/ngx-features-viewer.component.ts",
+        "hash": "7257526863847297119"
+      },
+      {
+        "file": "projects/ngx-features-viewer/src/lib/services/draw.service.spec.ts",
+        "hash": "13237427705273105205"
+      },
+      {
+        "file": "projects/ngx-features-viewer/src/lib/services/draw.service.ts",
+        "hash": "575872541815434086"
+      },
+      {
+        "file": "projects/ngx-features-viewer/src/lib/services/features.service.spec.ts",
+        "hash": "16616921280440300842"
+      },
+      {
+        "file": "projects/ngx-features-viewer/src/lib/services/features.service.ts",
+        "hash": "4077466621662474796"
+      },
+      {
+        "file": "projects/ngx-features-viewer/src/lib/services/initialize.service.spec.ts",
+        "hash": "14968783778426921132"
+      },
+      {
+        "file": "projects/ngx-features-viewer/src/lib/services/initialize.service.ts",
+        "hash": "5946845668741503997"
+      },
+      {
+        "file": "projects/ngx-features-viewer/src/lib/services/resize.service.spec.ts",
+        "hash": "3402140089187244505"
+      },
+      {
+        "file": "projects/ngx-features-viewer/src/lib/services/resize.service.ts",
+        "hash": "11600620428673366150"
+      },
+      {
+        "file": "projects/ngx-features-viewer/src/lib/services/zoom.service.spec.ts",
+        "hash": "9159618376289502650"
+      },
+      {
+        "file": "projects/ngx-features-viewer/src/lib/services/zoom.service.ts",
+        "hash": "5103041581724377263"
+      },
+      {
+        "file": "projects/ngx-features-viewer/src/lib/settings.ts",
+        "hash": "18067342219694931444"
+      },
+      {
+        "file": "projects/ngx-features-viewer/src/public-api.ts",
+        "hash": "6585952435381948893"
+      },
+      {
+        "file": "projects/ngx-features-viewer/src/styles/_dssp.scss",
+        "hash": "10731330428053968267"
+      },
+      {
+        "file": "projects/ngx-features-viewer/src/styles/_icons.scss",
+        "hash": "11894536190851858974"
+      },
+      {
+        "file": "projects/ngx-features-viewer/src/styles/_labels.scss",
+        "hash": "14062724188372644835"
+      },
+      {
+        "file": "projects/ngx-features-viewer/src/styles/_loci.scss",
+        "hash": "1328895762970750519"
+      },
+      {
+        "file": "projects/ngx-features-viewer/src/styles/_pins.scss",
+        "hash": "10940605333278039774"
+      },
+      {
+        "file": "projects/ngx-features-viewer/tsconfig.lib.json",
+        "hash": "12369024473565967613"
+      },
+      {
+        "file": "projects/ngx-features-viewer/tsconfig.lib.prod.json",
+        "hash": "1939170332703490951"
+      },
+      {
+        "file": "projects/ngx-features-viewer/tsconfig.spec.json",
+        "hash": "11730399207539946696"
+      },
+      {
+        "file": "projects/ngx-structure-viewer/.eslintrc.json",
+        "hash": "14363505610686800042"
+      },
+      {
+        "file": "projects/ngx-structure-viewer/LICENSE.txt",
+        "hash": "11275800166450889676"
+      },
+      {
+        "file": "projects/ngx-structure-viewer/README.md",
+        "hash": "296180257744681618"
+      },
+      {
+        "file": "projects/ngx-structure-viewer/ng-package.json",
+        "hash": "6404810792623854336"
+      },
+      {
+        "file": "projects/ngx-structure-viewer/package.json",
+        "hash": "11442628124454469465"
+      },
+      {
+        "file": "projects/ngx-structure-viewer/src/lib/entities/colors.ts",
+        "hash": "1598944449707091659"
+      },
+      {
+        "file": "projects/ngx-structure-viewer/src/lib/entities/loci.ts",
+        "hash": "7637540887363638564"
+      },
+      {
+        "file": "projects/ngx-structure-viewer/src/lib/entities/settings.ts",
+        "hash": "4137319537003996431"
+      },
+      {
+        "file": "projects/ngx-structure-viewer/src/lib/entities/source.ts",
+        "hash": "14948033937645818343"
+      },
+      {
+        "file": "projects/ngx-structure-viewer/src/lib/ngx-structure-viewer.component.spec.ts",
+        "hash": "4204087932084781514"
+      },
+      {
+        "file": "projects/ngx-structure-viewer/src/lib/ngx-structure-viewer.component.ts",
+        "hash": "3344396842214577836"
+      },
+      {
+        "file": "projects/ngx-structure-viewer/src/lib/services/camera.service.spec.ts",
+        "hash": "9010451486541667999"
+      },
+      {
+        "file": "projects/ngx-structure-viewer/src/lib/services/camera.service.ts",
+        "hash": "9927081216762788409"
+      },
+      {
+        "file": "projects/ngx-structure-viewer/src/lib/services/highlight.service.spec.ts",
+        "hash": "17186076161944273762"
+      },
+      {
+        "file": "projects/ngx-structure-viewer/src/lib/services/highlight.service.ts",
+        "hash": "2001141322295344775"
+      },
+      {
+        "file": "projects/ngx-structure-viewer/src/lib/services/select.service.spec.ts",
+        "hash": "14954830806399596681"
+      },
+      {
+        "file": "projects/ngx-structure-viewer/src/lib/services/select.service.ts",
+        "hash": "10496456902883815812"
+      },
+      {
+        "file": "projects/ngx-structure-viewer/src/lib/services/settings.service.spec.ts",
+        "hash": "13836793875496109162"
+      },
+      {
+        "file": "projects/ngx-structure-viewer/src/lib/services/settings.service.ts",
+        "hash": "8314557684958583755"
+      },
+      {
+        "file": "projects/ngx-structure-viewer/src/public-api.ts",
+        "hash": "2474309553319663078"
+      },
+      {
+        "file": "projects/ngx-structure-viewer/tsconfig.lib.json",
+        "hash": "12369024473565967613"
+      },
+      {
+        "file": "projects/ngx-structure-viewer/tsconfig.lib.prod.json",
+        "hash": "1939170332703490951"
+      },
+      {
+        "file": "projects/ngx-structure-viewer/tsconfig.spec.json",
+        "hash": "11730399207539946696"
+      },
+      {
+        "file": "tsconfig.json",
+        "hash": "18412446094390457875"
+      }
+    ]
+  }
+}
