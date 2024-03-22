@@ -1,7 +1,7 @@
 import { Observable, ReplaySubject, debounceTime, distinctUntilChanged, map, startWith, tap } from 'rxjs';
 import { Injectable } from '@angular/core';
 // Custom providers
-import { InitializeService, Margin } from './initialize.service';
+import { InitializeService } from './initialize.service';
 // D3 library
 import * as d3 from 'd3';
 
@@ -9,6 +9,13 @@ import * as d3 from 'd3';
 export interface Size {
   height: number;
   width: number;
+}
+
+export interface Margin {
+  top: number;
+  right: number;
+  bottom: number;
+  left: number;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -38,11 +45,11 @@ export class ResizeService {
    */
 
   get svg() {
-    return this.initService.svg;
+    return this.initializeService.svg;
   }
 
   get div() {
-    return this.initService.div;
+    return this.initializeService.div;
   }
 
   get height() {
@@ -56,22 +63,24 @@ export class ResizeService {
   }
 
   get margin() {
-    return this.initService.margin;
+    return this.initializeService.margin;
   }
 
   get scale() {
-    return this.initService.scale;
+    return this.initializeService.scale;
   }
 
   get axes() {
-    return this.initService.axes;
+    return this.initializeService.axes;
   }
 
   public readonly resize$ = new ReplaySubject<Event>(1);
 
   public readonly resized$: Observable<void>;
 
-  constructor(public readonly initService: InitializeService) {
+  constructor(
+    public readonly initializeService: InitializeService
+  ) {
     // Trigger resize event
     const resize$: Observable<void> = this.resize$.pipe(
       // Get width, height from root HTML div
@@ -85,6 +94,7 @@ export class ResizeService {
       // Emit initially
       startWith(void 0),
     );
+
     // Define resize pipeline
     this.resized$ = resize$.pipe(
       // 1. Resize root SVG element
@@ -124,8 +134,8 @@ export class ResizeService {
     size.height = this.height - this.margin.top - this.margin.bottom;
     size.width = this.width - this.margin.left - this.margin.right;
     // Resize inner clip container
-    resize(this.initService.clip, size, this.margin);
-    resize(this.initService.events, size, this.margin);
+    resize(this.initializeService.clip, size, this.margin);
+    resize(this.initializeService.events, size, this.margin);
   }
 
   public updateAxes(): void {
@@ -148,44 +158,43 @@ export class ResizeService {
     x.range([left, width - right]);
   }
 
+  // public updateRangeY(): void {
+  //   // Get vertical scale
+  //   const y = this.scale.y;
+  //   // Get domain, as previously defined in draw pipeline
+  //   // NOTE It includes start, end empty positions
+  //   const domain = y.domain();
+  //   // // Get map between feature identifier and its height
+  //   // const height = this.initService.height;
+  //   // Compute range
+  //   const range = domain.reduce((range: number[], id: string, i: number) => {
+  //     // Initialize offset
+  //     let offset = 0;
+  //     // Case on first feature (sequence)
+  //     if (i === 0 && id === 'sequence') {
+  //       // Update offset adding initial top margin
+  //       offset += this.margin.top;
+  //       offset += height.get(id)! / 2;
+  //     }
+  //     // Otherwise
+  //     else {
+  //       // Get height according to previous element
+  //       offset += range[i - 1]!;
+  //       offset += height.get(domain[i-1])! / 2;
+  //       offset += height.get(domain[i])! / 2;
+  //     }
+  //     // Finally, update range
+  //     return [...range, offset];
+  //   }, []);
+  //   // Add last offset
+  //   let offset = 0;
+  //   offset += range.at(-1)!;
+  //   offset += height.get(domain.at(-1)!)! / 2;
+  //   // Update vertical axis range
+  //   y.range([...range, offset]);
+  // }
+
   public updateRangeY(): void {
-    // Get vertical scale
-    const y = this.scale.y;
-    // Get domain, as previously defined in draw pipeline
-    // NOTE It includes start, end empty positions
-    const domain = y.domain();
-    // const bottom = this.height - this.margin.bottom;
-    // // Define outer height (drawable area)
-    // const outer = bottom - top;
-    // // Define inner height (axis tick)
-    // const inner = outer / domain.length;
-    // Get map between feature identifier and its height
-    const height = this.initService.height;
-    // Compute range
-    const range = domain.reduce((range: number[], id: string, i: number) => {
-      // Initialize offset
-      let offset = 0;
-      // Case on first feature (sequence)
-      if (i === 0 && id === 'sequence') {
-        // Update offset adding initial top margin
-        offset += this.margin.top;
-        offset += height.get(id)! / 2;
-      }
-      // Otherwise
-      else {
-        // Get height according to previous element
-        offset += range[i - 1]!;
-        offset += height.get(domain[i-1])! / 2;
-        offset += height.get(domain[i])! / 2;
-      }
-      // Finally, update range
-      return [...range, offset];
-    }, []);
-    // Add last offset
-    let offset = 0;
-    offset += range.at(-1)!;
-    offset += height.get(domain.at(-1)!)! / 2;
-    // Update vertical axis range
-    y.range([...range, offset]);
+    // Do nothing
   }
 }

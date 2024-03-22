@@ -1,68 +1,20 @@
-<!-- Section: introduction -->
-<div>
-    <h1>Features viewer</h1>
-    <p>
-        Features viewer allows to represents features on a protein sequence. It takes as input the target `Sequence` and
-        a list of `Feature` objects. The `Sequence` represents an amino-acid sequence, hence it must be a list of valid
-        amino-acid one-letter codes.
-    </p>
-</div>
-<!-- Section: features -->
-<div style="display: none">
-    <h2>Features</h2>
-    <p>
-        Each `Feature` object characterizes either a single or a range of amino-acids.
-    </p>
-    <!-- Sub-section: positional -->
-    <div>
-        <h3>Positional features</h3>
+<div class="container pt-3">
+    <!-- Section: introduction -->
+    <div class="mb-3">
+        <h1>Feature viewer</h1>
         <p>
-            A `Feature` characterizing single amino-acids must contain an array of values which length is the same as
-            the length of the input sequence. Each value is associated to the input sequence by means of its index.
+            The feature viewer allows you to represent features on a reference seqeunce...
         </p>
     </div>
-    <!-- Sub-section: range -->
-    <div>
-        <h3>Range features</h3>
-        <p>
-            A feature characterizing a range of amino-acid is defined hereby as a `Loci`. A `Loci` is an object which
-            contains the `start` and `end` properties, indexing two valid positions in the sequence. A position is
-            considered to be valid if it is a valid index over the input sequence. Moreover, the `start` and `end`
-            properties are considered to be valid only if the former has not a bigger value than the latter. `start`,
-            `end` positions used in `Loci` features are inclusive, hence amino-acids indexed by those preoperties are
-            included in the range, as well as those comprised between them.
-        </p>
+    <!-- Section: example -->
+    <div class="d-flex flex-row gap-3 mb-3">
+        <!-- TODO Remove this -->
+        <div style="display: block; width: 1rem; height: 1rem; background: black; font-size: 1rem; line-height: 1rem;"></div>
+        <div style="display: block; width: 1rem; height: auto; background: black; color: white; font-size: 1rem; line-height: .5rem;">W</div>
+        <div style="display: block; width: auto; height: 1rem; background: black; color: white; font-size: 1rem; line-height: 1rem;">W</div>
     </div>
-</div>
-<!-- Section: try it out -->
-<div>
-    <h2>Try it out</h2>
-     <!-- Show input -->
-     <code style="display: none">
-        const height = {{ height | json }}<br>
-        const sequence = <a href="https://www.uniprot.org/uniprotkb/P05067/entry">P05067</a><br>
-        const features = <span>[<br>
-            @for (feature of features; track $index) {
-                <!-- Add initial padding -->
-                &nbsp;&nbsp;
-                <!-- Show feature value -->
-                @switch (feature.type) {
-                    <!-- Handle continuous features -->
-                    @case ('continuous') {
-                        {{ '{ id: ' + feature.id + ', type: ' + feature.type + ', color: ' + feature.color + ', values: [...] }' }}
-                    }
-                    <!-- Handle loci features -->
-                    @default { 
-                        {{ feature | json }}
-                    }
-                }
-                <!-- Add trailing comma, newline -->
-                , <br>
-            }
-        ]</span>
-    </code>
     <!-- Show output -->
     <div style="display: block; height: auto; width: 100%;">
-        <ngx-features-viewer [sequence]="sequence" [features]="features" [height]="height"></ngx-features-viewer>
+        <ngx-features-viewer [sequence]="sequence" [features]="features" [settings]="settings"></ngx-features-viewer>
     </div>
 </div>

@@ -1,6 +1,6 @@
-import Feature from './feature';
+import { Feature } from './feature';
 
-export default interface Continuous extends Feature<number> {
+export interface Continuous extends Feature<number> {
     // Override type
     type: 'continuous';
     // Define min, max values

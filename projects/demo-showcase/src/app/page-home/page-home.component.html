@@ -1,18 +1,83 @@
 <!-- Outer scaffold -->
-<div class="d-flex flex-col flex-center font-monospace">
-    <!-- Page title -->
-    <div class="d-flex flex-row flex-center">
-        <img src="assets/ngx-bio-tools.svg" alt="ngx-bio-tools" height="48" />
-        <h1>ngx-bio-tools</h1>
+<div class="container pt-3">
+    <!-- Inner grid -->
+    <div class="row">
+        <div class="col-12">
+            <h1 class="text-primary mb-3">Products</h1>
+        </div>
     </div>
-    <!-- Feature viewer -->
-    <div id="ngx-features-viewer">
-        <h2>Features viewer</h2>
-        <img [ngSrc]="'assets/ngx-features-viewer.png'" alt="ngx-features-viewer" [width]="586" [height]="320" routerLink="/features" priority/>
+    <div class="row">
+        <!-- Structure viewer -->
+        <div class="col-4">
+            <div class="rounded border border-primary p-3 mb-3">
+                <!-- Title -->
+                <h2 class="text-primary">
+                    <i class="bi bi-boxes"></i> Structure viewer
+                </h2>
+                <!-- Description -->
+                <p class="mb-1">
+                    Represent 3d molecules through <span class="badge rounded-pill text-bg-primary">Mol* <i class="bi bi-box-arrow-up-right"></i></span>.
+                </p>
+                <p class="mb-1">
+                    Download protein structures from a <span class="badge rounded-pill text-bg-primary">remote source <i class="bi bi-cloud-arrow-down-fill"></i></span><br>
+                    or upload your <span class="badge rounded-pill text-bg-primary">local data <i class="bi bi-floppy-fill"></i></span>.
+                </p>
+                <p class="mb-1">
+                    Handle events, such as <span class="badge rounded-pill text-bg-primary">highlight <i class="bi bi-mouse2"></i></span> 
+                    and <span class="badge rounded-pill text-bg-primary">selection <i class="bi bi-mouse2-fill"></i></span>.
+                </p>
+                <p>
+                    <span class="badge rounded-pill text-bg-warning">Try it out <i class="bi bi-chevron-right"></i></span>
+                </p>
+            </div>
+        </div>
+        <!-- Feature viewer -->
+        <div class="col-4">
+            <div class="rounded border border-primary p-3 mb-3">
+                <!-- Title -->
+                <h2 class="text-primary">
+                    <i class="bi bi-sliders"></i> Feature viewer
+                </h2>
+                <!-- Description -->
+                <p>
+                    Represent three dimensional molecules and protein structure through <span class="badge rounded-pill text-bg-primary">Mol* <i class="bi bi-box-arrow-up-right"></i></span>.<br>
+                    Download them from a <span class="badge rounded-pill text-bg-primary">remote source <i class="bi bi-cloud-arrow-down-fill"></i></span>, 
+                    or use your <span class="badge rounded-pill text-bg-primary">local data <i class="bi bi-floppy-fill"></i></span>.<br>
+                    Handle events, such as <span class="badge rounded-pill text-bg-primary">highlight <i class="bi bi-mouse2"></i></span> 
+                    and <span class="badge rounded-pill text-bg-primary">selection <i class="bi bi-mouse2-fill"></i></span>.<br>
+                    <span class="badge rounded-pill text-bg-warning" >Try it out <i class="bi bi-chevron-right"></i></span>
+                </p>
+            </div>
+        </div>
+        <!-- Sequence viewer -->
+        <div class="col-4">
+            <div class="rounded border border-primary p-3 mb-3">
+                <!-- Title -->
+                <h2 class="text-primary">
+                    <i class="bi bi-body-text"></i> Sequence viewer
+                </h2>
+                <!-- Description -->
+                <p>
+                    Represent three dimensional molecules and protein structure through <span class="badge rounded-pill text-bg-primary">Mol* <i class="bi bi-box-arrow-up-right"></i></span>.<br>
+                    Download them from a <span class="badge rounded-pill text-bg-primary">remote source <i class="bi bi-cloud-arrow-down-fill"></i></span>, 
+                    or use your <span class="badge rounded-pill text-bg-primary">local data <i class="bi bi-floppy-fill"></i></span>.<br>
+                    Handle events, such as <span class="badge rounded-pill text-bg-primary">highlight <i class="bi bi-mouse2"></i></span> 
+                    and <span class="badge rounded-pill text-bg-primary">selection <i class="bi bi-mouse2-fill"></i></span>.<br>
+                    <span class="badge rounded-pill text-bg-warning" >Try it out <i class="bi bi-chevron-right"></i></span>
+                </p>
+            </div>
+        </div>     
     </div>
-    <!-- Sequence viewer -->
-    <div class="d-flex flex-col" id="ngx-structure-viewer">
-        <h2>Structure viewer</h2>
-        <img [ngSrc]="'assets/ngx-structure-viewer.png'" alt="ngx-structure-viewer" [width]="586" [height]="320" routerLink="/structure" priority/>
+    <div class="row">
+        <div class="col-12">
+            <!-- Enhanced interactivity -->
+            <div class="rounded border border-warning p-3 mb-3">
+                <h2 class="text-warning"><i class="bi bi-share-fill"></i> Enhanced interactivity</h2>
+                <p>
+                    Our components are designed starting from the same, generic data structures. This is meant to easily wire up various compoents in the same page. 
+                    Hence, implementing interactivity out-of-the-box
+                </p>
+            </div>
+        </div>
     </div>
 </div>

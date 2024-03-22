@@ -1,2 +1,35 @@
-<!-- TODO Add page scaffold -->
-<router-outlet></router-outlet>
+<!-- Define header (navigation) -->
+<header>
+  <nav class="navbar">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">
+        <img src="assets/ngx-biocomp-up-white.svg" alt="ngx-biocomp-up" height="32" class="d-inline-block align-text-top">
+      </a>
+    </div>
+  </nav>
+</header>
+<!-- Define main content -->
+<main>
+  <router-outlet></router-outlet>
+</main>
+<!-- Define footer scaffold -->
+<footer class="container-fluid bg-dark pt-2 pb-2">
+  <!-- Acknowledgements -->
+  <div class="row">
+    <!-- Left side: BioCompUP -->
+    <div class="col-3 d-flex justify-content-start">
+      <img src="assets/biocomp.svg" alt="BioComputing UP" height="36">
+    </div>
+    <!-- Center: my own GitHub -->
+    <div class="col-6 d-flex align-items-center justify-content-center">
+        <a class="text-light small" href="https://github.com/damiclem">
+          Developed by Damiano Clementel <i class="bi bi-github"></i>
+        </a>
+    </div>
+    <!-- Right side: UniPD -->
+    <div class="col-3 d-flex justify-content-end">
+      <img src="assets/unipd.svg" alt="University of Padua" height="36">
+    </div>
+  </div>
+</footer>
+
