@@ -1,19 +1,22 @@
-import { Observable, ReplaySubject, Subscription, combineLatestWith, from, map, of, shareReplay, switchMap } from 'rxjs';
+import { Observable, ReplaySubject, Subscription, combineLatestWith, from, map, shareReplay, switchMap } from 'rxjs';
 import { Injectable, OnDestroy } from '@angular/core';
 // Molstar dependencies
-import { Structure, StructureElement, StructureSelection } from 'molstar/lib/mol-model/structure';
+import { Structure, StructureElement, StructureProperties as SP, StructureSelection } from 'molstar/lib/mol-model/structure';
 import { MolScriptBuilder as MS } from "molstar/lib/mol-script/language/builder";
 import { StateTransforms } from 'molstar/lib/mol-plugin-state/transforms';
 import { Expression } from 'molstar/lib/mol-script/language/expression';
 import { Overpaint } from 'molstar/lib/mol-theme/overpaint';
+import { Vec3 } from 'molstar/lib/mol-math/linear-algebra';
 import { Script } from 'molstar/lib/mol-script/script';
 // Custom dependencies
-import { StructureService } from './structure.service';
-import { SettingsService } from './settings.service';
-import { PluginService } from './plugin.service';
-import { Contact } from '../interfaces/contact';
-import { Locus } from '../interfaces/locus';
-import { fromHexString } from '../colors';
+import { StructureService } from '../structure.service';
+import { SettingsService } from '../settings.service';
+import { PluginService } from '../plugin.service';
+import { Interaction, Interactor } from '../../interfaces/interaction';
+import { Locus } from '../../interfaces/locus';
+import { fromHexString } from '../../colors';
+import { CreateMeshProvider } from './interactions.provider';
+
 
 function getLocusFromQuery(query: Expression, structure: Structure): StructureElement.Loci {
   // Execute query, retrieve selection
@@ -56,10 +59,10 @@ export class RepresentationService implements OnDestroy {
     this.loci$.next(loci);
   }
 
-  readonly contacts$ = new ReplaySubject<Contact[]>(1);
+  readonly interactions$ = new ReplaySubject<Interaction[]>(1);
 
-  set contacts(contacts: Contact[]) {
-    this.contacts$.next(contacts);
+  set interactions(interactions: Interaction[]) {
+    this.interactions$.next(interactions);
   }
 
   protected representation$: Observable<void>;
@@ -73,14 +76,14 @@ export class RepresentationService implements OnDestroy {
   ) {
     // Define loci representation pipeline
     const loci$ = this.getLociRepresentation();
-    // Define contacts representation pipeline
-    const contacts$ = this.getContactsRepresentation();
+    // Define interactions representation pipeline
+    const interactions$ = this.getInteractionsRepresentation();
     // Combine structure emission
     this.representation$ = this.structureService.structure$.pipe(
       // With loci representation pipeline
       combineLatestWith(loci$),
-      // And contacts representation pipeline
-      combineLatestWith(contacts$),
+      // And interactions representation pipeline
+      combineLatestWith(interactions$),
       // Return void
       map(() => void 0),
       // Cache result
@@ -183,9 +186,86 @@ export class RepresentationService implements OnDestroy {
     );
   }
 
-  protected getContactsRepresentation(): Observable<unknown> {
-    // TODO
-    return of(void 0);
+  protected getInteractionsRepresentation(): Observable<unknown> {
+    // Initialize state object selector
+    let stateObjectRef: string;
+    // Subscribe to structure emission
+    return this.structureService.structure$.pipe(
+      // Combine with interactions emission
+      combineLatestWith(this.interactions$),
+      // Wrap structure and interactions into an object
+      map(([structure, interactions]) => ({ structure, interactions })),
+      // TODO When coodeinates are not available, extract them frim indices
+      map(({ structure, interactions }) => {
+        // Define interactors
+        const interactors = interactions.reduce((acc, { from, to }) => [...acc, from, to], [] as Interactor[]);
+        // Loop through each atom in the structure
+        Structure.eachAtomicHierarchyElement(structure, ({
+          // Define function for each atom
+          atom: (a) => {
+            // Define coordinates vector
+            const coordinates = Vec3.create(SP.atom.x(a), SP.atom.y(a), SP.atom.z(a));
+            // Loop through each interactor
+            for (const interactor of interactors) {
+              // Do only if coordinates are not already set
+              if (!interactor.coordinates) {
+                // Case chain, residue and atom match
+                if (interactor['atom.id'] === SP.atom.id(a)) {
+                  // Update coordinates
+                  interactor.coordinates = coordinates;
+                }
+                // Case residue matches
+                else if (interactor['chain.id'] === SP.chain.auth_asym_id(a)) {
+                  // Case residue identifier matches
+                  if (interactor['residue.id'] === SP.residue.auth_seq_id(a) + SP.residue.pdbx_PDB_ins_code(a)) {
+                    // Case atom name matches
+                    if (interactor['atom.name'] === SP.atom.auth_atom_id(a)) {
+                      // Update coordinates
+                      interactor.coordinates = coordinates;
+                    }
+                  }
+                }
+              }
+            }
+          },
+        }));
+        // Filter out interactions whose interactors do not have coordinates
+        interactions = interactions.filter(({ from, to }) => from.coordinates && to.coordinates);
+        // Return both structure and filtered interactions
+        return { structure, interactions };
+      }),
+      // Apply mesh representation
+      switchMap(({ interactions }) => {
+        // Define plugin instance
+        const plugin = this.pluginService.plugin;
+        // Initialize plugin update
+        const update = plugin.state.data.build();
+        // Cast interactions to data
+        const data = interactions.map(({ from, to, color, label, size }) => ({
+          // Extract coordinates from interactors
+          from: from.coordinates,
+          to: to.coordinates,
+          // Cast string to Color
+          color: fromHexString(color || this.settingsService.settings['interaction-color']).at(0),
+          // Define size
+          size: size || this.settingsService.settings['interaction-size'],
+          // Define label, if any
+          label,
+        }));
+        // Delete previous state object
+        if (stateObjectRef) update.delete(stateObjectRef);
+        // Apply representation
+        const updated = update.toRoot()
+          .apply(CreateMeshProvider, { data })
+          .apply(StateTransforms.Representation.ShapeRepresentation3D);
+        // Store state object reference
+        stateObjectRef = updated.ref;
+        // Cast promise to observable
+        return from(update.commit({ doNotUpdateCurrent: true }));
+      }),
+      // Cache result
+      shareReplay(1),
+    );
   }
 
 }

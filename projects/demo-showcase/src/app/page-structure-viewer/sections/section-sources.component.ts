@@ -40,6 +40,8 @@ export class SectionSourcesComponent {
   readonly settings: Settings = {
     'background-color': '#2b3035ff',
     'backbone-color': '#6ea8fecc',
+    'interaction-color': '#ff0000ff',
+    'interaction-size': 1,
   };
 
   constructor(public http: HttpClient) {
