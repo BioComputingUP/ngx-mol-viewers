@@ -55,7 +55,7 @@ export class StructureService {
         // Parse trajectory
         const trajectory = await plugin.builders.structure.parseTrajectory(data, source.format);
         // Create model
-        const model = await plugin.builders.structure.createModel(trajectory);
+        const model = await plugin.builders.structure.createModel(trajectory, { modelIndex: 0 });
         // Create structure
         const name = 'model';
         const params = {}; 

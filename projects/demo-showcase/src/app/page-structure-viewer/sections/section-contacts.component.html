@@ -1,8 +1,10 @@
 <div class="row mb-3">
-  <div class="col-12">
+  <div class="col-6">
     <h2>Show contacts</h2>
     <div class="rounded squared overflow-hidden bg-body-tertiary">
-      <ngx-structure-viewer [settings]="settings" [source]="source"></ngx-structure-viewer>
+      @if (interactions$ | async; as interactions) {
+        <ngx-structure-viewer [settings]="settings" [source]="source" [interactions]="interactions"></ngx-structure-viewer>
+      }
     </div>
   </div>
 </div>

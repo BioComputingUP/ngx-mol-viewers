@@ -1,11 +1,13 @@
 import { Component, ElementRef, Input, ViewChild } from '@angular/core';
-import { RepresentationService } from './services/representation.service';
+// Custom dependencies
+import { RepresentationService } from './services/representation/representation.service';
 import { StructureService } from './services/structure.service';
 import { SettingsService } from './services/settings.service';
 import { PluginService } from './services/plugin.service';
 import { Settings } from './interfaces/settings';
 import { Source } from './interfaces/source';
 import { Locus } from './interfaces/locus';
+import { Interaction } from './interfaces/interaction';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
@@ -42,6 +44,11 @@ export class NgxStructureViewerComponent {
   @Input() 
   set loci(loci: Locus[]) {
     this.representationService.loci = loci;
+  }
+
+  @Input()
+  set interactions(interactions: Interaction[]) {
+    this.representationService.interactions = interactions;
   }
 
   @Input()
