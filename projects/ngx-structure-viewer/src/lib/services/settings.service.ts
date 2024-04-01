@@ -1,22 +1,16 @@
-import { Settings } from '../entities/settings';
+import { Settings } from '../interfaces/settings';
 import { Injectable } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
 
-@Injectable({ providedIn: 'root' })
+@Injectable({ providedIn: 'platform' })
 export class SettingsService {
 
-  // Define settings emitter
   readonly settings$ = new ReplaySubject<Settings>();
 
-  // Store settings
   protected _settings!: Settings;
 
-  // Emit settings
   set settings(settings: Settings) {
-    // Store settings
-    this._settings = settings;
-    // Emit settings
-    this.settings$.next(settings);
+    this.settings$.next(this._settings = settings);
   }
 
   get settings(): Settings {

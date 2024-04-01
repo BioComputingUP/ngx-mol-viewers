@@ -3,78 +3,99 @@
     <!-- Inner grid -->
     <div class="row">
         <div class="col-12">
-            <h1 class="text-primary mb-3">Products</h1>
+            <h1 class="mb-3">Products</h1>
         </div>
     </div>
-    <div class="row">
+    <div class="row align-items-stretch mb-3">
         <!-- Structure viewer -->
         <div class="col-4">
-            <div class="rounded border border-primary p-3 mb-3">
+            <div class="d-flex flex-column rounded bg-body-tertiary shadow-sm h-100 p-3 mb-3" routerLink="/structure">
                 <!-- Title -->
-                <h2 class="text-primary">
+                <h2>
                     <i class="bi bi-boxes"></i> Structure viewer
                 </h2>
                 <!-- Description -->
-                <p class="mb-1">
-                    Represent 3d molecules through <span class="badge rounded-pill text-bg-primary">Mol* <i class="bi bi-box-arrow-up-right"></i></span>.
+                <p class="mb-3">
+                    The structure viewer is an advanced tool designed for visualizing three-dimensional biological
+                    complexes, such as protein structures sourced from databases like the Protein Data Bank (PDB) or
+                    AlphaFoldDB. It leverages the power of Mol* (Molstar), a modern web-based viewer for macromolecular
+                    structures and volumetric data. The structure viewer provides a range of interactive
+                    functionalities, enabling users to rotate, zoom, and pan the structures, toggle between different
+                    visualization modes, and inspect individual atoms and residues. It also supports the display of
+                    annotations, such as secondary structures, sequence alignments, and experimental data. This makes
+                    the structure viewer an invaluable tool for researchers and scientists studying the intricate
+                    details of biological macromolecules.
                 </p>
-                <p class="mb-1">
-                    Download protein structures from a <span class="badge rounded-pill text-bg-primary">remote source <i class="bi bi-cloud-arrow-down-fill"></i></span><br>
-                    or upload your <span class="badge rounded-pill text-bg-primary">local data <i class="bi bi-floppy-fill"></i></span>.
-                </p>
-                <p class="mb-1">
-                    Handle events, such as <span class="badge rounded-pill text-bg-primary">highlight <i class="bi bi-mouse2"></i></span> 
-                    and <span class="badge rounded-pill text-bg-primary">selection <i class="bi bi-mouse2-fill"></i></span>.
-                </p>
-                <p>
-                    <span class="badge rounded-pill text-bg-warning">Try it out <i class="bi bi-chevron-right"></i></span>
-                </p>
+                <!-- Try it out -->
+                <div class="text-center mt-auto">
+                    <span class="badge rounded-pill text-bg-warning">
+                        Try it out <i class="bi bi-chevron-right"></i>
+                    </span>
+                </div>
             </div>
         </div>
         <!-- Feature viewer -->
         <div class="col-4">
-            <div class="rounded border border-primary p-3 mb-3">
+            <div class="d-flex flex-column rounded bg-body-tertiary shadow-sm h-100 p-3 mb-3" routerLink="/feature">
                 <!-- Title -->
-                <h2 class="text-primary">
+                <h2>
                     <i class="bi bi-sliders"></i> Feature viewer
                 </h2>
                 <!-- Description -->
-                <p>
-                    Represent three dimensional molecules and protein structure through <span class="badge rounded-pill text-bg-primary">Mol* <i class="bi bi-box-arrow-up-right"></i></span>.<br>
-                    Download them from a <span class="badge rounded-pill text-bg-primary">remote source <i class="bi bi-cloud-arrow-down-fill"></i></span>, 
-                    or use your <span class="badge rounded-pill text-bg-primary">local data <i class="bi bi-floppy-fill"></i></span>.<br>
-                    Handle events, such as <span class="badge rounded-pill text-bg-primary">highlight <i class="bi bi-mouse2"></i></span> 
-                    and <span class="badge rounded-pill text-bg-primary">selection <i class="bi bi-mouse2-fill"></i></span>.<br>
-                    <span class="badge rounded-pill text-bg-warning" >Try it out <i class="bi bi-chevron-right"></i></span>
+                <p class="mb-3">
+                    The feature viewer is a powerful tool designed for visualizing features of biological sequences,
+                    such as proteins, DNA, or RNA. It provides a comprehensive set of functionalities to explore and
+                    analyze these sequences. With the feature viewer, users can easily identify and visualize various
+                    features, including structural elements, functional domains, mutations, and more. It offers a
+                    user-friendly interface with intuitive gestures and actions, allowing users to zoom in and out, pan
+                    across the sequence, highlight specific regions, and perform interactive selections. Whether you are
+                    a biologist, bioinformatician, or researcher, the feature viewer is an indispensable tool for
+                    gaining insights into the intricate details of biological sequences.
                 </p>
+                <!-- Try it out -->
+                <div class="text-center mt-auto">
+                    <span class="badge rounded-pill text-bg-warning">
+                        Try it out <i class="bi bi-chevron-right"></i>
+                    </span>
+                </div>
             </div>
         </div>
         <!-- Sequence viewer -->
         <div class="col-4">
-            <div class="rounded border border-primary p-3 mb-3">
+            <div class="d-flex flex-column rounded bg-body-tertiary shadow-sm h-100 p-3 mb-3" routerLink="/sequence">
                 <!-- Title -->
-                <h2 class="text-primary">
+                <h2>
                     <i class="bi bi-body-text"></i> Sequence viewer
                 </h2>
                 <!-- Description -->
-                <p>
-                    Represent three dimensional molecules and protein structure through <span class="badge rounded-pill text-bg-primary">Mol* <i class="bi bi-box-arrow-up-right"></i></span>.<br>
-                    Download them from a <span class="badge rounded-pill text-bg-primary">remote source <i class="bi bi-cloud-arrow-down-fill"></i></span>, 
-                    or use your <span class="badge rounded-pill text-bg-primary">local data <i class="bi bi-floppy-fill"></i></span>.<br>
-                    Handle events, such as <span class="badge rounded-pill text-bg-primary">highlight <i class="bi bi-mouse2"></i></span> 
-                    and <span class="badge rounded-pill text-bg-primary">selection <i class="bi bi-mouse2-fill"></i></span>.<br>
-                    <span class="badge rounded-pill text-bg-warning" >Try it out <i class="bi bi-chevron-right"></i></span>
+                <p class="mb-3">
+                    The sequence viewer is a specialized tool designed for visualizing multiple sequence alignments and
+                    other features across protein sequences. It provides a comprehensive view of the similarities and
+                    differences between multiple protein sequences, allowing users to easily identify conserved regions,
+                    mutations, and other important features. The sequence viewer supports various display options,
+                    enabling users to customize the view according to their needs. It also allows for interactive
+                    exploration, with features such as zooming and panning, highlighting specific regions, and hovering
+                    over specific points for more detailed information. This makes the sequence viewer an essential tool
+                    for bioinformaticians and researchers studying protein sequences and their relationships.
                 </p>
+                <!-- Try it out -->
+                <div class="text-center mt-auto">
+                    <span class="badge rounded-pill text-bg-warning">
+                        Try it out <i class="bi bi-chevron-right"></i>
+                    </span>
+                </div>
             </div>
-        </div>     
+        </div>
     </div>
     <div class="row">
+        <!-- Interactivity -->
         <div class="col-12">
             <!-- Enhanced interactivity -->
-            <div class="rounded border border-warning p-3 mb-3">
-                <h2 class="text-warning"><i class="bi bi-share-fill"></i> Enhanced interactivity</h2>
+            <div class="rounded bg-body-tertiary shadow-sm p-3 mb-3">
+                <h2><i class="bi bi-share-fill"></i> Enhanced interactivity</h2>
                 <p>
-                    Our components are designed starting from the same, generic data structures. This is meant to easily wire up various compoents in the same page. 
+                    Our components are designed starting from the same, generic data structures. This is meant to easily
+                    wire up various compoents in the same page.
                     Hence, implementing interactivity out-of-the-box
                 </p>
             </div>
