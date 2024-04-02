@@ -5,22 +5,22 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-section-contacts',
+  selector: 'app-section-interactions',
   standalone: true,
   imports: [
     NgxStructureViewerComponent,
     CommonModule,
   ],
-  templateUrl: './section-contacts.component.html',
-  styleUrl: './section-contacts.component.scss'
+  templateUrl: './section-interactions.component.html',
+  styleUrl: './section-interactions.component.scss'
 })
-export class SectionContactsComponent {
+export class SectionInteractionsComponent {
 
   readonly settings: Settings = {
     'background-color': '#2b3035ff',
     'backbone-color': '#6ea8fe40',
     'interaction-color': '#ff0000ff',
-    'interaction-size': .25,
+    'interaction-size': .5,
   };
 
   readonly source: Source = {
@@ -58,8 +58,10 @@ export class SectionContactsComponent {
   constructor() {
     // Each 3 seconds, select just one interaction
     this.interactions$ = interval(3000).pipe(
+      // Copy interactions array
+      map(() => this.interactions.map((interaction) => ({ ...interaction}))),
       // Shuffle the interactions
-      map(() => this.interactions.sort(() => Math.random() - 0.5)),
+      map((interactions) => interactions.sort(() => Math.random() - 0.5)),
       // Select the first interaction
       map(interactions => [interactions[0]]),
       // Set the first interaction as the initial value
