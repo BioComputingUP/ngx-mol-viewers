@@ -18,14 +18,14 @@ import { fromHexString } from '../../colors';
 import { CreateMeshProvider } from './interactions.provider';
 
 
-function getLocusFromQuery(query: Expression, structure: Structure): StructureElement.Loci {
+export function getLocusFromQuery(query: Expression, structure: Structure): StructureElement.Loci {
   // Execute query, retrieve selection
   const selection: StructureSelection = Script.getStructureSelection(query, structure);
   // Cast selection to loci
   return StructureSelection.toLociWithSourceUnits(selection);
 }
 
-function getLocusFromSet(set: string[], structure: Structure): StructureElement.Loci {
+export function getLocusFromSet(set: string[], structure: Structure): StructureElement.Loci {
   // Override query
   const query = MS.struct.generator.atomGroups({
     // Select atoms between <begin> and <end> atom IDs
@@ -41,7 +41,7 @@ function getLocusFromSet(set: string[], structure: Structure): StructureElement.
 }
 
 // Filter overpaint layers for given structure
-function getFilteredBundle(layers: Overpaint.BundleLayer[], structure: Structure) {
+export function getFilteredBundle(layers: Overpaint.BundleLayer[], structure: Structure) {
   // Generate overpaint out of bundle
   const overpaint: Overpaint = Overpaint.ofBundle(layers, structure.root);
   // Merge overpaint layers together (order matters)
@@ -65,7 +65,7 @@ export class RepresentationService implements OnDestroy {
     this.interactions$.next(interactions);
   }
 
-  protected representation$: Observable<void>;
+  public representation$: Observable<void>;
 
   protected _representation: Subscription;
 

@@ -5,6 +5,7 @@ import { PluginContext } from 'molstar/lib/mol-plugin/context';
 import { ElementRef, Injectable } from '@angular/core';
 import { SettingsService } from './settings.service';
 import { fromHexString } from '../colors';
+import { PluginBehavior } from 'molstar/lib/mol-plugin/behavior/behavior';
 
 @Injectable({ providedIn: 'platform' })
 export class PluginService {
