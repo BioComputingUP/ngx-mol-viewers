@@ -1,8 +1,8 @@
 import { NgxStructureViewerComponent, Source, Settings, Interaction } from '@ngx-structure-viewer';
 import { Observable, interval, map, shareReplay, startWith } from 'rxjs';
 import { Vec3 } from 'molstar/lib/mol-math/linear-algebra';
-import { CommonModule, APP_BASE_HREF } from '@angular/common';
-import { Component, Inject } from '@angular/core';
+import { CommonModule, Location } from '@angular/common';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-section-interactions',
@@ -10,9 +10,6 @@ import { Component, Inject } from '@angular/core';
   imports: [
     NgxStructureViewerComponent,
     CommonModule,
-  ],
-  providers: [
-    { provide: APP_BASE_HREF, useValue: '/' }
   ],
   templateUrl: './section-interactions.component.html',
   styleUrl: './section-interactions.component.scss'
@@ -32,7 +29,7 @@ export class SectionInteractionsComponent {
     label: '8VAP.A',
     binary: false,
     // Define remote link to local resource
-    link: this.baseHref + 'assets/8vap.A.cif',
+    link: this.location.prepareExternalUrl('') + 'assets/8vap.A.cif',
   };
 
   // NOTE An interactor can be defined by one of the following properties:
@@ -59,9 +56,7 @@ export class SectionInteractionsComponent {
 
   readonly interactions$: Observable<Interaction[]>;
 
-  constructor(
-    @Inject(APP_BASE_HREF) public baseHref: string,
-  ) {
+  constructor(public location: Location) {
     // Each 3 seconds, select just one interaction
     this.interactions$ = interval(3000).pipe(
       // Copy interactions array
