@@ -1,1 +1,21 @@
-<p>section-highlights works!</p>
+<div class="row mb-3">
+  <!-- Left: example -->
+  <div class="col-6 position-relative">
+    <!-- Squared container -->
+    <div class="squared rounded overflow-hidden bg-body-tertiary">
+      <!-- Viewer instance -->
+      <ngx-structure-viewer [settings]="settings" [source]="source" (highlights)="onHighlights($event)"></ngx-structure-viewer>
+    </div>
+    <!-- Label container -->
+    @if(label$ | async; as label) {
+    <div class="d-block position-absolute bottom-0 end-0 w-auto h-auto pe-3">       
+      <!-- Show label -->
+      <code class="d-block p-3">{{ label }}</code>
+    </div>
+    }
+  </div>
+  <!-- Right: description -->
+  <div class="col-6">
+    <h2>Highlights</h2>
+  </div>
+</div>

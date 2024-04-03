@@ -37,7 +37,7 @@ export class SectionChainsComponent {
       format: 'mmcif' as const,
       label: '8VAP',
       binary: false,
-      link: 'assets/8vap.cif'
+      link: 'assets/8vap.cif',
     };
 
     const chains = [

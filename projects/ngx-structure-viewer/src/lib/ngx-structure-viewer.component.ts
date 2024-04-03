@@ -1,8 +1,8 @@
-import { Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, Output, ViewChild } from '@angular/core';
 // Custom dependencies
 import { RepresentationService } from './services/representation/representation.service';
 import { StructureService } from './services/structure.service';
-import { HighlightService } from './services/highlight.service';
+import { HighlightService, Highlights } from './services/highlight.service';
 import { SettingsService } from './services/settings.service';
 import { PluginService } from './services/plugin.service';
 import { Interaction } from './interfaces/interaction';
@@ -57,6 +57,15 @@ export class NgxStructureViewerComponent {
   set settings(settings: Settings) {
     this.settingsService.settings = settings;
   }
+
+  @Input()
+  set highlights(highlights: Highlights) {
+    this.highlightService.highlights = highlights;
+  }
+
+  // eslint-disable-next-line @angular-eslint/no-output-rename
+  @Output('highlights')
+  public highlights$ = this.highlightService.output$;
 
   constructor(
     public representationService: RepresentationService,

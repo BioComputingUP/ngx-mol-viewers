@@ -235,153 +235,11 @@ export class DrawService {
       // Update vertical scale
       tap((traces) => this.updateScale(traces)),
       // Draw labels, without setting position but saving references
-      // tap((traces) => {
-      //   // Define labels group
-      //   const group = this.initializeService.svg
-      //     // Select previous labels group
-      //     .selectAll('g.labels')
-      //     // Bind group to current traces
-      //     .data([traces], index)
-      //     // Create current labels group
-      //     .join('g')
-      //     .attr('class', 'labels');
-      //   // Add labels to their group
-      //   this.labels = group
-      //     // Select previous labels (foreignObjects)
-      //     .selectAll('g.label')
-      //     // Bind label object to associated data
-      //     .data([{ ...this.initializeService.settings, id: 'sequence', visible: true }, ...traces] as Traces, identity)
-      //     // Create current labels (foreignObject)
-      //     .join('g')
-      //     .attr('id', (d) => 'label-' + String(d.id))
-      //     .attr('class', (d) => `label ${d.visible ? 'visible' : ''}`);
-      //   // Add parent foreignObject
-      //   const parent = this.labels
-      //     // Bind parent to foreign object
-      //     .selectAll('foreignObject.parent')
-      //     .data(d => [d], index)
-      //     .join('foreignObject')
-      //     .attr('class', 'parent');
-      //   // Add content to parent foreign object
-      //   parent
-      //     .selectAll('div')
-      //     .data(d => [d], index)
-      //     .join('xhtml:div')
-      //     // Add depth, children classes
-      //     // NOTE This is required to make css aware of those properties 
-      //     .attr('class', (d: Feature) => {
-      //       // Get feature depth
-      //       const depth = this.depth.get(d) || 0;
-      //       // Get number of children
-      //       const children = (this.children.get(d) || []).length;
-      //       // Return classes string
-      //       return `depth-${depth} children-${children}`;
-      //     })
-      //     // Add label HTML content
-      //     .html((d: Feature) => {
-      //       // Define feature identifier
-      //       const _id = ('' + d.id === 'sequence') ? 'Sequence' : 'feature ' + d.id;
-      //       // Define label
-      //       const label = d.label !== undefined ? d.label : _id; 
-      //       // Return HTML content
-      //       return `<span>${label} </span><i class="bi bi-caret-down-fill"></i>`;
-      //     });
-      //   // Add children group
-      //   this.labels
-      //     // Bind children to group
-      //     .selectAll('g.children')
-      //     .data(d => [d], index)
-      //     .join('g')
-      //     .attr('class', 'children');
-      //   // Map labels to their feature identifier
-      //   this.labels.each(function (feature) {
-      //     // Get current label element
-      //     const label = d3.select(this);
-      //     // // TODO Remove this
-      //     // console.log('Label', label);
-      //     // Case current feature does have parent feature 
-      //     if (feature.parent !== undefined) {
-      //       // // Then detach label, as it needs to be appended to its parent group
-      //       // label = label.remove();
-      //       // Select parent node
-      //       const parent = group.selectAll(`g.label#label-${feature.parent}`)!;
-      //       // Get childreb container
-      //       const children = parent.selectAll('g.children').node() as SVGGElement;
-      //       // Select child node
-      //       const child = label.node() as SVGForeignObjectElement;
-      //       // Append child node to parent node
-      //       children.appendChild(child);
-      //     }
-      //   });
-      // }),
       tap((traces) => this.createLabels(traces)),
       // Draw grid, without setting position but saving references
       tap((traces) => this.createGrid(traces)),
       // Draw features, without setting position but saving references
       tap((traces) => this.createTraces(traces)),
-      // map((features: Features) => {
-      //   // Initialize values map
-      //   const values = this.values = new Map();
-      //   // TODO Select parent according to 
-      //   // Generate and store feature groups
-      //   this.features = this.draw
-      //     // Select previous groups
-      //     .selectAll('g.feature')
-      //     // Bind each feature group (SVG) to a feature instance
-      //     .data(features, identity)
-      //     // Create current groups
-      //     .join('g')
-      //     .attr('id', (d) => `feature-${d.id}`)
-      //     .attr('class', 'feature');
-      //   // For each feature group, generate feature representation
-      //   this.features.each(function (feature) {
-      //     // Define group
-      //     const group = d3.select(this);
-      //     // TODO Remove feature from 
-      //     // TODO Handle continuous features
-      //     if (feature.type === 'continuous') {
-      //       // Initialize scatterplot representation
-      //       const scatter = group
-      //         // Find previous path
-      //         .selectAll(`path.continuous`)
-      //         // Bind to feature object
-      //         .data([feature], identity)
-      //         // Generate updated path
-      //         .join('path')
-      //         // Generate path
-      //         .attr('class', 'continuous')
-      //         .attr('fill', 'steelblue')
-      //         .attr('fill-opacity', 0.3)
-      //         .attr('stroke', 'steelblue')
-      //         .attr('stroke-opacity', 1)
-      //         .attr('stroke-width', 1.5);
-      //       // Store scatterplot
-      //       values.set(feature, scatter);
-      //     }
-      //     // Handle loci features
-      //     else if (feature.type === 'loci') {
-      //       // Define locus container
-      //       const foreignObject = createLoci(group, feature);
-      //       // .style('background-color', color)
-      //       // .style('opacity', 0.3);
-      //       // Attach loci representation to SVG
-      //       values.set(feature, foreignObject);
-      //     }
-      //     // Handle pins features
-      //     else if (feature.type === 'pins') {
-      //       // Store pin container
-      //       values.set(feature, createPins(group, feature));
-      //     }
-      //     // TODO Handle DSSP features
-      //     else if (feature.type === 'dssp') {
-      //       // Define container for feature value (foreign object)
-      //       const foreignObject = createDSSP(group, feature);
-      //       // Attach loci representation to SVG
-      //       values.set(feature, foreignObject);
-      //     }
-      //   });
-      // }),
-      // Cache results
       // NOTE This is required to avoid re-drawing everything on each resize/zoom event
       shareReplay(1),
     );
@@ -395,95 +253,6 @@ export class DrawService {
       map(() => this.updateLabels()),
       // Move traces in correct position
       map(() => this.updateTraces()),
-      // map(() => {
-      //   // Get scale (x, y axis)
-      //   const { y } = this.initializeService.scale;
-      //   // Get height, width, margins
-      //   const margin = this.initializeService.margin;
-      //   // Define inner height (row)
-      //   const inner = (y('sequence') - margin.top) * 2;
-      //   // Update each label
-      //   this.labels
-      //     // Select all inner foreign objects
-      //     .select('foreignObject.parent')
-      //     // Update positions
-      //     .attr('y', d => y((d.id + '' === 'sequence') ? ('' + d.id) : ('feature-' + d.id)) - inner / 2)
-      //     .attr('x', 0)
-      //     // Update sizes
-      //     .attr('height', inner)
-      //     .attr('width', margin.left);
-      // }),
-      // // Move feature values in correct position
-      // map(() => {
-      //   // Get feature values
-      //   const _values = this.values;
-      //   // Get height map
-      //   const _height = this.initService.height;
-      //   // Get scale (x, y axis) and margin (top, bottom, left, right)
-      //   const { x, y } = this.scale!;
-      //   // Loop through each feature
-      //   this.features.each(function (feature) {
-      //     // Get feature values
-      //     const values = _values.get(feature);
-      //     // Ensure that values are defined
-      //     if (!values) throw new Error(`Values are not defined for feature ${feature.id}`);
-      //     // Then, update feature values according to feature type
-      //     if (feature.type === 'continuous') {
-      //       // Define feature height, using the height of the sequence feature (as it is the first one)
-      //       const height = _height.get(`feature-${feature.id}`)! / 2;
-      //       // Get (scatterplot) from feature
-      //       const scatter = values as FeatureObject<Continuous>;
-      //       // Get number of values
-      //       const n = feature.values.length;
-      //       // Compute minimum, maximum values
-      //       const min = feature.min !== undefined ? feature.min : Math.min(...feature.values);
-      //       const max = feature.max !== undefined ? feature.max : Math.max(...feature.values);
-      //       // Define actual values to be represented, scaled between 0 and 1
-      //       // NOTE Must add initial and final zero values
-      //       let xy: [number, number][];
-      //       // Define first value
-      //       xy = [[0.5, 0]];
-      //       // Cast index, value to x, y coordinates
-      //       xy = [...xy, ...feature.values.map((y, x) => [x + 1, (y - min) / (max - min)] as [number, number])];
-      //       // Define last value
-      //       xy = [...xy, [n + 0.5, 0]];
-      //       // Initialize line accoridng to current feature
-      //       const line = d3.line<[number, number]>().curve(d3.curveMonotoneX)
-      //         .x((d) => x(d[0]))
-      //         .y((d) => y('feature-' + feature.id) - d[1] * height);
-      //       // Update line in scatterplot
-      //       scatter.attr('d', line(xy))
-      //     }
-      //     else if (feature.type === 'loci' || feature.type === 'dssp' || feature.type === 'pins') {
-      //       // Define default locus height
-      //       const height = 24;
-      //       // Define vertical position
-      //       const vertical = y('feature-' + feature.id) - height / 2;
-      //       // Update foreign object
-      //       const foreignObject = (values as FeatureObject<Loci>)
-      //         // Update position
-      //         .attr('x', (d) => x(d.start - 0.5))
-      //         .attr('y', vertical)
-      //         // Update size
-      //         .attr('width', (d) => x(d.end + 1) - x(d.start))
-      //         .attr('height', height);
-      //       // Case feature is loci
-      //       if (feature.type === 'loci') {
-      //         // Then, check content size
-      //         foreignObject
-      //           // Update content according to size
-      //           .select('div.foreground')
-      //           .text((d) => (x(d.end + 1) - x(d.start)) > (REM * 2.5) ? `[${d.start}, ${d.end}]` : '');
-      //       }
-      //       // Case feature is pins
-      //       else if (feature.type === 'pins') {
-      //         // Update vertical positioning
-      //         foreignObject
-      //           .attr('y', vertical - height / 2);
-      //       }
-      //     }
-      //   });
-      // }),
       // TODO Remove this
       tap(() => console.log('Re-drawn!')),
     );
@@ -759,7 +528,7 @@ export class DrawService {
         return 1;
       })
       // TODO Set custom color
-      .attr('fill', '#D3D3D380');
+      .attr('fill', this.initializeService.settings['grid-color']);
   }
 
   public createTraces(traces: Traces): void {
