@@ -29,7 +29,7 @@ export class SectionInteractionsComponent {
     label: '8VAP.A',
     binary: false,
     // Define remote link to local resource
-    link: this.location.prepareExternalUrl('') + 'assets/8vap.A.cif',
+    link: this.location.prepareExternalUrl('assets/8vap.A.cif'),
   };
 
   // NOTE An interactor can be defined by one of the following properties:
