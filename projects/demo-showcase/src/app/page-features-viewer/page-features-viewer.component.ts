@@ -51,16 +51,17 @@ export class PageFeaturesViewerComponent {
   // Define input settings
   readonly settings: Settings = {
     // Define height
-    "line-height": 24,
-    "content-size": 16,
+    'line-height': 24,
+    'content-size': 16,
     // Define color
-    "background-color": '',
-    "trace-color": "",
+    'background-color': 'transparent',
+    'trace-color': 'pink',
+    'grid-color': 'white',
     // Define margins
-    "margin-top": 24,
-    "margin-right": 24,
-    "margin-bottom": 24,
-    "margin-left": 128,
+    'margin-top': 24,
+    'margin-right': 24,
+    'margin-bottom': 24,
+    'margin-left': 128,
   };
   // Define input sequence
   readonly sequence = ['M', 'E', 'E', 'P', 'Q'];

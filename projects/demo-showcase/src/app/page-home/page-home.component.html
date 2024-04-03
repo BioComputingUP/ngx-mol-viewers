@@ -9,22 +9,17 @@
     <div class="row align-items-stretch mb-3">
         <!-- Structure viewer -->
         <div class="col-4">
-            <div class="d-flex flex-column rounded bg-body-tertiary shadow-sm h-100 p-3 mb-3" routerLink="/structure">
+            <div class="product-card rounded bg-body-tertiary p-3 mb-3" routerLink="/structure">
                 <!-- Title -->
                 <h2>
-                    <i class="bi bi-boxes"></i> Structure viewer
+                    <i class="bi bi-boxes me-3"></i> Structure viewer
                 </h2>
+                <!-- Image -->
+                <img src="assets/structure-viewer.png" class="w-100 h-auto mb-3" alt="Structure viewer">
                 <!-- Description -->
-                <p class="mb-3">
-                    The structure viewer is an advanced tool designed for visualizing three-dimensional biological
-                    complexes, such as protein structures sourced from databases like the Protein Data Bank (PDB) or
-                    AlphaFoldDB. It leverages the power of Mol* (Molstar), a modern web-based viewer for macromolecular
-                    structures and volumetric data. The structure viewer provides a range of interactive
-                    functionalities, enabling users to rotate, zoom, and pan the structures, toggle between different
-                    visualization modes, and inspect individual atoms and residues. It also supports the display of
-                    annotations, such as secondary structures, sequence alignments, and experimental data. This makes
-                    the structure viewer an invaluable tool for researchers and scientists studying the intricate
-                    details of biological macromolecules.
+                <p class="text-justify mb-3">
+                    Visualize and interact with 3D molecular structures.
+                    Provides Mol* functionalities out-of-the-box for Angular developers.
                 </p>
                 <!-- Try it out -->
                 <div class="text-center mt-auto">
@@ -35,8 +30,8 @@
             </div>
         </div>
         <!-- Feature viewer -->
-        <div class="col-4">
-            <div class="d-flex flex-column rounded bg-body-tertiary shadow-sm h-100 p-3 mb-3" routerLink="/feature">
+        <div class="col-4 product">
+            <div class="product-card rounded bg-body-tertiary p-3 mb-3 " routerLink="/feature">
                 <!-- Title -->
                 <h2>
                     <i class="bi bi-sliders"></i> Feature viewer
@@ -62,7 +57,7 @@
         </div>
         <!-- Sequence viewer -->
         <div class="col-4">
-            <div class="d-flex flex-column rounded bg-body-tertiary shadow-sm h-100 p-3 mb-3" routerLink="/sequence">
+            <div class="product-card rounded bg-body-tertiary p-3 mb-3" routerLink="/sequence">
                 <!-- Title -->
                 <h2>
                     <i class="bi bi-body-text"></i> Sequence viewer
