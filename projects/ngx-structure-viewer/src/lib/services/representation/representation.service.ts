@@ -1,4 +1,4 @@
-import { Observable, ReplaySubject, Subscription, combineLatestWith, from, map, shareReplay, switchMap } from 'rxjs';
+import { Observable, ReplaySubject, Subscription, combineLatestWith, from, map, shareReplay, switchMap, withLatestFrom } from 'rxjs';
 import { Injectable, OnDestroy } from '@angular/core';
 // Molstar dependencies
 import { Structure, StructureElement, StructureProperties as SP, StructureSelection } from 'molstar/lib/mol-model/structure';
@@ -82,6 +82,23 @@ export class RepresentationService implements OnDestroy {
     const interactions$ = this.getInteractionsRepresentation();
     // Combine structure emission
     this.representation$ = this.structureService.structure$.pipe(
+      // Get latest source
+      withLatestFrom(this.structureService.source$),
+      // TODO Generate loci representation
+      switchMap(([structure, source]) => from((async () => {
+        // Define reference for current plugin
+        const plugin = this.pluginService.plugin;
+        // Create component for the whole structure
+        const component = await plugin.builders.structure.tryCreateComponentStatic(structure, 'polymer', { label: source.label });
+        // Define color
+        const [ value ] = fromHexString(this.settingsService.settings['backbone-color']);
+        // Initialize white representation
+        await plugin.builders.structure.representation.addRepresentation(component!, {
+          type: 'cartoon',
+          color: 'uniform',
+          colorParams: { value },
+        });
+      })())),
       // Combine with structure initialization
       combineLatestWith(this.canvasService.initialized$),
       // With loci representation pipeline
@@ -142,7 +159,7 @@ export class RepresentationService implements OnDestroy {
         for (const { ids, color: hex } of loci) {
           // Define current Mol* loci
           // const locus = getLociFromRange(start, end, structure);
-          const locus = getLocusFromSet(ids, structure);
+          const locus = getLocusFromSet(ids, structure.cell?.obj?.data);
           // Define current Mol* bundle
           const bundle = StructureElement.Bundle.fromLoci(locus);
           // Compute color
@@ -155,7 +172,7 @@ export class RepresentationService implements OnDestroy {
         // Initialize plugin update
         const update = plugin.state.data.build();
         // Filter bundle of layers
-        const bundle = getFilteredBundle(layers, structure);
+        const bundle = getFilteredBundle(layers, structure.cell?.obj?.data);
         // Loop through structures in plugin
         for (const structureRef of plugin.managers.structure.hierarchy.current.structures) {
           // Loop through components in current structure
@@ -170,7 +187,7 @@ export class RepresentationService implements OnDestroy {
                   Overpaint.toBundle(bundle as never)
                 );
               // TODO Define locus for all residues
-              const _locus = getLocusFromSet([...this.structureService.i2r.values()], structure);
+              const _locus = getLocusFromSet([...this.structureService.i2r.values()], structure.cell?.obj?.data as Structure);
               const _bundle = StructureElement.Bundle.fromLoci(_locus);
               // eslint-disable-next-line @typescript-eslint/no-unused-vars
               const [_color, alpha] = fromHexString(this.settingsService.settings['backbone-color']);
@@ -204,7 +221,7 @@ export class RepresentationService implements OnDestroy {
         // Define interactors
         const interactors = interactions.reduce((acc, { from, to }) => [...acc, from, to], [] as Interactor[]);
         // Loop through each atom in the structure
-        Structure.eachAtomicHierarchyElement(structure, ({
+        Structure.eachAtomicHierarchyElement(structure.cell?.obj?.data as Structure, ({
           // Define function for each atom
           atom: (a) => {
             // Define coordinates vector
