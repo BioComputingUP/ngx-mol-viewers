@@ -1,18 +1,18 @@
 import { Observable, ReplaySubject, combineLatest, from, map, shareReplay, switchMap, tap } from 'rxjs';
 import { Structure, StructureProperties } from 'molstar/lib/mol-model/structure';
+// import { StateObjectRef } from 'molstar/lib/mol-state';
 import { Asset } from 'molstar/lib/mol-util/assets';
 import { Injectable } from '@angular/core';
 // Custom services
-import { SettingsService } from './settings.service';
+// import { SettingsService } from './settings.service';
 import { PluginService } from './plugin.service';
 import { Source } from '../interfaces/source';
-import { fromHexString } from '../colors';
-
 
 @Injectable({ providedIn: 'platform' })
 export class StructureService {
 
-  readonly structure$: Observable<Structure>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  readonly structure$: Observable<any>;  // TODO
 
   readonly source$ = new ReplaySubject<Source>;
 
@@ -25,7 +25,7 @@ export class StructureService {
   public i2r!: Map<number, string>;
 
   constructor(
-    public settingsService: SettingsService,
+    // public settingsService: SettingsService,
     public pluginService: PluginService,
   ) {
     const plugin$ = this.pluginService.plugin$;
@@ -56,22 +56,18 @@ export class StructureService {
         const trajectory = await plugin.builders.structure.parseTrajectory(data, source.format);
         // Create model
         const model = await plugin.builders.structure.createModel(trajectory, { modelIndex: 0 });
-        // Create structure
-        const name = 'model';
-        const params = {}; 
-        const structure = await plugin.builders.structure.createStructure(model, { name, params });
-        // Create component for the whole structure
-        const component = await plugin.builders.structure.tryCreateComponentStatic(structure, 'polymer', { label: source.label });
-        // Define color
-        const [ value ] = fromHexString(this.settingsService.settings['backbone-color']);
-        // Initialize white representation
-        await plugin.builders.structure.representation.addRepresentation(component!, {
-          type: 'cartoon',
-          color: 'uniform',
-          colorParams: { value },
-        });
-        // Return structure data
-        return structure.cell?.obj?.data as Structure;
+        // TODO Create structure
+        return plugin.builders.structure.createStructure(model, { name: 'model', params: {} });
+        // // Create component for the whole structure
+        // const component = await plugin.builders.structure.tryCreateComponentStatic(structure, 'polymer', { label: source.label });
+        // // Define color
+        // const [ value ] = fromHexString(this.settingsService.settings['backbone-color']);
+        // // Initialize white representation
+        // await plugin.builders.structure.representation.addRepresentation(component!, {
+        //   type: 'cartoon',
+        //   color: 'uniform',
+        //   colorParams: { value },
+        // });
       })())),
       // Get residues data out of structure
       tap((structure) => {
@@ -81,7 +77,7 @@ export class StructureService {
         const r2i = this.r2i = new Map();
         const i2r = this.i2r = new Map();
         // Loop through each residue
-        Structure.eachAtomicHierarchyElement(structure, ({
+        Structure.eachAtomicHierarchyElement(structure.cell?.obj?.data as Structure, ({
           // Do nothing on residue loop
           residue: (r) => {
             // Define residue index
