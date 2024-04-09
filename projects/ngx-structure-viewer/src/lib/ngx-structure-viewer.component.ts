@@ -5,10 +5,12 @@ import { StructureService } from './services/structure.service';
 import { HighlightService, Highlights } from './services/highlight.service';
 import { SettingsService } from './services/settings.service';
 import { PluginService } from './services/plugin.service';
+import { CanvasService } from './services/canvas.service';
 import { Interaction } from './interfaces/interaction';
 import { Settings } from './interfaces/settings';
 import { Source } from './interfaces/source';
 import { Locus } from './interfaces/locus';
+
 
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
@@ -20,6 +22,7 @@ import { Locus } from './interfaces/locus';
     StructureService,
     SettingsService,
     PluginService,
+    CanvasService,
   ],
   standalone: true,
   // Handle representation
@@ -35,7 +38,7 @@ export class NgxStructureViewerComponent {
   @ViewChild('container')
   set container(container: ElementRef) {
     // Emit container
-    this.pluginService.container = container;
+    this.canvasService.container = container;
   }
 
   @Input() 
@@ -73,6 +76,7 @@ export class NgxStructureViewerComponent {
     public structureService: StructureService,
     public settingsService: SettingsService,
     public pluginService: PluginService,
+    public canvasService: CanvasService,
   ) {
   }
 

@@ -6,3 +6,4 @@ export { Source } from './lib/interfaces/source';
 export { Locus } from './lib/interfaces/locus';
 // Export services
 export { StructureService } from './lib/services/structure.service';
+export { PluginService } from './lib/services/plugin.service';

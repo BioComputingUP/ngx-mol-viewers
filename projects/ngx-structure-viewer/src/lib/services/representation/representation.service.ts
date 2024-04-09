@@ -16,6 +16,7 @@ import { Interaction, Interactor } from '../../interfaces/interaction';
 import { Locus } from '../../interfaces/locus';
 import { fromHexString } from '../../colors';
 import { CreateMeshProvider } from './interactions.provider';
+import { CanvasService } from '../canvas.service';
 
 
 export function getLocusFromQuery(query: Expression, structure: Structure): StructureElement.Loci {
@@ -73,6 +74,7 @@ export class RepresentationService implements OnDestroy {
     public structureService: StructureService,
     public settingsService: SettingsService,
     public pluginService: PluginService,
+    public canvasService: CanvasService,
   ) {
     // Define loci representation pipeline
     const loci$ = this.getLociRepresentation();
@@ -80,6 +82,8 @@ export class RepresentationService implements OnDestroy {
     const interactions$ = this.getInteractionsRepresentation();
     // Combine structure emission
     this.representation$ = this.structureService.structure$.pipe(
+      // Combine with structure initialization
+      combineLatestWith(this.canvasService.initialized$),
       // With loci representation pipeline
       combineLatestWith(loci$),
       // And interactions representation pipeline
