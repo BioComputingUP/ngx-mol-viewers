@@ -4,7 +4,7 @@ import { StructureService } from './structure.service';
 import { PluginService } from './plugin.service';
 import { Locus } from '../interfaces/locus';
 // Common dependencies
-import { Observable, ReplaySubject, Subscription, combineLatestWith, map, mergeWith, shareReplay, tap } from 'rxjs';
+import { Observable, ReplaySubject, Subscription, combineLatestWith, map, mergeWith, shareReplay } from 'rxjs';
 import { StructureProperties as SP, StructureElement as SE } from 'molstar/lib/mol-model/structure';
 import { Injectable, OnDestroy } from '@angular/core';
 
@@ -94,8 +94,6 @@ export class HighlightService implements OnDestroy {
       // distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
       // Cache result
       shareReplay(1),
-      // TODO Remove console.log
-      tap((locus) => console.log('Highlighted', locus)),
     );
     // Define output observable
     const highlights$ = input$.pipe(

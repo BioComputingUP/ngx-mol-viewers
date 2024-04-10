@@ -66,6 +66,8 @@ export class RepresentationService implements OnDestroy {
     this.interactions$.next(interactions);
   }
 
+  readonly structure$: Observable<Structure>
+
   public representation$: Observable<void>;
 
   protected _representation: Subscription;
@@ -76,15 +78,11 @@ export class RepresentationService implements OnDestroy {
     public pluginService: PluginService,
     public canvasService: CanvasService,
   ) {
-    // Define loci representation pipeline
-    const loci$ = this.getLociRepresentation();
-    // Define interactions representation pipeline
-    const interactions$ = this.getInteractionsRepresentation();
-    // Combine structure emission
-    this.representation$ = this.structureService.structure$.pipe(
+
+    this.structure$ = this.structureService.structure$.pipe(
       // Get latest source
       withLatestFrom(this.structureService.source$),
-      // TODO Generate loci representation
+      // Generate structure
       switchMap(([structure, source]) => from((async () => {
         // Define reference for current plugin
         const plugin = this.pluginService.plugin;
@@ -98,7 +96,20 @@ export class RepresentationService implements OnDestroy {
           color: 'uniform',
           colorParams: { value },
         });
+        // Return initial structure
+        return structure.cell.obj.data as Structure;
       })())),
+      // Cache result
+      shareReplay(1),
+    );
+
+    // Define loci representation pipeline
+    const loci$ = this.getLociRepresentation();
+    // Define interactions representation pipeline
+    const interactions$ = this.getInteractionsRepresentation();
+    
+    // Combine structure emission
+    this.representation$ = this.structure$.pipe(
       // Combine with structure initialization
       combineLatestWith(this.canvasService.initialized$),
       // With loci representation pipeline
@@ -121,7 +132,7 @@ export class RepresentationService implements OnDestroy {
 
   protected getLociRepresentation(): Observable<unknown> {
     // Subscribe to structure emission
-    return this.structureService.structure$.pipe(
+    return this.structure$.pipe(
       // Combine with loci emission
       combineLatestWith(this.loci$),
       // Wrap structure and loci into an object
@@ -159,7 +170,7 @@ export class RepresentationService implements OnDestroy {
         for (const { ids, color: hex } of loci) {
           // Define current Mol* loci
           // const locus = getLociFromRange(start, end, structure);
-          const locus = getLocusFromSet(ids, structure.cell?.obj?.data);
+          const locus = getLocusFromSet(ids, structure);
           // Define current Mol* bundle
           const bundle = StructureElement.Bundle.fromLoci(locus);
           // Compute color
@@ -172,7 +183,7 @@ export class RepresentationService implements OnDestroy {
         // Initialize plugin update
         const update = plugin.state.data.build();
         // Filter bundle of layers
-        const bundle = getFilteredBundle(layers, structure.cell?.obj?.data);
+        const bundle = getFilteredBundle(layers, structure);
         // Loop through structures in plugin
         for (const structureRef of plugin.managers.structure.hierarchy.current.structures) {
           // Loop through components in current structure
@@ -187,7 +198,7 @@ export class RepresentationService implements OnDestroy {
                   Overpaint.toBundle(bundle as never)
                 );
               // TODO Define locus for all residues
-              const _locus = getLocusFromSet([...this.structureService.i2r.values()], structure.cell?.obj?.data as Structure);
+              const _locus = getLocusFromSet([...this.structureService.i2r.values()], structure);
               const _bundle = StructureElement.Bundle.fromLoci(_locus);
               // eslint-disable-next-line @typescript-eslint/no-unused-vars
               const [_color, alpha] = fromHexString(this.settingsService.settings['backbone-color']);
@@ -211,7 +222,7 @@ export class RepresentationService implements OnDestroy {
     // Initialize state object selector
     let stateObjectRef: string;
     // Subscribe to structure emission
-    return this.structureService.structure$.pipe(
+    return this.structure$.pipe(
       // Combine with interactions emission
       combineLatestWith(this.interactions$),
       // Wrap structure and interactions into an object
@@ -221,7 +232,7 @@ export class RepresentationService implements OnDestroy {
         // Define interactors
         const interactors = interactions.reduce((acc, { from, to }) => [...acc, from, to], [] as Interactor[]);
         // Loop through each atom in the structure
-        Structure.eachAtomicHierarchyElement(structure.cell?.obj?.data as Structure, ({
+        Structure.eachAtomicHierarchyElement(structure, ({
           // Define function for each atom
           atom: (a) => {
             // Define coordinates vector
