@@ -1,0 +1,52 @@
+:host {
+  // Set cursor to default one
+  cursor: default;
+  // Disable text selection
+  user-select: none;
+
+  .sequence,
+  .index {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: stretch;
+  }
+
+  .sequence>div,
+  .index>div {
+    // Expolit flex properties
+    flex: 0 0 auto;
+    // Define properties for containing div
+    display: block;
+    height: 1rem;
+    width: 1rem;
+    // Define outer, inner size and positioning
+    text-align: center;
+    font-size: inherit;
+    line-height: 1rem;
+    // TODO Remove this
+    outline: 1px solid greenyellow;
+  }
+
+  .sequence>div {
+    text-align: center;
+    vertical-align: center;
+  }
+
+  .index>div {
+    // Overwrite height property
+    height: auto;
+    // Align text to left (bottom)
+    text-align: left;
+    // Rotate text
+    transform: rotate(-180deg);
+    writing-mode: vertical-rl;
+    white-space: nowrap;
+    // Add padding
+    padding-bottom: .25rem;
+    padding-top: .25rem;
+    // TODO Remove this
+    outline: 1px solid orangered;
+  }
+}
