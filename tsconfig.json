@@ -12,7 +12,12 @@
     "esModuleInterop": true,
     "paths": {
       "@ngx-structure-viewer": [ "./projects/ngx-structure-viewer/src/public-api" ],
-      "@ngx-features-viewer": [ "./projects/ngx-features-viewer/src/public-api" ],
+      "@ngx-features-viewer": [
+        "./projects/ngx-features-viewer/src/public-api"
+      ],
+      "ngx-sequence-viewer": [
+        "./dist/ngx-sequence-viewer"
+      ],
       // "ngx-features-viewer": [
       //   "./dist/ngx-features-viewer",
       // ],

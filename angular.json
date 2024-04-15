@@ -28,7 +28,11 @@
             "assets": [
               "projects/demo-showcase/src/favicon.ico",
               "projects/demo-showcase/src/assets",
-              { "input": "./", "glob": "LICENSE.*", "output": "./" }
+              {
+                "input": "./",
+                "glob": "LICENSE.*",
+                "output": "./"
+              }
             ],
             "styles": [
               "projects/demo-showcase/src/styles.scss"
@@ -186,6 +190,48 @@
             "lintFilePatterns": [
               "projects/ngx-features-viewer/**/*.ts",
               "projects/ngx-features-viewer/**/*.html"
+            ]
+          }
+        }
+      }
+    },
+    "ngx-sequence-viewer": {
+      "projectType": "library",
+      "root": "projects/ngx-sequence-viewer",
+      "sourceRoot": "projects/ngx-sequence-viewer/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/ngx-sequence-viewer/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/ngx-sequence-viewer/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/ngx-sequence-viewer/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "tsConfig": "projects/ngx-sequence-viewer/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "projects/ngx-sequence-viewer/**/*.ts",
+              "projects/ngx-sequence-viewer/**/*.html"
             ]
           }
         }
