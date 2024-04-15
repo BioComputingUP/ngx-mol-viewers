@@ -1,6 +1,2 @@
-/*
- * Public API Surface of ngx-sequence-viewer
- */
-
-export * from './lib/ngx-sequence-viewer.service';
-export * from './lib/ngx-sequence-viewer.component';
+export { NgxSequenceViewerComponent, Locus, Loci } from './lib/ngx-sequence-viewer.component';
+export * as Colors from './lib/colors';
