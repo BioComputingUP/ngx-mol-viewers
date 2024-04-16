@@ -72,6 +72,8 @@ export class NgxSequenceViewerComponent implements OnChanges {
       combineLatestWith(this.positionsService.input$),
       // Override positions with selected loci
       map(([selected, positions]) => {
+        // Copy positions array
+        positions = [...positions];
         // TODO Define index (any) to position (numeric) map
         const i2p = new Map(this.index.map((v, i) => [v, i]));
         // Extract start, end positions from selected locus
@@ -79,8 +81,10 @@ export class NgxSequenceViewerComponent implements OnChanges {
         // Do only if selected locus has both start, end positions defined
         if (start != undefined && end != undefined) {
           // Get start, end position as numeric
-          const i = i2p.get(start) as number;
-          const j = i2p.get(end) as number;
+          let i = i2p.get(start) as number;
+          let j = i2p.get(end) as number;
+          // Sort start, end position
+          if (i > j) [i, j] = [j, i];
           // Replace positions in range with selected locus
           positions.splice(i, j - i + 1, ...Array(j - i + 1).fill(selected));
         }
