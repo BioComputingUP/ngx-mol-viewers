@@ -1,8 +1,9 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { combineLatestWith, map, shareReplay, startWith } from 'rxjs';
+import { SelectionService } from './services/selection.service';
+import { PositionsService } from './services/positions.service';
 import { CommonModule } from '@angular/common';
 import * as Colors from './colors';
-import { Observable } from 'rxjs';
-import { SelectionService } from './services/selection.service';
 
 export interface Locus<T> {
   // Define start position (for both point and range loci)
@@ -21,7 +22,7 @@ export type Loci<T> = Locus<T>[];
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'ngx-sequence-viewer',
-  providers: [SelectionService],
+  providers: [PositionsService, SelectionService],
   imports: [CommonModule],
   standalone: true,
   templateUrl: './ngx-sequence-viewer.component.html',
@@ -40,17 +41,55 @@ export class NgxSequenceViewerComponent implements OnChanges {
 
   @Input() description?: string;
 
-  // Define a loci for each position in sequence
-  protected positions!: Array<Locus<string | number> | undefined>;
+  public positions$: typeof this.positionsService.output$;
+
+  protected set positions(positions: Array<Locus<string | number> | undefined>) {
+    this.positionsService.positions = positions;
+  }
+
+  protected get positions(): Array<Locus<string | number> | undefined> {
+    return this.positionsService.positions;
+  }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  readonly select$!: EventEmitter<number>;
+  readonly select$ = this.selectionService.select$;
 
   // eslint-disable-next-line @angular-eslint/no-output-rename
   @Output('selected')
-  readonly selected$!: Observable<Locus<string | number>>;
+  readonly selected$ = this.selectionService.selected$;
 
-  constructor(public selectionService: SelectionService) {
+  constructor(
+    public positionsService: PositionsService,
+    public selectionService: SelectionService,
+  ) {
+    // Define output pipeline
+    this.positions$ = this.selectionService.selected$.pipe(
+      // Set color for selected locus
+      map((selected) => ({ ...selected, background: '#FFFFFF', color: '#000000' })),
+      // This is required to always have a value emitted then
+      startWith(undefined),
+      // Combine input positions with selected locus
+      combineLatestWith(this.positionsService.input$),
+      // Override positions with selected loci
+      map(([selected, positions]) => {
+        // TODO Define index (any) to position (numeric) map
+        const i2p = new Map(this.index.map((v, i) => [v, i]));
+        // Extract start, end positions from selected locus
+        const start = selected?.start, end = selected?.end;
+        // Do only if selected locus has both start, end positions defined
+        if (start != undefined && end != undefined) {
+          // Get start, end position as numeric
+          const i = i2p.get(start) as number;
+          const j = i2p.get(end) as number;
+          // Replace positions in range with selected locus
+          positions.splice(i, j - i + 1, ...Array(j - i + 1).fill(selected));
+        }
+        // Return updated list of positions
+        return positions;
+      }),
+      // Cache result
+      shareReplay(1),
+    );
   }
 
   public ngOnChanges(changes: SimpleChanges): void {
@@ -106,18 +145,20 @@ export class NgxSequenceViewerComponent implements OnChanges {
     }
   }
 
-  public onMouseEnter($event: MouseEvent, position: number) {
-    console.log('Mouse enter', $event, position);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public onMouseEnter(event: MouseEvent, position: number) {
+    // TODO
   }
 
   // Emit select event on mouse down
   public onMouseDown(event: MouseEvent, position: number): void {
-    console.log('Mouse down', event, position);
+    this.select$.emit(position);
   }
 
   // Emit select event on mouse released
   public onMouseUp(event: MouseEvent, position: number): void {
-    console.log('Mouse up', event, position);
+    // Emit end position
+    this.select$.emit(position);
   }
 
 }
