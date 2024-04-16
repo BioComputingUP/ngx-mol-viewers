@@ -6,6 +6,7 @@ import { Injectable } from '@angular/core';
 // Custom services
 // import { SettingsService } from './settings.service';
 import { PluginService } from './plugin.service';
+import { Residue, threeToOne } from '../interfaces/residue';
 import { Source } from '../interfaces/source';
 
 @Injectable({ providedIn: 'platform' })
@@ -23,6 +24,8 @@ export class StructureService {
   public r2i!: Map<string, number>;
 
   public i2r!: Map<number, string>;
+
+  public residues!: Array<Residue>;
 
   constructor(
     // public settingsService: SettingsService,
@@ -73,6 +76,8 @@ export class StructureService {
       tap((structure) => {
         // Initialize index
         let index = 0;
+        // Initialize residues array
+        this.residues = [];
         // Initialize map between residue (sequence number, insertion code) to numeric index
         const r2i = this.r2i = new Map();
         const i2r = this.i2r = new Map();
@@ -86,16 +91,31 @@ export class StructureService {
             const pdbInsCode = StructureProperties.residue.pdbx_PDB_ins_code(r);
             // Define residue name
             const authAsymId = StructureProperties.chain.auth_asym_id(r);
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const authCompId = StructureProperties.atom.auth_comp_id(r);
             // Define residue unique identifier
-            const identifier = (authAsymId + authSeqId + pdbInsCode).trim()
+            const identifier = (authAsymId + authSeqId + pdbInsCode).trim();
             // Map residue id to its index
             r2i.set(identifier, index);
             i2r.set(index, identifier);
+            // Store residue information in the residues array
+            this.residues.push({ 
+              pdbInsCode, 
+              authSeqId, 
+              authAsymId,
+              authCompId3: threeToOne.has(authCompId) ? authCompId : 'XXX', 
+              authCompId1: threeToOne.get(authCompId) || 'X',
+            });
             // Update index
             index++;
           },
         }));
       }),
+      // // Build residues array out of structure
+      // tap((_structure) => {
+      //   // Get structure data
+      //   const structure = _structure.cell?.obj?.data as Structure;
+      // }),
       // Cache results
       shareReplay(1),
     );
@@ -142,4 +162,5 @@ export class StructureService {
     // Return retrieved data
     return data;
   }
+
 }

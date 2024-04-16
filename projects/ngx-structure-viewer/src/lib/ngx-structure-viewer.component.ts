@@ -1,8 +1,8 @@
 import { Component, ElementRef, Input, Output, ViewChild } from '@angular/core';
 // Custom dependencies
 import { RepresentationService } from './services/representation/representation.service';
-import { StructureService } from './services/structure.service';
 import { HighlightService, Highlights } from './services/highlight.service';
+import { StructureService } from './services/structure.service';
 import { SettingsService } from './services/settings.service';
 import { PluginService } from './services/plugin.service';
 import { CanvasService } from './services/canvas.service';
