@@ -122,7 +122,7 @@ export class NgxSequenceViewerComponent implements OnChanges {
       // Define (any) index to (numeric) position map
       const i2p = new Map<string | number, number>(this.index.map((v, i) => [v, i]));
       // Initialize positions array with undefined values
-      this.positions = new Array(this.index.length).fill(undefined);
+      const positions = new Array<Locus<string | number> | undefined>(this.index.length).fill(undefined);
       // Cast input loci to numeric positions
       const loci: Loci<number> = (this.loci || []).map(({ start, end, type, background, color }) => {
         // Cast start position to numeric
@@ -134,7 +134,7 @@ export class NgxSequenceViewerComponent implements OnChanges {
         // Update all positions in range between start, end
         for (let i = s; i <= e; i++) {
           // Update locus in current position
-          this.positions[i] = locus;
+          positions[i] = locus;
         }
         // Return locus with numeric positions
         return locus;
@@ -143,6 +143,8 @@ export class NgxSequenceViewerComponent implements OnChanges {
       loci.sort((a, b) => a.start - b.start || (a.end || 0) - (b.end || 0));
       // Store loci
       this.loci = loci;
+      // Store positions
+      this.positions = positions;
     }
   }
   
