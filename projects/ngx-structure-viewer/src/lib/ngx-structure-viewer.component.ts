@@ -1,4 +1,5 @@
 import { Component, ElementRef, Input, Output, ViewChild } from '@angular/core';
+import { CommonModule } from '@angular/common';
 // Custom dependencies
 import { RepresentationService } from './services/representation/representation.service';
 import { HighlightService, Highlights } from './services/highlight.service';
@@ -11,11 +12,13 @@ import { Settings } from './interfaces/settings';
 import { Source } from './interfaces/source';
 import { Locus } from './interfaces/locus';
 
-
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'ngx-structure-viewer',
   // Handle dependencies
+  imports: [
+    CommonModule,
+  ],
   providers: [
     RepresentationService,
     HighlightService,
@@ -26,12 +29,8 @@ import { Locus } from './interfaces/locus';
   ],
   standalone: true,
   // Handle representation
-  template: `
-    <div style="position: relative; width: 100%; height: 100%;" #container>
-      <canvas style="position: absolute; left: 0; top: 0; width: 100%; height: 100%;" #canvas></canvas>
-    </div>
-  `,
-  styles: ``,
+  templateUrl: './ngx-structure-viewer.component.html',
+  styleUrls: ['./ngx-structure-viewer.component.scss'],
 })
 export class NgxStructureViewerComponent {
 
@@ -41,12 +40,12 @@ export class NgxStructureViewerComponent {
     this.canvasService.container = container;
   }
 
-  @Input() 
+  @Input()
   set source(source: Source) {
     this.structureService.source = source;
   }
 
-  @Input() 
+  @Input()
   set loci(loci: Locus[]) {
     this.representationService.loci = loci;
   }

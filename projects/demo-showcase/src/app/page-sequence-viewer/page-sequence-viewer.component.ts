@@ -43,9 +43,9 @@ export class PageSequenceViewerComponent implements OnDestroy {
   readonly source: Source;
 
   // Define example loci
-  readonly loci: Loci<number> = [
-    { start: 12, end: 43, type: 'range', background: '#007A78', color: '#FFC745' },
-    { start: 57, end: 58, type: 'range', background: '#BDE673', color: '#000000' }
+  readonly loci: Loci<string> = [
+    { start: '12', end: '43', type: 'range', background: '#007A78', color: '#FFC745' },
+    { start: '57', end: '58', type: 'range', background: '#BDE673', color: '#000000' }
   ]
 
   // Define color scheme
@@ -64,7 +64,7 @@ export class PageSequenceViewerComponent implements OnDestroy {
       // Define sequence by extracting residue names
       this.sequence = this.structureService.residues.map(({ authCompId1 }) => authCompId1);
       // Define index by extracting residue identifier
-      this.index = [...this.structureService.r2i.keys()];
+      this.index = this.structureService.residues.map(({ authSeqId, pdbInsCode }) => authSeqId + pdbInsCode);
     });
     // Define link to structure file
     const link = this.location.prepareExternalUrl('assets/8vap.A.cif');

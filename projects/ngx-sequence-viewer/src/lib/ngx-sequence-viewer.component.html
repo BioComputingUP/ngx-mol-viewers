@@ -5,9 +5,9 @@
       [id]="'index-residue-' + $index" 
       [style.background]="position?.background" 
       [style.color]="position?.color"
-      (mouseenter)="onMouseEnter($event, $index + 1)"
-      (mousedown)="onMouseDown($event, $index + 1)"
-      (mouseup)="onMouseUp($event, $index + 1)"
+      (mouseenter)="onMouseEnter($event, index[$index])"
+      (mousedown)="onMouseDown($event, index[$index])"
+      (mouseup)="onMouseUp($event)"
     >
       {{ index[$index] }}
     </div>
@@ -23,9 +23,9 @@
       [id]="'sequence-residue-' + $index"
       [style.background]="colors[c]['background'] || colors['-']['background']" 
       [style.color]="colors[c]['color'] || colors['-']['color']"
-      (mouseenter)="onMouseEnter($event, $index + 1)"
-      (mousedown)="onMouseDown($event, $index + 1)"
-      (mouseup)="onMouseUp($event, $index + 1)"
+      (mouseenter)="onMouseEnter($event, index[$index])"
+      (mousedown)="onMouseDown($event, index[$index])"
+      (mouseup)="onMouseUp($event)"
     >
       {{ c }}
     </div>

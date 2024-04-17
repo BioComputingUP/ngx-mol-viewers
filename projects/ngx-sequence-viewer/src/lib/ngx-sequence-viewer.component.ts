@@ -51,9 +51,6 @@ export class NgxSequenceViewerComponent implements OnChanges {
     return this.positionsService.positions;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  readonly select$ = this.selectionService.select$;
-
   // eslint-disable-next-line @angular-eslint/no-output-rename
   @Output('selected')
   readonly selected$ = this.selectionService.selected$;
@@ -123,7 +120,7 @@ export class NgxSequenceViewerComponent implements OnChanges {
       }
 
       // Define (any) index to (numeric) position map
-      const i2p = new Map(this.index.map((v, i) => [v, i]));
+      const i2p = new Map<string | number, number>(this.index.map((v, i) => [v, i]));
       // Initialize positions array with undefined values
       this.positions = new Array(this.index.length).fill(undefined);
       // Cast input loci to numeric positions
@@ -148,21 +145,18 @@ export class NgxSequenceViewerComponent implements OnChanges {
       this.loci = loci;
     }
   }
-
+  
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  public onMouseEnter(event: MouseEvent, position: number) {
-    // TODO
+  public onMouseUp(event: MouseEvent): void {
+    // console.log('Mouse up', event);
+  } 
+
+  public onMouseDown(event: MouseEvent, position: string | number): void {
+    this.selectionService.onMouseDown(event, position);
   }
 
-  // Emit select event on mouse down
-  public onMouseDown(event: MouseEvent, position: number): void {
-    this.select$.emit(position);
-  }
-
-  // Emit select event on mouse released
-  public onMouseUp(event: MouseEvent, position: number): void {
-    // Emit end position
-    this.select$.emit(position);
+  public onMouseEnter(event: MouseEvent, position: string | number) {
+    this.selectionService.onMouseEnter(event, position);
   }
 
 }
