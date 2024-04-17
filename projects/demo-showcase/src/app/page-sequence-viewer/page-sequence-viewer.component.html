@@ -15,7 +15,7 @@
     </div>
     <div id="sequence-viewer-structure" class="d-block rounded border w-100 h-auto" style="overflow-x: auto; overflow-y: hidden;">
       @if (structure$ | async) {
-        <ngx-sequence-viewer [sequence]="sequence" [loci]="loci" [colors]="colors"></ngx-sequence-viewer>
+        <ngx-sequence-viewer [sequence]="sequence" [index]="index" [loci]="loci" [colors]="colors"></ngx-sequence-viewer>
       }
     </div>
   </div>

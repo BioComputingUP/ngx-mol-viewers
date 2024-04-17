@@ -30,3 +30,40 @@ export const ClustalX: Schema = {
   X: { background: '#FFA500', color: '#000000' },
   '-': { background: '#FFFFFF', color: '#000000' },
 };
+
+// Define color scheme based on physical characteristics
+export const Physical: Schema = {
+  // Nonpolar amino acids
+  G: { background: '#808080', color: '#FFFFFF' }, // Glycine
+  A: { background: '#808080', color: '#FFFFFF' }, // Alanine
+  V: { background: '#808080', color: '#FFFFFF' }, // Valine
+  L: { background: '#808080', color: '#FFFFFF' }, // Leucine
+  I: { background: '#808080', color: '#FFFFFF' }, // Isoleucine
+  M: { background: '#808080', color: '#FFFFFF' }, // Methionine
+  F: { background: '#808080', color: '#FFFFFF' }, // Phenylalanine
+  W: { background: '#808080', color: '#FFFFFF' }, // Tryptophan
+  P: { background: '#808080', color: '#FFFFFF' }, // Proline
+
+  // Polar amino acids
+  S: { background: '#00FF00', color: '#000000' }, // Serine
+  T: { background: '#00FF00', color: '#000000' }, // Threonine
+  C: { background: '#00FF00', color: '#000000' }, // Cysteine
+  Y: { background: '#00FF00', color: '#000000' }, // Tyrosine
+  N: { background: '#00FF00', color: '#000000' }, // Asparagine
+  Q: { background: '#00FF00', color: '#000000' }, // Glutamine
+
+  // Acidic amino acids
+  D: { background: '#FF0000', color: '#FFFFFF' }, // Aspartic Acid
+  E: { background: '#FF0000', color: '#FFFFFF' }, // Glutamic Acid
+
+  // Basic amino acids
+  R: { background: '#0000FF', color: '#FFFFFF' }, // Arginine
+  H: { background: '#0000FF', color: '#FFFFFF' }, // Histidine
+  K: { background: '#0000FF', color: '#FFFFFF' }, // Lysine
+
+  // Undefined or any other amino acid
+  B: { background: '#FFA500', color: '#000000' },
+  Z: { background: '#FFA500', color: '#000000' },
+  X: { background: '#FFA500', color: '#000000' },
+  '-': { background: '#FFFFFF', color: '#000000' },
+};
