@@ -1,4 +1,5 @@
 import { Component, ElementRef, Input, Output, ViewChild } from '@angular/core';
+import { ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 // Custom dependencies
 import { RepresentationService } from './services/representation/representation.service';
@@ -30,7 +31,11 @@ import { Locus } from './interfaces/locus';
   standalone: true,
   // Handle representation
   templateUrl: './ngx-structure-viewer.component.html',
-  styleUrls: ['./ngx-structure-viewer.component.scss'],
+  styleUrls: [
+    '../../../../node_modules/molstar/lib/mol-plugin-ui/skin/dark.scss',
+    './ngx-structure-viewer.component.scss'
+  ],
+  encapsulation: ViewEncapsulation.None,
 })
 export class NgxStructureViewerComponent {
 

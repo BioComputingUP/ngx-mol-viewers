@@ -1,14 +1,5 @@
 <!-- Define container for Mol* instance -->
 <div class="ngx-structure-viewer-container" #container>
   <canvas class="ngx-structure-viewer-canvas" #canvas></canvas>
-  <!-- Define label -->
-  @if (highlights$ | async; as locus) {
-    <div class="ngx-structure-viewer-label">
-      <code>
-        <!-- TODO Case start, end psitions are different -->
-        Chain {{ locus.chain }}; start: {{ locus.start }}, end: {{ locus.end }}.
-      </code>
-    </div>
-  }
 </div>
 

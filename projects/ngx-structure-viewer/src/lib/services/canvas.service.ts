@@ -1,17 +1,23 @@
 
-import { Observable, ReplaySubject, combineLatestWith, map, shareReplay, tap } from 'rxjs';
-import { PluginContext } from 'molstar/lib/mol-plugin/context';
+import { Observable, ReplaySubject, combineLatestWith, map, shareReplay } from 'rxjs';
+import { PluginUIContext } from 'molstar/lib/mol-plugin-ui/context';
+import { Plugin } from 'molstar/lib/mol-plugin-ui/plugin';
+// import { PluginContext } from 'molstar/lib/mol-plugin/context';
 import { ElementRef, Injectable } from '@angular/core';
 import { SettingsService } from './settings.service';
 import { PluginService } from './plugin.service';
 import { fromHexString } from '../colors';
+
+// React dependencies
+import { createElement } from 'react';
+import { render } from 'react-dom';
 
 @Injectable({ providedIn: 'platform' })
 export class CanvasService {
 
   readonly initialize$ = new ReplaySubject<ElementRef>(1);
 
-  readonly initialized$: Observable<PluginContext>;
+  readonly initialized$: Observable<PluginUIContext>;
 
   set container(container: ElementRef) {
     this.initialize$.next(container);
@@ -38,10 +44,28 @@ export class CanvasService {
       }),
       // Combine with plugin initialization
       combineLatestWith(plugin$),
-      // Bind plugin to HTML elements
-      tap(([{ div: container, canvas }, plugin]) => plugin.initViewer(canvas, container)),
-      // Return initialized plugin
-      map(([, plugin]) => plugin),
+      // Create plugin's React UI
+      map(([{ div: container }, plugin]) => {
+        // // const { spec, target, onBeforeUIRender, render } = options;
+        // const ctx = new PluginUIContext(spec || DefaultPluginUISpec());
+        // await ctx.init();
+        // if (onBeforeUIRender) {
+        //     await onBeforeUIRender(ctx);
+        // }
+        // Render 
+        render(createElement(Plugin, { plugin }), container);
+        // try {
+        //     await plugin.canvas3dInitialized;
+        // } catch {
+        //     // Error reported in UI/console elsewhere.
+        // }
+        // Return initialize plugin 
+        return plugin;
+      }),
+      // // Bind plugin to HTML elements
+      // tap(([{ div: container, canvas }, plugin]) => plugin.initViewer(canvas, container)),
+      // // Return initialized plugin
+      // map(([, plugin]) => plugin),
       // Cache result
       shareReplay(1),
       // Combine with settings retrieval
