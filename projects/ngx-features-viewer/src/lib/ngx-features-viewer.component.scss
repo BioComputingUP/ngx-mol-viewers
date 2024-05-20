@@ -7,7 +7,6 @@
 // Define style for generic grid line
 .axis-grid line {
   stroke-opacity: 0.3;
-
   stroke: gray;
 }
 // Do not show line for sequence
@@ -18,4 +17,3 @@
 .y.axis .tick text {
   display: none;
 }
-

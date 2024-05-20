@@ -8,6 +8,7 @@ export interface Settings {
   'background-color': string;
   'trace-color': string;
   'grid-color': string;
+  'text-color': string;
   // Define content size (height), line height
   'content-size': number;
   'line-height': number;
