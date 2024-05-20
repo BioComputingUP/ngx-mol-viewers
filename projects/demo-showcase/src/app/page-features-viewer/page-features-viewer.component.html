@@ -15,6 +15,10 @@
     </div>
     <!-- Show output -->
     <div style="display: block; height: auto; width: 100%;">
-        <ngx-features-viewer [sequence]="sequence" [features]="features" [settings]="settings"></ngx-features-viewer>
+        <ngx-features-viewer [sequence]="sequence" [features]="features" [settings]="settings">
+            <ng-template let-trace="trace" [ngx-features-viewer-label]>
+                <div [class.text-muted]="!trace.expanded">{{ trace.label }}</div>
+            </ng-template>
+        </ngx-features-viewer>
     </div>
 </div>

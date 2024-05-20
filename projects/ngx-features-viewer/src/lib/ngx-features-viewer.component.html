@@ -1,0 +1,13 @@
+<div style="position: relative; display: block; width: 100%; height: 100%;" #root>
+  <!-- Case inner label exists -->
+  @if (label) {
+    <!-- Loop through each trace, generate custom tooltip -->
+    @for(kv of featuresService.traces | keyvalue; track $index) {
+      <!-- Then, generate trace as specified in the given template -->
+      <div [id]="'label-' + kv.key" tabindex=0 (click)="drawService.onLabelClick(kv.value)" (keyup)="drawService.onLabelClick(kv.value)">
+        <ng-container [ngTemplateOutlet]="label.templateRef" [ngTemplateOutletContext]="{ trace: kv.value }"></ng-container>
+      </div>
+    }
+  }
+  <!-- TODO Loop through eacg trace, generate tooltiè -->
+</div>

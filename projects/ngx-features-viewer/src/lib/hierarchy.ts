@@ -1,10 +1,14 @@
-import { Features } from './features';
+import { Feature, Trace } from './features';
+import { Settings } from './settings';
 
-// Define single feature (might be trace also)
-export type Feature = Features[number] & {
+type Item = (Feature | Trace<Feature>) & Partial<Settings> & {  
+  // Feature has always unique identifier
+  id?: number;
+  // Whether feature is expanded or not
+  expanded?: boolean;
   // Define nested features
-  nested?: Feature[];
+  nested?: Array<Item>;
 };
 
 // Define hierarchy
-export type Hierarchy = Feature[];
+export type Hierarchy = Array<Item>;

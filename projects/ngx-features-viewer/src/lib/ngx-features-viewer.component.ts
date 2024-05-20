@@ -1,6 +1,9 @@
 // prettier-ignore 
-import { AfterViewInit, Component, ElementRef, HostListener, Input, OnChanges, OnDestroy, SimpleChanges, ViewChild, ViewEncapsulation } from '@angular/core';
+import { AfterViewInit, Component, ContentChild, ElementRef, HostListener, Input, OnChanges, OnDestroy, SimpleChanges, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Observable, Subscription, tap, switchMap } from 'rxjs';
+import { CommonModule } from '@angular/common';
+// Custom components
+import { NgxFeaturesViewerLabelDirective } from './ngx-features-viewer.directive';
 // Custom providers
 import { InitializeService } from './services/initialize.service';
 import { FeaturesService } from './services/features.service';
@@ -11,6 +14,7 @@ import { DrawService } from './services/draw.service';
 import { Hierarchy } from './hierarchy';
 import { Settings } from './settings';
 
+
 // TODO Define sequence type
 export type Sequence = Array<string>;
 
@@ -18,7 +22,10 @@ export type Sequence = Array<string>;
   // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'ngx-features-viewer',
   standalone: true,
-  imports: [],
+  imports: [
+    NgxFeaturesViewerLabelDirective,
+    CommonModule,
+  ],
   providers: [
     InitializeService,
     FeaturesService,
@@ -26,7 +33,7 @@ export type Sequence = Array<string>;
     DrawService,
     ZoomService,
   ],
-  template: `<div style="position: relative; display: block; width: 100%; height: 100%;" #root></div>`,
+  templateUrl: './ngx-features-viewer.component.html',
   styleUrl: './ngx-features-viewer.component.scss',
   encapsulation: ViewEncapsulation.None,
 })
@@ -34,6 +41,9 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, OnChanges, OnD
 
   @ViewChild('root')
   public _root!: ElementRef;
+
+  @ContentChild(NgxFeaturesViewerLabelDirective)
+  public label?: NgxFeaturesViewerLabelDirective;
 
   @Input()
   public set settings(settings: Settings) {
@@ -46,11 +56,7 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, OnChanges, OnD
     // Initialize hierarchy
     this.featuresService.hierarchy = hierarchy;
     // Get traces
-    const traces = Array
-      // Get index, trace 
-      .from(this.featuresService.traces.entries())
-      // Cast to traces
-      .map(([i, trace]) => Object.assign(trace, { id: i, visible: true }));
+    const traces = Array.from(this.featuresService.traces.values());
     // Emit traces
     this.traces$.next(traces);
   }

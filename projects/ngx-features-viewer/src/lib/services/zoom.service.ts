@@ -1,4 +1,4 @@
-import { Observable, ReplaySubject, map, shareReplay, startWith, switchMap, tap } from 'rxjs';
+import { Observable, ReplaySubject, map, shareReplay, startWith, switchMap } from 'rxjs';
 import { Injectable } from '@angular/core';
 // Custom providers
 import { Scale, InitializeService } from './initialize.service';
@@ -87,8 +87,8 @@ export class ZoomService {
         // Update horizontal axis
         axes.x.call(axis);
       }),
-      // TODO Remove this
-      tap(() => console.log('Zoomed!')),
+      // // TODO Remove this
+      // tap(() => console.log('Zoomed!')),
     );
   }
 

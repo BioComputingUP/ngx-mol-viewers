@@ -1,7 +1,7 @@
 import { Observable, ReplaySubject, map, shareReplay, tap } from 'rxjs';
 import { ElementRef, Injectable } from '@angular/core';
-import * as d3 from 'd3';
 import { Settings } from '../settings';
+import * as d3 from 'd3';
 
 type SVG = d3.Selection<SVGSVGElement, undefined, null, undefined>;
 
@@ -127,6 +127,7 @@ export class InitializeService {
           // Set style to appear invisible, but catch events
           .style('fill', 'none')
           .style('pointer-events', 'all')
+          // .style('display', 'none') // TODO Remove this
           // Set zoom behavior
           .call(this.zoom as never);
       }),

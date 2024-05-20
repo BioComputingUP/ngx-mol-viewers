@@ -1,4 +1,4 @@
-import { Observable, ReplaySubject, debounceTime, distinctUntilChanged, map, startWith, tap } from 'rxjs';
+import { Observable, ReplaySubject, debounceTime, distinctUntilChanged, map, startWith } from 'rxjs';
 import { Injectable } from '@angular/core';
 // Custom providers
 import { InitializeService } from './initialize.service';
@@ -107,8 +107,8 @@ export class ResizeService {
       map(() => this.updateRangeX()),
       // 4.2 Update vertical range
       map(() => this.updateRangeY()),
-      // TODO Remove this
-      tap(() => console.log('Resized!')),
+      // // TODO Remove this
+      // tap(() => console.log('Resized!')),
     );
   }
 
