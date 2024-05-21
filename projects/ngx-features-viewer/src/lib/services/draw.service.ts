@@ -14,8 +14,7 @@ import { Feature } from '../features';
 // D3 library
 import * as d3 from 'd3';
 
-
-export type Traces = (Hierarchy[number] & { type: 'trace' })[];
+export type Trace = Hierarchy[number] & { type: 'trace' }
 
 export type Sequence = string[];
 
@@ -25,11 +24,11 @@ export type Sequence = string[];
 
 type ResidueGroup = d3.Selection<SVGGElement | d3.BaseType, string, SVGGElement | d3.BaseType, Sequence>;
 
-type LabelGroup = d3.Selection<SVGGElement | d3.BaseType, Traces[number], SVGGElement | d3.BaseType, Traces>;
+type LabelGroup = d3.Selection<SVGGElement | d3.BaseType, Trace, SVGGElement | d3.BaseType, Trace[]>;
 
-type TraceGroup = d3.Selection<SVGGElement | d3.BaseType, Traces[number], SVGGElement, undefined>;
+type TraceGroup = d3.Selection<SVGGElement | d3.BaseType, Trace, SVGGElement, undefined>;
 
-type GridLines = d3.Selection<SVGLineElement | SVGRectElement | d3.BaseType, Traces[number], SVGGElement | d3.BaseType, Traces>;
+type GridLines = d3.Selection<SVGLineElement | SVGRectElement | d3.BaseType, Trace, SVGGElement | d3.BaseType, Trace[]>;
 
 // type ValueGroup = d3.Selection<d3.BaseType, Feature['values'][number], SVGGElement | d3.BaseType, undefined>;
 
@@ -166,7 +165,7 @@ export class DrawService {
 
   // public readonly features$ = new ReplaySubject<Feature[]>(1);
 
-  public readonly traces$ = new ReplaySubject<Traces>(1);
+  public readonly traces$ = new ReplaySubject<Trace[]>(1);
 
   public readonly sequence$ = new ReplaySubject<Sequence>(1);
 
@@ -181,6 +180,8 @@ export class DrawService {
   public 'group.traces'!: TraceGroup;
 
   public 'group.grid'!: GridLines;
+
+  public tooltip!: d3.Selection<HTMLDivElement, unknown, null, unknown>;
 
   /** Draw features
    * 
@@ -215,6 +216,27 @@ export class DrawService {
       }),
       // Draw sequence
       map((sequence) => this.createSequence(sequence)),
+      // TODO Initialize tooltip
+      tap(() => {
+        // Get settings
+        const settings = this.initializeService.settings;
+        // Define border radius according to content size
+        const r = settings['content-size'] / 3;
+        // Append tooltip to SVG element
+        this.tooltip = d3.select(this.initializeService.div).append('div')
+          .attr('class', 'tooltip')
+          .style('position', 'absolute')
+          // .style('width', '300px')
+          // .style('height', '200px')
+          .style('display', 'block')
+          .style('opacity', 1)
+          .style('color', 'black')
+          .style('padding', '.25rem')
+          .style('background-color', 'white')
+          .style('border', 'solid')
+          .style('border-width', '1px')
+          .style('border-radius', r + 'px');
+      }),
       // Cache result
       shareReplay(1),
       // Switch to traces emission
@@ -244,7 +266,7 @@ export class DrawService {
   }
 
   // Update vertical scale
-  public updateScale(traces: Traces): void {
+  public updateScale(traces: Trace[]): void {
     // Get current vertical scale
     const y = this.initializeService.scale.y;
     // Update domain
@@ -351,7 +373,7 @@ export class DrawService {
     // .text((d) => width > (1 * REM) ? d : ' ');
   }
 
-  public createLabels(traces: Traces): void {
+  public createLabels(traces: Trace[]): void {
     const { y } = this.initializeService.scale;
     const settings = this.initializeService.settings;
     const { left: ml } = this.initializeService.margin;
@@ -367,7 +389,7 @@ export class DrawService {
     // Add labels to their group
     this['group.labels'] = group
       .selectAll('g.label')
-      .data([{ id: 'sequence', label: 'Sequence', expanded: true }, ...traces] as Traces, identity)
+      .data([{ id: 'sequence', label: 'Sequence', expanded: true }, ...traces] as Trace[], identity)
       .join(
         (enter) => {
           // Create label group
@@ -505,7 +527,7 @@ export class DrawService {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  public createGrid(traces: Traces): void {
+  public createGrid(traces: Trace[]): void {
     // Define labels group
     const group = this.initializeService.svg
       // Create parent grid element
@@ -533,17 +555,10 @@ export class DrawService {
       // Set start, end positions
       .attr('x', margin.left)
       .attr('y', (trace) => {
-        // Sort features
-        const features = trace.values.sort((a, b) => {
-          if (a.type === 'continuous') return -1;
-          if (b.type === 'continuous') return +1;
-          // Otherwise, return same order
-          return 0;
-        });
-        // get first feature
-        const feature = features[0];
+        // Get first feature
+        const feature = trace.values[trace.values.length - 1];
         // Compute offsets
-        const mt = y(String(trace.id));
+        const mt = y('' + trace.id);
         const lh = feature['line-height'] || trace['line-height'] || settings['line-height'];
         const cs = feature['content-size'] || trace['content-size'] || settings['content-size'];
         // Compute vertical position for discrete feature
@@ -557,7 +572,7 @@ export class DrawService {
       .attr('width', width - margin.left - margin.right)
       .attr('height', (trace) => {
         // TODO
-        const feature = trace.values[0];
+        const feature = trace.values[trace.values.length - 1];
         // Handle continuous feature
         if (feature.type === 'continuous') {
           // Get line height, content size
@@ -573,9 +588,11 @@ export class DrawService {
       .attr('fill', this.initializeService.settings['grid-color']);
   }
 
-  public createTraces(traces: Traces): void {
+  public createTraces(traces: Trace[]): void {
     // Retrieve settings
     const settings = this.initializeService.settings;
+    // Define tooltip events
+    const tooltip = this.tooltip;
     // Generate and store traces groups
     this['group.traces'] = this.initializeService.draw
       .selectAll('g.trace')
@@ -591,16 +608,16 @@ export class DrawService {
       // Define feature groups
       const fg = tg
         .selectAll<d3.BaseType, Feature>('g.feature')
-        .data(trace.values, (d, i) => `trace-${trace.id}-feature-${i}`);
+        .data(trace.values);
       // On: feature griup enter
       fg.enter().append('g')
         .attr('class', (d) => 'feature ' + d.type)
-        .attr('id', (d, i) => `trace-${trace.id}-feature-${i}`)
-        .each(function (feature) {
+        .attr('id', (_, i) => `trace-${trace.id}-feature-${i}`)
+        .each(function (feature, i) {
           // NOTE `feature.values` is an array of objects `{ start, end, ... }`
           if (feature.type === 'loci') {
             // Iterate over each item in the feature.values array
-            feature.values.forEach((value) => {
+            feature.values.forEach((value, j) => {
               // Define radius
               const r = (feature['content-size'] || trace['content-size'] || settings['content-size']) / 3;
               // Define a rectangle for each locus
@@ -614,6 +631,18 @@ export class DrawService {
                 .attr('ry', r);
               // Associate data to rectangle
               rect.data([value]);
+              // Add mouse events
+              rect.on('mouseover', (event: MouseEvent) => onMouseOver(event, tooltip, trace, { ...feature, index: i }, j, value));
+              rect.on('mousemove', (event: MouseEvent) => onMouseMove(event, tooltip, trace, { ...feature, index: i }, j, value));
+              rect.on('mouseleave', (event: MouseEvent) => onMouseLeave(event, tooltip, trace, { ...feature, index: i }, j, value));
+
+              // rect.on('click', function(d,i) {
+              //     // handle events here
+              //     // d - datum
+              //     // i - identifier or index
+              //     // this - the `<rect>` that was clicked
+              //     console.log('clicked on', d, i, this);
+              // });
             });
           }
           // Handle continuous feature
@@ -627,8 +656,6 @@ export class DrawService {
               .attr('fill', 'none');
             // Associate data to path
             path.data([feature.values]);
-            // Raise path
-            path.raise();
           }
         });
       // On: feature grroup removal
@@ -748,9 +775,7 @@ export class DrawService {
   //   });
   // }
 
-  // TODO Move away
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public onLabelClick(trace: Hierarchy[number] & { type: 'trace' }): void {
+  public onLabelClick(trace: Trace): void {
     // Update flag for current trace
     trace.expanded = trace.expanded === false;
     // Get current traces
@@ -773,5 +798,49 @@ export class DrawService {
     const included = traces.filter((trace) => !excluded.includes(trace));
     // Emit current traces
     this.traces$.next(included);
+    console.log('Trace', trace);
   }
+
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function onMouseOver<F extends Feature & { index: number }>(event: MouseEvent, tooltip: d3.Selection<HTMLDivElement, unknown, null, unknown>, trace: Trace, feature: F, index: number, value: F['values'][number]): void {
+  // Set tooltip visible
+  tooltip.style("opacity", 1);
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function onMouseMove<F extends Feature & { index: number }>(event: MouseEvent, tooltip: d3.Selection<HTMLDivElement, unknown, null, unknown>, trace: Trace, feature: F, index: number, value: F['values'][number]): void {
+  // Case feature is loci
+  if (feature.type === 'loci') {
+    // Set value as locus
+    const locus = value as Locus;
+    // Update tooltip content
+    tooltip.html(
+      `Trace: ${trace.id}<br>` +
+      `Feature: ${feature.index}<br>` +
+      `Index: ${index}<br>` +
+      `Value: ${locus.start !== locus.end ? locus.start + '-' + locus.end : locus.start}`
+    );
+  }
+  // Case feature is continuous
+  if (feature.type === 'continuous') {
+    // Update tooltip content
+    tooltip.html(
+      `Trace: ${trace.id}<br>` +
+      `Feature: ${feature.index}<br>` +
+      `Index: ${index}<br>` +
+      `Value: ${(value as number)}`
+    );
+  }
+  // Update tooltip position
+  tooltip
+  .style('left', (event.offsetX + 10) + 'px')
+  .style('top', (event.offsetY + 10) + 'px');
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function onMouseLeave<F extends Feature & { index: number }>(event: MouseEvent, tooltip: d3.Selection<HTMLDivElement, unknown, null, unknown>, trace: Trace, feature: F, index: number, value: F['values'][number]): void {
+  // Set tooltip invisible
+  tooltip.style("opacity", 0)
 }

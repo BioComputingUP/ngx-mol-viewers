@@ -22,9 +22,9 @@ export class ZoomService {
 
   // public scaled? = this.initService.scale;
 
-  private get draw() {
-    return this.initService.draw;
-  }
+  // private get draw() {
+  //   return this.initService.draw;
+  // }
 
   public readonly zoom$ = new ReplaySubject<d3.D3ZoomEvent<SVGSVGElement, undefined>>(1);
 
@@ -45,10 +45,6 @@ export class ZoomService {
     const scaled$: Observable<Scale> = initialized$.pipe(
       // Subscribe to zoom event
       switchMap(() => this.zoom$),
-      // // Set debounce time
-      // debounceTime(10),
-      // // Filter wheel evente
-      // filter((event) => event.sourceEvent.type === 'wheel'),
       // Transform original scale
       map((event) => {
         // Get initial horizontal scale

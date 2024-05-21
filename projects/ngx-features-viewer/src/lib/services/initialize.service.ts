@@ -9,7 +9,7 @@ type Group = d3.Selection<SVGGElement, undefined, null, undefined>;
 
 type Rect = d3.Selection<SVGRectElement, undefined, null, undefined>;
 
-type Zoom = d3.ZoomBehavior<SVGSVGElement, unknown>;
+// type Zoom = d3.ZoomBehavior<SVGSVGElement, unknown>;
 
 export interface Scale {
   x: d3.ScaleLinear<number, number>,
@@ -79,7 +79,7 @@ export class InitializeService {
   public events!: Rect;
 
   // Define zoom callback
-  public zoom!: Zoom;
+  public zoom!: d3.ZoomBehavior<SVGGElement, undefined>;
 
   // Declare initialization pipeline
   public readonly initialized$: Observable<d3.Selection<SVGSVGElement, undefined, null, undefined>>;
@@ -106,42 +106,46 @@ export class InitializeService {
       tap((svg) => this.svg = svg),
       // Generate SVG container (draw)
       tap((svg) => {
-        // Define object storage in <defs> (definitions) tag
-        const defs = svg.append('defs');
         // Define clip path: everything out of this area won't be drawn
-        this.clip = defs.append('SVG:clipPath')
+        this.clip = svg.append('defs').append('clipPath')
           // Set clip identifier, required in <defs>
           .attr('id', 'clip')
-          // Add inner rectange
-          .append('SVG:rect')
+          // Add inner rectangle
+          .append('rect')
+        // NOTE Add middle layer, in order to allow both zoom and mouse events to be captured
+        // https://stackoverflow.com/questions/58125180/d3-zoom-and-mouseover-tooltip 
+        const focus = svg.append('g')
+          .attr('class', 'focus');
+          // .attr('transform', `translate(${this.margin.left}, ${this.margin.top})`);
         // Define features group
-        this.draw = svg.append('g')
+        this.draw = focus.append('g')
           // Bind features group to clip path
           .attr('class', 'features')
           .attr('clip-path', `url(#clip)`);
         // Define zoom event
-        this.zoom = d3.zoom<SVGSVGElement, unknown>();
+        this.zoom = d3.zoom<SVGGElement, undefined>();
         // Add an invisible rectangle on top of the chart.
         // This, can recover pointer events: it is necessary to understand when the user zoom.
-        this.events = svg.append('rect')
+        this.events = focus.append('rect')
           // Set style to appear invisible, but catch events
+          .attr('class', 'zoom')
           .style('fill', 'none')
           .style('pointer-events', 'all')
-          // .style('display', 'none') // TODO Remove this
-          // Set zoom behavior
-          .call(this.zoom as never);
+          .lower();
+        // Set zoom behavior
+        focus.call(this.zoom);
       }),
       // Initialize horizontal, vertical axis
       tap((svg) => {
         // Define horizontal axis
         const x = svg.append('g').attr('class', 'x axis');
-          // .attr(
-          //   'transform',
-          //   `translate(0, ${this.height - this.margin.bottom})`
-          // );
+        // .attr(
+        //   'transform',
+        //   `translate(0, ${this.height - this.margin.bottom})`
+        // );
         // Define vertical axis
         const y = svg.append('g').attr('class', 'y axis')
-          // .attr('transform', `translate(${this.margin.left}, 0)`);
+        // .attr('transform', `translate(${this.margin.left}, 0)`);
         // Initialize axis
         this.axes = { x, y };
       }),

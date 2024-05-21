@@ -1,5 +1,5 @@
 // prettier-ignore 
-import { AfterViewInit, Component, ContentChild, ElementRef, HostListener, Input, OnChanges, OnDestroy, SimpleChanges, ViewChild, ViewEncapsulation } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ContentChild, ElementRef, HostListener, Input, OnChanges, OnDestroy, SimpleChanges, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Observable, Subscription, tap, switchMap } from 'rxjs';
 import { CommonModule } from '@angular/common';
 // Custom components
@@ -35,6 +35,7 @@ export type Sequence = Array<string>;
   ],
   templateUrl: './ngx-features-viewer.component.html',
   styleUrl: './ngx-features-viewer.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
 export class NgxFeaturesViewerComponent implements AfterViewInit, OnChanges, OnDestroy {
@@ -88,21 +89,30 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, OnChanges, OnD
       switchMap(() => this.resizeService.resized$),
       // Initialize zoom scale
       tap(() => {
-        // Get current width
-        const { margin, width } = this.resizeService;
-        // Define number of residues in sequnce
+        // const { width, height } = this.resizeService;
+        const { left: ms, right: me, bottom: mb } = this.resizeService.margin;
+        const h = this.resizeService.height;
+        const w = this.resizeService.width;
+        // // Define number of residues in sequnce
         const n = this.sequence.length + 1;
         // Apply scale limit to 5 residues
         this.initService.zoom
-          .extent([[margin.left, 0], [width - margin.right, Infinity]])
+          .translateExtent([[ms, 0], [w - me, h - mb]])
           .scaleExtent([1, n / 5])
-          .translateExtent([[margin.left, 0], [width - margin.right, 0]])
+          .extent([[ms, 0], [w - me, h - mb]])
           .on('zoom', (event) => {
-            // // TODO remove this
-            // console.log('Zoom event handler', this.zoom);
-            // Call zoom features on update
-            this.onFeaturesZoom(event);
-          })
+            // // Modify the event.transform in place
+            // event.transform.y = 0;
+            // // Case k or x values are finite
+            // if (isFinite(event.transform.k) && isFinite(event.transform.x)) {
+            //   // Emit transformation to update visualization
+            //   this.zoomService.zoom$.next(event);
+            // }
+            // Emit transformation to update visualization
+            this.zoomService.zoom$.next(event);
+            // // TODO Remove console.log
+            // console.log('event.transform', event.transform);
+          });
       }),
       // Subscribe to zoom event
       switchMap(() => this.zoomService.zoomed$),
@@ -137,9 +147,9 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, OnChanges, OnD
     this.resizeService.resize$.next(event);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onFeaturesZoom(event: any) {
-    // Emit zoom event
-    this.zoomService.zoom$.next(event);
-  }
+  // // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // onFeaturesZoom(event: any) {
+  //   // Emit zoom event
+  //   this.zoomService.zoom$.next(event);
+  // }
 }
