@@ -85,8 +85,8 @@ export class ResizeService {
     const resize$: Observable<void> = this.resize$.pipe(
       // Get width, height from root HTML div
       map(() => ({ width: this.width, height: this.height })),
-      // Add some delay, avoid flooding of resize events
-      debounceTime(100),
+      // // Add some delay, avoid flooding of resize events
+      // debounceTime(10),
       // Check that width value actually changed
       distinctUntilChanged((p: Size, c: Size) => p.width === c.width),
       // Map to void

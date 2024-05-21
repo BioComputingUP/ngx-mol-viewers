@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Hierarchy } from '../hierarchy';
+import { Feature } from '../features';
 
 // Define local trace
 type Trace = Hierarchy[number] & { type: 'trace' };
@@ -15,6 +16,23 @@ export class FeaturesService {
 
   public get traces() {
     return this._traces;
+  }
+
+  public get features() {
+    // Get traces
+    const traces = this.traces;
+    // Initialize features
+    const features = new Map<string, Feature>();
+    // Loop through each trace
+    for (const trace of traces.values()) {
+      // Loop through each feature
+      for (const [i, feature] of Object.entries(trace.values)) {
+        // Store feature
+        features.set(`trace-${trace.id}-feature-${i}`, feature);
+      }
+    }
+    // Return features map
+    return features;
   }
 
   protected _parent = new Map<Trace, number>();
@@ -95,6 +113,14 @@ export class FeaturesService {
           id: undefined,
           expanded: undefined
         };
+        // Sort trace values to have continuous features first
+        trace.values = trace.values.sort((a, b) => {
+          // Otheriwse, return -1 if a is continuous
+          if (a.type !== 'continuous') return -1;
+          if (b.type !== 'continuous') return 1;
+          // Otherwise, return 0
+          return 0;
+        });
         // Update trace properties
         trace.id = trace.id !== undefined ? trace.id : index++;
         trace.expanded = trace.expanded === false ? false : true;
