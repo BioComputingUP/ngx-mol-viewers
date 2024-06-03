@@ -181,6 +181,8 @@ export class DrawService {
 
   public 'group.grid'!: GridLines;
 
+  public 'char.width' = 0.0;
+
   public tooltip!: d3.Selection<HTMLDivElement, unknown, null, unknown>;
 
   /** Draw features
@@ -228,7 +230,7 @@ export class DrawService {
           .style('position', 'absolute')
           // .style('width', '300px')
           // .style('height', '200px')
-          .style('display', 'block')
+          .style('display', 'none')
           .style('opacity', 1)
           .style('color', 'black')
           .style('padding', '.25rem')
@@ -333,42 +335,65 @@ export class DrawService {
       .attr('class', 'color')
       .attr('fill', (d) => color(d))
       .attr('fill-opacity', 0.1);
+    // Define maximum width of text
+    let charWidth = 0.0
     // Add text to each residue group
     this['group.residues']
       .append('text')
       .attr('class', 'name')
-      .text((d) => '' + d);
+      .text((d) => '' + d)
+      // Loop through each text element
+      .each(function() { 
+        // Update text width
+        charWidth = Math.max(charWidth, this.getBBox().width);
+      });
+    // Updated stored character width
+    this['char.width'] = charWidth;
   }
 
   public updateSequence() {
-    // Get line height
-    const lh = this.initializeService.settings['line-height'];
     // Get height, width, margins
     const margin = this.initializeService.margin;
     // Get scale (x, y axis)
     const { x, y } = this.initializeService.scale;
-    // Define width, height of each cell
-    const width = x(1) - x(0);
+    // Get line height
+    const { 'line-height': lineHeight } = this.initializeService.settings;
+    // Define container/cell width and (maximum) text width
+    const cellWidth = x(1) - x(0);
+    // Get maximum character width
+    const charWidth = this['char.width'];
+    // Define residues group
+    const { 'group.residues': residues } = this;
     // Update size, position of residue background
-    this['group.residues']
+    residues
       .select('rect.color')
       .attr('x', (_, i) => x(i + 0.5))
       .attr('y', margin.top)
-      .attr('width', () => width)
+      .attr('width', () => cellWidth)
       .attr('height', '100%');
     // Update size, position of residue names
-    this['group.residues']
-      // Style outer foreignObject
-      .select('text.name')
+    residues.select<SVGTextElement>('text.name')
       .attr('x', (_, i) => x(i + 1))
-      .attr('y', y('sequence') + lh / 2)
-      .attr('width', () => width)
-      .attr('height', lh)
+      .attr('y', y('sequence') + lineHeight / 2)
+      .attr('width', () => cellWidth)
+      .attr('height', lineHeight)
       // Style positioning
       .attr('dominant-baseline', 'central')
       .style('text-anchor', 'middle')
       // Style color text
       .attr('fill', this.initializeService.settings['text-color'])
+      // Update opacity according to text width
+      .attr('opacity', () => charWidth > cellWidth ? 0 : 1);
+      // .each(function() {
+      //   // Get the width of the text element
+      //   const textWidth = this.getBBox().width;
+      //   // Get the width of the text element
+      //   const elementWidth = d3.select(this).attr('width');
+      //   // If the actual text width is greater than the element width, replace the text with nothing
+      //   if (textWidth > elementWidth) {
+      //     d3.select(this).text('');
+      //   }
+      // });
     // // TODO Hide if width is not sufficient
     // .text((d) => width > (1 * REM) ? d : ' ');
   }
@@ -806,6 +831,7 @@ export class DrawService {
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 function onMouseOver<F extends Feature & { index: number }>(event: MouseEvent, tooltip: d3.Selection<HTMLDivElement, unknown, null, unknown>, trace: Trace, feature: F, index: number, value: F['values'][number]): void {
   // Set tooltip visible
+  tooltip.style("display", "block");
   tooltip.style("opacity", 1);
 }
 
@@ -842,5 +868,6 @@ function onMouseMove<F extends Feature & { index: number }>(event: MouseEvent, t
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 function onMouseLeave<F extends Feature & { index: number }>(event: MouseEvent, tooltip: d3.Selection<HTMLDivElement, unknown, null, unknown>, trace: Trace, feature: F, index: number, value: F['values'][number]): void {
   // Set tooltip invisible
-  tooltip.style("opacity", 0)
+  tooltip.style("opacity", 0);
+  tooltip.style("display", "none");
 }

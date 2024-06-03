@@ -1,4 +1,4 @@
-import { Observable, ReplaySubject, combineLatest, from, map, shareReplay, switchMap, tap } from 'rxjs';
+import { BehaviorSubject, Observable, filter, from, map, shareReplay, switchMap, tap } from 'rxjs';
 import { Structure, StructureProperties } from 'molstar/lib/mol-model/structure';
 // import { StateObjectRef } from 'molstar/lib/mol-state';
 import { Asset } from 'molstar/lib/mol-util/assets';
@@ -13,9 +13,9 @@ import { Source } from '../interfaces/source';
 export class StructureService {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  readonly structure$: Observable<any>;  // TODO
+  readonly structure$: Observable<any>;
 
-  readonly source$ = new ReplaySubject<Source>;
+  readonly source$ = new BehaviorSubject<Source | null>(null);
 
   set source(source: Source) {
     this.source$.next(source);
@@ -31,12 +31,18 @@ export class StructureService {
     // public settingsService: SettingsService,
     public pluginService: PluginService,
   ) {
-    const plugin$ = this.pluginService.plugin$;
-    const source$ = this.source$;
     // Combine all observables into a single one
-    this.structure$ = combineLatest([plugin$, source$]).pipe(
-      // Wrap source and plugin into an object
-      map(([plugin, source]) => ({ plugin, source })),
+    this.structure$ = this.pluginService.plugin$.pipe(
+      // Combine with source emission
+      switchMap((plugin) => {
+        // Combine with source emission
+        return this.source$.pipe(
+          // Filter out null values
+          filter((source): source is Source => source != null),
+          // Emit both plugin and source
+          map((source: Source) => ({ plugin, source })),
+        );
+      }),
       // Parse source data
       switchMap(({ source }) => from((async () => {
         // Case source is local
@@ -111,11 +117,6 @@ export class StructureService {
           },
         }));
       }),
-      // // Build residues array out of structure
-      // tap((_structure) => {
-      //   // Get structure data
-      //   const structure = _structure.cell?.obj?.data as Structure;
-      // }),
       // Cache results
       shareReplay(1),
     );

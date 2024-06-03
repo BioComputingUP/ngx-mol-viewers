@@ -52,7 +52,7 @@ export class PageFeaturesViewerComponent {
     {
       label: 'Feature #1',
       type: 'continuous',
-      values: Array.from({ length: 100}, () => Math.floor(Math.random() * 100) + 1)
+      values: Array.from({ length: 70 }, () => Math.floor(Math.random() * 100) + 1)
     },
     {
       label: 'Feature #2',
@@ -69,7 +69,7 @@ export class PageFeaturesViewerComponent {
         { type: 'loci', values: [{ start: 1, end: 10 }], "trace-color": "blue", },
         { type: 'loci', values: [{ start: 20, end: 40 }], "trace-color": "red", },
         { type: 'loci', values: [{ start: 60, end: 100 }], "trace-color": "yellow", },
-        { type: 'continuous', values: Array.from({ length: 100}, () => Math.floor(Math.random() * 100) + 1), "trace-color": "yellow", },
+        { type: 'continuous', values: Array.from({ length: 70 }, () => Math.floor(Math.random() * 100) + 1), "trace-color": "yellow", },
       ],
       "background-color": "transparent",
     },
@@ -90,7 +90,7 @@ export class PageFeaturesViewerComponent {
         {
           label: 'Feature #6',
           type: 'continuous',
-          values: Array.from({ length: 100}, () => Math.floor(Math.random() * 100) + 1)
+          values: Array.from({ length: 70 }, () => Math.floor(Math.random() * 100) + 1)
         }
       ]
     },
@@ -111,7 +111,7 @@ export class PageFeaturesViewerComponent {
           label: 'Feature #9',
           type: 'continuous',
           "trace-color": "greenyellow",
-          values: Array.from({ length: 100}, () => Math.floor(Math.random() * 100) + 1),
+          values: Array.from({ length: 70 }, () => Math.floor(Math.random() * 100) + 1),
         }
       ]
     }
