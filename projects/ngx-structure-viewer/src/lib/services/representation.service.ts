@@ -1,4 +1,4 @@
-import { Observable, ReplaySubject, Subscription, combineLatestWith, from, map, shareReplay, switchMap, withLatestFrom } from 'rxjs';
+import { Observable, ReplaySubject, Subscription, combineLatestWith, filter, from, map, shareReplay, switchMap, withLatestFrom } from 'rxjs';
 import { Injectable, OnDestroy } from '@angular/core';
 // Molstar dependencies
 import { Structure, StructureElement, StructureProperties as SP, StructureSelection } from 'molstar/lib/mol-model/structure';
@@ -9,14 +9,15 @@ import { Overpaint } from 'molstar/lib/mol-theme/overpaint';
 import { Vec3 } from 'molstar/lib/mol-math/linear-algebra';
 import { Script } from 'molstar/lib/mol-script/script';
 // Custom dependencies
-import { StructureService } from '../structure.service';
-import { SettingsService } from '../settings.service';
-import { PluginService } from '../plugin.service';
-import { Interaction, Interactor } from '../../interfaces/interaction';
-import { Locus } from '../../interfaces/locus';
-import { fromHexString } from '../../colors';
+import { StructureService } from './structure.service';
+import { SettingsService } from './settings.service';
+import { PluginService } from './plugin.service';
+import { Interaction, Interactor } from '../interfaces/interaction';
+import { Locus } from '../interfaces/locus';
+import { fromHexString } from '../colors';
 import { CreateMeshProvider } from './interactions.provider';
-import { CanvasService } from '../canvas.service';
+import { CanvasService } from './canvas.service';
+import { Source } from '../interfaces/source';
 
 
 export function getLocusFromQuery(query: Expression, structure: Structure): StructureElement.Loci {
@@ -78,10 +79,15 @@ export class RepresentationService implements OnDestroy {
     public pluginService: PluginService,
     public canvasService: CanvasService,
   ) {
-
+    // Get source
+    const source$ = this.structureService.source$.pipe(
+      // Filter out null values
+      filter((source): source is Source => source != null),
+    );
+    // Get structure
     this.structure$ = this.structureService.structure$.pipe(
       // Get latest source
-      withLatestFrom(this.structureService.source$),
+      withLatestFrom(source$),
       // Generate structure
       switchMap(([structure, source]) => from((async () => {
         // Define reference for current plugin

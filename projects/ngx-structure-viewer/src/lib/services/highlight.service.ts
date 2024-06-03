@@ -1,5 +1,5 @@
 // Custom dependencies
-import { getLocusFromSet } from './representation/representation.service';
+import { getLocusFromSet } from './representation.service';
 import { StructureService } from './structure.service';
 import { PluginService } from './plugin.service';
 import { Locus } from '../interfaces/locus';

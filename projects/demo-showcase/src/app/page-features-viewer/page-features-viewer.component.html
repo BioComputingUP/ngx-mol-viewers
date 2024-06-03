@@ -9,16 +9,67 @@
     <!-- Section: example -->
     <div class="d-flex flex-row gap-3 mb-3">
         <!-- TODO Remove this -->
-        <div style="display: block; width: 1rem; height: 1rem; background: black; font-size: 1rem; line-height: 1rem;"></div>
-        <div style="display: block; width: 1rem; height: auto; background: black; color: white; font-size: 1rem; line-height: .5rem;">W</div>
-        <div style="display: block; width: auto; height: 1rem; background: black; color: white; font-size: 1rem; line-height: 1rem;">W</div>
+        <div style="display: block; width: 1rem; height: 1rem; background: black; font-size: 1rem; line-height: 1rem;">
+        </div>
+        <div
+            style="display: block; width: 1rem; height: auto; background: black; color: white; font-size: 1rem; line-height: .5rem;">
+            W</div>
+        <div
+            style="display: block; width: auto; height: 1rem; background: black; color: white; font-size: 1rem; line-height: 1rem;">
+            W</div>
+    </div>
+    <!-- TODO Remove this -->
+    <div class="d-block mb-3">
+        <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras congue velit in sem sodales pretium. Vivamus
+            sit amet enim malesuada, efficitur quam quis, semper metus. Aenean commodo tellus eu viverra lacinia. Nam
+            sed lectus non tellus suscipit pellentesque. Class aptent taciti sociosqu ad litora torquent per conubia
+            nostra, per inceptos himenaeos. Suspendisse lacus diam, laoreet eget nisl et, dictum dictum elit. Vivamus
+            sit amet fringilla elit, vitae pulvinar nisl. Donec mattis magna lacus, id congue risus aliquet a.
+        </p>
+        <p>
+            Cras nec malesuada risus. Integer a tincidunt ante. Vivamus eu mauris placerat, dictum diam vitae, laoreet
+            eros. Integer porttitor neque vel lectus ullamcorper commodo. Aliquam erat volutpat. Morbi convallis
+            fermentum mauris, quis aliquet tellus posuere non. Nunc aliquet mattis tellus et ultrices.
+        </p>
     </div>
     <!-- Show output -->
     <div style="display: block; height: auto; width: 100%;">
         <ngx-features-viewer [sequence]="sequence" [features]="features" [settings]="settings">
             <ng-template let-trace="trace" [ngx-features-viewer-label]>
-                <div [class.text-muted]="!trace.expanded">{{ trace.label }}</div>
+                <div [class.text-muted]="!trace.expanded">
+                    {{ trace.label }}&nbsp;
+                    <!-- Add symbol if expanded -->
+                    @if (trace.expanded) {
+                        <i class="bi bi-caret-down-fill"></i>
+                    } @else {
+                        <i class="bi bi-caret-right"></i>
+                    }
+                </div>
             </ng-template>
         </ngx-features-viewer>
+    </div>
+    <!-- TODO Remove this -->
+    <div>
+        <p>
+            Morbi convallis ipsum sit amet felis faucibus mollis. Duis nec viverra nisl, nec maximus nisl. Proin non
+            malesuada massa, sit amet auctor elit. Sed condimentum, urna id commodo semper, nisi lorem lobortis velit,
+            eu
+            auctor ante magna eu nibh. Aliquam mattis pulvinar sapien vitae rhoncus. Sed lacinia ex a ultrices finibus.
+            Phasellus eu erat eu sapien laoreet dapibus ac vitae mauris.
+        </p>
+        <p>
+            Vestibulum elementum sem vel lorem suscipit varius. Mauris malesuada porta sapien blandit facilisis. Aliquam
+            pretium erat nec lorem molestie, et feugiat turpis semper. Donec tempus posuere nibh, maximus hendrerit odio
+            eleifend vitae. Praesent consequat felis leo, at ullamcorper nisl dictum sed. Morbi erat dui, sollicitudin
+            id
+            interdum convallis, elementum laoreet lorem. Duis leo massa, commodo id tempor sed, semper ut dui. Proin
+            faucibus feugiat sapien, et cursus nunc. Duis eu mattis ipsum, ac facilisis quam. Donec a sapien non lectus
+            iaculis luctus. Nulla lobortis turpis id nisi consectetur aliquet. Aliquam dignissim aliquam erat, at
+            egestas
+            nulla ullamcorper a. Duis porta interdum venenatis. Praesent a lorem at velit egestas efficitur eu et
+            lectus.
+            Suspendisse potenti. Duis imperdiet aliquam hendrerit.
+        </p>
     </div>
 </div>
