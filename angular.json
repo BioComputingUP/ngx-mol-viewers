@@ -27,12 +27,7 @@
             "inlineStyleLanguage": "scss",
             "assets": [
               "projects/demo-showcase/src/favicon.ico",
-              "projects/demo-showcase/src/assets",
-              {
-                "input": "./",
-                "glob": "LICENSE.*",
-                "output": "./"
-              }
+              "projects/demo-showcase/src/assets"
             ],
             "styles": [
               "projects/demo-showcase/src/styles.scss"
@@ -44,8 +39,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "1mb",
-                  "maximumError": "5mb"
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
                 },
                 {
                   "type": "anyComponentStyle",
