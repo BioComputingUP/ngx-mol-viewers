@@ -9,90 +9,93 @@
     <div class="row align-items-stretch mb-3">
         <!-- Structure viewer -->
         <div class="col-4">
-            <div class="product-card rounded bg-body-tertiary p-3 mb-3" routerLink="/structure">
-                <!-- Title -->
-                <h2>
-                    <i class="bi bi-boxes me-3"></i> Structure viewer
-                </h2>
-                <!-- Image -->
-                <img src="assets/structure-viewer.png" class="w-100 h-auto mb-3" alt="Structure viewer">
-                <!-- Description -->
-                <p class="text-justify mb-3">
-                    Visualize and interact with 3D molecular structures.
-                    Provides Mol* functionalities out-of-the-box for Angular developers.
-                </p>
-                <!-- Try it out -->
-                <div class="text-center mt-auto">
-                    <span class="badge rounded-pill text-bg-warning">
-                        Try it out <i class="bi bi-chevron-right"></i>
-                    </span>
+            <div class="card bg-body-tertiary mb-3">
+                <h2 class="card-header bg-primary"><i class="bi bi-boxes me-3"></i> ngx-structure-viewer</h2>
+                <div class="card-body">
+                    <!-- <h5 class="card-title">Special title treatment</h5>
+                  <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                  <a href="#" class="btn btn-primary">Go somewhere</a> -->
+                    <!-- Image -->
+                    <img src="assets/structure-viewer.png" class="w-100 h-auto" alt="Structure viewer">
+                    <!-- Description -->
+                    <p class="card-text">
+                        Visualize and interact with 3D molecular structures.
+                        Provides Mol* functionalities out-of-the-box for Angular developers.
+                    </p>
+                    <!-- Try it out -->
+                    <div class="text-center mt-auto">
+                        <span class="badge rounded-pill bg-primary">
+                            Try it out <i class="bi bi-chevron-right"></i>
+                        </span>
+                    </div>
                 </div>
             </div>
         </div>
-        <!-- Feature viewer -->
-        <div class="col-4 product">
-            <div class="product-card rounded bg-body-tertiary p-3 mb-3 " routerLink="/feature">
-                <!-- Title -->
-                <h2>
-                    <i class="bi bi-sliders"></i> Feature viewer
+        <!-- Features viewer -->
+        <div class="col-4">
+            <div class="card bg-body-tertiary mb-3" routerLink="/features">
+                <h2 class="card-header bg-primary">
+                    <i class="bi bi-sliders me-1"></i> ngx-features-viewer
                 </h2>
-                <!-- Description -->
-                <p class="mb-3">
-                    The feature viewer is a powerful tool designed for visualizing features of biological sequences,
-                    such as proteins, DNA, or RNA. It provides a comprehensive set of functionalities to explore and
-                    analyze these sequences. With the feature viewer, users can easily identify and visualize various
-                    features, including structural elements, functional domains, mutations, and more. It offers a
-                    user-friendly interface with intuitive gestures and actions, allowing users to zoom in and out, pan
-                    across the sequence, highlight specific regions, and perform interactive selections. Whether you are
-                    a biologist, bioinformatician, or researcher, the feature viewer is an indispensable tool for
-                    gaining insights into the intricate details of biological sequences.
-                </p>
-                <!-- Try it out -->
-                <div class="text-center mt-auto">
-                    <span class="badge rounded-pill text-bg-warning">
-                        Try it out <i class="bi bi-chevron-right"></i>
-                    </span>
+                <div class="card-body">
+                    <!-- <h5 class="card-title">Special title treatment</h5>
+                  <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                  <a href="#" class="btn btn-primary">Go somewhere</a> -->
+                    <!-- Image -->
+                    <img src="assets/features-viewer.png" class="w-100 h-auto" alt="Features viewer">
+                    <!-- Description -->
+                    <p class="card-text">
+                        The ultimate tool for Angular developers who want to visualize and interact
+                        biological sequences and their features.
+                    </p>
+                    <!-- Try it out -->
+                    <div class="text-center mt-auto">
+                        <span class="badge rounded-pill bg-primary">
+                            Try it out <i class="bi bi-chevron-right"></i>
+                        </span>
+                    </div>
                 </div>
             </div>
         </div>
         <!-- Sequence viewer -->
         <div class="col-4">
-            <div class="product-card rounded bg-body-tertiary p-3 mb-3" routerLink="/sequence">
-                <!-- Title -->
-                <h2>
-                    <i class="bi bi-body-text"></i> Sequence viewer
+            <div class="card bg-body-tertiary mb-3" routerLink="/structure">
+                <h2 class="card-header bg-primary">
+                    <i class="bi bi-body-text me-1"></i> ngx-sequence-viewer
                 </h2>
-                <!-- Description -->
-                <p class="mb-3">
-                    The sequence viewer is a specialized tool designed for visualizing multiple sequence alignments and
-                    other features across protein sequences. It provides a comprehensive view of the similarities and
-                    differences between multiple protein sequences, allowing users to easily identify conserved regions,
-                    mutations, and other important features. The sequence viewer supports various display options,
-                    enabling users to customize the view according to their needs. It also allows for interactive
-                    exploration, with features such as zooming and panning, highlighting specific regions, and hovering
-                    over specific points for more detailed information. This makes the sequence viewer an essential tool
-                    for bioinformaticians and researchers studying protein sequences and their relationships.
-                </p>
-                <!-- Try it out -->
-                <div class="text-center mt-auto">
-                    <span class="badge rounded-pill text-bg-warning">
-                        Try it out <i class="bi bi-chevron-right"></i>
-                    </span>
+                <div class="card-body">
+                    <!-- Image -->
+                    <img src="assets/sequence-viewer.png" class="w-100 h-auto" alt="Sequence viewer">
+                    <!-- Description -->
+                    <p class="card-text">
+                        Angular native component for single sequences or multiple sequence alignments.
+                        Does not require any third party library.
+                    </p>
+                    <!-- Try it out -->
+                    <div class="text-center mt-auto">
+                        <span class="badge rounded-pill bg-primary">
+                            Try it out <i class="bi bi-chevron-right"></i>
+                        </span>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
     <div class="row">
-        <!-- Interactivity -->
         <div class="col-12">
             <!-- Enhanced interactivity -->
-            <div class="rounded bg-body-tertiary shadow-sm p-3 mb-3">
-                <h2><i class="bi bi-share-fill"></i> Enhanced interactivity</h2>
-                <p>
-                    Our components are designed starting from the same, generic data structures. This is meant to easily
-                    wire up various compoents in the same page.
-                    Hence, implementing interactivity out-of-the-box
-                </p>
+            <div class="card mb-3" routerLink="/structure">
+                <h2 class="card-header bg-primary">
+                    <i class="bi bi-recycle me-1"></i> enhanced interactivity
+                </h2>
+                <div class="card-body">
+                    <!-- Description -->
+                    <p class="card-text">
+                        Our components are designed starting from the same, generic data structures. 
+                        This allows to easily wire up multiple components in the same Angular component.
+                        Hence, it provides component interaction out-of-the-box.
+                    </p>
+                </div>
             </div>
         </div>
     </div>

@@ -1,6 +1,9 @@
-$gradient: linear-gradient(45deg, #008affff 60%, #0037FF);
-
+$gradient: linear-gradient(45deg, rgb(255, 38, 0), #440064);
 
 .navbar {
+  background: $gradient;
+}
+
+.bg-primary {
   background: $gradient;
 }
