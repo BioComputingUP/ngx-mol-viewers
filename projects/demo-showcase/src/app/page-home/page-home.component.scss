@@ -1,18 +1,3 @@
-.product-card {
-    // Set vertical flex layout
-    display: flex;
-    flex-direction: column;
-    flex-wrap: nowrap;
-    // Define height, width
-    height: 100%;
-    width: 100%;
-    // Set cursor to pointer
+.cursor-pointer {
     cursor: pointer;
-    // Define shadow like .shadow-sm of Bootstrap
-    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-}
-
-.product-card:hover {
-    // Define shadow like .shadow of Bootstrap
-    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
 }
