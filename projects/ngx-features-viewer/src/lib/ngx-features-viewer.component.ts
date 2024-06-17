@@ -1,4 +1,3 @@
-// prettier-ignore
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -58,7 +57,11 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, OnChanges, OnD
   public _root!: ElementRef;
 
   @ContentChildren(NgxFeaturesViewerLabelDirective)
-  public label?: QueryList<NgxFeaturesViewerLabelDirective>;
+  public labels?: QueryList<NgxFeaturesViewerLabelDirective>;
+
+  public 'label.right'?: NgxFeaturesViewerLabelDirective;
+
+  public 'label.left'?: NgxFeaturesViewerLabelDirective;
 
   @Input()
   public set settings(settings: Settings) {
@@ -137,7 +140,7 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, OnChanges, OnD
     this._update = this.update$.subscribe();
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
+  public ngOnChanges(changes: SimpleChanges): void {
     // Case input sequence changes
     if (changes && changes['sequence']) {
       // Emit sequence
@@ -145,18 +148,19 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, OnChanges, OnD
     }
   }
 
-  ngAfterViewInit(): void {
-    if (this.label) {
-      // Check if the template was initialized with the left directive [ngx-features-viewer-label-left]
-      console.log(this.label.get(0)!.templateRef);
+  public ngAfterViewInit(): void {
+    if (this.labels) {
+      // Loop thorugh each label template
+      this.labels.forEach((label) => {
+        console.log('label', label);
+        console.log('label.where', label.where);
+      });
     }
-
-
     // Emit root element
     this.initService.initialize$.next(this._root);
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     // Unsubscribe from update emission
     this._update.unsubscribe();
   }

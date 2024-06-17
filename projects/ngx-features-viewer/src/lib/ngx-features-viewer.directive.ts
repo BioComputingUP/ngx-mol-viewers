@@ -1,11 +1,13 @@
-import { Directive, TemplateRef } from '@angular/core';
+import { Directive, Input, TemplateRef } from '@angular/core';
 
 @Directive({
   // eslint-disable-next-line @angular-eslint/directive-selector
-  selector: '[ngx-features-viewer-label], [ngx-features-viewer-label-left], [ngx-features-viewer-label-right]',
+  selector: '[ngx-features-viewer-label]',
   standalone: true
 })
 export class NgxFeaturesViewerLabelDirective {
+
+  @Input() where?: 'left' | 'right';
 
   constructor(public templateRef: TemplateRef<unknown>) { }
 
