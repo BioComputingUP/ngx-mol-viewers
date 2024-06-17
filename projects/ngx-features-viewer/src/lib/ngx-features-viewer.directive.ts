@@ -7,7 +7,7 @@ import { Directive, Input, TemplateRef } from '@angular/core';
 })
 export class NgxFeaturesViewerLabelDirective {
 
-  @Input() where?: 'left' | 'right';
+  @Input('ngx-features-viewer-label') where?: 'left' | 'right';
 
   constructor(public templateRef: TemplateRef<unknown>) { }
 

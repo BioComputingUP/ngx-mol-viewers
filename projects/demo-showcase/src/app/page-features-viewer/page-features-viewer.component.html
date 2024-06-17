@@ -36,7 +36,7 @@
     <!-- Show output -->
     <div style="display: block; height: auto; width: 100%;">
         <ngx-features-viewer [sequence]="sequence" [features]="features" [settings]="settings">
-            <ng-template let-trace="trace" [ngx-features-viewer-label] where="left">
+            <ng-template let-trace="trace" ngx-features-viewer-label="left">
                 <div [class.text-muted]="!trace.expanded">
                     {{ trace.label }}&nbsp;
                     <!-- Add symbol if expanded -->
@@ -47,7 +47,7 @@
                     }
                 </div>
             </ng-template>
-            <ng-template let-trace="trace" [ngx-features-viewer-label] where="right">
+            <ng-template let-trace="trace" ngx-features-viewer-label="right">
                 <div [class.text-muted]="!trace.expanded">
                     {{ trace.label }}&nbsp;
                     <!-- Add symbol if expanded -->
