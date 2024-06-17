@@ -1,18 +1,32 @@
-// prettier-ignore 
-import { AfterViewInit, ChangeDetectionStrategy, Component, ContentChild, ElementRef, HostListener, Input, OnChanges, OnDestroy, SimpleChanges, ViewChild, ViewEncapsulation } from '@angular/core';
-import { Observable, Subscription, tap, switchMap } from 'rxjs';
-import { CommonModule } from '@angular/common';
+// prettier-ignore
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  Component,
+  ContentChildren,
+  ElementRef,
+  HostListener,
+  Input,
+  OnChanges,
+  OnDestroy,
+  QueryList,
+  SimpleChanges,
+  ViewChild,
+  ViewEncapsulation
+} from '@angular/core';
+import {Observable, Subscription, switchMap, tap} from 'rxjs';
+import {CommonModule} from '@angular/common';
 // Custom components
-import { NgxFeaturesViewerLabelDirective } from './ngx-features-viewer.directive';
+import {NgxFeaturesViewerLabelDirective} from './ngx-features-viewer.directive';
 // Custom providers
-import { InitializeService } from './services/initialize.service';
-import { FeaturesService } from './services/features.service';
-import { ResizeService } from './services/resize.service';
-import { ZoomService } from './services/zoom.service';
-import { DrawService } from './services/draw.service';
+import {InitializeService} from './services/initialize.service';
+import {FeaturesService} from './services/features.service';
+import {ResizeService} from './services/resize.service';
+import {ZoomService} from './services/zoom.service';
+import {DrawService} from './services/draw.service';
 // Custom data types
-import { Hierarchy } from './hierarchy';
-import { Settings } from './settings';
+import {Hierarchy} from './hierarchy';
+import {Settings} from './settings';
 
 
 // TODO Define sequence type
@@ -43,8 +57,8 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, OnChanges, OnD
   @ViewChild('root')
   public _root!: ElementRef;
 
-  @ContentChild(NgxFeaturesViewerLabelDirective)
-  public label?: NgxFeaturesViewerLabelDirective;
+  @ContentChildren(NgxFeaturesViewerLabelDirective)
+  public label?: QueryList<NgxFeaturesViewerLabelDirective>;
 
   @Input()
   public set settings(settings: Settings) {
@@ -90,7 +104,7 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, OnChanges, OnD
       // Initialize zoom scale
       tap(() => {
         // const { width, height } = this.resizeService;
-        const { left: ms, right: me, bottom: mb } = this.resizeService.margin;
+        const {left: ms, right: me, bottom: mb} = this.resizeService.margin;
         const h = this.resizeService.height;
         const w = this.resizeService.width;
         // // Define number of residues in sequnce
@@ -132,6 +146,12 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, OnChanges, OnD
   }
 
   ngAfterViewInit(): void {
+    if (this.label) {
+      // Check if the template was initialized with the left directive [ngx-features-viewer-label-left]
+      console.log(this.label.get(0)!.templateRef);
+    }
+
+
     // Emit root element
     this.initService.initialize$.next(this._root);
   }
