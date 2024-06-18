@@ -36,18 +36,7 @@
     <!-- Show output -->
     <div style="display: block; height: auto; width: 100%;">
         <ngx-features-viewer [sequence]="sequence" [features]="features" [settings]="settings">
-            <ng-template let-trace="trace" ngx-features-viewer-label="left">
-                <div [class.text-muted]="!trace.expanded">
-                    {{ trace.label }}&nbsp;
-                    <!-- Add symbol if expanded -->
-                    @if (trace.expanded) {
-                    <i class="bi bi-caret-down-fill"></i>
-                    } @else {
-                    <i class="bi bi-caret-right"></i>
-                    }
-                </div>
-            </ng-template>
-            <ng-template let-trace="trace" ngx-features-viewer-label="right">
+            <ng-template let-trace="trace" ngx-features-viewer-label>
                 <div [class.text-muted]="!trace.expanded">
                     {{ trace.label }}&nbsp;
                     <!-- Add symbol if expanded -->

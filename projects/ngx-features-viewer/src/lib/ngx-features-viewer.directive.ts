@@ -7,7 +7,15 @@ import { Directive, Input, TemplateRef } from '@angular/core';
 })
 export class NgxFeaturesViewerLabelDirective {
 
-  @Input('ngx-features-viewer-label') where?: 'left' | 'right';
+  where: 'left' | 'right' = 'left';
+
+  @Input('ngx-features-viewer-label') set _where(value: 'left' | 'right' | '' | undefined) {
+    if (value === 'left' || value === 'right') {
+      this.where = value;
+    } else {
+      this.where = 'left';
+    }
+  }
 
   constructor(public templateRef: TemplateRef<unknown>) { }
 

@@ -52,16 +52,14 @@ export type Sequence = Array<string>;
   encapsulation: ViewEncapsulation.None,
 })
 export class NgxFeaturesViewerComponent implements AfterViewInit, OnChanges, OnDestroy {
-
   @ViewChild('root')
   public _root!: ElementRef;
 
   @ContentChildren(NgxFeaturesViewerLabelDirective)
   public labels?: QueryList<NgxFeaturesViewerLabelDirective>;
 
-  public 'label.right'?: NgxFeaturesViewerLabelDirective;
-
-  public 'label.left'?: NgxFeaturesViewerLabelDirective;
+  public labelLeft?: NgxFeaturesViewerLabelDirective;
+  public labelRight?: NgxFeaturesViewerLabelDirective;
 
   @Input()
   public set settings(settings: Settings) {
@@ -152,8 +150,14 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, OnChanges, OnD
     if (this.labels) {
       // Loop thorugh each label template
       this.labels.forEach((label) => {
-        console.log('label', label);
-        console.log('label.where', label.where);
+        // Case label is left
+        if (label.where === 'left') {
+          this.labelLeft = label;
+        }
+        // Case label is right
+        if (label.where === 'right') {
+          this.labelRight = label;
+        }
       });
     }
     // Emit root element
