@@ -36,6 +36,7 @@
     <!-- Show output -->
     <div style="display: block; height: auto; width: 100%;">
         <ngx-features-viewer [sequence]="sequence" [features]="features" [settings]="settings">
+            <!-- Left label -->
             <ng-template let-trace="trace" ngx-features-viewer-label>
                 <div [class.text-muted]="!trace.expanded">
                     {{ trace.label }}&nbsp;
@@ -45,6 +46,12 @@
                     } @else {
                     <i class="bi bi-caret-right"></i>
                     }
+                </div>
+            </ng-template>
+            <!-- Right label -->
+            <ng-template let-trace="trace" ngx-features-viewer-label="right">
+                <div [class.text-muted]="!trace.expanded">
+                    Right label!
                 </div>
             </ng-template>
         </ngx-features-viewer>
