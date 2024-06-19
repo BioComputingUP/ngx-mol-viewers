@@ -10,7 +10,7 @@ import { Injectable, OnDestroy } from '@angular/core';
 
 export type Highlights = Locus | undefined;
 
-@Injectable({ providedIn: 'platform' })
+@Injectable()
 export class HighlightService implements OnDestroy {
 
   readonly input$ = new ReplaySubject<Highlights>(1);

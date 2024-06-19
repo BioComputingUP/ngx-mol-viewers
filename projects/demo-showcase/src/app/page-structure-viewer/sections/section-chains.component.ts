@@ -1,4 +1,4 @@
-import { NgxStructureViewerComponent, Locus, Settings, Source } from '@ngx-structure-viewer';
+import { NgxStructureViewerComponent, Locus, Settings, Source, StructureService, PluginService } from '@ngx-structure-viewer';
 import { Observable, interval, map, shareReplay, startWith } from 'rxjs';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -8,6 +8,10 @@ import { CommonModule } from '@angular/common';
   imports: [
     NgxStructureViewerComponent,
     CommonModule,
+  ],
+  providers: [
+    StructureService,
+    PluginService,
   ],
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -22,7 +26,10 @@ export class SectionChainsComponent {
 
   readonly chains$: Observable<Locus[]>;
 
-  constructor() {
+  constructor(
+    public structureService: StructureService,
+    public pluginService: PluginService,
+  ) {
     // Define settings
     this.settings = {
       'background-color': '#2b3035ff',
@@ -62,6 +69,11 @@ export class SectionChainsComponent {
       // Cache result
       shareReplay(1),
     );
+
+    // TODO Check that service has been imported
+    structureService.structure$.subscribe(() => {
+      console.log('Hello, world!');
+    });
   }
 
 }

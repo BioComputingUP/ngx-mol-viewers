@@ -2,7 +2,7 @@ import { Settings } from '../interfaces/settings';
 import { Injectable } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
 
-@Injectable({ providedIn: 'platform' })
+@Injectable()
 export class SettingsService {
 
   readonly settings$ = new ReplaySubject<Settings>();
