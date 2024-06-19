@@ -1,5 +1,5 @@
 
-import { Observable, ReplaySubject, combineLatestWith, from, map, shareReplay, switchMap } from 'rxjs';
+import { Observable, ReplaySubject, combineLatestWith, map, shareReplay } from 'rxjs';
 import { PluginUIContext } from 'molstar/lib/mol-plugin-ui/context';
 import { Plugin } from 'molstar/lib/mol-plugin-ui/plugin';
 // import { PluginContext } from 'molstar/lib/mol-plugin/context';
