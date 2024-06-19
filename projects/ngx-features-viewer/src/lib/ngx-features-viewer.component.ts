@@ -152,7 +152,7 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, AfterContentIn
   public ngAfterContentInit(): void {
     // Case label templates are defined
     if (this.labels) {
-      // Loop through each label template
+      // Loop thorugh each label template
       this.labels.forEach((label) => {
         // Case both labels are defined, then throw error
         if (this.labelLeft && this.labelRight) {
