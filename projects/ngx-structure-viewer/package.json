@@ -1,6 +1,6 @@
 {
   "name": "ngx-structure-viewer",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "license": "MIT",
   "author": {
     "name": "Damiano Clementel",
@@ -9,7 +9,7 @@
   "peerDependencies": {
     "@angular/common": "^17.0.0",
     "@angular/core": "^17.0.0",
-    "molstar": "^3.44.0",
+    "molstar": "^4.0.0",
     "rxjs": "~7.8.1"
   },
   "dependencies": {
