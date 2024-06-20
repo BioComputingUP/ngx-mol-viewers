@@ -53,16 +53,12 @@ export type Sequence = Array<string>;
   encapsulation: ViewEncapsulation.None,
 })
 export class NgxFeaturesViewerComponent implements AfterViewInit, AfterContentInit, OnChanges, OnDestroy {
-  
+
   @ViewChild('root')
   public _root!: ElementRef;
 
   @ContentChildren(NgxFeaturesViewerLabelDirective)
   public labels?: QueryList<NgxFeaturesViewerLabelDirective>;
-
-  public labelLeft?: NgxFeaturesViewerLabelDirective;
-  
-  public labelRight?: NgxFeaturesViewerLabelDirective;
 
   @Input()
   public set settings(settings: Settings) {
@@ -152,19 +148,19 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, AfterContentIn
   public ngAfterContentInit(): void {
     // Case label templates are defined
     if (this.labels) {
-      // Loop thorugh each label template
+      // Loop through each label template
       this.labels.forEach((label) => {
         // Case both labels are defined, then throw error
-        if (this.labelLeft && this.labelRight) {
+        if (this.initService.labelLeft && this.initService.labelRight) {
           throw new Error('Only one label can be defined');
         }
         // Case label is left
         if (label.where === 'left') {
-          this.labelLeft = label;
+          this.initService.labelLeft = label;
         }
         // Case label is right
         if (label.where === 'right') {
-          this.labelRight = label;
+          this.initService.labelRight = label;
         }
       });
     }

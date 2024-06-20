@@ -1,18 +1,19 @@
-import { Observable, ReplaySubject, map, shareReplay, switchMap, tap } from 'rxjs';
-import { Injectable } from '@angular/core';
+import {map, Observable, ReplaySubject, shareReplay, switchMap, tap} from 'rxjs';
+import {Injectable} from '@angular/core';
 // // Custom components
 // import { NgxFeaturesViewerLabelDirective } from '../ngx-features-viewer.directive';
 // Custom providers
-import { InitializeService } from './initialize.service';
-import { FeaturesService } from './features.service';
+import {InitializeService} from './initialize.service';
+import {FeaturesService} from './features.service';
 // import { ResizeService } from './resize.service';
 // Custom data types
-import { Continuous } from '../features/continuous';
-import { Loci, Locus } from '../features/loci'
-import { Hierarchy } from '../hierarchy';
-import { Feature } from '../features';
+import {Continuous} from '../features/continuous';
+import {Loci, Locus} from '../features/loci'
+import {Hierarchy} from '../hierarchy';
+import {Feature} from '../features';
 // D3 library
 import * as d3 from 'd3';
+import {NgxFeaturesViewerLabelDirective} from "@ngx-features-viewer";
 
 export type Trace = Hierarchy[number] & { type: 'trace' }
 
@@ -160,7 +161,7 @@ export const index = (f: unknown, i: number) => i;
 //   return foreignObject;
 // }
 
-@Injectable({ providedIn: 'platform' })
+@Injectable({providedIn: 'platform'})
 export class DrawService {
 
   // public readonly features$ = new ReplaySubject<Feature[]>(1);
@@ -186,16 +187,16 @@ export class DrawService {
   public tooltip!: d3.Selection<HTMLDivElement, unknown, null, unknown>;
 
   /** Draw features
-   * 
+   *
    * This pipeline initialize features within the drawable aread
    * of the main SVG container, defined by the `draw` property.
    */
   public readonly draw$: Observable<unknown>;
 
   /** Update features
-   * 
+   *
    * This pipeline moves previously initialized features within the
-   * drawable area, according to given scale (the one produced 
+   * drawable area, according to given scale (the one produced
    * after the zoom event took place)
    */
   public readonly drawn$: Observable<unknown>;
@@ -261,7 +262,7 @@ export class DrawService {
       // Move grid in correct position
       map(() => this.updateGrid()),
       // Move labels in correct position
-      map(() => this.updateLabels()),
+      //map(() => this.updateLabels()),
       // Move traces in correct position
       map(() => this.updateTraces()),
     );
@@ -272,7 +273,7 @@ export class DrawService {
     // Get current vertical scale
     const y = this.initializeService.scale.y;
     // Update domain
-    const domain = ['sequence', ...traces.map(({ id }) => id + '')];
+    const domain = ['sequence', ...traces.map(({id}) => id + '')];
     // Update range
     const range = domain.reduce((range: number[], id: string, i: number) => {
       // Handle sequence
@@ -343,7 +344,7 @@ export class DrawService {
       .attr('class', 'name')
       .text((d) => '' + d)
       // Loop through each text element
-      .each(function() { 
+      .each(function () {
         // Update text width
         charWidth = Math.max(charWidth, this.getBBox().width);
       });
@@ -355,15 +356,15 @@ export class DrawService {
     // Get height, width, margins
     const margin = this.initializeService.margin;
     // Get scale (x, y axis)
-    const { x, y } = this.initializeService.scale;
+    const {x, y} = this.initializeService.scale;
     // Get line height
-    const { 'line-height': lineHeight } = this.initializeService.settings;
+    const {'line-height': lineHeight} = this.initializeService.settings;
     // Define container/cell width and (maximum) text width
     const cellWidth = x(1) - x(0);
     // Get maximum character width
     const charWidth = this['char.width'];
     // Define residues group
-    const { 'group.residues': residues } = this;
+    const {'group.residues': residues} = this;
     // Update size, position of residue background
     residues
       .select('rect.color')
@@ -384,24 +385,21 @@ export class DrawService {
       .attr('fill', this.initializeService.settings['text-color'])
       // Update opacity according to text width
       .attr('opacity', () => charWidth > cellWidth ? 0 : 1);
-      // .each(function() {
-      //   // Get the width of the text element
-      //   const textWidth = this.getBBox().width;
-      //   // Get the width of the text element
-      //   const elementWidth = d3.select(this).attr('width');
-      //   // If the actual text width is greater than the element width, replace the text with nothing
-      //   if (textWidth > elementWidth) {
-      //     d3.select(this).text('');
-      //   }
-      // });
+    // .each(function() {
+    //   // Get the width of the text element
+    //   const textWidth = this.getBBox().width;
+    //   // Get the width of the text element
+    //   const elementWidth = d3.select(this).attr('width');
+    //   // If the actual text width is greater than the element width, replace the text with nothing
+    //   if (textWidth > elementWidth) {
+    //     d3.select(this).text('');
+    //   }
+    // });
     // // TODO Hide if width is not sufficient
     // .text((d) => width > (1 * REM) ? d : ' ');
   }
 
   public createLabels(traces: Trace[]): void {
-    const { y } = this.initializeService.scale;
-    const settings = this.initializeService.settings;
-    const { left: ml } = this.initializeService.margin;
     // Initialize labels SVG group
     const group = this.initializeService.svg
       // Select previous labels group
@@ -413,110 +411,64 @@ export class DrawService {
       .attr('class', 'labels')
     // Add labels to their group
     this['group.labels'] = group
-      .selectAll('g.label')
-      .data([{ id: 'sequence', label: 'Sequence', expanded: true }, ...traces] as Trace[], identity)
+      .selectAll('g')
+      .data([{id: 'sequence', label: 'Sequence', expanded: true}, ...traces] as Trace[], identity)
       .join(
-        (enter) => {
-          // Create label group
-          const group = enter
-            .append('g')
-            .attr('id', (d) => 'label-' + d.id)
-            .attr('class', 'label');
-          // Append label if exists
-          group.each((d) => {
-            // Get identifier trace
-            const identifier = '' + d.id;
-            // Get associated trace
-            const label = this.initializeService.div.querySelector<HTMLDivElement>('div#label-' + identifier);
-            // If label exists, update its positioning
-            if (label) {
-              label.style.position = 'absolute';
-              label.style.left = '0px';
-              label.style.overflow = 'hidden';
-              label.style.top = y(identifier) + 'px';
-              label.style.height = (d['line-height'] || settings['line-height']) + 'px';
-              label.style.width = ml + 'px';
-            }
-          });
-          // Return group
-          return group;
-        },
+        (enter) => enter.append('g'),
         (update) => update,
         (exit) => {
-          // Remove label group
+          // Hide labels
           exit.each((d) => {
-            // Get identifier trace
-            const identifier = d.id;
-            // Get associated trace
-            const label = this.initializeService.div.querySelector<HTMLDivElement>('div#label-' + identifier);
-            // If label exists, update its positioning
-            if (label) {
-              // Hide label
-              label.style.display = 'none';
-            }
+            this.hideLabels(d);
           });
           return exit;
         },
       )
-    // .join('g')
-    // .attr('id', (d) => 'label-' + d.id)
-    // .attr('class', 'label');
-    // TODO Set labels' foreignObject in correct position, if any
-    this['group.labels'].each((d) => {
-      // Get identifier trace
-      const identifier = '' + d.id;
+    this['group.labels'].each((trace: Trace) => {
+      this.setLabelsPosition(trace);
+    });
+  }
+
+  private setLabelsPosition(trace: Trace) {
+    const y = this.initializeService.scale.y;
+    const {left: ml, right: mr} = this.initializeService.margin;
+    const settings = this.initializeService.settings
+    // Get identifier trace
+    const identifier = '' + trace.id;
+    for (const place of ['left', 'right']) {
       // Get associated trace
-      const label = this.initializeService.div.querySelector<HTMLDivElement>('div#label-' + identifier);
+      const label = this.initializeService.div.querySelector<HTMLDivElement>(`div#label-${place}-` + identifier);
       // If label exists, update its positioning
       if (label) {
-        label.style.position = 'absolute';
-        label.style.overflow = 'hidden';
-        label.style.left = '0px';
+        label.classList.add('label');
+        if (place === 'left') {
+          // Position the label to the left
+          label.style.left = '0px';
+          label.style.width = `${ml}px`;
+        } else {
+          // Position the label to the right, ad add a "margin" left of 8 px to space the label from the traces
+          label.style.right = '0px';
+          label.style.width = `${mr}px`;
+        }
         label.style.top = y(identifier) + 'px';
         label.style.display = 'block';
-        label.style.height = (d['line-height'] || settings['line-height']) + 'px';
-        label.style.width = ml + 'px';
+        label.style.height = (trace['line-height'] || settings['line-height']) + 'px';
       }
-    });
-    // Remove this
-    this['group.labels']
-      .selectAll('rect')
-      .data(d => [d], index)
-      .join('rect')
-      .attr('height', (d) => d['line-height'] || settings['line-height'])
-      .attr('width', () => ml)
-      .attr('fill', 'none')
-    // // Append label if exists
-    // .each(function (d) {
-    //   // Check if label element bound to given identifier exists
-    //   const label = div.querySelector<HTMLDivElement>('div#label-' + d.id);
-    //   // Case label element does exist
-    //   if (label) {
-    //     // Then, add label to current trace
-    //     d3.select(this)  // 'this' refers to the current 'rect' element
-    //       .append('foreignObject')
-    //       .attr('width', ml)
-    //       .attr('height', d['line-height'] || settings['line-height'])
-    //       .html(label.outerHTML);
-    //     // Finally, remove original label
-    //     label.remove();
-    //   }
-    // });
+    }
+  }
 
-    // // Add text to labels
-    // this['group.labels']
-    //   .selectAll('text')
-    //   .data(d => [d], index)
-    //   .join('text')
-    //   .text((d) => (d.label || '') + ' ' + (d.visible ? '\u25BE' : '\u25B8'))
-    //   // .text((d) => d.label || '')  // TODO
-    //   .attr('height', (d) => d['line-height'] || settings['line-height'])
-    //   .attr('width', () => ml)
-    //   // Filter out sequence
-    //   .filter((trace) => trace.id !== 'sequence')
-    //   // TODO Set click event
-    //   .on('click', (_, trace) => this.onLabelClick(trace));
-    // // .attr('alignment-baseline', 'middle');
+  private hideLabels(trace: Trace) {
+    // Get identifier trace
+    const identifier = trace.id;
+    for (const place of ['left', 'right']) {
+      // Get associated trace
+      const label = this.initializeService.div.querySelector<HTMLDivElement>(`div#label-${place}-` + identifier);
+      // If label exists, update its positioning
+      if (label) {
+        // Hide label
+        label.style.display = 'none';
+      }
+    }
   }
 
   public updateLabels(): void {
@@ -657,9 +609,18 @@ export class DrawService {
               // Associate data to rectangle
               rect.data([value]);
               // Add mouse events
-              rect.on('mouseover', (event: MouseEvent) => onMouseOver(event, tooltip, trace, { ...feature, index: i }, j, value));
-              rect.on('mousemove', (event: MouseEvent) => onMouseMove(event, tooltip, trace, { ...feature, index: i }, j, value));
-              rect.on('mouseleave', (event: MouseEvent) => onMouseLeave(event, tooltip, trace, { ...feature, index: i }, j, value));
+              rect.on('mouseover', (event: MouseEvent) => onMouseOver(event, tooltip, trace, {
+                ...feature,
+                index: i
+              }, j, value));
+              rect.on('mousemove', (event: MouseEvent) => onMouseMove(event, tooltip, trace, {
+                ...feature,
+                index: i
+              }, j, value));
+              rect.on('mouseleave', (event: MouseEvent) => onMouseLeave(event, tooltip, trace, {
+                ...feature,
+                index: i
+              }, j, value));
 
               // rect.on('click', function(d,i) {
               //     // handle events here
@@ -810,33 +771,36 @@ export class DrawService {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     for (const trace of traces) {
       // Extract identifier, visibility id out of trace
-      const { expanded } = { expanded: true, ...trace };
+      const {expanded} = {expanded: true, ...trace};
       // Case trace is not visible
-      if (expanded !== true) {
+      if (!expanded) {
         // Then, get branch for current trace
         const branch = this.featuresService.getBranch(trace).slice(1);
         // Insert branch into excluded list
         excluded.push(...branch);
       }
     }
-    // Devine included features
+    // Define included features
     const included = traces.filter((trace) => !excluded.includes(trace));
     // Emit current traces
     this.traces$.next(included);
-    console.log('Trace', trace);
   }
 
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-function onMouseOver<F extends Feature & { index: number }>(event: MouseEvent, tooltip: d3.Selection<HTMLDivElement, unknown, null, unknown>, trace: Trace, feature: F, index: number, value: F['values'][number]): void {
+function onMouseOver<F extends Feature & {
+  index: number
+}>(event: MouseEvent, tooltip: d3.Selection<HTMLDivElement, unknown, null, unknown>, trace: Trace, feature: F, index: number, value: F['values'][number]): void {
   // Set tooltip visible
   tooltip.style("display", "block");
   tooltip.style("opacity", 1);
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-function onMouseMove<F extends Feature & { index: number }>(event: MouseEvent, tooltip: d3.Selection<HTMLDivElement, unknown, null, unknown>, trace: Trace, feature: F, index: number, value: F['values'][number]): void {
+function onMouseMove<F extends Feature & {
+  index: number
+}>(event: MouseEvent, tooltip: d3.Selection<HTMLDivElement, unknown, null, unknown>, trace: Trace, feature: F, index: number, value: F['values'][number]): void {
   // Case feature is loci
   if (feature.type === 'loci') {
     // Set value as locus
@@ -861,12 +825,14 @@ function onMouseMove<F extends Feature & { index: number }>(event: MouseEvent, t
   }
   // Update tooltip position
   tooltip
-  .style('left', (event.offsetX + 10) + 'px')
-  .style('top', (event.offsetY + 10) + 'px');
+    .style('left', (event.offsetX + 10) + 'px')
+    .style('top', (event.offsetY + 10) + 'px');
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-function onMouseLeave<F extends Feature & { index: number }>(event: MouseEvent, tooltip: d3.Selection<HTMLDivElement, unknown, null, unknown>, trace: Trace, feature: F, index: number, value: F['values'][number]): void {
+function onMouseLeave<F extends Feature & {
+  index: number
+}>(event: MouseEvent, tooltip: d3.Selection<HTMLDivElement, unknown, null, unknown>, trace: Trace, feature: F, index: number, value: F['values'][number]): void {
   // Set tooltip invisible
   tooltip.style("opacity", 0);
   tooltip.style("display", "none");

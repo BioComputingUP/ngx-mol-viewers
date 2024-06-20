@@ -2,6 +2,7 @@ import { Observable, ReplaySubject, map, shareReplay, tap } from 'rxjs';
 import { ElementRef, Injectable } from '@angular/core';
 import { Settings } from '../settings';
 import * as d3 from 'd3';
+import {NgxFeaturesViewerLabelDirective} from "@ngx-features-viewer";
 
 type SVG = d3.Selection<SVGSVGElement, undefined, null, undefined>;
 
@@ -60,6 +61,9 @@ export class InitializeService {
     return { top, right, bottom, left };
   }
 
+  public labelLeft!: NgxFeaturesViewerLabelDirective;
+  public labelRight!: NgxFeaturesViewerLabelDirective;
+
   // // Define map between feature (identifier) and its height
   // public height!: Map<string, number>;
 
@@ -113,7 +117,7 @@ export class InitializeService {
           // Add inner rectangle
           .append('rect')
         // NOTE Add middle layer, in order to allow both zoom and mouse events to be captured
-        // https://stackoverflow.com/questions/58125180/d3-zoom-and-mouseover-tooltip 
+        // https://stackoverflow.com/questions/58125180/d3-zoom-and-mouseover-tooltip
         const focus = svg.append('g')
           .attr('class', 'focus');
           // .attr('transform', `translate(${this.margin.left}, ${this.margin.top})`);

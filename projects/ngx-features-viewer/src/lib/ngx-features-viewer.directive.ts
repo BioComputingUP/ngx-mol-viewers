@@ -6,16 +6,13 @@ import { Directive, Input, TemplateRef } from '@angular/core';
   standalone: true
 })
 export class NgxFeaturesViewerLabelDirective {
+  @Input() where: 'left' | 'right' = 'left';
 
-  where: 'left' | 'right' = 'left';
+  @Input() justify: 'start' | 'center' | 'end' = 'start';
 
-  @Input('ngx-features-viewer-label') set _where(value: 'left' | 'right' | '' | undefined) {
-    if (value === 'left' || value === 'right') {
-      this.where = value;
-    } else {
-      this.where = 'left';
-    }
-  }
+  @Input() align: 'start' | 'center' | 'end' = 'center';
+
+  @Input() padding = 0;
 
   constructor(public templateRef: TemplateRef<unknown>) { }
 

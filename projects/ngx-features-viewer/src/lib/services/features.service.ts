@@ -40,7 +40,7 @@ export class FeaturesService {
   protected _children = new Map<Trace, number[]>();
 
   // /** Initialize hierarchy
-  //  * 
+  //  *
   //  * 1. Extract each feature/trace in the hierarchy
   //  * 2. Wrap each feature in a trace
   //  * 3. Associate an unique identifier (ID) to each trace
@@ -58,7 +58,7 @@ export class FeaturesService {
   //   this._parent = new Map<Trace<Feature>, number>();
   //   // Initialize children hashmap
   //   this._children = new Map<Trace<Feature>, number[]>();
-  //   // Loop through each 
+  //   // Loop through each
   //   while (hierarchy.length > 0) {
   //     // Get first trace / feature
   //     const first = hierarchy.splice(0, 1).at(0) as Hierarchy[number];
@@ -115,7 +115,7 @@ export class FeaturesService {
         };
         // Sort trace values to have continuous features first
         trace.values = trace.values.sort((a, b) => {
-          // Otheriwse, return -1 if a is continuous
+          // Otherwise, return -1 if 'a' is continuous
           if (a.type !== 'continuous') return -1;
           if (b.type !== 'continuous') return 1;
           // Otherwise, return 0
@@ -123,7 +123,7 @@ export class FeaturesService {
         });
         // Update trace properties
         trace.id = trace.id !== undefined ? trace.id : index++;
-        trace.expanded = trace.expanded === false ? false : true;
+        trace.expanded = trace.expanded !== false;
         // Store identifier to trace
         this._traces.set(trace.id, trace);
         // Store trace in parsed traces
