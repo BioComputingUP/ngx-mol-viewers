@@ -1,18 +1,32 @@
-// prettier-ignore 
-import { AfterViewInit, ChangeDetectionStrategy, Component, ContentChild, ElementRef, HostListener, Input, OnChanges, OnDestroy, SimpleChanges, ViewChild, ViewEncapsulation } from '@angular/core';
-import { Observable, Subscription, tap, switchMap } from 'rxjs';
-import { CommonModule } from '@angular/common';
+import {
+  AfterContentInit,
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  Component,
+  ContentChildren,
+  ElementRef,
+  HostListener,
+  Input,
+  OnChanges,
+  OnDestroy,
+  QueryList,
+  SimpleChanges,
+  ViewChild,
+  ViewEncapsulation
+} from '@angular/core';
+import {Observable, Subscription, switchMap, tap} from 'rxjs';
+import {CommonModule} from '@angular/common';
 // Custom components
-import { NgxFeaturesViewerLabelDirective } from './ngx-features-viewer.directive';
+import {NgxFeaturesViewerLabelDirective} from './ngx-features-viewer.directive';
 // Custom providers
-import { InitializeService } from './services/initialize.service';
-import { FeaturesService } from './services/features.service';
-import { ResizeService } from './services/resize.service';
-import { ZoomService } from './services/zoom.service';
-import { DrawService } from './services/draw.service';
+import {InitializeService} from './services/initialize.service';
+import {FeaturesService} from './services/features.service';
+import {ResizeService} from './services/resize.service';
+import {ZoomService} from './services/zoom.service';
+import {DrawService} from './services/draw.service';
 // Custom data types
-import { Hierarchy } from './hierarchy';
-import { Settings } from './settings';
+import {Hierarchy} from './hierarchy';
+import {Settings} from './settings';
 
 
 // TODO Define sequence type
@@ -38,13 +52,17 @@ export type Sequence = Array<string>;
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
-export class NgxFeaturesViewerComponent implements AfterViewInit, OnChanges, OnDestroy {
-
+export class NgxFeaturesViewerComponent implements AfterViewInit, AfterContentInit, OnChanges, OnDestroy {
+  
   @ViewChild('root')
   public _root!: ElementRef;
 
-  @ContentChild(NgxFeaturesViewerLabelDirective)
-  public label?: NgxFeaturesViewerLabelDirective;
+  @ContentChildren(NgxFeaturesViewerLabelDirective)
+  public labels?: QueryList<NgxFeaturesViewerLabelDirective>;
+
+  public labelLeft?: NgxFeaturesViewerLabelDirective;
+  
+  public labelRight?: NgxFeaturesViewerLabelDirective;
 
   @Input()
   public set settings(settings: Settings) {
@@ -90,7 +108,7 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, OnChanges, OnD
       // Initialize zoom scale
       tap(() => {
         // const { width, height } = this.resizeService;
-        const { left: ms, right: me, bottom: mb } = this.resizeService.margin;
+        const {left: ms, right: me, bottom: mb} = this.resizeService.margin;
         const h = this.resizeService.height;
         const w = this.resizeService.width;
         // // Define number of residues in sequnce
@@ -123,7 +141,7 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, OnChanges, OnD
     this._update = this.update$.subscribe();
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
+  public ngOnChanges(changes: SimpleChanges): void {
     // Case input sequence changes
     if (changes && changes['sequence']) {
       // Emit sequence
@@ -131,12 +149,33 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, OnChanges, OnD
     }
   }
 
-  ngAfterViewInit(): void {
+  public ngAfterContentInit(): void {
+    // Case label templates are defined
+    if (this.labels) {
+      // Loop thorugh each label template
+      this.labels.forEach((label) => {
+        // Case both labels are defined, then throw error
+        if (this.labelLeft && this.labelRight) {
+          throw new Error('Only one label can be defined');
+        }
+        // Case label is left
+        if (label.where === 'left') {
+          this.labelLeft = label;
+        }
+        // Case label is right
+        if (label.where === 'right') {
+          this.labelRight = label;
+        }
+      });
+    }
+  }
+
+  public ngAfterViewInit(): void {
     // Emit root element
     this.initService.initialize$.next(this._root);
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     // Unsubscribe from update emission
     this._update.unsubscribe();
   }

@@ -9,10 +9,10 @@ import { PluginService } from './plugin.service';
 import { fromHexString } from '../colors';
 
 // React dependencies
-import { createElement } from 'react';
-import { render } from 'react-dom';
+import { createRoot } from 'react-dom/client';
+import { createElement } from "react";
 
-@Injectable({ providedIn: 'platform' })
+@Injectable()
 export class CanvasService {
 
   readonly initialize$ = new ReplaySubject<ElementRef>(1);
@@ -38,56 +38,32 @@ export class CanvasService {
         // Get HTML div container
         const div = container.nativeElement as HTMLDivElement;
         // Get first child of div container
-        const canvas =  div.firstElementChild as HTMLCanvasElement;
+        const canvas = div.firstElementChild as HTMLCanvasElement;
         // Return both elements
         return { div, canvas };
       }),
       // Combine with plugin initialization
       combineLatestWith(plugin$),
-      // Create plugin's React UI
-      map(([{ div: container }, plugin]) => {
-        // // const { spec, target, onBeforeUIRender, render } = options;
-        // const ctx = new PluginUIContext(spec || DefaultPluginUISpec());
-        // await ctx.init();
-        // if (onBeforeUIRender) {
-        //     await onBeforeUIRender(ctx);
-        // }
-        // Render 
-        render(createElement(Plugin, { plugin }), container);
-        // try {
-        //     await plugin.canvas3dInitialized;
-        // } catch {
-        //     // Error reported in UI/console elsewhere.
-        // }
-        // Return initialize plugin 
-        return plugin;
-      }),
-      // // Bind plugin to HTML elements
-      // tap(([{ div: container, canvas }, plugin]) => plugin.initViewer(canvas, container)),
-      // // Return initialized plugin
-      // map(([, plugin]) => plugin),
-      // Cache result
-      shareReplay(1),
       // Combine with settings retrieval
       combineLatestWith(settings$),
-      // Update plugin settings
-      map(([plugin, settings]) => {
-        // Case canvas3d is available
-        if (plugin.canvas3d) {
-          // Get background color
-          const [ color, alpha ] = fromHexString(settings['background-color']);
-          // Set background color
-          plugin.canvas3d.setProps({
-            // Change background color
-            renderer: { 
-              backgroundColor: color, 
-              pickingAlphaThreshold: alpha,
-            }
-          });
-        }
-        // Return updated plugin
+      // Create plugin's React UI
+      map(([[{ div: container }, plugin], settings]) => {
+        // Get background color
+        const [color, alpha] = fromHexString(settings['background-color']);
+        // Update canvas specs before rendering
+        this.pluginService.specs.canvas3d = {
+          renderer: {
+            backgroundColor: color,
+            pickingAlphaThreshold: alpha,
+          }
+        };
+        // Render using React
+        createRoot(container).render(createElement(Plugin, { plugin }));
+        // Return initialized plugin 
         return plugin;
       }),
+      // Cache result
+      shareReplay(1),
     );
   }
 }

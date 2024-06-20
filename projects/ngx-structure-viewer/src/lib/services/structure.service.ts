@@ -9,7 +9,7 @@ import { PluginService } from './plugin.service';
 import { Residue, threeToOne } from '../interfaces/residue';
 import { Source } from '../interfaces/source';
 
-@Injectable({ providedIn: 'platform' })
+@Injectable()
 export class StructureService {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

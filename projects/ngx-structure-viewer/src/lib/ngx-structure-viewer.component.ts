@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, Injector, Input, Optional, Output, SkipSelf, ViewChild } from '@angular/core';
 import { ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 // Custom dependencies
@@ -21,12 +21,49 @@ import { Locus } from './interfaces/locus';
     CommonModule,
   ],
   providers: [
+    // Mandatory providers
     RepresentationService,
     HighlightService,
-    StructureService,
     SettingsService,
-    PluginService,
     CanvasService,
+    // Optional providers
+    // NOTE Those are created for the instance only if they are not provided by the parent component
+    {
+      provide: StructureService,
+      deps: [Injector, PluginService, [new Optional(), new SkipSelf(), StructureService],],
+      useFactory: (parentInjector: Injector, pluginService: PluginService, structureService?: StructureService) => {
+        // Case structure service is not provided, it must be created
+        if (!structureService) {
+          // Define injector for current component
+          const childInjector = Injector.create({
+            providers: [StructureService, { provide: PluginService, useValue: pluginService }],
+            parent: parentInjector
+          });
+          // get injected service
+          structureService = childInjector.get(StructureService);
+        }
+        // Return structure service
+        return structureService;
+      }
+    },
+    {
+      provide: PluginService,
+      deps: [Injector, [new Optional(), new SkipSelf(), PluginService]],
+      useFactory: (parentInjector: Injector, pluginService?: PluginService) => {
+        // Case plugin service is not provided, it must be created
+        if (!pluginService) {
+          // Define injector for current component
+          const childInjector = Injector.create({
+            providers: [PluginService],
+            parent: parentInjector
+          });
+          // get injected service
+          pluginService = childInjector.get(PluginService);
+        }
+        // Return plugin service
+        return pluginService;
+      }
+    }
   ],
   standalone: true,
   // Handle representation

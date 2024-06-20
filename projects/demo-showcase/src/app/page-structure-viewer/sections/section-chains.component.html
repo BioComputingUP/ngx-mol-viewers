@@ -1,33 +1,33 @@
 @if (chains$ | async; as chains) {
-  <!-- Section: color chains -->
-  <div class="row mb-3">
-    <!-- Example -->
-    <div class="col-9">
-      <div class="rounded squared overflow-hidden shadow-sm">
-        <!-- Viewer instance -->
-        <ngx-structure-viewer [settings]="settings" [source]="source" [loci]="chains"></ngx-structure-viewer>
-      </div>
-    </div>
-    <!-- Description -->
-    <div class="col-3 pt-0 p-3">
-      <h2>Color chain</h2>
-      <div class="d-flex flex-column gap-2">
-        <!-- Loop through each chain -->
-        @for (chain of chains; track $index) {
-        <div class="flex-1">
-          <div class="d-flex flex-row gap-2">
-            <!-- Show color -->
-            <div class="d-block flex-shrink-0 p-2" [style.background-color]="chain.color">
-              <!-- Empty div -->
-            </div>
-            <!-- Show input code -->
-            <code class="bg-body-tertiary flex-grow-1 p-3">
-                              <pre class="m-0">{{ chain | json }}</pre>
-                          </code>
-          </div>
-        </div>
-        }
-      </div>
+<!-- Section: color chains -->
+<div class="row mb-3">
+  <!-- Example -->
+  <div class="col-9">
+    <div class="rounded squared overflow-hidden shadow-sm">
+      <!-- Viewer instance -->
+      <ngx-structure-viewer [settings]="settings" [source]="source" [loci]="chains"></ngx-structure-viewer>
     </div>
   </div>
+  <!-- Description -->
+  <div class="col-3 pt-0 p-3">
+    <h2>Color chain</h2>
+    <div class="d-flex flex-column gap-2">
+      <!-- Loop through each chain -->
+      @for (chain of chains; track $index) {
+      <div class="flex-1">
+        <div class="d-flex flex-row gap-2">
+          <!-- Show color -->
+          <div class="d-block flex-shrink-0 p-2" [style.background-color]="chain.color">
+            <!-- Empty div -->
+          </div>
+          <!-- Show input code -->
+          <code class="bg-body-tertiary flex-grow-1 p-3">
+            <pre class="m-0">{{ chain | json }}</pre>
+          </code>
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+</div>
 }

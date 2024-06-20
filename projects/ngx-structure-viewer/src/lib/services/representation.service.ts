@@ -52,7 +52,7 @@ export function getFilteredBundle(layers: Overpaint.BundleLayer[], structure: St
   return Overpaint.filter(merged, structure);
 }
 
-@Injectable({ providedIn: 'platform' })
+@Injectable()
 export class RepresentationService implements OnDestroy {
 
   readonly loci$ = new ReplaySubject<Locus[]>(1);

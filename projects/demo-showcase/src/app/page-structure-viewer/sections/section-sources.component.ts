@@ -2,7 +2,7 @@ import { NgxStructureViewerComponent, Settings, Source } from '@ngx-structure-vi
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { Observable, map, of } from 'rxjs';
+import { Observable, map, of, tap } from 'rxjs';
 
 @Component({
   selector: 'app-section-sources',
@@ -51,6 +51,8 @@ export class SectionSourcesComponent {
       map((data: string) => new Blob([data], { type: 'text/plain' })),
       // Provide local source
       map((data: Blob) => ({ ...this.local, data })),
+      // TODO Remove this
+      tap((source) => console.log('Local source:', source)),
     );
     
     this.remote$ = of({ ...this.remote, link: 'https://files.rcsb.org/view/8VAP.cif' });
