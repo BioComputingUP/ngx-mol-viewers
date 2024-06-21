@@ -1,11 +1,19 @@
-import { Feature } from './feature';
-import { Locus } from './loci';
+import {BaseFeature} from "./feature";
+import {Range} from "./locus";
 
-// Define DSSP code
-export type Code = 'G' | 'H' | 'I' | 'E' | 'B' | 'S' | 'T' | 'C' | '-'
+/**
+ * The code that represents the secondary structure of the protein.
+ * @type {Code}
+ */
+type Code = 'G' | 'H' | 'I' | 'E' | 'B' | 'S' | 'T' | 'C' | '-'
 
-// NOTE It uses DSSP values { helix: G/H/I, strand: E/B, loop: S/T/C, undefined: - }
-export interface DSSP extends Feature<Locus & { code: Code }> {
-  // Override type
+/**
+ * DSSP feature is a feature that has a range of values and a code that represents the secondary structure of the protein.
+ * @interface DSSP
+ * @extends {BaseFeature, Range}
+ * @property {Code} code The code that represents the secondary structure of the protein.
+ */
+export interface DSSP extends BaseFeature, Range {
   type: 'dssp';
+  code: Code;
 }
