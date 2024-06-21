@@ -1,7 +1,6 @@
 import {TraceSettings} from "./settings";
 import {Feature} from "./features/feature";
 
-
 /**
  * Represents a trace in the features viewer (a single row), it can contain multiple features and has its own settings.
  * This is the type used for the **input** of the features viewer.
@@ -15,7 +14,7 @@ export type Trace = {
   features: Feature[];
   label?: string;
   position?: 'overlap' | 'dodge';
-  options?: Partial<TraceSettings>
+  options?: Partial<TraceSettings>;
   nested?: Traces;
 }
 
@@ -33,6 +32,7 @@ export type Traces = Array<Trace>;
 export interface InternalTrace extends Trace {
   id: number;
   expanded: boolean;
+  show: boolean;
   level: number;
   nested?: InternalTraces;
 }

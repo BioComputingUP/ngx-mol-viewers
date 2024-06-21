@@ -1,4 +1,4 @@
-import { Observable, ReplaySubject, debounceTime, distinctUntilChanged, map, startWith } from 'rxjs';
+import { Observable, ReplaySubject, distinctUntilChanged, map, startWith } from 'rxjs';
 import { Injectable } from '@angular/core';
 // Custom providers
 import { InitializeService } from './initialize.service';
@@ -35,7 +35,7 @@ export function resize<E extends d3.Selection<any, undefined, null, undefined>,>
 })
 export class ResizeService {
   /** Resize handler for SVG container
-   * 
+   *
    * 1. Resizes the root SVG element according to the width of its parent DIV element.
    * 2. Resizes the inner containers to match the root SVG element size.
    * 3. Update horizontal, vertical axes positions, to meet SVG margin. This, requires to have

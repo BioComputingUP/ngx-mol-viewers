@@ -1,21 +1,12 @@
 import {map, Observable, ReplaySubject, shareReplay, switchMap, tap} from 'rxjs';
 import {Injectable} from '@angular/core';
-// // Custom components
-// import { NgxFeaturesViewerLabelDirective } from '../ngx-features-viewer.directive';
-// Custom providers
-import {InitializeService} from './initialize.service';
+import {InitializeService, Scale} from './initialize.service';
 import {FeaturesService} from './features.service';
-// import { ResizeService } from './resize.service';
-// Custom data types
 import {Continuous} from '../features/continuous';
-import {Loci, Locus} from '../features/loci'
-import {Hierarchy} from '../hierarchy';
-import {Feature} from '../features';
-// D3 library
+import {Locus} from '../features/locus'
 import * as d3 from 'd3';
-import {NgxFeaturesViewerLabelDirective} from "@ngx-features-viewer";
-
-export type Trace = Hierarchy[number] & { type: 'trace' }
+import {InternalTrace, InternalTraces} from "../trace";
+import {Feature} from "../features/feature";
 
 export type Sequence = string[];
 
@@ -25,11 +16,11 @@ export type Sequence = string[];
 
 type ResidueGroup = d3.Selection<SVGGElement | d3.BaseType, string, SVGGElement | d3.BaseType, Sequence>;
 
-type LabelGroup = d3.Selection<SVGGElement | d3.BaseType, Trace, SVGGElement | d3.BaseType, Trace[]>;
+type LabelGroup = d3.Selection<SVGGElement | d3.BaseType, InternalTrace, SVGGElement | d3.BaseType, InternalTraces>;
 
-type TraceGroup = d3.Selection<SVGGElement | d3.BaseType, Trace, SVGGElement, undefined>;
+type TraceGroup = d3.Selection<SVGGElement | d3.BaseType, InternalTrace, SVGGElement, undefined>;
 
-type GridLines = d3.Selection<SVGLineElement | SVGRectElement | d3.BaseType, Trace, SVGGElement | d3.BaseType, Trace[]>;
+type GridLines = d3.Selection<SVGLineElement | SVGRectElement | d3.BaseType, InternalTrace, SVGGElement | d3.BaseType, InternalTraces>;
 
 // type ValueGroup = d3.Selection<d3.BaseType, Feature['values'][number], SVGGElement | d3.BaseType, undefined>;
 
@@ -72,107 +63,11 @@ export const identity = (f: unknown) => (f as { id: any }).id;
 // Define function for extracting index out of unknown object
 export const index = (f: unknown, i: number) => i;
 
-// function createLoci(group: d3.Selection<d3.BaseType | SVGGElement, unknown, null, undefined>, feature: Omit<Loci, 'type'> & Pick<Loci | Pins | DSSP, 'type'>) {
-//   // Generate foreign object(s)
-//   const foreignObject = group
-//     // Get currently rendered elements
-//     .selectAll(`foreignObject.${feature.type}`)
-//     // Bind elements to data (loci)
-//     .data(feature.values, index)
-//     // Generate parent foreign object
-//     .join('foreignObject')
-//     .attr('class', `${feature.type} ${feature.id}`);
-//   // Define foreground (border) color
-//   const color = feature.color || 'black';
-//   // Define background color, fall back to transparent eventually
-//   const background = feature.color || 'transparent';
-//   // Add background HTML div
-//   // NOTE This element has decrease opacity, just shows the background color.
-//   // NOTE It must be created before the foreground in ordeer to behave correctly
-//   foreignObject
-//     .selectAll('div.background')
-//     .data(d => [d], index)
-//     .join('xhtml:div')
-//     .attr('class', 'background')
-//     .style('background-color', background);
-//   // Add foreground HTML div
-//   // NOTE This element shows both border and text, hence has full opacity
-//   foreignObject
-//     .selectAll('div.foreground')
-//     .data(d => [d], index)
-//     .join('xhtml:div')
-//     .attr('class', 'foreground')
-//     .style('border-color', color);
-//   // .style('color', color);
-//   // Return foreign object
-//   return foreignObject;
-// }
-
-// // eslint-disable-next-line @typescript-eslint/no-unused-vars
-// function createPins(group: d3.Selection<d3.BaseType | SVGGElement, unknown, null, undefined>, feature: Pins) {
-//   // Map pins to loci
-//   const loci = feature.values.map((pin) => ({ ...pin, end: pin.start }));
-//   // Generate loci
-//   const foreignObject = createLoci(group, { ...feature, values: loci });
-//   // Remove background
-//   foreignObject
-//     .select('div.background')
-//     .remove();
-//   // Substitute text with pin
-//   foreignObject
-//     .select('div.foreground')
-//     .html((d) => (d ? '<i class="bi bi-pin"></i>' : ''));
-//   // Return generated foreign object
-//   return foreignObject;
-// }
-
-// // eslint-disable-next-line @typescript-eslint/no-unused-vars
-// function createDSSP(group: d3.Selection<d3.BaseType | SVGGElement, unknown, null, undefined>, feature: DSSP) {
-//   // Generate loci
-//   const foreignObject = createLoci(group, { ...feature });
-//   // Remove background
-//   foreignObject
-//     .select('div.background')
-//     .remove();
-//   // Substitute text with pin
-//   foreignObject
-//     .select('div.foreground')
-//     .html((d: unknown) => {
-//       // Get DSSP locus
-//       const locus = d as DSSP['values'][number];
-//       // Get background color
-//       const background = locus.color || feature.color || 'black';
-//       // Handle helices
-//       if (locus.code === 'G' || locus.code === 'H' || locus.code === 'I') {
-//         return `<i class="dssp dssp-helix" style="background-color: ${background}"></i>`;
-//       }
-//       // Handle strands
-//       else if (locus.code === 'E' || locus.code === 'B') {
-//         return `<i class="dssp dssp-strand" style="background-color: ${background}"></i>`;
-//       }
-//       // Handle loops
-//       else if (locus.code === 'C' || locus.code === 'S' || locus.code === 'T') {
-//         return `<i class="dssp dssp-loop" style="background-color: ${background}"></i>`;
-//       }
-//       // Otherwise, let empty
-//       return '';
-//     });
-//   // Return generated foreign object
-//   return foreignObject;
-// }
-
 @Injectable({providedIn: 'platform'})
 export class DrawService {
-
-  // public readonly features$ = new ReplaySubject<Feature[]>(1);
-
-  public readonly traces$ = new ReplaySubject<Trace[]>(1);
+  public readonly traces$ = new ReplaySubject<InternalTraces>(1);
 
   public readonly sequence$ = new ReplaySubject<Sequence>(1);
-
-  // public label?: NgxFeaturesViewerLabelDirective;
-
-  // public children!: Map<Feature, Feature[]>;
 
   public 'group.residues'!: ResidueGroup;
 
@@ -204,7 +99,6 @@ export class DrawService {
   constructor(
     private initializeService: InitializeService,
     private featuresService: FeaturesService,
-    // private resizeService: ResizeService,
   ) {
     // Define draw initialization
     this.draw$ = this.sequence$.pipe(
@@ -219,27 +113,8 @@ export class DrawService {
       }),
       // Draw sequence
       map((sequence) => this.createSequence(sequence)),
-      // TODO Initialize tooltip
-      tap(() => {
-        // Get settings
-        const settings = this.initializeService.settings;
-        // Define border radius according to content size
-        const r = settings['content-size'] / 3;
-        // Append tooltip to SVG element
-        this.tooltip = d3.select(this.initializeService.div).append('div')
-          .attr('class', 'tooltip')
-          .style('position', 'absolute')
-          // .style('width', '300px')
-          // .style('height', '200px')
-          .style('display', 'none')
-          .style('opacity', 1)
-          .style('color', 'black')
-          .style('padding', '.25rem')
-          .style('background-color', 'white')
-          .style('border', 'solid')
-          .style('border-width', '1px')
-          .style('border-radius', r + 'px');
-      }),
+      // Initialize tooltip
+      tap(() => this.initializeTooltip()),
       // Cache result
       shareReplay(1),
       // Switch to traces emission
@@ -269,7 +144,7 @@ export class DrawService {
   }
 
   // Update vertical scale
-  public updateScale(traces: Trace[]): void {
+  public updateScale(traces: InternalTraces): void {
     // Get current vertical scale
     const y = this.initializeService.scale.y;
     // Update domain
@@ -291,11 +166,11 @@ export class DrawService {
         // Get offset for current trace
         const mt = range.at(-1) as number;
         // Initialize line height for current trace
-        let lh = trace['line-height'] || this.initializeService.settings['line-height'];
+        let lh = trace.options?.['line-height'] || this.initializeService.settings['line-height'];
         // Case positioning is set to dodge
         if (trace.position === 'dodge') {
           // Update line height to span for all the inner features
-          lh = trace.values.reduce((lh, feature) => lh + (feature['line-height'] || this.initializeService.settings['line-height']), 0)
+          lh = trace.features.reduce((lh) => lh + (trace.options?.['line-height'] || this.initializeService.settings['line-height']), 0)
         }
         // Update range
         return [...range, mt + lh];
@@ -307,11 +182,31 @@ export class DrawService {
     y.domain(domain).range(range);
   }
 
-  // TODO Use sequence type
-  public createSequence(sequence: string[]) {
+  private initializeTooltip() {
+    // Get settings
+    const settings = this.initializeService.settings;
+    // Define border radius according to content size
+    const r = settings['content-size'] / 3;
+    // Append tooltip to SVG element
+    this.tooltip = d3.select(this.initializeService.div).append('div')
+      .attr('class', 'tooltip')
+      .style('position', 'absolute')
+      // .style('width', '300px')
+      // .style('height', '200px')
+      .style('display', 'none')
+      .style('opacity', 1)
+      .style('color', 'black')
+      .style('padding', '.25rem')
+      .style('background-color', 'white')
+      .style('border', 'solid')
+      .style('border-width', '1px')
+      .style('border-radius', r + 'px');
+  }
+
+  private createSequence(sequence: Sequence) {
     // Color residue according to code
     const color = (d: string) => CINEMA[d as never] || CINEMA.X;
-    // Intiialize residues group
+    // Initialize residues group
     const group = this.initializeService.draw
       // Select previous residues group
       .selectAll('g.sequence')
@@ -330,7 +225,7 @@ export class DrawService {
       .join('g')
       .attr('id', (_, i) => `residue-${i + 1}`)
       .attr('class', 'residue');
-    // Add background rectangle to each resdiue group
+    // Add background rectangle to each residue group
     this['group.residues']
       .append('rect')
       .attr('class', 'color')
@@ -399,7 +294,7 @@ export class DrawService {
     // .text((d) => width > (1 * REM) ? d : ' ');
   }
 
-  public createLabels(traces: Trace[]): void {
+  public createLabels(traces: InternalTraces): void {
     // Initialize labels SVG group
     const group = this.initializeService.svg
       // Select previous labels group
@@ -412,7 +307,7 @@ export class DrawService {
     // Add labels to their group
     this['group.labels'] = group
       .selectAll('g')
-      .data([{id: 'sequence', label: 'Sequence', expanded: true}, ...traces] as Trace[], identity)
+      .data([{id: 'sequence', label: 'Sequence', expanded: true}, ...traces] as InternalTraces, identity)
       .join(
         (enter) => enter.append('g'),
         (update) => update,
@@ -424,12 +319,12 @@ export class DrawService {
           return exit;
         },
       )
-    this['group.labels'].each((trace: Trace) => {
+    this['group.labels'].each((trace: InternalTrace) => {
       this.setLabelsPosition(trace);
     });
   }
 
-  private setLabelsPosition(trace: Trace) {
+  private setLabelsPosition(trace: InternalTrace) {
     const y = this.initializeService.scale.y;
     const {left: ml, right: mr} = this.initializeService.margin;
     const settings = this.initializeService.settings
@@ -452,12 +347,12 @@ export class DrawService {
         }
         label.style.top = y(identifier) + 'px';
         label.style.display = 'block';
-        label.style.height = (trace['line-height'] || settings['line-height']) + 'px';
+        label.style.height = (trace.options?.['line-height'] || settings['line-height']) + 'px';
       }
     }
   }
 
-  private hideLabels(trace: Trace) {
+  private hideLabels(trace: InternalTrace) {
     // Get identifier trace
     const identifier = trace.id;
     for (const place of ['left', 'right']) {
@@ -471,41 +366,7 @@ export class DrawService {
     }
   }
 
-  public updateLabels(): void {
-    // Get vertical scale
-    const y = this.initializeService.scale.y;
-    const settings = this.initializeService.settings;
-    // TODO Remove this
-    this['group.labels']
-      // Select all inner foreign objects
-      .select('rect')
-      // Update positions
-      .attr('y', trace => y(String(trace.id)))
-      .attr('x', 0);
-    // Update each label
-    this['group.labels']
-      // Select all inner foreign objects
-      .select('text')
-      // Update positions
-      .attr('y', (trace) => {
-        // Define offset, line height and content size
-        const mt = y(String(trace.id));
-        const lh = trace['line-height'] || settings['line-height'];
-        // const cs = trace['content-size'] || settings['content-size'];
-        // Compute text offset
-        return mt + lh / 2;
-      })
-      // .attr('y', d => y(d.id))
-      .attr('x', 0)
-      // Set text alignment
-      .attr('dominant-baseline', 'central')
-      // Set text color
-      .attr('fill', (d) => d['text-color'] || settings['text-color']);
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  public createGrid(traces: Trace[]): void {
-    // Define labels group
+  public createGrid(traces: InternalTraces): void {
     const group = this.initializeService.svg
       // Create parent grid element
       .selectAll('g.grid')
@@ -513,7 +374,8 @@ export class DrawService {
       .join('g')
       .attr('class', 'grid')
       .lower();
-    // Add labels to their group
+
+    // TODO: Convert the rect to a line, and create a line for each grid line point defined by the trace, and the zero-line if defined
     this['group.grid'] = group
       .selectAll('rect.grid-line')
       .data(traces, identity)
@@ -533,11 +395,11 @@ export class DrawService {
       .attr('x', margin.left)
       .attr('y', (trace) => {
         // Get first feature
-        const feature = trace.values[trace.values.length - 1];
+        const feature = trace.features[0];
         // Compute offsets
         const mt = y('' + trace.id);
-        const lh = feature['line-height'] || trace['line-height'] || settings['line-height'];
-        const cs = feature['content-size'] || trace['content-size'] || settings['content-size'];
+        const lh = trace.options?.['line-height'] || settings['line-height'];
+        const cs = Math.min(lh, trace.options?.['content-size'] || settings['content-size']);
         // Compute vertical position for discrete feature
         if (feature.type !== 'continuous') {
           return mt + lh / 2 - 0.5
@@ -548,28 +410,26 @@ export class DrawService {
       // Set positions
       .attr('width', width - margin.left - margin.right)
       .attr('height', (trace) => {
-        // TODO
-        const feature = trace.values[trace.values.length - 1];
+        const feature = trace.features[0];
         // Handle continuous feature
         if (feature.type === 'continuous') {
-          // Get line height, content size
-          // const lh = feature['line-height'] || trace['line-height'] || settings['line-height'];
-          const cs = feature['content-size'] || trace['content-size'] || settings['content-size'];
           // Return content size
-          return cs;
+          return trace.options?.['content-size'] || settings['content-size'];
         }
-        // Handle discrete features
-        return 1;
+        return trace.options?.["grid-line-width"] || 1;
       })
-      // TODO Set custom color
-      .attr('fill', this.initializeService.settings['grid-color']);
+      .attr('fill', (trace) => {
+        if (!trace.options?.["grid-line"]) {
+          return 'none';
+        }
+        return trace.options?.['grid-line-color'] || settings['grid-line-color']
+      });
   }
 
-  public createTraces(traces: Trace[]): void {
-    // Retrieve settings
-    const settings = this.initializeService.settings;
+  public createTraces(traces: InternalTraces): void {
     // Define tooltip events
     const tooltip = this.tooltip;
+    const scale = this.initializeService.scale;
     // Generate and store traces groups
     this['group.traces'] = this.initializeService.draw
       .selectAll('g.trace')
@@ -581,71 +441,59 @@ export class DrawService {
     // Iterate over each trace
     this['group.traces'].each(function (trace) {
       // Define trace group
-      const tg = d3.select(this);
+      const traceGroup = d3.select(this);
       // Define feature groups
-      const fg = tg
+      const featureGroup = traceGroup
         .selectAll<d3.BaseType, Feature>('g.feature')
-        .data(trace.values);
-      // On: feature griup enter
-      fg.enter().append('g')
+        .data(trace.features);
+      // On: feature group enter
+      featureGroup.enter().append('g')
         .attr('class', (d) => 'feature ' + d.type)
         .attr('id', (_, i) => `trace-${trace.id}-feature-${i}`)
-        .each(function (feature, i) {
-          // NOTE `feature.values` is an array of objects `{ start, end, ... }`
-          if (feature.type === 'loci') {
-            // Iterate over each item in the feature.values array
-            feature.values.forEach((value, j) => {
-              // Define radius
-              const r = (feature['content-size'] || trace['content-size'] || settings['content-size']) / 3;
-              // Define a rectangle for each locus
-              const rect = d3.select(this).append('rect')
-                .attr('stroke', feature['trace-color'] || trace['trace-color'] || settings['trace-color'])
-                .attr('stroke-opacity', 1.0)
-                .attr('stroke-width', 1.0)
-                .attr('fill', feature['trace-color'] || trace['trace-color'] || settings['trace-color'])
-                .attr('fill-opacity', 0.5)
-                .attr('rx', r)
-                .attr('ry', r);
-              // Associate data to rectangle
-              rect.data([value]);
-              // Add mouse events
-              rect.on('mouseover', (event: MouseEvent) => onMouseOver(event, tooltip, trace, {
-                ...feature,
-                index: i
-              }, j, value));
-              rect.on('mousemove', (event: MouseEvent) => onMouseMove(event, tooltip, trace, {
-                ...feature,
-                index: i
-              }, j, value));
-              rect.on('mouseleave', (event: MouseEvent) => onMouseLeave(event, tooltip, trace, {
-                ...feature,
-                index: i
-              }, j, value));
+        .each(function (feature) {
+          if (feature.type === 'locus') {
+            // Define a rectangle for each locus
+            const rect = d3.select(this).append('rect')
+              .attr('stroke', feature.color || 'black')
+              .attr('stroke-opacity', 1.0)
+              .attr('stroke-width', 1.0)
+              .attr('fill', feature.color || 'white')
+              .attr('fill-opacity', 0.5)
+              .attr('rx', 8)
+              .attr('ry', 8);
+            // Associate data to rectangle
+            rect.data([{start: feature.start, end: feature.end}]);
+            // Add mouse events
+            rect.on('mouseover', (event: MouseEvent) => onMouseOver(event, tooltip, trace, feature));
+            rect.on('mousemove', (event: MouseEvent) => onMouseMove(event, tooltip, trace, feature));
+            rect.on('mouseleave', (event: MouseEvent) => onMouseLeave(event, tooltip, trace, feature));
 
-              // rect.on('click', function(d,i) {
-              //     // handle events here
-              //     // d - datum
-              //     // i - identifier or index
-              //     // this - the `<rect>` that was clicked
-              //     console.log('clicked on', d, i, this);
-              // });
-            });
+            // rect.on('click', function(d,i) {
+            //     // handle events here
+            //     // d - datum
+            //     // i - identifier or index
+            //     // this - the `<rect>` that was clicked
+            //     console.log('clicked on', d, i, this);
+            // });
           }
-          // Handle continuous feature
-          // NOTE `feature.values` is an array of numbers (e.g. `[0.2, 2.56, -3.0, ...]`)
           if (feature.type === 'continuous') {
             // Define path for continuous feature
             const path = d3.select(this).append('path')
-              .attr('stroke', feature['trace-color'] || trace['trace-color'] || settings['trace-color'])
+              .attr('stroke', feature.color || 'black')
               .attr('stroke-opacity', 1.0)
               .attr('stroke-width', 2.0)
               .attr('fill', 'none');
+
+            path.on('mouseover', (event: MouseEvent) => onMouseOver(event, tooltip, trace, feature));
+            path.on('mousemove', (event: MouseEvent) => onMouseMove(event, tooltip, trace, feature, scale));
+            path.on('mouseleave', (event: MouseEvent) => onMouseLeave(event, tooltip, trace, feature));
+
             // Associate data to path
             path.data([feature.values]);
           }
         });
-      // On: feature grroup removal
-      fg.exit().remove();
+      // On: feature group removal
+      featureGroup.exit().remove();
     });
   }
 
@@ -654,24 +502,28 @@ export class DrawService {
     const scale = this.initializeService.scale;
     // Retrieve settings
     const settings = this.initializeService.settings;
-    // Loop thriugh each trace
+    // Loop through each trace
     this['group.traces'].each(function (trace) {
       // Select all trace groups
-      const tg = d3.select<d3.BaseType, Hierarchy[number]>(this);
+      const traceGroups = d3.select<d3.BaseType, InternalTraces>(this);
       // Select all feature groups
-      const fg = tg.selectAll<d3.BaseType, Feature>('g.feature');
+      const featureGroups = traceGroups.selectAll<d3.BaseType, Feature>('g.feature');
       // Loop through each feature group
-      fg.each(function (feature) {
+      featureGroups.each(function (feature) {
         // Get line height, content size
         const mt = scale.y('' + trace.id);
-        const lh = feature['line-height'] || trace['line-height'] || settings['line-height'];
-        const cs = feature['line-height'] || trace['content-size'] || settings['content-size'];
+        const lh = trace.options?.['line-height'] || settings['line-height'];
+        let cs = trace.options?.['content-size'] || settings['content-size'];
+        if (cs > lh) {
+          console.warn(`Content size ${cs} is greater than line height ${lh} for trace ${trace.id}`);
+          cs = lh;
+        }
         // TODO Case feature is loci
-        if (feature.type === 'loci') {
+        if (feature.type === 'locus') {
           // Define cell width
           const cw = scale.x(1) - scale.x(0);
           // Select all rectangles (and bound data)
-          d3.select<d3.BaseType, Loci>(this)
+          d3.select<d3.BaseType, Locus>(this)
             .selectAll<d3.BaseType, Locus>('rect')
             // Set position
             .attr('x', (locus) => scale.x(locus.start - 0.5))
@@ -687,13 +539,13 @@ export class DrawService {
         if (feature.type === 'continuous') {
           // Get values for feature
           const values = feature.values;
-          // Difine minimum, maximum value
+          // Define minimum, maximum value
           const min = feature.min !== undefined ? feature.min : Math.min(...feature.values);
           const max = feature.max !== undefined ? feature.max : Math.max(...feature.values);
           // Initialize horizontal, vertical values
           const xy: [number, number][] = values.map((v, i) => [i + 1, 1 - (v - min) / (max - min)]);
           // Define line function
-          const line = d3.line<[number, number]>().curve(d3.curveMonotoneX)
+          const line = d3.line<[number, number]>().curve(d3.curveStep)
             .x(([x,]) => scale.x(x))
             .y(([, y]) => mt + lh / 2 - (cs - 2) / 2 + (cs - 2) * y);
           // Update path line
@@ -705,134 +557,89 @@ export class DrawService {
     });
   }
 
-  // public updateTraces(): void {
-  //   // Define x, y scale
-  //   const scale = this.initializeService.scale;
-  //   // Retrieve settings
-  //   const settings = this.initializeService.settings;
-  //   // Select traces .g groups
-  //   const tg = this['group.traces'];
-  //   // Loop through each trace
-  //   tg.each(function (trace) {
-  //     // Get features .g groups
-  //     const fg = d3.select(this).selectAll<d3.BaseType, Feature>('g.feature');
-  //     // Loop through each feature
-  //     fg.each(function (feature) {
-  //       // Get line height, content size
-  //       const mt = scale.y('' + trace.id);
-  //       const lh = feature['line-height'] || trace['line-height'] || settings['line-height'];
-  //       const cs = feature['line-height'] || trace['content-size'] || settings['content-size'];
-  //       // TODO Case feature is loci
-  //       if (feature.type === 'loci') {
-  //         // Define cell width
-  //         const cw = scale.x(1) - scale.x(0);
-  //         // Select all rectangles (and bound data)
-  //         d3.select<d3.BaseType, Loci>(this)
-  //           .selectAll<d3.BaseType, Locus>('rect')
-  //           // Set position
-  //           .attr('x', (locus) => scale.x(locus.start - 0.5))
-  //           .attr('y', mt + lh / 2 - cs / 2)
-  //           // Set size
-  //           .attr('height', cs)
-  //           .attr('width', (locus) => {
-  //             // Compute width
-  //             return cw * (locus.end - locus.start);
-  //           })
-  //       }
-  //       // Case feature is continuous
-  //       if (feature.type === 'continuous') {
-  //         // Get values for feature
-  //         const values = feature.values;
-  //         // Difine minimum, maximum value
-  //         const min = feature.min !== undefined ? feature.min : Math.min(...feature.values);
-  //         const max = feature.max !== undefined ? feature.max : Math.max(...feature.values);
-  //         // Initialize horizontal, vertical values
-  //         const xy: [number, number][] = values.map((v, i) => [i + 1, 1 - (v - min) / (max - min)]);
-  //         // Define line function
-  //         const line = d3.line<[number, number]>().curve(d3.curveMonotoneX)
-  //           .x(([x,]) => scale.x(x))
-  //           .y(([, y]) => mt + lh / 2 - (cs - 2) / 2 + (cs - 2) * y);
-  //         // Update path line
-  //         d3.select<d3.BaseType, Continuous>(this)
-  //           .select('path')
-  //           .attr('d', line(xy));
-  //       }
-  //     });
-  //   });
-  // }
-
-  public onLabelClick(trace: Trace): void {
+  public onLabelClick(trace: InternalTrace): void {
     // Update flag for current trace
-    trace.expanded = trace.expanded === false;
-    // Get current traces
-    const traces = Array.from(this.featuresService.traces.values());
-    // Initialize excluded traces
-    const excluded: Hierarchy = [];
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    for (const trace of traces) {
-      // Extract identifier, visibility id out of trace
-      const {expanded} = {expanded: true, ...trace};
-      // Case trace is not visible
-      if (!expanded) {
-        // Then, get branch for current trace
-        const branch = this.featuresService.getBranch(trace).slice(1);
-        // Insert branch into excluded list
-        excluded.push(...branch);
-      }
-    }
-    // Define included features
-    const included = traces.filter((trace) => !excluded.includes(trace));
-    // Emit current traces
-    this.traces$.next(included);
-  }
+    trace.expanded = !trace.expanded;
+    const descendantsTracesIds = this.featuresService.getBranch(trace).slice(1);
 
+    for (const descendant of descendantsTracesIds) {
+      // If the trace is expanded, then only the next level of traces should be shown
+      if (trace.expanded) {
+        if (descendant.level === trace.level + 1) {
+          descendant.show = true;
+        }
+      } else {
+        descendant.show = false;
+      }
+      descendant.expanded = false;
+    }
+
+    // Emit current traces
+    this.traces$.next(this.featuresService.tracesNoNesting.filter(trace => trace.show));
+  }
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-function onMouseOver<F extends Feature & {
-  index: number
-}>(event: MouseEvent, tooltip: d3.Selection<HTMLDivElement, unknown, null, unknown>, trace: Trace, feature: F, index: number, value: F['values'][number]): void {
+function onMouseOver(event: MouseEvent, tooltip: d3.Selection<HTMLDivElement, unknown, null, unknown>, trace: InternalTrace, feature: Feature): void {
   // Set tooltip visible
   tooltip.style("display", "block");
   tooltip.style("opacity", 1);
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function onMouseMove<F extends Feature & {
-  index: number
-}>(event: MouseEvent, tooltip: d3.Selection<HTMLDivElement, unknown, null, unknown>, trace: Trace, feature: F, index: number, value: F['values'][number]): void {
-  // Case feature is loci
-  if (feature.type === 'loci') {
+function onMouseMove(event: MouseEvent, tooltip: d3.Selection<HTMLDivElement, unknown, null, unknown>, trace: InternalTrace, feature: Feature, scale: Scale | undefined = undefined): void {
+  if (feature.type == "locus") {
+
     // Set value as locus
-    const locus = value as Locus;
     // Update tooltip content
     tooltip.html(
       `Trace: ${trace.id}<br>` +
-      `Feature: ${feature.index}<br>` +
-      `Index: ${index}<br>` +
-      `Value: ${locus.start !== locus.end ? locus.start + '-' + locus.end : locus.start}`
+      `${feature.label + '<br>' || ''}` +
+      `Value: ${feature.start !== feature.end ? feature.start + '-' + feature.end : feature.start}`
     );
   }
-  // Case feature is continuous
-  if (feature.type === 'continuous') {
+
+  let tooltipX = event.offsetX + 10;
+  let tooltipY = event.offsetY + 10;
+
+  if (feature.type == "continuous") {
+    let xScaled = scale!.x.invert(d3.pointer(event)[0]);
+    // Round the number to the nearest integer
+    xScaled = Math.round(xScaled);
+    // Get the index of the residue
+    const index = xScaled;
+    // Get the value of the residue
+    const value = feature.values[index - 1];
     // Update tooltip content
     tooltip.html(
       `Trace: ${trace.id}<br>` +
-      `Feature: ${feature.index}<br>` +
+      `${feature.label + '<br>' || ''}` +
       `Index: ${index}<br>` +
-      `Value: ${(value as number)}`
+      `Value: ${value}`
+    );
+
+    // The tooltip in this case needs to be placed on the index (x-axis) and value (y-axis) of the feature
+    //tooltipX = scale!.x(index) + 10;
+    //tooltipY = scale!.y(trace.id + '') + 10;
+  }
+
+  if (feature.type === 'locus') {
+    // Set value as locus
+    // Update tooltip content
+    tooltip.html(
+      `Trace: ${trace.id}<br>` +
+      `${feature.label + '<br>' || ''}` +
+      `Value: ${feature.start !== feature.end ? feature.start + '-' + feature.end : feature.start}`
     );
   }
+
   // Update tooltip position
   tooltip
-    .style('left', (event.offsetX + 10) + 'px')
-    .style('top', (event.offsetY + 10) + 'px');
+    .style('left', tooltipX + 'px')
+    .style('top', tooltipY + 'px');
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-function onMouseLeave<F extends Feature & {
-  index: number
-}>(event: MouseEvent, tooltip: d3.Selection<HTMLDivElement, unknown, null, unknown>, trace: Trace, feature: F, index: number, value: F['values'][number]): void {
+function onMouseLeave(event: MouseEvent, tooltip: d3.Selection<HTMLDivElement, unknown, null, unknown>, trace: InternalTrace, feature: Feature): void {
   // Set tooltip invisible
   tooltip.style("opacity", 0);
   tooltip.style("display", "none");

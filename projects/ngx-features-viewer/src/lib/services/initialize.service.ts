@@ -64,9 +64,6 @@ export class InitializeService {
   public labelLeft!: NgxFeaturesViewerLabelDirective;
   public labelRight!: NgxFeaturesViewerLabelDirective;
 
-  // // Define map between feature (identifier) and its height
-  // public height!: Map<string, number>;
-
   // Define horizontal, vertical scales
   public scale!: Scale;
 
@@ -155,7 +152,7 @@ export class InitializeService {
       }),
       // Initialize horizontal, vertical scale
       tap(() => this.scale = { x: d3.scaleLinear(), y: d3.scaleOrdinal() }),
-      // Avoid re-drawing the graph each time anothe observable subscribes
+      // Avoid re-drawing the graph each time another observable subscribes
       shareReplay(1)
     );
   }

@@ -37,26 +37,30 @@
   </div>
   <!-- Show output -->
   <div style="display: block; height: auto; width: 100%;">
-    <ngx-features-viewer [sequence]="sequence" [features]="features" [settings]="settings">
+    <ngx-features-viewer [sequence]="sequence" [traces]="traces" [settings]="settings">
       <!-- Left label -->
       <ng-template let-trace="trace" ngx-features-viewer-label>
-        <div class="d-flex h-100 w-100 border justify-content-end pe-0 align-items-center">
-          <div [class.text-muted]="!trace.expanded">
-            {{ trace.label }}
-            <!-- Add symbol if expanded -->
-            @if (trace.expanded) {
-              <i class="bi bi-caret-down-fill"></i>
-            } @else {
-              <i class="bi bi-caret-right"></i>
+        <div class="d-flex h-100 w-100 justify-content-start pe-0 align-items-center font-monospace">
+          <div [class.text-muted]="trace.nested?.length > 0 && !trace.expanded">
+            {{ '&nbsp;'.repeat(trace.level) }}{{ trace.label }}
+            @if (trace.nested?.length > 0) {
+              <!-- Add symbol if expanded -->
+              @if (trace.expanded) {
+                <i class="bi bi-caret-down-fill"></i>
+              } @else {
+                <i class="bi bi-caret-right"></i>
+              }
             }
           </div>
         </div>
       </ng-template>
       <!-- Right label -->
       <ng-template let-trace="trace" ngx-features-viewer-label where="right">
-        <button class="btn btn-sm btn-primary" [class.text-muted]="!trace.expanded" (click)="test($event, trace)">
-          test
-        </button>
+        <div class="d-flex h-100 w-100 border justify-content-center pe-0 align-items-center">
+          <button class="btn btn-primary" [class.text-muted]="!trace.expanded" (click)="test($event, trace)">
+            test
+          </button>
+        </div>
       </ng-template>
     </ngx-features-viewer>
   </div>

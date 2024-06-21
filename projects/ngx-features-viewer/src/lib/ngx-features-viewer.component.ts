@@ -25,8 +25,8 @@ import {ResizeService} from './services/resize.service';
 import {ZoomService} from './services/zoom.service';
 import {DrawService} from './services/draw.service';
 // Custom data types
-import {Hierarchy} from './hierarchy';
 import {Settings} from './settings';
+import {Traces} from "./trace";
 
 
 // TODO Define sequence type
@@ -67,19 +67,14 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, AfterContentIn
   }
 
   @Input()
-  public set features(hierarchy: Hierarchy) {
-    // Initialize hierarchy
-    this.featuresService.hierarchy = hierarchy;
-    // Get traces
-    const traces = Array.from(this.featuresService.traces.values());
-    // Emit traces
-    this.traces$.next(traces);
+  public set traces(traces: Traces) {
+    // Set the initial traces
+    this.featuresService.traces = traces;
+    // Draw the traces on the canvas
+    this.drawService.traces$.next(this.featuresService.traces);
   }
 
-  private readonly traces$ = this.drawService.traces$;
-
-  @Input()
-  public sequence!: Sequence;
+  @Input() public sequence!: Sequence;
 
   private readonly sequence$ = this.drawService.sequence$;
 

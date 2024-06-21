@@ -53,6 +53,7 @@
     "karma-jasmine-html-reporter": "~2.1.0",
     "ng-packagr": "^17.3.0",
     "socket.io-adapter": "^2.5.5",
+    "typedoc": "^0.25.13",
     "typescript": "~5.4.5",
     "webpack-dev-server": "^5.0.4"
   }

@@ -1,6 +1,7 @@
-import { NgxFeaturesViewerLabelDirective, NgxFeaturesViewerComponent, Hierarchy, Settings } from '@ngx-features-viewer';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {NgxFeaturesViewerComponent, NgxFeaturesViewerLabelDirective, Settings} from '@ngx-features-viewer';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {Traces} from "../../../../ngx-features-viewer/src/lib/trace";
 
 // >sp|P04637|P53_HUMAN Cellular tumor antigen p53 OS=Homo sapiens OX=9606 GN=TP53 PE=1 SV=4
 const P04637 = 'MEEPQSDPSVEPPLSQETFSDLWKLLPENNVLSPLPSQAMDDLMLSP' +
@@ -36,8 +37,7 @@ export class PageFeaturesViewerComponent {
     'content-size': 16,
     // Define color
     'background-color': 'transparent',
-    'trace-color': 'cyan',
-    'grid-color': 'rgb(213,255,0)',
+    'grid-line-color': 'rgb(213,255,0)',
     'text-color': 'white',
     // Define margins
     'margin-top': 24,
@@ -47,75 +47,66 @@ export class PageFeaturesViewerComponent {
   };
   // Define input sequence
   readonly sequence = Array.from(P04637.slice(0, 100));
-  // Define input features
-  readonly features: Hierarchy = [
-    {
-      label: 'Feature #1',
-      type: 'continuous',
-      values: Array.from({ length: 70 }, () => Math.floor(Math.random() * 100) + 1)
+
+  traces: Traces = [{
+    label: "Trace 1",
+    options: {
+      "grid-line": true,
+      "grid-line-color": "yellow",
+      "grid-line-width": 1,
+      "grid-y-values": [0, 50, 100],
+      "content-size": 80,
+      "line-height": 100
     },
-    {
-      label: 'Feature #2',
-      type: 'loci',
-      "trace-color": "red",
-      values: [{ start: 1, end: 50 }, { start: 30, end: 60 }]
-    },
-    // Test trace
-    {
-      label: 'Feature #3',
-      type: 'trace',
-      position: 'overlap',
-      values: [
-        { type: 'loci', values: [{ start: 1, end: 10 }], "trace-color": "blue", },
-        { type: 'loci', values: [{ start: 20, end: 40 }], "trace-color": "red", },
-        { type: 'loci', values: [{ start: 60, end: 100 }], "trace-color": "yellow", },
-        { type: 'continuous', values: Array.from({ length: 70 }, () => Math.floor(Math.random() * 100) + 1), "trace-color": "yellow", },
-      ],
-      "background-color": "transparent",
-    },
-    // Test nested
-    {
-      label: 'Feature #4',
-      type: 'loci',
-      values: [{ start: 27, end: 56 }, { start: 61, end: 72 }],
-      nested: [
-        {
-          label: 'Feature #5',
-          type: 'trace',
-          values: [
-            { type: 'loci', values: [{ start: 1, end: 5 }, { start: 6, end: 10 }] },
-            { type: 'loci', values: [{ start: 10, end: 27 }] },
-          ]
-        },
-        {
-          label: 'Feature #6',
-          type: 'continuous',
-          values: Array.from({ length: 70 }, () => Math.floor(Math.random() * 100) + 1)
-        }
-      ]
-    },
-    {
-      label: 'Feature #7',
-      type: 'loci',
-      values: [{ start: 81, end: 81 }, { start: 82, end: 82 }],
-      nested: [
-        {
-          label: 'Feature #8',
-          type: 'trace',
-          values: [
-            { type: 'loci', values: [{ start: 81, end: 81 }] },
-            { type: 'loci', values: [{ start: 82, end: 82 }] },
-          ]
-        },
-        {
-          label: 'Feature #9',
-          type: 'continuous',
-          "trace-color": "greenyellow",
-          values: Array.from({ length: 70 }, () => Math.floor(Math.random() * 100) + 1),
-        }
-      ]
-    }
-  ];
+    features: [{
+      label: "feature-0",
+      type: "continuous",
+      values: Array.from({length: 100}, () => Math.floor(Math.random() * 100) + 1),
+      min: 1,
+      max: 100,
+      color: "red",
+    }, {
+      label: "feature-1",
+      type: "locus",
+      color: "blue",
+      start: 10,
+      end: 20,
+    }, {
+      label: "feature-2",
+      type: "locus",
+      color: "green",
+      start: 1,
+      end: 10,
+    }, {
+      label: "feature-3",
+      type: "continuous",
+      color: "purple",
+      values: Array.from({length: 100}, () => Math.floor(Math.random() * 100) + 1),
+    }],
+    nested: [{
+      label: "Trace 2",
+      features: [{
+        label: "feature-0",
+        type: "continuous",
+        color: "orange",
+        min: 0,
+        max: 100,
+        values: Array.from({length: 100}, () => Math.floor(Math.random() * 100) + 1),
+      }],
+      nested: [{
+        label: "Trace 3",
+        options: {"line-height": 100, "content-size": 100},
+        features: [{
+          label: "feature-0",
+          type: "continuous",
+          color: "green",
+          min: 0,
+          max: 100,
+          values: Array.from({length: 100}, () => Math.floor(Math.random() * 100) + 1),
+        }]
+      }]
+    }]
+  }]
 
   test($event: MouseEvent, trace: any) {
     console.log('test', $event, trace)

@@ -2,21 +2,26 @@
   <!-- Case template for left label exists -->
   @if (initService.labelLeft) {
     <!-- Loop through each trace, generate custom tooltip -->
-    @for(kv of featuresService.traces | keyvalue; track $index) {
+    @for (trace of featuresService.tracesNoNesting; track trace) {
       <!-- Then, generate trace as specified in the given template -->
-      <div [id]="'label-left-' + kv.key" tabindex=0 (click)="drawService.onLabelClick(kv.value)" (keyup)="drawService.onLabelClick(kv.value)">
-        <ng-container [ngTemplateOutlet]="initService.labelLeft.templateRef" [ngTemplateOutletContext]="{ trace: kv.value }"></ng-container>
+      <div [id]="'label-left-' + trace.id" tabindex=0 (click)="drawService.onLabelClick(trace)"
+           (keyup)="drawService.onLabelClick(trace)" [style.display]="trace.show ? 'block' : 'none'">
+        <ng-container [ngTemplateOutlet]="initService.labelLeft.templateRef"
+                      [ngTemplateOutletContext]="{ trace: trace }"></ng-container>
       </div>
     }
   }
   <!-- Case template for right label exists -->
-   @if(initService.labelRight) {
-    <!-- Loop through each trace, generate custom tooltip -->
-    @for(kv of featuresService.traces | keyvalue; track $index) {
-      <!-- Then, generate trace as specified in the given template -->
-      <div [id]="'label-right-' + kv.key" tabindex=0>
-        <ng-container [ngTemplateOutlet]="initService.labelRight.templateRef" [ngTemplateOutletContext]="{ trace: kv.value }"></ng-container>
-      </div>
-    }
-  }
+  <!--  @if (initService.labelRight) {-->
+  <!--    &lt;!&ndash; Loop through each trace, generate custom tooltip &ndash;&gt;-->
+  <!--    @for (trace of drawService.traces$ | async; track trace.id) {-->
+  <!--      @if (trace.show) {-->
+  <!--        &lt;!&ndash; Then, generate trace as specified in the given template &ndash;&gt;-->
+  <!--        <div [id]="'label-right-' + trace.id" tabindex=0>-->
+  <!--          <ng-container [ngTemplateOutlet]="initService.labelRight.templateRef"-->
+  <!--                        [ngTemplateOutletContext]="{ trace: trace }"></ng-container>-->
+  <!--        </div>-->
+  <!--      }-->
+  <!--    }-->
+  <!--  }-->
 </div>
