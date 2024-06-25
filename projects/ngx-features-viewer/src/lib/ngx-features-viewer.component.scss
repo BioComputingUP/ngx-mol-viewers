@@ -17,3 +17,7 @@
 .y.axis .tick text {
   display: none;
 }
+
+svg * {
+    transform-box: fill-box;
+}

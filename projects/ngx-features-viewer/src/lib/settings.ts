@@ -46,7 +46,7 @@ export interface TraceSettings {
   'zero-line-color': string;
   'zero-line-width': number;
 
-  'grid-line': boolean;
+  'grid': boolean;
   'grid-line-color': string;
   'grid-line-width': number;
   'grid-y-values': number[];

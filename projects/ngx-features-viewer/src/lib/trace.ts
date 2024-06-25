@@ -34,6 +34,7 @@ export interface InternalTrace extends Trace {
   expanded: boolean;
   show: boolean;
   level: number;
+  domain: {min: number, max: number};
   nested?: InternalTraces;
 }
 

@@ -1,4 +1,4 @@
-import { Observable, ReplaySubject, map, shareReplay, startWith, switchMap } from 'rxjs';
+import {Observable, ReplaySubject, map, shareReplay, startWith, switchMap, tap} from 'rxjs';
 import { Injectable } from '@angular/core';
 // Custom providers
 import { Scale, InitializeService } from './initialize.service';
@@ -10,7 +10,7 @@ import * as d3 from 'd3';
 })
 export class ZoomService {
   /** Zoom handler service
-   * 
+   *
    * 1. Store a copy of the original scale provided during initialization
    * 2. Intercept zoom event, which contains a transformation on the original scale
    * 3. Generate an updated scale, using transformation provided by the intercepted event
@@ -45,6 +45,7 @@ export class ZoomService {
     const scaled$: Observable<Scale> = initialized$.pipe(
       // Subscribe to zoom event
       switchMap(() => this.zoom$),
+      tap((event) => console.log('Zoom event:', event)),
       // Transform original scale
       map((event) => {
         // Get initial horizontal scale
@@ -74,9 +75,8 @@ export class ZoomService {
         // Define horizontal axis ticks
         const ticks = scale.x
           .ticks()
-          .filter((d) => Number.isInteger(d))
-          .slice(1, -1);
-        // Define orizontal axis
+          .filter((d) => Number.isInteger(d));
+        // Define horizontal axis
         const axis = d3.axisBottom(scale.x)
           .tickValues(ticks)
           .tickFormat(d3.format('.0f'));

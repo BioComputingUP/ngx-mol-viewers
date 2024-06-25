@@ -48,6 +48,16 @@ export class InitializeService {
     return this.div.offsetWidth; // Includes border width
   }
 
+  // Get the start x domain position
+  get x1() {
+    return this.margin.left;
+  }
+
+  // Get the end x domain position
+  get x2() {
+    return this.width - this.margin.right;
+  }
+
   // Get main SVG element
   public svg!: SVG;
 
@@ -86,6 +96,19 @@ export class InitializeService {
   public readonly initialized$: Observable<d3.Selection<SVGSVGElement, undefined, null, undefined>>;
 
   constructor() {
+    // Set default settings
+    this.settings = {
+      'margin-top': 0,
+      'margin-right': 0,
+      'margin-bottom': 0,
+      'margin-left': 0,
+      'background-color': 'transparent',
+      'grid-line-color': 'rgb(213,255,0)',
+      'text-color': 'white',
+      'content-size': 16,
+      'line-height': 32,
+    };
+
     // Define initialization pipeline
     this.initialized$ = this.initialize$.pipe(
       // Store root element reference

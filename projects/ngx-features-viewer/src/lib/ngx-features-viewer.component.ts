@@ -62,7 +62,7 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, AfterContentIn
 
   @Input()
   public set settings(settings: Settings) {
-    // TODO Update settings in initialization service
+    // Update settings in initialization service
     this.initService.settings = settings;
   }
 

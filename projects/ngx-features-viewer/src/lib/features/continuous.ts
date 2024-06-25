@@ -11,7 +11,11 @@ import {BaseFeature} from './feature';
  */
 export interface Continuous extends BaseFeature {
   type: 'continuous';
+  values: Array<number>;
   min?: number;
   max?: number;
-  values: Array<number>;
+  "stroke-width"?: number;
+  "stroke-color"?: string;
+  curveType?: 'curveStep' | 'curveBasis' | 'curveLinear';
+  showArea?: boolean;
 }

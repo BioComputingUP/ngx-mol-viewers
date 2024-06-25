@@ -7,12 +7,11 @@ import {Locus} from '../features/locus'
 import * as d3 from 'd3';
 import {InternalTrace, InternalTraces} from "../trace";
 import {Feature} from "../features/feature";
+import {Pin} from "../features/pin";
+import {DSSP} from "../features/dssp";
+import {ZoomService} from "./zoom.service";
 
 export type Sequence = string[];
-
-// type FeatureObject<F extends Feature> = d3.Selection<d3.BaseType, F['values'][number], null, undefined>;
-
-// type SequenceGroup = d3.Selection<SVGGElement | d3.BaseType, Sequence, null, undefined>;
 
 type ResidueGroup = d3.Selection<SVGGElement | d3.BaseType, string, SVGGElement | d3.BaseType, Sequence>;
 
@@ -20,9 +19,11 @@ type LabelGroup = d3.Selection<SVGGElement | d3.BaseType, InternalTrace, SVGGEle
 
 type TraceGroup = d3.Selection<SVGGElement | d3.BaseType, InternalTrace, SVGGElement, undefined>;
 
-type GridLines = d3.Selection<SVGLineElement | SVGRectElement | d3.BaseType, InternalTrace, SVGGElement | d3.BaseType, InternalTraces>;
+type GridLines = d3.Selection<SVGGElement | d3.BaseType, InternalTrace, SVGGElement | d3.BaseType, InternalTraces>;
 
-// type ValueGroup = d3.Selection<d3.BaseType, Feature['values'][number], SVGGElement | d3.BaseType, undefined>;
+type DivTooltip = d3.Selection<HTMLDivElement, unknown, null, unknown>;
+
+type d3Selection = d3.Selection<d3.BaseType, unknown, null, undefined>
 
 // TODO This should not be there
 export const CINEMA = {
@@ -79,7 +80,7 @@ export class DrawService {
 
   public 'char.width' = 0.0;
 
-  public tooltip!: d3.Selection<HTMLDivElement, unknown, null, unknown>;
+  public tooltip!: DivTooltip;
 
   /** Draw features
    *
@@ -99,6 +100,7 @@ export class DrawService {
   constructor(
     private initializeService: InitializeService,
     private featuresService: FeaturesService,
+    private zoomService: ZoomService,
   ) {
     // Define draw initialization
     this.draw$ = this.sequence$.pipe(
@@ -133,9 +135,9 @@ export class DrawService {
     // Define draw update
     this.drawn$ = this.draw$.pipe(
       // Move sequence residues in correct position
-      map(() => this.updateSequence()),
+      tap(() => this.updateSequence()),
       // Move grid in correct position
-      map(() => this.updateGrid()),
+      tap(() => this.updateGrid()),
       // Move labels in correct position
       //map(() => this.updateLabels()),
       // Move traces in correct position
@@ -375,55 +377,91 @@ export class DrawService {
       .attr('class', 'grid')
       .lower();
 
-    // TODO: Convert the rect to a line, and create a line for each grid line point defined by the trace, and the zero-line if defined
     this['group.grid'] = group
-      .selectAll('rect.grid-line')
+      .selectAll('g.grid-line-group')
       .data(traces, identity)
-      .join('rect')
+      .join('g')
       .attr('id', (d) => 'grid-' + d.id)
-      .attr('class', 'grid-line');
+      .attr('class', 'grid-line-group')
+      .join('line')
+
+    this['group.grid'].each((trace) => {
+      if (trace.options?.['grid']) {
+        // Create initial lines without setting their attributes yet
+        this['group.grid'].selectAll('line.grid-line')
+          .data(trace.options?.['grid-y-values'] || [])
+          .enter()
+          .append('line')
+          .attr('class', 'grid-line');
+      }
+
+      // Create initial zero-line if defined
+      if (trace.options?.['zero-line']) {
+        this['group.grid'].append('line')
+          .attr('class', 'zero-line');
+      }
+    });
   }
 
   public updateGrid(): void {
+    const group: GridLines = this['group.grid'];
+
     const y = this.initializeService.scale.y;
-    const width = this.initializeService.width;
-    const margin = this.initializeService.margin;
     const settings = this.initializeService.settings;
-    // Draw a line for each feature
-    this['group.grid']
-      // Set start, end positions
-      .attr('x', margin.left)
-      .attr('y', (trace) => {
-        // Get first feature
-        const feature = trace.features[0];
-        // Compute offsets
-        const mt = y('' + trace.id);
-        const lh = trace.options?.['line-height'] || settings['line-height'];
-        const cs = Math.min(lh, trace.options?.['content-size'] || settings['content-size']);
-        // Compute vertical position for discrete feature
-        if (feature.type !== 'continuous') {
-          return mt + lh / 2 - 0.5
-        }
-        // Compute vertical position for continuous feature
-        return mt + lh / 2 - cs / 2;
-      })
-      // Set positions
-      .attr('width', width - margin.left - margin.right)
-      .attr('height', (trace) => {
-        const feature = trace.features[0];
-        // Handle continuous feature
-        if (feature.type === 'continuous') {
-          // Return content size
-          return trace.options?.['content-size'] || settings['content-size'];
-        }
-        return trace.options?.["grid-line-width"] || 1;
-      })
-      .attr('fill', (trace) => {
-        if (!trace.options?.["grid-line"]) {
-          return 'none';
-        }
-        return trace.options?.['grid-line-color'] || settings['grid-line-color']
-      });
+    const x1 = this.initializeService.x1;
+    const x2 = this.initializeService.x2;
+
+    group.each(function (trace: InternalTrace) {
+      const traceGroup = d3.select(this);
+
+      // Get all the necessary values to compute the position of the grid lines
+      const mt = y('' + trace.id);
+      const lh = trace.options?.['line-height'] || settings['line-height'];
+      const cs = trace.options?.['content-size'] || settings['content-size'];
+
+      // top is calculated as the distance to the top, plus the lh/2 to get the mid-point of the line, plus the cs/2 to get the bottom of the line
+      const bottom = mt + lh / 2 + cs / 2;
+      const top = mt + lh / 2 - cs / 2;
+
+      function rescaleY(yValue: number): number {
+        // top and bottom are actually switched, as the y-axis is inverted
+        return bottom + (yValue - trace.domain.min) / (trace.domain.max - trace.domain.min) * (top - bottom);
+      }
+
+      // Update grid lines
+      const gridLines = traceGroup.selectAll<SVGLineElement, number>('line.grid-line')
+        .data(trace.options?.['grid-y-values'] || []);
+
+      gridLines.enter()
+        .append('line')
+        .attr('class', 'grid-line')
+        .merge(gridLines)
+        .attr('x1', x1)
+        .attr('x2', x2)
+        .attr('y1', d => rescaleY(d))
+        .attr('y2', d => rescaleY(d))
+        .attr('stroke', trace.options?.["grid-line-color"] || settings["grid-line-color"])
+        .attr('stroke-width', trace.options?.["grid-line-width"] || 1);
+
+      gridLines.exit().remove();
+
+      // Update zero-line if defined
+      const zeroLine = traceGroup.selectAll<SVGLineElement, number>('line.zero-line')
+        .data(trace.options?.['zero-line'] ? [true] : []);
+
+      zeroLine.enter()
+        .append('line')
+        .attr('class', 'zero-line')
+        .merge(zeroLine)
+        .attr('x1', x1)
+        .attr('x2', x2)
+        .attr('y1', rescaleY(0))
+        .attr('y2', rescaleY(0))
+        .attr('stroke', trace.options?.["zero-line-color"] || 'black')
+        .attr('stroke-width', trace.options?.["zero-line-width"] || 1);
+
+      zeroLine.exit().remove();
+    });
   }
 
   public createTraces(traces: InternalTraces): void {
@@ -451,57 +489,98 @@ export class DrawService {
         .attr('class', (d) => 'feature ' + d.type)
         .attr('id', (_, i) => `trace-${trace.id}-feature-${i}`)
         .each(function (feature) {
+
+          const addMouseEvents = (selection: d3Selection, tooltip: DivTooltip, trace: InternalTrace, feature: Feature) => {
+            // Bind data to selection
+            selection.data([feature]);
+
+            selection
+              .on('mouseover', (event: MouseEvent) => onMouseOver(event, tooltip, trace, feature))
+              .on('mousemove', (event: MouseEvent) => onMouseMove(event, tooltip, trace, feature, scale))
+              .on('mouseleave', (event: MouseEvent) => onMouseLeave(event, tooltip, trace, feature));
+
+            selection.on('click', (event, d) => {
+              console.log('click', event, d);
+            });
+          };
+
+          const appendElementWithAttributes = (parent: d3.Selection<SVGGElement, unknown, null, undefined>, element: string,
+                                               attributes: { [key: string]: number | string }): d3Selection => {
+            const el = parent.append(element);
+            Object.entries(attributes).forEach(([key, value]) => {
+              el.attr(key, value);
+            });
+            return el;
+          };
+
+          const container = d3.select(this);
+
           if (feature.type === 'locus') {
-            // Define a rectangle for each locus
-            const rect = d3.select(this).append('rect')
-              .attr('stroke', feature.color || 'black')
-              .attr('stroke-opacity', 1.0)
-              .attr('stroke-width', 1.0)
-              .attr('fill', feature.color || 'white')
-              .attr('fill-opacity', 0.5)
-              .attr('rx', 8)
-              .attr('ry', 8);
-            // Associate data to rectangle
-            rect.data([{start: feature.start, end: feature.end}]);
-            // Add mouse events
-            rect.on('mouseover', (event: MouseEvent) => onMouseOver(event, tooltip, trace, feature));
-            rect.on('mousemove', (event: MouseEvent) => onMouseMove(event, tooltip, trace, feature));
-            rect.on('mouseleave', (event: MouseEvent) => onMouseLeave(event, tooltip, trace, feature));
+            const rectAttributes = {
+              'stroke': feature["stroke-color"] || 'none',
+              'stroke-opacity': 1.0,
+              'stroke-width': feature["stroke-width"] || 0,
+              'fill': feature.color || 'white',
+              'fill-opacity': 0.5,
+              'rx': 8,
+              'ry': 8
+            };
 
-            // rect.on('click', function(d,i) {
-            //     // handle events here
-            //     // d - datum
-            //     // i - identifier or index
-            //     // this - the `<rect>` that was clicked
-            //     console.log('clicked on', d, i, this);
-            // });
+            const rect = appendElementWithAttributes(container, 'rect', rectAttributes);
+            addMouseEvents(rect, tooltip, trace, feature);
           }
+
           if (feature.type === 'continuous') {
-            // Define path for continuous feature
-            const path = d3.select(this).append('path')
-              .attr('stroke', feature.color || 'black')
-              .attr('stroke-opacity', 1.0)
-              .attr('stroke-width', 2.0)
-              .attr('fill', 'none');
+            const pathAttributes = {
+              'stroke': feature["stroke-color"] || feature.color || 'black',
+              'stroke-opacity': feature.opacity || 1,
+              'stroke-width': feature["stroke-width"] || 1,
+              'fill': feature.showArea ? feature.color || 'black' : 'none',
+              'fill-opacity': feature.opacity || 0.5,
+            };
 
-            path.on('mouseover', (event: MouseEvent) => onMouseOver(event, tooltip, trace, feature));
-            path.on('mousemove', (event: MouseEvent) => onMouseMove(event, tooltip, trace, feature, scale));
-            path.on('mouseleave', (event: MouseEvent) => onMouseLeave(event, tooltip, trace, feature));
-
-            // Associate data to path
-            path.data([feature.values]);
+            const path = appendElementWithAttributes(container, 'path', pathAttributes);
+            addMouseEvents(path, tooltip, trace, feature);
           }
-        });
+
+          if (feature.type === 'pin') {
+            const circleAttributes = {
+              'stroke': feature["stroke-color"] || 'none',
+              'stroke-opacity': 1.0,
+              'stroke-width': feature["stroke-width"] || 0,
+              'fill': feature.color || 'white',
+              'fill-opacity': feature.opacity || 0.5
+            };
+
+            const circle = appendElementWithAttributes(container, 'circle', circleAttributes);
+            addMouseEvents(circle, tooltip, trace, feature);
+          }
+
+          if (feature.type === 'dssp') {
+            const helixLeft = "M 5.3755623,8.4556527 C 4.8379988,8.4539172 4.3004418,6.4441304 3.7628849,4.2333281 3.225328,2.0225357 2.6877647,0.01274974 2.1502076,0.01101337 L -2.7666637e-5,0.01101002 C 0.53752928,0.01274639 1.0750927,2.0225323 1.6126495,4.2333247 2.1502065,6.444127 2.6877635,8.4539138 3.2253268,8.4556493 Z";
+            const positions = Array.from({length: feature.end - feature.start + 1}, (_, i) => i + feature.start);
+
+            const path = container
+              .selectAll<d3.BaseType, number>('path')
+              .data(positions)
+              .enter()
+              .append('path')
+              .attr("d",  helixLeft)
+              .attr("fill", feature.color || 'black')
+              .attr("fill-opacity", feature.opacity || 0.5)
+
+            // addMouseEvents(path, tooltip, trace, feature);
+          }
+        })
       // On: feature group removal
       featureGroup.exit().remove();
     });
   }
 
   public updateTraces(): void {
-    // Define x, y scale
     const scale = this.initializeService.scale;
-    // Retrieve settings
     const settings = this.initializeService.settings;
+
     // Loop through each trace
     this['group.traces'].each(function (trace) {
       // Select all trace groups
@@ -513,45 +592,90 @@ export class DrawService {
         // Get line height, content size
         const mt = scale.y('' + trace.id);
         const lh = trace.options?.['line-height'] || settings['line-height'];
-        let cs = trace.options?.['content-size'] || settings['content-size'];
-        if (cs > lh) {
-          console.warn(`Content size ${cs} is greater than line height ${lh} for trace ${trace.id}`);
-          cs = lh;
+        const cs = trace.options?.['content-size'] || settings['content-size'];
+        const center = mt + lh / 2;
+        const bottom = center + cs / 2;
+        let top = center - cs / 2;
+
+        function rescaleY(yValue: number): number {
+          // top and bottom are actually switched, as the y-axis is inverted
+          return bottom + (yValue - trace.domain.min) / (trace.domain.max - trace.domain.min) * (top - bottom);
         }
-        // TODO Case feature is loci
+
         if (feature.type === 'locus') {
           // Define cell width
           const cw = scale.x(1) - scale.x(0);
+          if (feature.height) {
+            top = top + (cs - feature.height) / 2;
+          }
           // Select all rectangles (and bound data)
           d3.select<d3.BaseType, Locus>(this)
             .selectAll<d3.BaseType, Locus>('rect')
             // Set position
             .attr('x', (locus) => scale.x(locus.start - 0.5))
-            .attr('y', mt + lh / 2 - cs / 2)
+            .attr('y', top)
             // Set size
-            .attr('height', cs)
+            .attr('height', feature.height !== undefined ? feature.height : cs)
             .attr('width', (locus) => {
               // Compute width
               return cw * (locus.end - locus.start + 1);
             })
         }
-        // Case feature is continuous
+
         if (feature.type === 'continuous') {
           // Get values for feature
           const values = feature.values;
-          // Define minimum, maximum value
-          const min = feature.min !== undefined ? feature.min : Math.min(...feature.values);
-          const max = feature.max !== undefined ? feature.max : Math.max(...feature.values);
           // Initialize horizontal, vertical values
-          const xy: [number, number][] = values.map((v, i) => [i + 1, 1 - (v - min) / (max - min)]);
-          // Define line function
-          const line = d3.line<[number, number]>().curve(d3.curveStep)
-            .x(([x,]) => scale.x(x))
-            .y(([, y]) => mt + lh / 2 - (cs - 2) / 2 + (cs - 2) * y);
+          const xy: [number, number][] = values.map((v: number, i: number) => [i + 1, v]);
+
+          let line: d3.Line<[number, number]> | d3.Area<[number, number]>;
+
+          let curveType: d3.CurveFactory = d3.curveStep;
+
+          // If curveType is defined, then use it
+          if (feature.curveType) {
+            curveType = d3[feature.curveType];
+          }
+
+          // If showArea is true, then the line should be an area
+          if (feature.showArea) {
+            line = d3.area<[number, number]>().curve(curveType)
+              .x(([x,]) => scale.x(x))
+              .y1(([, y]) => rescaleY(y))
+              .y0(bottom);
+          } else {
+            line = d3.line<[number, number]>().curve(curveType)
+              .x(([x,]) => scale.x(x))
+              .y(([, y]) => rescaleY(y));
+          }
+
           // Update path line
           d3.select<d3.BaseType, Continuous>(this)
             .select('path')
             .attr('d', line(xy));
+        }
+
+        if (feature.type === 'pin') {
+          // Select all circles (and bound data)
+          d3.select<d3.BaseType, Pin>(this)
+            .selectAll<d3.BaseType, Pin>('circle')
+            // Set position
+            .attr('cx', (pin) => scale.x(pin.position))
+            .attr('cy', center)
+            .attr('r', feature.radius || 8);
+        }
+
+        if (feature.type === 'dssp') {
+          const cellWidth = scale.x(1) - scale.x(0);
+          // With a cell with of 17, the helix should be scaled to 2.5, so we can do a proportion
+          const newXScale = 35 * cellWidth / 171.2;
+          const newYScale = 23.8 * cs / 200;
+
+          // For each position from the start to end of the DSSP, create a path
+          d3.select<d3.BaseType, DSSP>(this)
+            .selectAll<d3.BaseType, number>('path')
+            .attr("transform-origin", "center")
+            .attr("transform", (position, i) => `translate(${scale.x(position)}, ${center - 4}) scale(${i % 2 == 0 ? newXScale : -1 * newXScale}, ${newYScale})`);
         }
       });
     });
@@ -580,17 +704,14 @@ export class DrawService {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-function onMouseOver(event: MouseEvent, tooltip: d3.Selection<HTMLDivElement, unknown, null, unknown>, trace: InternalTrace, feature: Feature): void {
+function onMouseOver(event: MouseEvent, tooltip: DivTooltip, trace: InternalTrace, feature: Feature): void {
   // Set tooltip visible
   tooltip.style("display", "block");
   tooltip.style("opacity", 1);
 }
 
-function onMouseMove(event: MouseEvent, tooltip: d3.Selection<HTMLDivElement, unknown, null, unknown>, trace: InternalTrace, feature: Feature, scale: Scale | undefined = undefined): void {
+function onMouseMove(event: MouseEvent, tooltip: DivTooltip, trace: InternalTrace, feature: Feature, scale: Scale | undefined = undefined): void {
   if (feature.type == "locus") {
-
-    // Set value as locus
-    // Update tooltip content
     tooltip.html(
       `Trace: ${trace.id}<br>` +
       `${feature.label + '<br>' || ''}` +
@@ -599,7 +720,7 @@ function onMouseMove(event: MouseEvent, tooltip: d3.Selection<HTMLDivElement, un
   }
 
   let tooltipX = event.offsetX + 10;
-  let tooltipY = event.offsetY + 10;
+  const tooltipY = event.offsetY + 10;
 
   if (feature.type == "continuous") {
     let xScaled = scale!.x.invert(d3.pointer(event)[0]);
@@ -618,17 +739,15 @@ function onMouseMove(event: MouseEvent, tooltip: d3.Selection<HTMLDivElement, un
     );
 
     // The tooltip in this case needs to be placed on the index (x-axis) and value (y-axis) of the feature
-    //tooltipX = scale!.x(index) + 10;
+    tooltipX = scale!.x(index) + 10;
     //tooltipY = scale!.y(trace.id + '') + 10;
   }
 
-  if (feature.type === 'locus') {
-    // Set value as locus
-    // Update tooltip content
+  if (feature.type === 'pin') {
     tooltip.html(
       `Trace: ${trace.id}<br>` +
       `${feature.label + '<br>' || ''}` +
-      `Value: ${feature.start !== feature.end ? feature.start + '-' + feature.end : feature.start}`
+      `Value: ${feature.position}`
     );
   }
 
@@ -639,7 +758,7 @@ function onMouseMove(event: MouseEvent, tooltip: d3.Selection<HTMLDivElement, un
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-function onMouseLeave(event: MouseEvent, tooltip: d3.Selection<HTMLDivElement, unknown, null, unknown>, trace: InternalTrace, feature: Feature): void {
+function onMouseLeave(event: MouseEvent, tooltip: DivTooltip, trace: InternalTrace, feature: Feature): void {
   // Set tooltip invisible
   tooltip.style("opacity", 0);
   tooltip.style("display", "none");

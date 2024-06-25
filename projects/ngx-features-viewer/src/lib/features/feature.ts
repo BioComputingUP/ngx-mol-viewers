@@ -20,6 +20,7 @@ export interface BaseFeature {
   type: FeatureType;
   label?: string;
   color?: string;
+  opacity?: number;
 }
 
 /**

@@ -10,6 +10,8 @@ import {BaseFeature} from './feature';
 export interface Pin extends BaseFeature {
   type: 'pin';
   position: number;
-  borderColor?: string;
+  radius?: number;
+  'stroke-color'?: string;
+  'stroke-width'?: number;
 }
 

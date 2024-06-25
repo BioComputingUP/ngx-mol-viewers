@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {InternalTrace, InternalTraces, Traces} from "../trace";
+import {InternalTrace, InternalTraces, Trace, Traces} from "../trace";
 import {Feature} from "../features/feature";
 
 
@@ -11,6 +11,29 @@ export class FeaturesService {
   protected _parent = new Map<InternalTrace, number>();
   protected _children = new Map<InternalTrace, number[]>();
 
+
+  private globalMinMax(trace: Trace) {
+    let min = Number.MAX_SAFE_INTEGER;
+    let max = Number.MIN_SAFE_INTEGER;
+    for (const feature of trace.features) {
+      if (feature.type === 'continuous') {
+        min = Math.min(min, feature.min !== undefined ? feature.min : Math.min(...feature.values));
+        max = Math.max(max, feature.max !== undefined ? feature.max : Math.max(...feature.values));
+      }
+      if (trace.options?.['zero-line']) {
+        min = Math.min(min, 0);
+        max = Math.max(max, 0);
+      }
+      if (trace.options?.['grid'] && trace.options['grid-y-values']) {
+        for (const value of trace.options['grid-y-values']) {
+          min = Math.min(min, value);
+          max = Math.max(max, value);
+        }
+      }
+    }
+    return {min, max};
+  }
+
   public set traces(traces: Traces) {
     this.internalTraces = [];
     // Initialize the index used as id for an InternalTrace
@@ -20,23 +43,29 @@ export class FeaturesService {
       return traces.map((trace) => {
         // Remove nested from the trace, as it will be processed recursively
         const {nested, ...tmpTrace} = trace;
+        // Check and modify options if necessary
+        this.checkOptions(tmpTrace);
+        // Check and modify values if necessary
+        this.checkValues(tmpTrace);
+        const domain = this.globalMinMax(tmpTrace);
+        console.info("Domain for trace", tmpTrace.label, domain)
         // Initialize internal trace
         const internalTrace: InternalTrace = {
           ...tmpTrace,
           id: idx++,
           expanded: false,
           show: level === 0,
+          domain: domain,
           level
         };
+
         this.traceMap.set(internalTrace.id, internalTrace);
         // Recursively convert nested traces
         internalTrace.nested = convert(nested || [], level + 1);
-        // Sort the features by type, so to have the continuous features first
+        // Sort the features by type, so to have the continuous features first, but keep the order of the other types
         internalTrace.features = internalTrace.features.sort((a, b) => {
-          // -1 if 'a' is continuous
-          if (a.type !== 'continuous') return -1;
-          if (b.type !== 'continuous') return 1;
-          // Otherwise, return 0
+          if (a.type === 'continuous' && b.type !== 'continuous') return 1;
+          if (a.type !== 'continuous' && b.type === 'continuous') return -1;
           return 0;
         });
         // Set the parent / children relationship
@@ -129,5 +158,48 @@ export class FeaturesService {
     const indices = this._children.get(trace) || [];
     // Return child traces
     return indices.map((index) => this.getTrace(index));
+  }
+
+  private checkOptions(tmpTrace: Trace) {
+    if (tmpTrace.options) {
+      if (tmpTrace.options["line-height"] && tmpTrace.options["line-height"] < 0) {
+        console.warn("Line height cannot be negative, setting to 32");
+        tmpTrace.options["line-height"] = 32;
+      }
+      if (tmpTrace.options["content-size"] && tmpTrace.options["content-size"] < 0) {
+        console.warn("Content size cannot be negative, setting to 16");
+        tmpTrace.options["content-size"] = 16;
+      }
+      // If content size is bigger than line height, set it to line height
+      if (tmpTrace.options["content-size"] && tmpTrace.options["line-height"] && tmpTrace.options["content-size"] > tmpTrace.options["line-height"]) {
+        console.warn("Content size cannot be bigger than line height, setting to line height");
+        tmpTrace.options["content-size"] = tmpTrace.options["line-height"];
+      }
+    }
+  }
+
+  private checkValues(tmpTrace: Trace) {
+    for (const feature of tmpTrace.features) {
+      if (feature.type === 'locus') {
+        if (feature.start < 0) {
+          console.warn("Locus start cannot be negative, setting to 0");
+          feature.start = 0;
+        }
+        if (feature.end < 0) {
+          console.warn("Locus end cannot be negative, setting to 0");
+          feature.end = 0;
+        }
+        if (feature.height) {
+          if (feature.height < 0) {
+            console.warn("Locus height cannot be negative, setting to 1");
+            feature.height = 1;
+          }
+          if (tmpTrace.options?.["content-size"] && feature.height > tmpTrace.options["content-size"]) {
+            console.warn("Locus height cannot be bigger than content size, setting to content size");
+            feature.height = tmpTrace.options["content-size"];
+          }
+        }
+      }
+    }
   }
 }
