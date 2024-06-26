@@ -31,6 +31,12 @@ export class FeaturesService {
         }
       }
     }
+    // If min and max equal 0 set min to -1 and max to 1
+    if (min === 0 && max === 0) {
+      min = -1;
+      max = 1;
+    }
+
     return {min, max};
   }
 

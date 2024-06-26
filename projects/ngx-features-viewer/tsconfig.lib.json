@@ -6,7 +6,7 @@
     "declaration": true,
     "declarationMap": true,
     "inlineSources": true,
-    "types": []
+    "types": ["vite/client"],
   },
   "exclude": [
     "**/*.spec.ts"

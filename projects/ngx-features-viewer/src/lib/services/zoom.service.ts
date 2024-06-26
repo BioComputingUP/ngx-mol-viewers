@@ -1,7 +1,17 @@
-import {Observable, ReplaySubject, map, shareReplay, startWith, switchMap, tap} from 'rxjs';
-import { Injectable } from '@angular/core';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  map,
+  Observable,
+  ReplaySubject,
+  shareReplay,
+  startWith,
+  switchMap,
+  tap
+} from 'rxjs';
+import {Injectable} from '@angular/core';
 // Custom providers
-import { Scale, InitializeService } from './initialize.service';
+import {InitializeService, Scale} from './initialize.service';
 // D3 library
 import * as d3 from 'd3';
 
@@ -45,13 +55,19 @@ export class ZoomService {
     const scaled$: Observable<Scale> = initialized$.pipe(
       // Subscribe to zoom event
       switchMap(() => this.zoom$),
-      tap((event) => console.log('Zoom event:', event)),
+      // Avoid multiple zoom events on the same scale
+      distinctUntilChanged((prev, curr) => {
+        const k = prev.transform.k === curr.transform.k;
+        const x = prev.transform.x === curr.transform.x;
+        const y = prev.transform.y === curr.transform.y;
+        return k || x || y;
+      }),
       // Transform original scale
       map((event) => {
         // Get initial horizontal scale
-        const { x: initial } = this._scale;
+        const {x: initial} = this._scale;
         // Get current horizontal scale (the one to be updated)
-        const { x: current } = this.initService.scale;
+        const {x: current} = this.initService.scale;
         // Get updated scale (apply transformations on initial scale)
         const updated = event.transform.rescaleX(initial);
         // Get start, end domain
@@ -83,8 +99,7 @@ export class ZoomService {
         // Update horizontal axis
         axes.x.call(axis);
       }),
-      // // TODO Remove this
-      // tap(() => console.log('Zoomed!')),
+      //tap(() => console.log('Zoomed!')),
     );
   }
 

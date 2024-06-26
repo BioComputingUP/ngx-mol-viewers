@@ -135,7 +135,9 @@
               "zone.js",
               "zone.js/testing"
             ],
-            "assets": ["projects/ngx-structure-viewer/src/assets"]
+            "assets": [
+              "projects/ngx-structure-viewer/src/assets"
+            ]
           }
         },
         "lint": {

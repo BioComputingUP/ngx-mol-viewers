@@ -8,7 +8,7 @@ import * as d3 from 'd3';
 import {InternalTrace, InternalTraces} from "../trace";
 import {Feature} from "../features/feature";
 import {Pin} from "../features/pin";
-import {DSSP} from "../features/dssp";
+import {DSSP, DSSPPaths, dsspShape} from "../features/dssp";
 import {ZoomService} from "./zoom.service";
 
 export type Sequence = string[];
@@ -96,6 +96,8 @@ export class DrawService {
    * after the zoom event took place)
    */
   public readonly drawn$: Observable<unknown>;
+
+  private coilPoints = new Map<string, number[]>();
 
   constructor(
     private initializeService: InitializeService,
@@ -468,6 +470,7 @@ export class DrawService {
     // Define tooltip events
     const tooltip = this.tooltip;
     const scale = this.initializeService.scale;
+    const settings = this.initializeService.settings;
     // Generate and store traces groups
     this['group.traces'] = this.initializeService.draw
       .selectAll('g.trace')
@@ -521,7 +524,7 @@ export class DrawService {
               'stroke-opacity': 1.0,
               'stroke-width': feature["stroke-width"] || 0,
               'fill': feature.color || 'white',
-              'fill-opacity': 0.5,
+              'fill-opacity': feature.opacity || 1,
               'rx': 8,
               'ry': 8
             };
@@ -536,7 +539,7 @@ export class DrawService {
               'stroke-opacity': feature.opacity || 1,
               'stroke-width': feature["stroke-width"] || 1,
               'fill': feature.showArea ? feature.color || 'black' : 'none',
-              'fill-opacity': feature.opacity || 0.5,
+              'fill-opacity': feature.opacity || 1,
             };
 
             const path = appendElementWithAttributes(container, 'path', pathAttributes);
@@ -546,10 +549,9 @@ export class DrawService {
           if (feature.type === 'pin') {
             const circleAttributes = {
               'stroke': feature["stroke-color"] || 'none',
-              'stroke-opacity': 1.0,
               'stroke-width': feature["stroke-width"] || 0,
-              'fill': feature.color || 'white',
-              'fill-opacity': feature.opacity || 0.5
+              'fill': feature.color || 'black',
+              'fill-opacity': feature.opacity || 1
             };
 
             const circle = appendElementWithAttributes(container, 'circle', circleAttributes);
@@ -557,19 +559,32 @@ export class DrawService {
           }
 
           if (feature.type === 'dssp') {
-            const helixLeft = "M 5.3755623,8.4556527 C 4.8379988,8.4539172 4.3004418,6.4441304 3.7628849,4.2333281 3.225328,2.0225357 2.6877647,0.01274974 2.1502076,0.01101337 L -2.7666637e-5,0.01101002 C 0.53752928,0.01274639 1.0750927,2.0225323 1.6126495,4.2333247 2.1502065,6.444127 2.6877635,8.4539138 3.2253268,8.4556493 Z";
-            const positions = Array.from({length: feature.end - feature.start + 1}, (_, i) => i + feature.start);
+            const shapeToDraw = dsspShape(feature.code);
 
-            const path = container
-              .selectAll<d3.BaseType, number>('path')
-              .data(positions)
-              .enter()
-              .append('path')
-              .attr("d",  helixLeft)
-              .attr("fill", feature.color || 'black')
-              .attr("fill-opacity", feature.opacity || 0.5)
+            if (shapeToDraw == "sheet") {
+              const bSheetAttributes = {
+                'stroke': d3.color(feature.color || 'white')!.darker(.5).formatHex(),
+                'stroke-width': 2,
+                'fill': feature.color || 'white',
+                'fill-opacity': feature.opacity || 0.5
+              };
+              const bSheet = appendElementWithAttributes(container, 'polygon', bSheetAttributes);
+              addMouseEvents(bSheet, tooltip, trace, feature);
+            }
 
-            // addMouseEvents(path, tooltip, trace, feature);
+            if (shapeToDraw == "coil") {
+              const sw = Math.min(16, Math.max(3, (trace.options?.['content-size'] || settings['content-size']) / 8));
+              const coilAttributes = {
+                'stroke': feature.color || 'black',
+                'stroke-opacity': feature.opacity || .5,
+                'stroke-width': sw,
+                'stroke-linecap': 'square',
+                'stroke-dasharray': `${sw}, ${sw * 1.5}`,
+                'fill': 'none',
+              };
+              const coil = appendElementWithAttributes(container, 'path', coilAttributes);
+              addMouseEvents(coil, tooltip, trace, feature);
+            }
           }
         })
       // On: feature group removal
@@ -580,6 +595,7 @@ export class DrawService {
   public updateTraces(): void {
     const scale = this.initializeService.scale;
     const settings = this.initializeService.settings;
+    const coilPoints = this.coilPoints;
 
     // Loop through each trace
     this['group.traces'].each(function (trace) {
@@ -588,7 +604,7 @@ export class DrawService {
       // Select all feature groups
       const featureGroups = traceGroups.selectAll<d3.BaseType, Feature>('g.feature');
       // Loop through each feature group
-      featureGroups.each(function (feature) {
+      featureGroups.each(function (feature, featureIdx: number) {
         // Get line height, content size
         const mt = scale.y('' + trace.id);
         const lh = trace.options?.['line-height'] || settings['line-height'];
@@ -600,6 +616,10 @@ export class DrawService {
         function rescaleY(yValue: number): number {
           // top and bottom are actually switched, as the y-axis is inverted
           return bottom + (yValue - trace.domain.min) / (trace.domain.max - trace.domain.min) * (top - bottom);
+        }
+
+        function randomBetween(min: number, max: number): number {
+          return Math.random() * (max - min) + min;
         }
 
         if (feature.type === 'locus') {
@@ -666,16 +686,154 @@ export class DrawService {
         }
 
         if (feature.type === 'dssp') {
-          const cellWidth = scale.x(1) - scale.x(0);
-          // With a cell with of 17, the helix should be scaled to 2.5, so we can do a proportion
-          const newXScale = 35 * cellWidth / 171.2;
-          const newYScale = 23.8 * cs / 200;
+          const magicNumbers = {
+            "helix": {"bitWidth": 0.25, "xScale": 0.5, "yScale": 0.119, "center": -4},
+            "turn": {"bitWidth": 0.7, "xScale": 0.033, "yScale": 0.035, "center": +5.8},
+            // Sheet is a special case as it is computed as a rectangle with a triangle on top at runtime
+            "sheet": {"bitWidth": 4, "xScale": 0, "yScale": 0, "center": 0},
+            "coil": {"bitWidth": 0.3, "xScale": 0, "yScale": 0, "center": 0},
+          }
 
-          // For each position from the start to end of the DSSP, create a path
-          d3.select<d3.BaseType, DSSP>(this)
-            .selectAll<d3.BaseType, number>('path')
-            .attr("transform-origin", "center")
-            .attr("transform", (position, i) => `translate(${scale.x(position)}, ${center - 4}) scale(${i % 2 == 0 ? newXScale : -1 * newXScale}, ${newYScale})`);
+          const shapeToDraw = dsspShape(feature.code);
+          const shapePath = DSSPPaths[shapeToDraw];
+
+          const startPoint = feature.start - 0.5;
+          const endPoint = feature.end + 0.5;
+
+          const totalFeatureWidth = scale.x(endPoint) - scale.x(startPoint);
+          const widthPerResidue = totalFeatureWidth / (endPoint - startPoint);
+
+          // One helix every 100 points of width
+          const bitWidth = cs * magicNumbers[shapeToDraw]["bitWidth"];
+          const numBits = Math.floor(totalFeatureWidth / bitWidth + 1);
+          const bitOccupancy = bitWidth / widthPerResidue;
+
+          // Calculate the position in reverse order
+          const xPositions = Array.from({length: numBits}, (_, i) => startPoint + i * bitOccupancy);
+
+          if (xPositions.length < 2) {
+            xPositions.push(endPoint);
+          }
+
+          const xScale = bitWidth * magicNumbers[shapeToDraw]["xScale"];
+          const yScale = cs * magicNumbers[shapeToDraw]["yScale"];
+
+          if (shapeToDraw == "helix" || shapeToDraw == "turn") {
+            d3.select<d3.BaseType, DSSP>(this)
+              .selectAll<d3.BaseType, number>('path')
+              .data(xPositions)
+              .join(
+                enter => enter.append('path')
+                  .attr("d", shapePath)
+                  .attr("stroke", d3.color(feature.color || 'white')!.darker(0.5).formatHex())
+                  .attr("stroke-width", shapeToDraw == "helix"? 0.1 : 0.7)
+                  .attr("fill", feature.color || 'black')
+                  .attr("transform-origin", "center center"),
+                update => update,
+                exit => exit.remove()
+              )
+              .attr("fill-opacity", (_, i) =>  feature.opacity !== undefined ? (i % 2 == 0 ? feature.opacity - 0.2 : feature.opacity) :  (i % 2 == 0 ? 0.5 : 0.7))
+              .attr("transform", (xPosition, i) => {
+                const flippedXScale = i % 2 == 0 ? xScale : -1 * xScale;
+                return `translate(${scale.x(xPosition)}, ${center + magicNumbers[shapeToDraw]["center"]}) scale(${flippedXScale}, ${yScale})`
+              });
+
+            // Create a clip-path for each feature so to remove parts outside the range of the feature
+            d3.select<d3.BaseType, DSSP>(this)
+              .attr('clip-path', `url(#clip-path-${trace.id}-feature-${featureIdx})`)
+              .selectAll(`#clip-path-${trace.id}-feature-${featureIdx}`)
+              .data([feature])
+              .join(
+                enter => enter.append('defs')
+                  .append('clipPath')
+                  .attr('id', `clip-path-${trace.id}-feature-${featureIdx}`)
+                  .append('rect')
+                  .attr('width', totalFeatureWidth)
+                  .attr('height', cs)
+                  .attr('x', scale.x(startPoint))
+                  .attr('y', top),
+                update => update.select('rect')
+                  .attr('width', totalFeatureWidth)
+                  .attr('height', cs)
+                  .attr('x', scale.x(startPoint))
+                  .attr('y', top),
+                exit => exit.remove()
+              );
+          }
+
+          if (shapeToDraw == "sheet") {
+            // In the case of the sheet, we just want to draw an arrow, where the body is a rectangle, and the head is a triangle
+            const arrowWidth = cs / 2;
+            const sheetWidth = totalFeatureWidth - arrowWidth;
+            const sheetHeight = cs / 2;
+            const sheetX = scale.x(startPoint);
+            const sheetY = center - sheetHeight / 2;
+
+            const arrowHeight = cs;
+            const arrowX = scale.x(endPoint) - arrowWidth;
+            const arrowY = center - arrowHeight / 2;
+
+            // Define points for the polygon representing the arrow
+            const points = [
+              [sheetX, sheetY], // Top-left corner of the rectangle
+              [sheetX + sheetWidth, sheetY], // Top-right corner of the rectangle
+              [sheetX + sheetWidth, arrowY], // Transition from rectangle to arrowhead
+              [arrowX + arrowWidth, arrowY + arrowHeight / 2], // Tip of the arrowhead
+              [sheetX + sheetWidth, arrowY + arrowHeight], // Bottom of the arrowhead
+              [sheetX + sheetWidth, sheetY + sheetHeight], // Bottom-right corner of the rectangle
+              [sheetX, sheetY + sheetHeight], // Bottom-left corner of the rectangle
+            ];
+
+            // Join points into a string for the `points` attribute
+            const pointsString = points.map(point => point.join(",")).join(" ");
+
+            d3.select<d3.BaseType, DSSP>(this)
+              .selectAll<d3.BaseType, number>('polygon')
+              .attr("points", pointsString);
+          }
+
+          if (shapeToDraw == "coil") {
+            const featureKey = `${trace.id}-feature-${featureIdx}`;
+
+            if (!coilPoints.has(featureKey)) {
+              coilPoints.set(featureKey, []);
+            }
+
+            const line = d3.line<[number, number]>().curve(d3.curveBasis)
+              .x(([x,]) => scale.x(x))
+              .y(([, y]) => rescaleY(y));
+
+            d3.select<d3.BaseType, DSSP>(this)
+              .selectAll<d3.BaseType, [number, number][]>('path')
+              .attr("d", () => {
+                const yValues = coilPoints.get(featureKey)!;
+                const totalXPoints = xPositions.length + 1
+                // If the number of points is less than the number of x positions, add random values at the end
+                for (let i = yValues.length; i < totalXPoints; i++) {
+                  const y = randomBetween(trace.domain.min, trace.domain.max);
+                  // Put the value in the second to last position
+                  yValues.splice(yValues.length - 1, 0, y);
+                }
+                // If the number of points is greater than the number of x positions, remove the last values
+                for (let i = yValues.length - 1; i >= totalXPoints; i--) {
+                  // Remove the value in the second to last position
+                  yValues.splice(i, 1);
+                }
+                // The first and last points should be in the middle of the domain
+                yValues[0] = (trace.domain.max + trace.domain.min) / 2;
+                yValues[yValues.length - 1] = (trace.domain.max + trace.domain.min) / 2;
+
+                // Update the current yValues to reuse them in the next iteration
+                coilPoints.set(featureKey, yValues);
+
+                // Create the xyPoints array
+                const xyPoints: [number, number][] = xPositions.map((x, i) => [x, yValues[i]]);
+                // Add last point to make it touch the middle of the domain
+                xyPoints.push([endPoint, yValues[yValues.length - 1]]);
+
+                return line(xyPoints)
+              });
+          }
         }
       });
     });
@@ -748,6 +906,14 @@ function onMouseMove(event: MouseEvent, tooltip: DivTooltip, trace: InternalTrac
       `Trace: ${trace.id}<br>` +
       `${feature.label + '<br>' || ''}` +
       `Value: ${feature.position}`
+    );
+  }
+
+  if (feature.type === 'dssp') {
+    tooltip.html(
+      `Trace: ${trace.id}<br>` +
+      `${feature.label + '<br>' || ''}` +
+      `DSSP: ${feature.code}`
     );
   }
 
