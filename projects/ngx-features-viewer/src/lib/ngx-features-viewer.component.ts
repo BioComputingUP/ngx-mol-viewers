@@ -102,7 +102,7 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, AfterContentIn
         const {left: ms, right: me, bottom: mb} = this.resizeService.margin;
         const h = this.resizeService.height;
         const w = this.resizeService.width;
-        // // Define number of residues in sequnce
+        // Define number of residues in sequence
         const n = this.sequence.length + 1;
         // Apply scale limit to 5 residues
         this.initService.zoom

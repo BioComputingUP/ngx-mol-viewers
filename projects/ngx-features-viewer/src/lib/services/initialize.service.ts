@@ -157,7 +157,9 @@ export class InitializeService {
           .style('pointer-events', 'all')
           .lower();
         // Set zoom behavior
-        focus.call(this.zoom);
+        focus.call(this.zoom)
+          .on('dblclick.zoom', () => this.zoom.scaleTo(focus, 1))
+          .on('mousedown.zoom', null)
       }),
       // Initialize horizontal, vertical axis
       tap((svg) => {

@@ -1,20 +1,40 @@
 @import '../styles/labels';
 @import '../styles/icons';
 
-// Define style for generic grid line
-.axis-grid line {
-  stroke-opacity: 0.3;
-  stroke: gray;
-}
-// Do not show line for sequence
-.axis-grid line:nth-child(1) {
-  stroke-dasharray: 2;
-}
-// Hide default y-axis ticks
-.y.axis .tick text {
-  display: none;
-}
-
 svg * {
     transform-box: fill-box;
+}
+
+// Global setting for all text elements
+text {
+    font-family: monospace;
+    user-select: none;
+}
+
+// Apply a cursor move to the features region
+g.features {
+    cursor: col-resize;
+}
+
+// Variable for styling the features
+:host {
+    --feature-cursor: default;
+    --locus-hover-outline: none;
+    --locus-hover-border-radius: 0;
+}
+
+g .feature {
+    // Cursor style on a specific feature
+    cursor: var(--feature-cursor);
+    // The text inside a feature is not clickable
+    > text {
+        pointer-events: none;
+    }
+
+    // The locus and pin feature can be highlighted when hovered
+    &.locus > rect:hover,
+    &.pin > rect:hover {
+        outline: var(--locus-hover-outline);
+        border-radius: var(--locus-hover-border-radius);
+    }
 }

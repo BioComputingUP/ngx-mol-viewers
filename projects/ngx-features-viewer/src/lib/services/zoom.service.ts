@@ -1,5 +1,4 @@
 import {
-  debounceTime,
   distinctUntilChanged,
   map,
   Observable,
@@ -7,7 +6,6 @@ import {
   shareReplay,
   startWith,
   switchMap,
-  tap
 } from 'rxjs';
 import {Injectable} from '@angular/core';
 // Custom providers
@@ -60,7 +58,7 @@ export class ZoomService {
         const k = prev.transform.k === curr.transform.k;
         const x = prev.transform.x === curr.transform.x;
         const y = prev.transform.y === curr.transform.y;
-        return k || x || y;
+        return k && x && y;
       }),
       // Transform original scale
       map((event) => {

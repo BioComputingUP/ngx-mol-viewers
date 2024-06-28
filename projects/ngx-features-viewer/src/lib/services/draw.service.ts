@@ -70,6 +70,8 @@ export class DrawService {
 
   public readonly sequence$ = new ReplaySubject<Sequence>(1);
 
+  private sequenceLength = 0;
+
   public 'group.residues'!: ResidueGroup;
 
   public 'group.labels'!: LabelGroup;
@@ -99,10 +101,11 @@ export class DrawService {
 
   private coilPoints = new Map<string, number[]>();
 
+  private pointerDown = 0;
+
   constructor(
     private initializeService: InitializeService,
     private featuresService: FeaturesService,
-    private zoomService: ZoomService,
   ) {
     // Define draw initialization
     this.draw$ = this.sequence$.pipe(
@@ -112,6 +115,7 @@ export class DrawService {
         const x = this.initializeService.scale.x;
         // Generate horizontal domain for sequence
         const domain = [0, sequence.length + 1];
+        this.sequenceLength = sequence.length;
         // Update horizontal scale
         x.domain(domain);
       }),
@@ -236,19 +240,97 @@ export class DrawService {
       .attr('fill', (d) => color(d))
       .attr('fill-opacity', 0.1);
     // Define maximum width of text
-    let charWidth = 0.0
+    this['char.width'] = 9.64  // TODO : Change char width based on font
     // Add text to each residue group
     this['group.residues']
       .append('text')
+      .style('font-family', 'monospace') // TODO: Add more fonts (always monospace)
       .attr('class', 'name')
       .text((d) => '' + d)
-      // Loop through each text element
-      .each(function () {
-        // Update text width
-        charWidth = Math.max(charWidth, this.getBBox().width);
-      });
+    // Loop through each text element
+    //.each(function () {
+    // Update text width
+    //charWidth = Math.max(charWidth, this.getBBox().width);
+    //});
     // Updated stored character width
-    this['char.width'] = charWidth;
+    // this['char.width'] = charWidth;
+    // Create a rectangle that is shown on hover
+    this.initializeService.draw.on('pointerdown', (event) => {
+      this.pointerDown = event.offsetX;
+      // Check if there is already a rectangle, if not create one
+      this.initializeService.draw.append('rect')
+        .attr("fill", "lightblue")
+        .attr("fill-opacity", 0.5)
+        .attr("id", "zoom-rect");
+
+      // Momentarily disable pointer events of features
+      this.initializeService.draw.selectAll(".feature").style("pointer-events", "none");
+
+      this.initializeService.draw.on('pointerup', (event) => this.zoomToRegion(event));
+      this.initializeService.draw.on('pointerleave', () => this.deleteZoomRegion());
+
+      this.initializeService.draw.on('pointermove', (event) => {
+        const currentMousePosition = {x: event.offsetX, y: event.offsetY};
+        const x1 = Math.min(this.pointerDown, currentMousePosition.x);
+        const x2 = Math.max(this.pointerDown, currentMousePosition.x);
+
+        d3.select("#zoom-rect")
+          .attr("x", x1)
+          .attr("y", 0)
+          .attr("width", x2 - x1)
+          .attr("height", 20000);
+      });
+    });
+  }
+
+  private deleteZoomRegion() {
+    d3.select("#zoom-rect").remove();
+
+    // Re-enable pointer events of features
+    this.initializeService.draw.selectAll(".feature").style("pointer-events", "all");
+
+    this.initializeService.draw.on('pointermove', null);
+    this.initializeService.draw.on('pointerup', null);
+    this.initializeService.draw.on('pointerleave', null);
+  }
+
+  private zoomToRegion(event: MouseEvent) {
+    const zoom = this.initializeService.zoom;
+    const totalWidth = this.initializeService.width;
+    const scale = this.initializeService.scale;
+
+    // Get the current zoom transform
+    const transform = d3.zoomTransform(this.initializeService.draw.node() as SVGGElement);
+    // Calculate how much the user has zoomed in
+    const zoomFactor = transform.k;
+    // Calculate the current x position
+    const x = transform.x;
+    // Calculate the current y position
+    const y = transform.y;
+    const margin = this.initializeService.margin;
+    const sequenceLength = this.sequenceLength;
+
+    console.log(zoomFactor, x, y);
+
+    function zoomTo(what: d3.Selection<SVGGElement, undefined, null, undefined>, xMin: number, xMax: number) {
+      const scaling = Math.min(sequenceLength / 5, totalWidth / (xMax - xMin));
+      const t = d3.zoomIdentity
+        .scale(scaling)
+        .translate(-xMin, 0);
+      zoom.transform(what, t);
+    }
+
+    // Get the width of the rectangle
+    const width = Math.abs(this.pointerDown - event.offsetX);
+    // If the width is more than 10 pixels, zoom on the rectangle
+    if (width > 10) {
+      const xMax = Math.max(this.pointerDown, event.offsetX);
+      const xMin = Math.min(this.pointerDown, event.offsetX);
+
+      // Use the zoom service to zoom between the two x values
+      zoomTo(this.initializeService.draw, xMin, xMax);
+    }
+    this.deleteZoomRegion();
   }
 
   public updateSequence() {
@@ -525,12 +607,27 @@ export class DrawService {
               'stroke-width': feature["stroke-width"] || 0,
               'fill': feature.color || 'white',
               'fill-opacity': feature.opacity || 1,
-              'rx': 8,
-              'ry': 8
+              'rx': 4,
+              'ry': 4
             };
 
             const rect = appendElementWithAttributes(container, 'rect', rectAttributes);
             addMouseEvents(rect, tooltip, trace, feature);
+
+            if (feature.label) {
+              // Based on the color of the feature, determine if the fill of the text should be white or black
+              const textColor = d3.hsl(d3.color(feature.color || 'black')!);
+
+              const labelAttributes = {
+                "fill": textColor.l > 0.5 ? "black" : "white",
+                "dominant-baseline": "central"
+              }
+
+              const text = appendElementWithAttributes(container, 'text', labelAttributes);
+              text.text(feature.label)
+              text.style("text-anchor", "left")
+              // text.style("pointer-events", "none")
+            }
           }
 
           if (feature.type === 'continuous') {
@@ -596,6 +693,7 @@ export class DrawService {
     const scale = this.initializeService.scale;
     const settings = this.initializeService.settings;
     const coilPoints = this.coilPoints;
+    const charWidth = this['char.width'];
 
     // Loop through each trace
     this['group.traces'].each(function (trace) {
@@ -625,6 +723,8 @@ export class DrawService {
         if (feature.type === 'locus') {
           // Define cell width
           const cw = scale.x(1) - scale.x(0);
+          const featureWidth = scale.x(feature.end + .5) - scale.x(feature.start);
+
           if (feature.height) {
             top = top + (cs - feature.height) / 2;
           }
@@ -640,6 +740,16 @@ export class DrawService {
               // Compute width
               return cw * (locus.end - locus.start + 1);
             })
+
+          // If the feature is wide enough we can add the label of the feature as text inside of it
+          if (feature.label) {
+            const labelWidth = charWidth * feature.label.length;
+            d3.select<d3.BaseType, Locus>(this)
+              .selectAll<d3.BaseType, Locus>('text')
+              .attr("x", scale.x(feature.start - 0.5) + 4)
+              .attr('y', center)
+              .attr("opacity", labelWidth + 8 < featureWidth ? 1 : 0)
+          }
         }
 
         if (feature.type === 'continuous') {
@@ -726,13 +836,13 @@ export class DrawService {
                 enter => enter.append('path')
                   .attr("d", shapePath)
                   .attr("stroke", d3.color(feature.color || 'white')!.darker(0.5).formatHex())
-                  .attr("stroke-width", shapeToDraw == "helix"? 0.1 : 0.7)
+                  .attr("stroke-width", shapeToDraw == "helix" ? 0.1 : 0.7)
                   .attr("fill", feature.color || 'black')
                   .attr("transform-origin", "center center"),
                 update => update,
                 exit => exit.remove()
               )
-              .attr("fill-opacity", (_, i) =>  feature.opacity !== undefined ? (i % 2 == 0 ? feature.opacity - 0.2 : feature.opacity) :  (i % 2 == 0 ? 0.5 : 0.7))
+              .attr("fill-opacity", (_, i) => feature.opacity !== undefined ? (i % 2 == 0 ? feature.opacity - 0.2 : feature.opacity) : (i % 2 == 0 ? 0.5 : 0.7))
               .attr("transform", (xPosition, i) => {
                 const flippedXScale = i % 2 == 0 ? xScale : -1 * xScale;
                 return `translate(${scale.x(xPosition)}, ${center + magicNumbers[shapeToDraw]["center"]}) scale(${flippedXScale}, ${yScale})`
