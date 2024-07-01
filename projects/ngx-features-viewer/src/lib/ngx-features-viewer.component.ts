@@ -3,7 +3,9 @@ import {
   AfterViewInit,
   ChangeDetectionStrategy,
   Component,
+  ContentChild,
   ContentChildren,
+  Directive,
   ElementRef,
   HostListener,
   Input,
@@ -11,23 +13,61 @@ import {
   OnDestroy,
   QueryList,
   SimpleChanges,
+  TemplateRef,
   ViewChild,
   ViewEncapsulation
 } from '@angular/core';
-import {Observable, Subscription, switchMap, tap} from 'rxjs';
-import {CommonModule} from '@angular/common';
-// Custom components
-import {NgxFeaturesViewerLabelDirective} from './ngx-features-viewer.directive';
+import { Observable, Subscription, switchMap, tap } from 'rxjs';
+import { CommonModule } from '@angular/common';
+// // Custom components
+// import {NgxFeaturesViewerLabelDirective} from './ngx-features-viewer.directive';
 // Custom providers
-import {InitializeService} from './services/initialize.service';
-import {FeaturesService} from './services/features.service';
-import {ResizeService} from './services/resize.service';
-import {ZoomService} from './services/zoom.service';
-import {DrawService} from './services/draw.service';
+import { InitializeService } from './services/initialize.service';
+import { FeaturesService } from './services/features.service';
+import { ResizeService } from './services/resize.service';
+import { ZoomService } from './services/zoom.service';
+import { DrawService } from './services/draw.service';
 // Custom data types
-import {Settings} from './settings';
-import {Traces} from "./trace";
+import { Settings } from './settings';
+import { Traces } from "./trace";
+import { TooltipService } from './services/tooltip.service';
 
+
+@Directive({
+  // eslint-disable-next-line @angular-eslint/directive-selector
+  selector: '[ngx-features-viewer-label]',
+  standalone: true
+})
+export class NgxFeaturesViewerLabelDirective {
+
+  @Input() where: 'left' | 'right' = 'left';
+
+  @Input() justify: 'start' | 'center' | 'end' = 'start';
+
+  @Input() align: 'start' | 'center' | 'end' = 'center';
+
+  @Input() padding = 0;
+
+  constructor(public templateRef: TemplateRef<unknown>) { }
+
+}
+
+@Directive({
+  // eslint-disable-next-line @angular-eslint/directive-selector
+  selector: '[ngx-features-viewer-tooltip]',
+  standalone: true
+})
+export class NgxFeaturesViewerTooltipDirective {
+
+  // @Input() trace!: Trace; // This is valid for both Trace and Feature
+
+  // @Input() feature?: Feature; // Defines feature instance in trace
+
+  // @Input() index?: number; // Defines feature index in trace
+
+  constructor(public templateRef: TemplateRef<unknown>) {}
+
+}
 
 // TODO Define sequence type
 export type Sequence = Array<string>;
@@ -37,12 +77,14 @@ export type Sequence = Array<string>;
   selector: 'ngx-features-viewer',
   standalone: true,
   imports: [
+    NgxFeaturesViewerTooltipDirective,
     NgxFeaturesViewerLabelDirective,
     CommonModule,
   ],
   providers: [
     InitializeService,
     FeaturesService,
+    TooltipService,
     ResizeService,
     DrawService,
     ZoomService,
@@ -59,6 +101,15 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, AfterContentIn
 
   @ContentChildren(NgxFeaturesViewerLabelDirective)
   public labels?: QueryList<NgxFeaturesViewerLabelDirective>;
+
+  @ContentChild(NgxFeaturesViewerTooltipDirective)
+  public tooltipCustomDirective?: NgxFeaturesViewerTooltipDirective;
+
+  @ViewChild(NgxFeaturesViewerTooltipDirective)
+  public tooltipDefaultDirective!: NgxFeaturesViewerTooltipDirective;
+
+  @ViewChild('tooltip')
+  public tooltipElementRef!: ElementRef<HTMLDivElement>;  // NOTE this is the element ref to the tooltip container
 
   @Input()
   public set settings(settings: Settings) {
@@ -86,6 +137,7 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, AfterContentIn
     // Dependency injection
     public featuresService: FeaturesService,
     public initService: InitializeService,
+    public tooltipService: TooltipService,
     public resizeService: ResizeService,
     public zoomService: ZoomService,
     public drawService: DrawService,
@@ -99,7 +151,7 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, AfterContentIn
       // Initialize zoom scale
       tap(() => {
         // const { width, height } = this.resizeService;
-        const {left: ms, right: me, bottom: mb} = this.resizeService.margin;
+        const { left: ms, right: me, bottom: mb } = this.resizeService.margin;
         const h = this.resizeService.height;
         const w = this.resizeService.width;
         // // Define number of residues in sequnce
@@ -162,6 +214,14 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, AfterContentIn
   }
 
   public ngAfterViewInit(): void {
+    // Get tooltip directive, fallback to default in case custom is not defined
+    const tooltipDirective = this.tooltipCustomDirective || this.tooltipDefaultDirective;
+    // Store tooltip template in init service
+    this.initService.tooltip = tooltipDirective;
+    // Store template reference
+    this.tooltipService.templateRef = tooltipDirective.templateRef;
+    // Get tooltip element
+    this.tooltipService.tooltip = this.tooltipElementRef.nativeElement;
     // Emit root element
     this.initService.initialize$.next(this._root);
   }
