@@ -170,11 +170,13 @@ export class DrawService {
         const mt = range.at(-1) as number;
         // Initialize line height for current trace
         let lh = trace.options?.['line-height'] || this.initializeService.settings['line-height'];
-        // Case positioning is set to dodge
-        if (trace.position === 'dodge') {
-          // Update line height to span for all the inner features
-          lh = trace.features.reduce((lh) => lh + (trace.options?.['line-height'] || this.initializeService.settings['line-height']), 0)
-        }
+        // // Case positioning is set to dodge
+        // if (trace.position === 'dodge') {
+        //   // Update line height to span for all the inner features
+        //   lh = trace.features.reduce((lh) => lh + (trace.options?.['line-height'] || this.initializeService.settings['line-height']), 0)
+        // }
+        // Update line height to span for all the inner features
+        lh = trace.features.reduce((lh) => lh + (trace.options?.['line-height'] || this.initializeService.settings['line-height']), 0)
         // Update range
         return [...range, mt + lh];
       }
@@ -585,7 +587,7 @@ export class DrawService {
                 'fill-opacity': feature.opacity || 0.5
               };
               const bSheet = appendElementWithAttributes(container, 'polygon', bSheetAttributes);
-              addMouseEvents(bSheet, tooltip, trace, feature);
+              // addMouseEvents(bSheet, tooltip, trace, feature);
             }
 
             if (shapeToDraw == "coil") {
