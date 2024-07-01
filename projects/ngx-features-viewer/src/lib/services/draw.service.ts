@@ -169,11 +169,13 @@ export class DrawService {
         const mt = range.at(-1) as number;
         // Initialize line height for current trace
         let lh = trace.options?.['line-height'] || this.initializeService.settings['line-height'];
-        // Case positioning is set to dodge
-        if (trace.position === 'dodge') {
-          // Update line height to span for all the inner features
-          lh = trace.features.reduce((lh) => lh + (trace.options?.['line-height'] || this.initializeService.settings['line-height']), 0)
-        }
+        // // Case positioning is set to dodge
+        // if (trace.position === 'dodge') {
+        //   // Update line height to span for all the inner features
+        //   lh = trace.features.reduce((lh) => lh + (trace.options?.['line-height'] || this.initializeService.settings['line-height']), 0)
+        // }
+        // Update line height to span for all the inner features
+        lh = trace.features.reduce((lh) => lh + (trace.options?.['line-height'] || this.initializeService.settings['line-height']), 0)
         // Update range
         return [...range, mt + lh];
       }
@@ -560,8 +562,8 @@ export class DrawService {
             const helixLeft = "M 5.3755623,8.4556527 C 4.8379988,8.4539172 4.3004418,6.4441304 3.7628849,4.2333281 3.225328,2.0225357 2.6877647,0.01274974 2.1502076,0.01101337 L -2.7666637e-5,0.01101002 C 0.53752928,0.01274639 1.0750927,2.0225323 1.6126495,4.2333247 2.1502065,6.444127 2.6877635,8.4539138 3.2253268,8.4556493 Z";
             const positions = Array.from({length: feature.end - feature.start + 1}, (_, i) => i + feature.start);
 
-            const path = container
-              .selectAll<d3.BaseType, number>('path')
+            // const path = container
+            container.selectAll<d3.BaseType, number>('path')
               .data(positions)
               .enter()
               .append('path')
