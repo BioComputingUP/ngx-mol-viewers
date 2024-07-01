@@ -26,12 +26,12 @@
           <div [class.text-muted]="trace.nested?.length > 0 && !trace.expanded">
             {{ '&nbsp;'.repeat(trace.level) }}{{ trace.label }}
             @if (trace.nested?.length > 0) {
-              <!-- Add symbol if expanded -->
-              @if (trace.expanded) {
-                <i class="bi bi-caret-down-fill"></i>
-              } @else {
-                <i class="bi bi-caret-right"></i>
-              }
+            <!-- Add symbol if expanded -->
+            @if (trace.expanded) {
+            <i class="bi bi-caret-down-fill"></i>
+            } @else {
+            <i class="bi bi-caret-right"></i>
+            }
             }
           </div>
         </div>
@@ -44,6 +44,12 @@
           </button>
         </div>
       </ng-template>
+      <!-- Tootlip template -->
+      <!-- <ng-template let-trace="trace" let-feature="feature" let-index="index" ngx-features-viewer-tooltip>
+        <div class="mb-1">{{ trace | json }}</div>
+        <div class="mb-1">{{ index }}</div>
+        <div class="mb-0">{{ feature | json }}</div>
+      </ng-template> -->
     </ngx-features-viewer>
   </div>
 </div>

@@ -1,4 +1,4 @@
-import {NgxFeaturesViewerComponent, NgxFeaturesViewerLabelDirective, Settings} from '@ngx-features-viewer';
+import {NgxFeaturesViewerComponent, NgxFeaturesViewerLabelDirective, NgxFeaturesViewerTooltipDirective, Settings} from '@ngx-features-viewer';
 import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {Traces} from "../../../../ngx-features-viewer/src/lib/trace";
@@ -11,6 +11,7 @@ const P04637 = 'MEEPQSDPSVEPPLSQETFSMEEPQSDPSVEPPLSQETFSMEEPQSDPSVEPPLSQETFSMEEP
   selector: 'page-features-viewer',
   // Handle dependencies
   imports: [
+    NgxFeaturesViewerTooltipDirective,
     NgxFeaturesViewerLabelDirective,
     NgxFeaturesViewerComponent,
     CommonModule,],

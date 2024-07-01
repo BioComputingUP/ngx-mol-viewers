@@ -3,7 +3,9 @@ import {
   AfterViewInit,
   ChangeDetectionStrategy,
   Component,
+  ContentChild,
   ContentChildren,
+  Directive,
   ElementRef,
   HostListener,
   Input,
@@ -11,6 +13,7 @@ import {
   OnDestroy,
   QueryList,
   SimpleChanges,
+  TemplateRef,
   ViewChild,
   ViewEncapsulation
 } from '@angular/core';
@@ -31,6 +34,42 @@ import * as d3 from "d3";
 import { KeyboardEvent } from "react";
 
 
+@Directive({
+  // eslint-disable-next-line @angular-eslint/directive-selector
+  selector: '[ngx-features-viewer-label]',
+  standalone: true
+})
+export class NgxFeaturesViewerLabelDirective {
+
+  @Input() where: 'left' | 'right' = 'left';
+
+  @Input() justify: 'start' | 'center' | 'end' = 'start';
+
+  @Input() align: 'start' | 'center' | 'end' = 'center';
+
+  @Input() padding = 0;
+
+  constructor(public templateRef: TemplateRef<unknown>) { }
+
+}
+
+@Directive({
+  // eslint-disable-next-line @angular-eslint/directive-selector
+  selector: '[ngx-features-viewer-tooltip]',
+  standalone: true
+})
+export class NgxFeaturesViewerTooltipDirective {
+
+  // @Input() trace!: Trace; // This is valid for both Trace and Feature
+
+  // @Input() feature?: Feature; // Defines feature instance in trace
+
+  // @Input() index?: number; // Defines feature index in trace
+
+  constructor(public templateRef: TemplateRef<unknown>) {}
+
+}
+
 // TODO Define sequence type
 export type Sequence = Array<string>;
 
@@ -39,12 +78,14 @@ export type Sequence = Array<string>;
   selector: 'ngx-features-viewer',
   standalone: true,
   imports: [
+    NgxFeaturesViewerTooltipDirective,
     NgxFeaturesViewerLabelDirective,
     CommonModule,
   ],
   providers: [
     InitializeService,
     FeaturesService,
+    TooltipService,
     ResizeService,
     DrawService,
     ZoomService,
@@ -61,6 +102,15 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, AfterContentIn
 
   @ContentChildren(NgxFeaturesViewerLabelDirective)
   public labels?: QueryList<NgxFeaturesViewerLabelDirective>;
+
+  @ContentChild(NgxFeaturesViewerTooltipDirective)
+  public tooltipCustomDirective?: NgxFeaturesViewerTooltipDirective;
+
+  @ViewChild(NgxFeaturesViewerTooltipDirective)
+  public tooltipDefaultDirective!: NgxFeaturesViewerTooltipDirective;
+
+  @ViewChild('tooltip')
+  public tooltipElementRef!: ElementRef<HTMLDivElement>;  // NOTE this is the element ref to the tooltip container
 
   @Input()
   public set settings(settings: Settings) {
@@ -88,6 +138,7 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, AfterContentIn
     // Dependency injection
     public featuresService: FeaturesService,
     public initService: InitializeService,
+    public tooltipService: TooltipService,
     public resizeService: ResizeService,
     public zoomService: ZoomService,
     public drawService: DrawService,
@@ -186,6 +237,14 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, AfterContentIn
   }
 
   public ngAfterViewInit(): void {
+    // Get tooltip directive, fallback to default in case custom is not defined
+    const tooltipDirective = this.tooltipCustomDirective || this.tooltipDefaultDirective;
+    // Store tooltip template in init service
+    this.initService.tooltip = tooltipDirective;
+    // Store template reference
+    this.tooltipService.templateRef = tooltipDirective.templateRef;
+    // Get tooltip element
+    this.tooltipService.tooltip = this.tooltipElementRef.nativeElement;
     // Emit root element
     this.initService.initialize$.next(this._root);
   }

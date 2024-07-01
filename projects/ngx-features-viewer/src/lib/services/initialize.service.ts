@@ -1,8 +1,10 @@
-import { map, Observable, ReplaySubject, shareReplay, tap } from 'rxjs';
+import { NgxFeaturesViewerTooltipDirective } from '../ngx-features-viewer.component';
+import { NgxFeaturesViewerLabelDirective } from "../ngx-features-viewer.component";
+import { Observable, ReplaySubject, map, shareReplay, tap } from 'rxjs';
 import { ElementRef, Injectable } from '@angular/core';
 import { Settings } from '../settings';
 import * as d3 from 'd3';
-import { NgxFeaturesViewerLabelDirective } from "@ngx-features-viewer";
+
 
 type SVG = d3.Selection<SVGSVGElement, undefined, null, undefined>;
 
@@ -75,7 +77,10 @@ export class InitializeService {
     return {top, right, bottom, left};
   }
 
+  public tooltip!: NgxFeaturesViewerTooltipDirective;
+
   public labelLeft!: NgxFeaturesViewerLabelDirective;
+
   public labelRight!: NgxFeaturesViewerLabelDirective;
 
   // Define horizontal, vertical scales

@@ -1,15 +1,15 @@
 <div style="position: relative; display: block; width: 100%; height: 100%;" #root>
   <!-- Case template for left label exists -->
   @if (initService.labelLeft) {
-    <!-- Loop through each trace, generate custom tooltip -->
-    @for (trace of featuresService.tracesNoNesting; track trace) {
-      <!-- Then, generate trace as specified in the given template -->
-      <div [id]="'label-left-' + trace.id" tabindex=0 (click)="drawService.onLabelClick(trace)"
-           (keyup)="drawService.onLabelClick(trace)" [style.display]="trace.show ? 'block' : 'none'">
-        <ng-container [ngTemplateOutlet]="initService.labelLeft.templateRef"
-                      [ngTemplateOutletContext]="{ trace: trace }"></ng-container>
-      </div>
-    }
+  <!-- Loop through each trace, generate custom tooltip -->
+  @for (trace of featuresService.tracesNoNesting; track trace) {
+  <!-- Then, generate trace as specified in the given template -->
+  <div [id]="'label-left-' + trace.id" tabindex=0 (click)="drawService.onLabelClick(trace)"
+    (keyup)="drawService.onLabelClick(trace)" [style.display]="trace.show ? 'block' : 'none'">
+    <ng-container [ngTemplateOutlet]="initService.labelLeft.templateRef"
+      [ngTemplateOutletContext]="{ trace: trace }"></ng-container>
+  </div>
+  }
   }
   <!-- Case template for right label exists -->
   <!--  @if (initService.labelRight) {-->
@@ -24,4 +24,24 @@
   <!--      }-->
   <!--    }-->
   <!--  }-->
+
+  <!-- Initialize tooltip -->
+  <div style="position: absolute; left: 0; top: 0; display: none" #tooltip>
+    <!-- Define tooltip inner scaffold -->
+    <div style="position: relative; display: block">
+      <!-- Subscribe to template emission -->
+      @if(tooltipService.tooltip$ | async; as context) {
+        <!-- Show template -->
+        <ng-container [ngTemplateOutlet]="tooltipService.templateRef" [ngTemplateOutletContext]="context"></ng-container>
+      }
+    </div>
+  </div>
+
 </div>
+
+<ng-template let-trace="trace" let-feature="feature" let-index="index" let-x="x" let-y="y" ngx-features-viewer-tooltip>
+  Trace: {{ trace.id }}<br>
+  Feature: {{ feature.type }}<br>
+  Index: {{ index }}<br>
+  Coordinates: ({{ x }}, {{ y }})<br>
+</ng-template>
