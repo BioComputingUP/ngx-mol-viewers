@@ -1,7 +1,7 @@
 import {
   distinctUntilChanged,
   map,
-  Observable,
+  Observable, pairwise,
   ReplaySubject,
   shareReplay,
   startWith,

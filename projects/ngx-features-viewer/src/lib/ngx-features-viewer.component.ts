@@ -27,6 +27,8 @@ import {DrawService} from './services/draw.service';
 // Custom data types
 import {Settings} from './settings';
 import {Traces} from "./trace";
+import * as d3 from "d3";
+import {KeyboardEvent} from "react";
 
 
 // TODO Define sequence type
@@ -120,6 +122,29 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, AfterContentIn
 
         // Initialize brush on the brush region
         this.initService.brushRegion.call(this.initService.brush);
+
+        const focus = this.initService.focus;
+        const brushRegion = this.initService.brushRegion;
+        const focusMousedown = this.initService.focusMousedown.bind(this.initService.focus.node()!)
+
+        // Function to handle key events
+        function handleKeyEvent(event: KeyboardEvent) {
+          const isShiftOrCmd = event.metaKey || event.shiftKey;
+          const isKeyDown = event.type === 'keydown' && isShiftOrCmd
+
+          // Set cursor and mousedown event based on key press/release
+          focus
+            .style('cursor', isKeyDown ? 'grabbing' : 'auto')
+            .on('mousedown.zoom', isKeyDown ? focusMousedown : () => null)
+
+          // Toggle pointer events on the brush region
+          brushRegion
+            .select('.overlay')
+            .style('pointer-events', isKeyDown ? 'none' : 'all');
+        }
+
+        // Bind the key event handler to both keydown and keyup events
+        d3.select('body').on('keydown keyup', handleKeyEvent.bind(this));
       }),
       // Subscribe to zoom event
       switchMap(() => this.zoomService.zoomed$),
@@ -178,12 +203,17 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, AfterContentIn
 
   private adjustBrushToCells(event: d3.D3BrushEvent<unknown>) {
     if (!event.sourceEvent) return;
+
+    if ((event.sourceEvent as MouseEvent).shiftKey) {
+      // Do a pan
+      this.initService.brushRegion.select('.overlay').style('cursor', 'grabbing');
+    }
+
     const x = this.initService.scale.x;
     let [x0, x1] = (event.selection as [number, number]).map(x.invert);
     x0 = Math.max(1, Math.round(x0));
     x1 = Math.min(this.sequence.length, Math.round(x1));
     const d1 = [x0 - 0.5, x1 + 0.5] as [number, number];
-
     this.initService.brushRegion.call(this.initService.brush.move, d1.map(x) as [number, number]);
   }
 

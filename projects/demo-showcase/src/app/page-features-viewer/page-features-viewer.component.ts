@@ -33,9 +33,9 @@ export class PageFeaturesViewerComponent {
     'text-color': 'black',
     // Define margins
     'margin-top': 24,
-    'margin-right': 10,
+    'margin-right': 0,
     'margin-bottom': 24,
-    'margin-left': 140,
+    'margin-left': 0,
   };
   // Define input sequence
   readonly sequence = Array.from(P04637);

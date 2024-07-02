@@ -35,6 +35,8 @@ export class InitializeService {
 
   public seqLen!: number;
 
+  public focusMousedown!: ((this: SVGGElement, event: unknown, d: undefined) => void);
+
   // Get referenced HTML div
   public get div() {
     return this.root.nativeElement as HTMLDivElement;
@@ -167,7 +169,12 @@ export class InitializeService {
         // Set zoom behavior
         this.focus.call(this.zoom)
           .on('dblclick.zoom', () => this.zoom.scaleTo(this.focus, 1))
-          .on('mousedown.zoom', null)
+
+        // Save the mousedown.zoom event listener
+        this.focusMousedown = this.focus.on('mousedown.zoom')!;
+
+        // Remove the mousedown.zoom event listener
+        this.focus.on('mousedown.zoom', null);
 
         this.brush = d3.brushX();
       }),
