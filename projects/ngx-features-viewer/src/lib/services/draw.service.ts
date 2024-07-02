@@ -1,4 +1,4 @@
-import {map, Observable, ReplaySubject, shareReplay, switchMap, tap} from 'rxjs';
+import {combineLatest, map, Observable, ReplaySubject, shareReplay, switchMap, tap} from 'rxjs';
 import {Injectable} from '@angular/core';
 import {InitializeService, Scale} from './initialize.service';
 import {FeaturesService} from './features.service';
@@ -103,18 +103,19 @@ export class DrawService {
     private featuresService: FeaturesService,
   ) {
     // Define draw initialization
-    this.draw$ = this.sequence$.pipe(
+    this.draw$ = combineLatest([this.initializeService.initialized$, this.sequence$]).pipe(
       // Update horizontal scale domain
-      tap((sequence) => {
+      tap(([,sequence]) => {
         // Get horizontal scale
         const x = this.initializeService.scale.x;
         // Generate horizontal domain for sequence
         const domain = [0, sequence.length + 1];
+        console.log("Setting domain", domain)
         // Update horizontal scale
         x.domain(domain);
       }),
       // Draw sequence
-      map((sequence) => this.createSequence(sequence)),
+      map(([,sequence]) => this.createSequence(sequence)),
       // Initialize tooltip
       tap(() => this.initializeTooltip()),
       // Cache result

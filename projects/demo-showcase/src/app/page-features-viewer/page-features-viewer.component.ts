@@ -33,7 +33,7 @@ export class PageFeaturesViewerComponent {
     'text-color': 'black',
     // Define margins
     'margin-top': 24,
-    'margin-right': 0,
+    'margin-right': 10,
     'margin-bottom': 24,
     'margin-left': 140,
   };
