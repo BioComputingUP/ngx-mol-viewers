@@ -1,9 +1,9 @@
 import { Injectable, TemplateRef } from '@angular/core';
+import { Selection, select } from 'd3';
 import { ReplaySubject } from 'rxjs'
-import { select } from 'd3';
 import { InitializeService } from './initialize.service';
-import { Feature } from '../features/feature';
 import { InternalTrace, Trace } from '../trace';
+import { Feature } from '../features/feature';
 
 export interface Context {
   // Trace is available in both trace and feature context
@@ -19,7 +19,16 @@ export interface Context {
 export class TooltipService {
 
   // Define HTML div element containing template
-  public tooltip!: HTMLDivElement;
+  public _tooltip!: Selection<HTMLDivElement, unknown, null, unknown>;
+
+  public set tooltip(tooltip: HTMLDivElement) {
+    // Wrap tooltip in d3 selection
+    this._tooltip = select(tooltip);
+  }
+
+  public get tooltip() {
+    return this._tooltip.node() as HTMLDivElement;
+  }
 
   // Define reference to tooltip template
   public templateRef!: TemplateRef<unknown>;
@@ -29,14 +38,21 @@ export class TooltipService {
 
   constructor(public initializeService: InitializeService) { }
 
+  public getCoordinates(mouseEvent: MouseEvent, traceId: unknown): [number, number] {
+    // Define coordinates
+    const x = Math.floor(this.initializeService.scale.x.invert(mouseEvent.offsetX));
+    const y = Math.floor(this.initializeService.scale.y('' + traceId));
+    // Return coordinates
+    return [x, y];
+  }
+
   public onMouseEnter(event: MouseEvent, trace: InternalTrace, feature?: Feature, index?: number) {
     // Define tooltip
-    const tooltip = select<HTMLDivElement, unknown>(this.tooltip);
+    const tooltip = this._tooltip;
     // Define coordinates
-    const x = Math.floor(this.initializeService.scale.x.invert(event.offsetX));
-    const y = this.initializeService.scale.y('' + trace.id);
+    const coordinates = this.getCoordinates(event, trace.id);
     // Emit tooltip context
-    this.tooltip$.next({ trace, feature, index, coordinates: [x, y] });
+    this.tooltip$.next({ trace, feature, index, coordinates });
     // Set tooltip visible
     tooltip.style("display", "block");
     tooltip.style("opacity", 1);
@@ -44,20 +60,25 @@ export class TooltipService {
 
   public onMouseMove(event: MouseEvent, trace: InternalTrace, feature?: Feature, index?: number) {
     // Define tooltip
-    const tooltip = select<HTMLDivElement, unknown>(this.tooltip);
-    // Define coordinates
-    const x = Math.floor(this.initializeService.scale.x.invert(event.offsetX));
-    const y = this.initializeService.scale.y('' + trace.id);
-    // Emit tooltip context
-    this.tooltip$.next({ trace, feature, index, coordinates: [x, y] });
+    const tooltip = this._tooltip;
+    // Re-rendering tooltip on move is required only for continuouse features
+    if (feature && feature.type === 'continuous') {
+      // Define coordinates
+      const coordinates = this.getCoordinates(event, trace.id);
+      // Emit tooltip context
+      this.tooltip$.next({ trace, feature, index, coordinates });
+    }
+    // Define left, top position
+    const left = event.offsetX + 10;
+    const top = event.offsetY + 10;
     // Set tooltip position
-    tooltip.style("left", `${event.offsetX + 10}px`);
-    tooltip.style("top", `${event.offsetY + 10}px`);
+    tooltip.style("left", `${left}px`);
+    tooltip.style("top", `${top}px`);
   }
 
   public onMouseLeave() {
     // Define tooltip
-    const tooltip = select<HTMLDivElement, unknown>(this.tooltip);
+    const tooltip = this._tooltip;
     // Hide tooltip
     tooltip.style("display", "none");
     tooltip.style("opacity", 0);

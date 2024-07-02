@@ -71,6 +71,7 @@ export class ZoomService implements OnDestroy {
         current.domain([start, end]);
         // Return original scale
         return this.initService.scale;
+        // return void 0;
       }),
       // Start with current scale
       startWith(this.initService.scale),
@@ -141,6 +142,11 @@ export class ZoomService implements OnDestroy {
         axes.x.call(axis);
       }),
     );
+
+    // // Ensure initialization completed
+    // this._brushed = timer(1000).pipe(withLatestFrom(initialized$)).subscribe(() => {
+    //   console.log('Current scale:', this.initService.scale);
+    // });
   }
 
   ngOnDestroy(): void {

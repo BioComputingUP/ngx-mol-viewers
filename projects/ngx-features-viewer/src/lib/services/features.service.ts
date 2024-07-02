@@ -3,7 +3,7 @@ import { InternalTrace, InternalTraces, Trace, Traces } from "../trace";
 import { Feature } from "../features/feature";
 
 
-@Injectable({providedIn: 'root'})
+@Injectable({ providedIn: 'platform' })
 export class FeaturesService {
   protected traceMap = new Map<number, InternalTrace>();
   protected internalTraces!: InternalTraces;

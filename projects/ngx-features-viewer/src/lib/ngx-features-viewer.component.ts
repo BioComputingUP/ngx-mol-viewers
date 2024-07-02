@@ -60,18 +60,12 @@ export class NgxFeaturesViewerLabelDirective {
 })
 export class NgxFeaturesViewerTooltipDirective {
 
-  // @Input() trace!: Trace; // This is valid for both Trace and Feature
-
-  // @Input() feature?: Feature; // Defines feature instance in trace
-
-  // @Input() index?: number; // Defines feature index in trace
-
   constructor(public templateRef: TemplateRef<unknown>) {}
 
 }
 
 // TODO Define sequence type
-export type Sequence = Array<string>;
+export type Sequence = { length: number } & Partial<Record<number, string>>;
 
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector

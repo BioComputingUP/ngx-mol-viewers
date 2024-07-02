@@ -1,4 +1,4 @@
-import { distinctUntilChanged, map, Observable, ReplaySubject, startWith } from 'rxjs';
+import { Observable, ReplaySubject, distinctUntilChanged, map, startWith, tap } from 'rxjs';
 import { Injectable } from '@angular/core';
 // Custom providers
 import { InitializeService } from './initialize.service';
@@ -30,9 +30,7 @@ export function resize<E extends d3.Selection<any, undefined, null, undefined>, 
     .attr('x', margin.left);
 }
 
-@Injectable({
-  providedIn: 'platform'
-})
+@Injectable({ providedIn: 'platform' })
 export class ResizeService {
   /** Resize handler for SVG container
    *
@@ -83,6 +81,8 @@ export class ResizeService {
   ) {
     // Trigger resize event
     const resize$: Observable<void> = this.resize$.pipe(
+      // TODO Remove this
+      tap((event: Event) => console.log('Resizing', event)),
       // Get width, height from root HTML div
       map(() => ({width: this.width, height: this.height})),
       // // Add some delay, avoid flooding of resize events
@@ -157,42 +157,6 @@ export class ResizeService {
     // Update range in scale according to horizontal margins
     x.range([left, width - right]);
   }
-
-  // public updateRangeY(): void {
-  //   // Get vertical scale
-  //   const y = this.scale.y;
-  //   // Get domain, as previously defined in draw pipeline
-  //   // NOTE It includes start, end empty positions
-  //   const domain = y.domain();
-  //   // // Get map between feature identifier and its height
-  //   // const height = this.initService.height;
-  //   // Compute range
-  //   const range = domain.reduce((range: number[], id: string, i: number) => {
-  //     // Initialize offset
-  //     let offset = 0;
-  //     // Case on first feature (sequence)
-  //     if (i === 0 && id === 'sequence') {
-  //       // Update offset adding initial top margin
-  //       offset += this.margin.top;
-  //       offset += height.get(id)! / 2;
-  //     }
-  //     // Otherwise
-  //     else {
-  //       // Get height according to previous element
-  //       offset += range[i - 1]!;
-  //       offset += height.get(domain[i-1])! / 2;
-  //       offset += height.get(domain[i])! / 2;
-  //     }
-  //     // Finally, update range
-  //     return [...range, offset];
-  //   }, []);
-  //   // Add last offset
-  //   let offset = 0;
-  //   offset += range.at(-1)!;
-  //   offset += height.get(domain.at(-1)!)! / 2;
-  //   // Update vertical axis range
-  //   y.range([...range, offset]);
-  // }
 
   public updateRangeY(): void {
     // Do nothing
