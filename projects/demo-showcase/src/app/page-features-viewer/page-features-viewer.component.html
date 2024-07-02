@@ -37,7 +37,7 @@
   </div>
   <!-- Show output -->
   <div style="display: block; height: auto; width: 100%;">
-    <ngx-features-viewer [sequence]="sequence" [traces]="traces" [settings]="settings">
+    <ngx-features-viewer [sequence]="sequence" [traces]="traces" [settings]="settings.outer">
       <!-- Left label -->
       <ng-template let-trace="trace" ngx-features-viewer-label>
         <div class="d-flex h-100 w-100 justify-content-start pe-0 align-items-center font-monospace">
@@ -56,18 +56,21 @@
       </ng-template>
       <!-- Right label -->
       <ng-template let-trace="trace" ngx-features-viewer-label where="right">
-        <div class="d-flex h-100 w-100 border justify-content-center pe-0 align-items-center">
-          <button class="btn btn-primary" [class.text-muted]="!trace.expanded" (click)="test($event, trace)">
-            test
-          </button>
-        </div>
+        test
       </ng-template>
       <!-- Tootlip template -->
-      <!-- <ng-template let-trace="trace" let-feature="feature" let-index="index" ngx-features-viewer-tooltip>
-        <div class="mb-1">{{ trace | json }}</div>
-        <div class="mb-1">{{ index }}</div>
-        <div class="mb-0">{{ feature | json }}</div>
-      </ng-template> -->
+      <ng-template let-trace="trace" let-feature="feature" let-index="index" let-coordinates="coordinates" ngx-features-viewer-tooltip>
+        <div class="rounded bg-white shadow-sm p-3" style="width: 400px; height: auto">
+          <ngx-features-viewer [sequence]="sequence" [settings]="settings.inner" [traces]="[trace]">
+            <!-- Define simple label left -->
+            <ng-template let-trace="trace" ngx-features-viewer-label>
+              <div class="d-flex h-100 w-100 justify-content-start pe-0 align-items-center font-monospace">
+                {{ trace.label }}
+              </div>
+            </ng-template>
+          </ngx-features-viewer>
+        </div>
+      </ng-template>
     </ngx-features-viewer>
   </div>
   <!-- TODO Remove this -->

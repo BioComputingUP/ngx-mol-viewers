@@ -3,6 +3,7 @@ import { NgxFeaturesViewerLabelDirective } from "../ngx-features-viewer.componen
 import { Observable, ReplaySubject, map, shareReplay, tap } from 'rxjs';
 import { ElementRef, Injectable } from '@angular/core';
 import { Settings } from '../settings';
+import { v4 as UUID } from 'uuid';
 import * as d3 from 'd3';
 
 type SVG = d3.Selection<SVGSVGElement, undefined, null, undefined>;
@@ -23,9 +24,7 @@ export interface Axes {
   x: Group;
 }
 
-@Injectable({
-  providedIn: 'platform',
-})
+@Injectable({ providedIn: 'platform' })
 export class InitializeService {
 
   // Define emitter for root element
@@ -134,10 +133,12 @@ export class InitializeService {
       tap((svg) => this.svg = svg),
       // Generate SVG container (draw)
       tap((svg) => {
+        // Define unique identifier
+        const uuid = '' + UUID();
         // Define clip path: everything out of this area won't be drawn
         this.clip = svg.append('defs').append('clipPath')
           // Set clip identifier, required in <defs>
-          .attr('id', 'clip')
+          .attr('id', uuid)
           // Add inner rectangle
           .append('rect')
         // NOTE Add middle layer, in order to allow both zoom and mouse events to be captured
@@ -149,7 +150,7 @@ export class InitializeService {
         this.draw = focus.append('g')
           // Bind features group to clip path
           .attr('class', 'features')
-          .attr('clip-path', `url(#clip)`);
+          .attr('clip-path', `url(${ '#' + uuid })`);
         // Define zoom event
         this.zoom = d3.zoom<SVGGElement, undefined>();
         // Add an invisible rectangle on top of the chart.

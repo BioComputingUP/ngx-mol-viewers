@@ -5,18 +5,16 @@ import * as d3 from 'd3';
 // Services
 import { InitializeService } from './initialize.service';
 import { FeaturesService } from './features.service';
-import { ZoomService } from "./zoom.service";
+import { TooltipService } from './tooltip.service';
+import { ZoomService } from './zoom.service';
 // Data types
-import { InternalTrace, InternalTraces } from "../trace";
-import { Feature } from "../features/feature";
+import { InternalTrace, InternalTraces } from '../trace';
+import { Feature } from '../features/feature';
 import { Continuous } from '../features/continuous';
 import { Locus } from '../features/locus'
-import { DSSP } from "../features/dssp";
-import { Pin } from "../features/pin";
-import { TooltipService } from './tooltip.service';
-
-
-export type Sequence = string[];
+import { DSSP } from '../features/dssp';
+import { Pin } from '../features/pin';
+import { Sequence } from '../sequence';
 
 type ResidueGroup = d3.Selection<SVGGElement | d3.BaseType, string, SVGGElement | d3.BaseType, Sequence>;
 
@@ -175,14 +173,7 @@ export class DrawService {
         // Get offset for current trace
         const mt = range.at(-1) as number;
         // Initialize line height for current trace
-        let lh = trace.options?.['line-height'] || this.initializeService.settings['line-height'];
-        // // Case positioning is set to dodge
-        // if (trace.position === 'dodge') {
-        //   // Update line height to span for all the inner features
-        //   lh = trace.features.reduce((lh) => lh + (trace.options?.['line-height'] || this.initializeService.settings['line-height']), 0)
-        // }
-        // Update line height to span for all the inner features
-        lh = trace.features.reduce((lh) => lh + (trace.options?.['line-height'] || this.initializeService.settings['line-height']), 0)
+        const lh = trace.options?.['line-height'] || this.initializeService.settings['line-height'];
         // Update range
         return [...range, mt + lh];
       }
@@ -195,18 +186,18 @@ export class DrawService {
 
   private createTooltip() {
     // Get settings
-    const settings = this.initializeService.settings;
+    // const settings = this.initializeService.settings;
     // Define border radius according to content size
-    const r = settings['content-size'] / 3;
+    // const r = settings['content-size'] / 3;
     // Append tooltip to SVG element
-    this.tooltip = d3.select(this.tooltipService.tooltip)
-      // Update tooltip style
-      .style('padding', '.25rem')
-      .style('color', 'black')
-      .style('background-color', 'white')
-      .style('border', 'solid')
-      .style('border-width', '1px')
-      .style('border-radius', r + 'px');
+    this.tooltip = this.tooltipService._tooltip;
+    // Update tooltip style
+    // .style('padding', '.25rem')
+    // .style('color', 'black')
+    // .style('background-color', 'white')
+    // .style('border', 'solid')
+    // .style('border-width', '1px')
+    // .style('border-radius', r + 'px');
   }
 
   private createSequence(sequence: Sequence) {
@@ -221,12 +212,24 @@ export class DrawService {
       // Create current residues group
       .join('g')
       .attr('class', 'sequence');
+    // Define residues list
+    const residues = [];
+    // Case sequence is an array
+    if (Array.isArray(sequence)) {
+      // Update residues list
+      residues.push(...sequence);
+    }
+    // Case sequence is a string
+    else if (typeof sequence === 'string') {
+      // Update residues list
+      residues.push(...sequence.split(''));
+    }
     // TODO Append background rectangles to SVG element
     this['group.residues'] = group
       // Select previous residue groups
       .selectAll('g.residue')
       // Bind residue one-letter-code to each group
-      .data(sequence)
+      .data(residues)
       // Generate group
       .join('g')
       .attr('id', (_, i) => `residue-${i + 1}`)
@@ -470,9 +473,7 @@ export class DrawService {
 
   public createTraces(traces: InternalTraces): void {
     // Get references to local variables as `this` might be lost
-    const tooltip = this.tooltip;
     const tooltipService = this.tooltipService;
-    const initializeService = this.initializeService;
     // const scale = this.initializeService.scale;
     // Generate and store traces groups
     this['group.traces'] = this.initializeService.draw
@@ -495,19 +496,6 @@ export class DrawService {
         .attr('class', (d) => 'feature ' + d.type)
         .attr('id', (_, i) => `trace-${trace.id}-feature-${i}`)
         .each(function (feature, index) {
-          // TODO Define function to position tooltip on mouse move
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          const onMouseMove = (event: MouseEvent, trace: InternalTrace, feature: Feature, index: number) => {
-            // Define offset for tooltip
-            const left = event.offsetX + 10;
-            const top = event.offsetY + 10;
-            console.log('x', Math.floor(initializeService.scale.x.invert(event.offsetX)));
-            console.log('y', initializeService.scale.y('' + trace.id));
-            // Apply offset to tooltip
-            tooltip
-              .style('left', left + 'px')
-              .style('top', top + 'px');
-          }
           // Define current selection
           const selection = d3.select(this);
           // Bind data to selection
@@ -515,7 +503,7 @@ export class DrawService {
           // On mouse enter / over
           selection.on('mouseenter', (event: MouseEvent) => tooltipService.onMouseEnter(event, trace, feature, index));
           // On mouse move
-          selection.on('mousemove', (event: MouseEvent) => onMouseMove(event, trace, feature, index));
+          selection.on('mousemove', (event: MouseEvent) => tooltipService.onMouseMove(event, trace, feature, index));
           // On mouse leave
           selection.on('mouseleave', () => tooltipService.onMouseLeave());
 
@@ -530,7 +518,7 @@ export class DrawService {
           // };
 
           const appendElementWithAttributes = (
-            parent: d3.Selection<SVGGElement, unknown, null, undefined>, 
+            parent: d3.Selection<SVGGElement, unknown, null, undefined>,
             element: string,
             attributes: { [key: string]: number | string }
           ): d3.Selection<d3.BaseType, unknown, null, undefined> => {

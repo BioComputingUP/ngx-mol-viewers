@@ -1,4 +1,4 @@
-import { Observable, ReplaySubject, distinctUntilChanged, map, startWith } from 'rxjs';
+import { Observable, ReplaySubject, distinctUntilChanged, map, startWith, tap } from 'rxjs';
 import { Injectable } from '@angular/core';
 // Custom providers
 import { InitializeService } from './initialize.service';
@@ -30,9 +30,7 @@ export function resize<E extends d3.Selection<any, undefined, null, undefined>,>
     .attr('x', margin.left);
 }
 
-@Injectable({
-  providedIn: 'platform'
-})
+@Injectable({ providedIn: 'platform' })
 export class ResizeService {
   /** Resize handler for SVG container
    *
@@ -83,6 +81,8 @@ export class ResizeService {
   ) {
     // Trigger resize event
     const resize$: Observable<void> = this.resize$.pipe(
+      // TODO Remove this
+      tap((event: Event) => console.log('Resizing', event)),
       // Get width, height from root HTML div
       map(() => ({ width: this.width, height: this.height })),
       // // Add some delay, avoid flooding of resize events

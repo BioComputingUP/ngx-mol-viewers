@@ -1,13 +1,11 @@
-import {Observable, ReplaySubject, map, shareReplay, startWith, switchMap, tap} from 'rxjs';
+import { Observable, ReplaySubject, map, shareReplay, startWith, switchMap, tap } from 'rxjs';
 import { Injectable } from '@angular/core';
 // Custom providers
 import { Scale, InitializeService } from './initialize.service';
 // D3 library
 import * as d3 from 'd3';
 
-@Injectable({
-  providedIn: 'platform'
-})
+@Injectable({ providedIn: 'platform' })
 export class ZoomService {
   /** Zoom handler service
    *
@@ -45,7 +43,6 @@ export class ZoomService {
     const scaled$: Observable<Scale> = initialized$.pipe(
       // Subscribe to zoom event
       switchMap(() => this.zoom$),
-      tap((event) => console.log('Zoom event:', event)),
       // Transform original scale
       map((event) => {
         // Get initial horizontal scale
@@ -60,6 +57,7 @@ export class ZoomService {
         current.domain([start, end]);
         // Return original scale
         return this.initService.scale;
+        // return void 0;
       }),
       // Start with current scale
       startWith(this.initService.scale),
@@ -83,9 +81,14 @@ export class ZoomService {
         // Update horizontal axis
         axes.x.call(axis);
       }),
-      // // TODO Remove this
-      // tap(() => console.log('Zoomed!')),
+      // TODO Remove this
+      tap(() => console.log('Zoomed!')),
     );
+
+    // // Ensure initialization completed
+    // this._brushed = timer(1000).pipe(withLatestFrom(initialized$)).subscribe(() => {
+    //   console.log('Current scale:', this.initService.scale);
+    // });
   }
 
 }
