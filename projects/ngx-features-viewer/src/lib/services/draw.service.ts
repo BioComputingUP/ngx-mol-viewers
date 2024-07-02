@@ -478,6 +478,7 @@ export class DrawService {
     // Get references to local variables as `this` might be lost
     const tooltip = this.tooltip;
     const tooltipService = this.tooltipService;
+    const initializeService = this.initializeService;
     // const scale = this.initializeService.scale;
     // Generate and store traces groups
     this['group.traces'] = this.initializeService.draw
@@ -506,6 +507,8 @@ export class DrawService {
             // Define offset for tooltip
             const left = event.offsetX + 10;
             const top = event.offsetY + 10;
+            console.log('x', Math.floor(initializeService.scale.x.invert(event.offsetX)));
+            console.log('y', initializeService.scale.y('' + trace.id));
             // Apply offset to tooltip
             tooltip
               .style('left', left + 'px')
@@ -516,7 +519,7 @@ export class DrawService {
           // Bind data to selection
           selection.data([feature]);
           // On mouse enter / over
-          selection.on('mouseenter', () => tooltipService.onMouseEnter(trace, feature, index));
+          selection.on('mouseenter', (event: MouseEvent) => tooltipService.onMouseEnter(event, trace, feature, index));
           // On mouse move
           selection.on('mousemove', (event: MouseEvent) => onMouseMove(event, trace, feature, index));
           // On mouse leave
