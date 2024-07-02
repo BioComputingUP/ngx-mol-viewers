@@ -13,7 +13,7 @@ text {
 
 // Apply a cursor move to the features region
 g.features {
-    cursor: col-resize;
+   // cursor: col-resize;
 }
 
 // Variable for styling the features
@@ -21,6 +21,15 @@ g.features {
     --feature-cursor: default;
     --locus-hover-outline: none;
     --locus-hover-border-radius: 0;
+}
+
+.brush .selection {
+    stroke: #fff;
+    fill: #4682b4;
+    fill-opacity: .125;
+    shape-rendering: crispEdges;
+    display: block;
+    height: 100%;
 }
 
 g .feature {

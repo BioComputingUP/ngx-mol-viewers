@@ -9,7 +9,6 @@ import {InternalTrace, InternalTraces} from "../trace";
 import {Feature} from "../features/feature";
 import {Pin} from "../features/pin";
 import {DSSP, DSSPPaths, dsspShape} from "../features/dssp";
-import {ZoomService} from "./zoom.service";
 
 export type Sequence = string[];
 
@@ -70,8 +69,6 @@ export class DrawService {
 
   public readonly sequence$ = new ReplaySubject<Sequence>(1);
 
-  private sequenceLength = 0;
-
   public 'group.residues'!: ResidueGroup;
 
   public 'group.labels'!: LabelGroup;
@@ -101,8 +98,6 @@ export class DrawService {
 
   private coilPoints = new Map<string, number[]>();
 
-  private pointerDown = 0;
-
   constructor(
     private initializeService: InitializeService,
     private featuresService: FeaturesService,
@@ -115,7 +110,6 @@ export class DrawService {
         const x = this.initializeService.scale.x;
         // Generate horizontal domain for sequence
         const domain = [0, sequence.length + 1];
-        this.sequenceLength = sequence.length;
         // Update horizontal scale
         x.domain(domain);
       }),
@@ -252,85 +246,9 @@ export class DrawService {
     // Update text width
     //charWidth = Math.max(charWidth, this.getBBox().width);
     //});
-    // Updated stored character width
-    // this['char.width'] = charWidth;
-    // Create a rectangle that is shown on hover
-    this.initializeService.draw.on('pointerdown', (event) => {
-      this.pointerDown = event.offsetX;
-      // Check if there is already a rectangle, if not create one
-      this.initializeService.draw.append('rect')
-        .attr("fill", "lightblue")
-        .attr("fill-opacity", 0.5)
-        .attr("id", "zoom-rect");
 
-      // Momentarily disable pointer events of features
-      this.initializeService.draw.selectAll(".feature").style("pointer-events", "none");
 
-      this.initializeService.draw.on('pointerup', (event) => this.zoomToRegion(event));
-      this.initializeService.draw.on('pointerleave', () => this.deleteZoomRegion());
-
-      this.initializeService.draw.on('pointermove', (event) => {
-        const currentMousePosition = {x: event.offsetX, y: event.offsetY};
-        const x1 = Math.min(this.pointerDown, currentMousePosition.x);
-        const x2 = Math.max(this.pointerDown, currentMousePosition.x);
-
-        d3.select("#zoom-rect")
-          .attr("x", x1)
-          .attr("y", 0)
-          .attr("width", x2 - x1)
-          .attr("height", 20000);
-      });
-    });
-  }
-
-  private deleteZoomRegion() {
-    d3.select("#zoom-rect").remove();
-
-    // Re-enable pointer events of features
-    this.initializeService.draw.selectAll(".feature").style("pointer-events", "all");
-
-    this.initializeService.draw.on('pointermove', null);
-    this.initializeService.draw.on('pointerup', null);
-    this.initializeService.draw.on('pointerleave', null);
-  }
-
-  private zoomToRegion(event: MouseEvent) {
-    const zoom = this.initializeService.zoom;
-    const totalWidth = this.initializeService.width;
-    const scale = this.initializeService.scale;
-
-    // Get the current zoom transform
-    const transform = d3.zoomTransform(this.initializeService.draw.node() as SVGGElement);
-    // Calculate how much the user has zoomed in
-    const zoomFactor = transform.k;
-    // Calculate the current x position
-    const x = transform.x;
-    // Calculate the current y position
-    const y = transform.y;
-    const margin = this.initializeService.margin;
-    const sequenceLength = this.sequenceLength;
-
-    console.log(zoomFactor, x, y);
-
-    function zoomTo(what: d3.Selection<SVGGElement, undefined, null, undefined>, xMin: number, xMax: number) {
-      const scaling = Math.min(sequenceLength / 5, totalWidth / (xMax - xMin));
-      const t = d3.zoomIdentity
-        .scale(scaling)
-        .translate(-xMin, 0);
-      zoom.transform(what, t);
-    }
-
-    // Get the width of the rectangle
-    const width = Math.abs(this.pointerDown - event.offsetX);
-    // If the width is more than 10 pixels, zoom on the rectangle
-    if (width > 10) {
-      const xMax = Math.max(this.pointerDown, event.offsetX);
-      const xMin = Math.min(this.pointerDown, event.offsetX);
-
-      // Use the zoom service to zoom between the two x values
-      zoomTo(this.initializeService.draw, xMin, xMax);
-    }
-    this.deleteZoomRegion();
+    this.initializeService.brushRegion = this.initializeService.draw.append('g').attr('class', 'brush');
   }
 
   public updateSequence() {

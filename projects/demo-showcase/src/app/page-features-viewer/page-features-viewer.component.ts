@@ -4,7 +4,7 @@ import {CommonModule} from '@angular/common';
 import {Traces} from "../../../../ngx-features-viewer/src/lib/trace";
 
 // >sp|P04637|P53_HUMAN Cellular tumor antigen p53 OS=Homo sapiens OX=9606 GN=TP53 PE=1 SV=4
-const P04637 = 'MEEPQSDPSVEPPLSQETFS';
+const P04637 = 'MEEPQSDPSVEPPLSQETFSMEEPQSDPSVEPPLSQETFSMEEPQSDPSVEPPLSQETFSMEEPQSDPSVEPPLSQETFS';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
@@ -45,7 +45,7 @@ export class PageFeaturesViewerComponent {
     "grid-line-color": "gray",
     "grid-line-width": 0.5,
     "grid-y-values": [],
-    "content-size": 80,
+    "content-size": 40,
     "line-height": 80,
     "zero-line": true,
     "zero-line-color": "black",
@@ -61,6 +61,7 @@ export class PageFeaturesViewerComponent {
       color: "white",
       "stroke-color": "black",
       "stroke-width": 1,
+      opacity: 0.8,
       start: 1,
       end: 10,
     }],

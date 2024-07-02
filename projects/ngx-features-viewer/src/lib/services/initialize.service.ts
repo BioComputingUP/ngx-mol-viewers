@@ -1,6 +1,6 @@
-import { Observable, ReplaySubject, map, shareReplay, tap } from 'rxjs';
-import { ElementRef, Injectable } from '@angular/core';
-import { Settings } from '../settings';
+import {map, Observable, ReplaySubject, shareReplay, tap} from 'rxjs';
+import {ElementRef, Injectable} from '@angular/core';
+import {Settings} from '../settings';
 import * as d3 from 'd3';
 import {NgxFeaturesViewerLabelDirective} from "@ngx-features-viewer";
 
@@ -32,6 +32,8 @@ export class InitializeService {
 
   // Define root element reference
   public root!: ElementRef;
+
+  public seqLen!: number;
 
   // Get referenced HTML div
   public get div() {
@@ -66,9 +68,9 @@ export class InitializeService {
 
   public get margin() {
     // Unpack settings
-    const { 'margin-top': top, 'margin-right': right, 'margin-bottom': bottom, 'margin-left': left, } = this.settings;
+    const {'margin-top': top, 'margin-right': right, 'margin-bottom': bottom, 'margin-left': left,} = this.settings;
     // Return margins
-    return { top, right, bottom, left };
+    return {top, right, bottom, left};
   }
 
   public labelLeft!: NgxFeaturesViewerLabelDirective;
@@ -91,6 +93,12 @@ export class InitializeService {
 
   // Define zoom callback
   public zoom!: d3.ZoomBehavior<SVGGElement, undefined>;
+
+  public brush!: d3.BrushBehavior<undefined>;
+
+  public brushRegion!: Group;
+
+  public focus!: Group;
 
   // Declare initialization pipeline
   public readonly initialized$: Observable<d3.Selection<SVGSVGElement, undefined, null, undefined>>;
@@ -138,11 +146,11 @@ export class InitializeService {
           .append('rect')
         // NOTE Add middle layer, in order to allow both zoom and mouse events to be captured
         // https://stackoverflow.com/questions/58125180/d3-zoom-and-mouseover-tooltip
-        const focus = svg.append('g')
+        this.focus = svg.append('g')
           .attr('class', 'focus');
-          // .attr('transform', `translate(${this.margin.left}, ${this.margin.top})`);
+
         // Define features group
-        this.draw = focus.append('g')
+        this.draw = this.focus.append('g')
           // Bind features group to clip path
           .attr('class', 'features')
           .attr('clip-path', `url(#clip)`);
@@ -150,16 +158,18 @@ export class InitializeService {
         this.zoom = d3.zoom<SVGGElement, undefined>();
         // Add an invisible rectangle on top of the chart.
         // This, can recover pointer events: it is necessary to understand when the user zoom.
-        this.events = focus.append('rect')
+        this.events = this.focus.append('rect')
           // Set style to appear invisible, but catch events
           .attr('class', 'zoom')
           .style('fill', 'none')
           .style('pointer-events', 'all')
           .lower();
         // Set zoom behavior
-        focus.call(this.zoom)
-          .on('dblclick.zoom', () => this.zoom.scaleTo(focus, 1))
+        this.focus.call(this.zoom)
+          .on('dblclick.zoom', () => this.zoom.scaleTo(this.focus, 1))
           .on('mousedown.zoom', null)
+
+        this.brush = d3.brushX();
       }),
       // Initialize horizontal, vertical axis
       tap((svg) => {
@@ -173,10 +183,10 @@ export class InitializeService {
         const y = svg.append('g').attr('class', 'y axis')
         // .attr('transform', `translate(${this.margin.left}, 0)`);
         // Initialize axis
-        this.axes = { x, y };
+        this.axes = {x, y};
       }),
       // Initialize horizontal, vertical scale
-      tap(() => this.scale = { x: d3.scaleLinear(), y: d3.scaleOrdinal() }),
+      tap(() => this.scale = {x: d3.scaleLinear(), y: d3.scaleOrdinal()}),
       // Avoid re-drawing the graph each time another observable subscribes
       shareReplay(1)
     );

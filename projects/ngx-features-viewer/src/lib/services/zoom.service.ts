@@ -1,17 +1,11 @@
-import {
-  distinctUntilChanged,
-  map,
-  Observable,
-  ReplaySubject,
-  shareReplay,
-  startWith,
-  switchMap,
-} from 'rxjs';
+import {distinctUntilChanged, map, merge, Observable, ReplaySubject, shareReplay, startWith, switchMap,} from 'rxjs';
 import {Injectable} from '@angular/core';
 // Custom providers
 import {InitializeService, Scale} from './initialize.service';
 // D3 library
 import * as d3 from 'd3';
+
+type D3ZoomEvent = d3.D3ZoomEvent<SVGSVGElement, undefined>;
 
 @Injectable({
   providedIn: 'platform'
@@ -34,7 +28,9 @@ export class ZoomService {
   //   return this.initService.draw;
   // }
 
-  public readonly zoom$ = new ReplaySubject<d3.D3ZoomEvent<SVGSVGElement, undefined>>(1);
+  public readonly zoom$ = new ReplaySubject<D3ZoomEvent>(1);
+
+  public readonly brush$ = new ReplaySubject<[number, number] | undefined>(1);
 
   public readonly zoomed$: Observable<void>;
 
@@ -51,33 +47,57 @@ export class ZoomService {
     );
     // Define pipeline for intercepting zoom event
     const scaled$: Observable<Scale> = initialized$.pipe(
-      // Subscribe to zoom event
-      switchMap(() => this.zoom$),
-      // Avoid multiple zoom events on the same scale
-      distinctUntilChanged((prev, curr) => {
-        const k = prev.transform.k === curr.transform.k;
-        const x = prev.transform.x === curr.transform.x;
-        const y = prev.transform.y === curr.transform.y;
-        return k && x && y;
-      }),
-      // Transform original scale
-      map((event) => {
-        // Get initial horizontal scale
-        const {x: initial} = this._scale;
-        // Get current horizontal scale (the one to be updated)
-        const {x: current} = this.initService.scale;
-        // Get updated scale (apply transformations on initial scale)
-        const updated = event.transform.rescaleX(initial);
-        // Get start, end domain
-        const [start, end] = updated.domain();
-        // Update current domain, in place
-        current.domain([start, end]);
-        // Return original scale
-        return this.initService.scale;
-      }),
-      // Start with current scale
-      startWith(this.initService.scale),
+      switchMap(() => merge(this.zoom$, this.brush$).pipe(
+        distinctUntilChanged((prev, curr) => {
+          if (prev && curr && "type" in curr && curr.type === 'zoom') {
+            prev = prev as d3.D3ZoomEvent<SVGSVGElement, undefined>;
+            curr = curr as d3.D3ZoomEvent<SVGSVGElement, undefined>;
+            const k = prev.transform?.k === curr.transform.k;
+            const x = prev.transform?.x === curr.transform.x;
+            const y = prev.transform?.y === curr.transform.y;
+            return k && x && y;
+          } else {
+            return prev === curr;
+          }
+        }),
+        map((event) => {
+          const {x: initial} = this._scale;
+          const {x: current} = this.initService.scale;
+
+          // Zoom wheel event
+          if (event && "type" in event) {
+            // Handle zoom event
+            const zoomEvent = event as d3.D3ZoomEvent<SVGSVGElement, undefined>;
+            // Modify the zoomEvent transform by applying the current scale
+            const updated = zoomEvent.transform.rescaleX(initial);
+            // Get start, end domain
+            const [start, end] = updated.domain();
+            // Update current domain, in place
+            current.domain([start, end]);
+            // Return original scale
+            return this.initService.scale;
+          } else {
+            event = event as [number, number] | undefined;
+            if (!event) {
+              current.domain(initial.domain());
+            } else {
+              const [start, end] = event.map(current.invert);
+              this.initService.brushRegion.call(this.initService.brush.move, null);
+
+              // Calculate the transform to apply to the zoom
+              const k = (this.initService.seqLen + 1) / (end - start);
+              const x = -initial(start) + this.initService.margin.left * (1 / k);
+
+              this.initService.focus.call(this.initService.zoom.transform, d3.zoomIdentity.scale(k).translate(x, 0));
+            }
+          }
+          return this.initService.scale;
+        }),
+        startWith(this.initService.scale)
+      ))
     );
+
+
     // Always subscribe to same scale
     this.zoomed$ = scaled$.pipe(
       // Update horizontal axis according to scale
