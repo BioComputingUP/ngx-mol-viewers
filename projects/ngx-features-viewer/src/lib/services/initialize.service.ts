@@ -5,6 +5,7 @@ import { ElementRef, Injectable } from '@angular/core';
 import { Settings } from '../settings';
 import { v4 as UUID } from 'uuid';
 import * as d3 from 'd3';
+import { Sequence } from '../sequence';
 
 
 type SVG = d3.Selection<SVGSVGElement, undefined, null, undefined>;
@@ -34,7 +35,9 @@ export class InitializeService {
   // Define root element reference
   public root!: ElementRef;
 
-  public seqLen!: number;
+  // Define reference to sequence, for late use
+  // NOTE This avoids retrieving seuence from ReplaySubject
+  public sequence!: Sequence;
 
   public focusMousedown!: ((this: SVGGElement, event: unknown, d: undefined) => void);
 

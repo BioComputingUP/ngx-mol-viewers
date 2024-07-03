@@ -154,34 +154,35 @@ export class DrawService {
 
   // Update vertical scale
   public updateScale(traces: InternalTraces): void {
-    // Get current vertical scale
     const y = this.initializeService.scale.y;
+    const sequence = this.initializeService.sequence;
+    const settings = this.initializeService.settings;
     // Update domain
     const domain = ['sequence', ...traces.map(({ id }) => id + '')];
+    // Intiialize range
+    const range = [settings['margin-top']];
+    // Set sequence line height
+    if (Array.isArray(sequence) || (typeof sequence === 'string')) {
+      range.push(settings['margin-top'] + settings['line-height'])
+    } else {
+      range.push(settings['margin-top']);
+    }
     // Update range
-    const range = domain.reduce((range: number[], id: string, i: number) => {
-      // Handle sequence
-      if (i === 0 && id === 'sequence') {
-        // Get default line height, margin top
-        const lh = this.initializeService.settings['line-height'];
-        const mt = this.initializeService.settings['margin-top'];
-        // Update range
-        return [mt, mt + lh];
-      }
+    domain.slice(1).forEach((id: string) => {
       // Get current trace
       const trace = this.featuresService.getTrace(+id);
       // Case trace is defined
       if (trace) {
         // Get offset for current trace
-        const mt = range.at(-1) as number;
+        const mt = range[range.length - 1];
         // Initialize line height for current trace
-        const lh = trace.options?.['line-height'] || this.initializeService.settings['line-height'];
+        const lh = trace.options?.['line-height'] || settings['line-height'];
         // Update range
-        return [...range, mt + lh];
+        range.push(mt + lh);
       }
       // Otherwise, throw error
-      throw new Error('Trace not found');
-    }, []);
+      else throw new Error('Trace not found');
+    });
     // Apply updates
     y.domain(domain).range(range);
   }

@@ -36,7 +36,8 @@ export class PageFeaturesViewerComponent {
   };
 
   // Define input sequence
-  readonly sequence = Array.from(P04637);
+  // readonly sequence = Array.from(P04637);
+  readonly sequence = { length: P04637.length };
 
   traces: Trace[];
 

@@ -107,7 +107,7 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, AfterContentIn
   @Input()
   public set settings(settings: Settings) {
     // Update settings in initialization service
-    this.initService.settings = settings;
+    this.initializeService.settings = settings;
   }
 
   @Input()
@@ -128,15 +128,15 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, AfterContentIn
 
   constructor(
     // Dependency injection
+    public initializeService: InitializeService,
     public featuresService: FeaturesService,
-    public initService: InitializeService,
     public tooltipService: TooltipService,
     public resizeService: ResizeService,
     public zoomService: ZoomService,
     public drawService: DrawService,
   ) {
     // TODO Update SVG according to inputs
-    this.update$ = this.initService.initialized$.pipe(
+    this.update$ = this.initializeService.initialized$.pipe(
       // TODO Initialize drawings
       switchMap(() => this.drawService.draw$),
       // Subscribe to resize event (set width, height)
@@ -150,7 +150,7 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, AfterContentIn
         // Define number of residues in sequence
         const n = this.sequence.length + 1;
         // Apply scale limit to 5 residues
-        this.initService.zoom
+        this.initializeService.zoom
           .translateExtent([[ms, 0], [w - me, h - mb]])
           .scaleExtent([1, n / 5])
           .extent([[ms, 0], [w - me, h - mb]])
@@ -158,17 +158,17 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, AfterContentIn
             this.zoomService.zoom$.next(event);
           });
 
-        this.initService.brush
+        this.initializeService.brush
           .extent([[ms, mt], [w - me, h - mb]])
           .on('brush', (event) => this.adjustBrushToCells(event))
           .on('end', (event) => this.brushRegion(event));
 
         // Initialize brush on the brush region
-        this.initService.brushRegion.call(this.initService.brush);
+        this.initializeService.brushRegion.call(this.initializeService.brush);
 
-        const focus = this.initService.focus;
-        const brushRegion = this.initService.brushRegion;
-        const focusMousedown = this.initService.focusMousedown.bind(this.initService.focus.node()!)
+        const focus = this.initializeService.focus;
+        const brushRegion = this.initializeService.brushRegion;
+        const focusMousedown = this.initializeService.focusMousedown.bind(this.initializeService.focus.node()!)
 
         // Function to handle key events
         function handleKeyEvent(event: KeyboardEvent) {
@@ -201,9 +201,10 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, AfterContentIn
   public ngOnChanges(changes: SimpleChanges): void {
     // Case input sequence changes
     if (changes && changes['sequence']) {
+      // Store reference to sequence
+      this.initializeService.sequence = this.sequence;
       // Emit sequence
-      this.sequence$.next(this.sequence);
-      this.initService.seqLen = this.sequence.length;
+      this.sequence$.next(this.initializeService.sequence);
     }
   }
 
@@ -213,16 +214,16 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, AfterContentIn
       // Loop through each label template
       this.labels.forEach((label) => {
         // Case both labels are defined, then throw error
-        if (this.initService.labelLeft && this.initService.labelRight) {
+        if (this.initializeService.labelLeft && this.initializeService.labelRight) {
           throw new Error('Only one label can be defined');
         }
         // Case label is left
         if (label.where === 'left') {
-          this.initService.labelLeft = label;
+          this.initializeService.labelLeft = label;
         }
         // Case label is right
         if (label.where === 'right') {
-          this.initService.labelRight = label;
+          this.initializeService.labelRight = label;
         }
       });
     }
@@ -232,13 +233,13 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, AfterContentIn
     // Get tooltip directive, fallback to default in case custom is not defined
     const tooltipDirective = this.tooltipCustomDirective || this.tooltipDefaultDirective;
     // Store tooltip template in init service
-    this.initService.tooltip = tooltipDirective;
+    this.initializeService.tooltip = tooltipDirective;
     // Store template reference
     this.tooltipService.templateRef = tooltipDirective.templateRef;
     // Get tooltip element
     this.tooltipService.tooltip = this.tooltipElementRef.nativeElement;
     // Emit root element
-    this.initService.initialize$.next(this._root);
+    this.initializeService.initialize$.next(this._root);
   }
 
   public ngOnDestroy(): void {
@@ -257,15 +258,15 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, AfterContentIn
 
     if ((event.sourceEvent as MouseEvent).shiftKey) {
       // Do a pan
-      this.initService.brushRegion.select('.overlay').style('cursor', 'grabbing');
+      this.initializeService.brushRegion.select('.overlay').style('cursor', 'grabbing');
     }
 
-    const x = this.initService.scale.x;
+    const x = this.initializeService.scale.x;
     let [x0, x1] = (event.selection as [number, number]).map(x.invert);
     x0 = Math.max(1, Math.round(x0));
     x1 = Math.min(this.sequence.length, Math.round(x1));
     const d1 = [x0 - 0.5, x1 + 0.5] as [number, number];
-    this.initService.brushRegion.call(this.initService.brush.move, d1.map(x) as [number, number]);
+    this.initializeService.brushRegion.call(this.initializeService.brush.move, d1.map(x) as [number, number]);
   }
 
   private brushRegion(event: d3.D3BrushEvent<unknown>) {
@@ -273,7 +274,7 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, AfterContentIn
     let selection: [number, number] | undefined = undefined;
     // Ensure that if a selection is made, at least 5 residues are selected
     if (event.selection) {
-      const x = this.initService.scale.x;
+      const x = this.initializeService.scale.x;
       let [x0, x1] = (event.selection as [number, number]).map(x.invert);
       let cont = Math.round(x1 - x0);
       let toSx = false;
