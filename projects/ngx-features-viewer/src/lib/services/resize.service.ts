@@ -139,12 +139,12 @@ export class ResizeService {
   }
 
   public updateAxes(): void {
-    // Unpack horizontal, vertical axis
-    const {x, y} = this.axes;
-    // Translate horizontal axis
-    x.attr('transform', `translate(0, ${this.height - this.margin.top})`);
+    // // Unpack horizontal, vertical axis
+    // const {x, y} = this.axes;
+    // // Translate horizontal axis
+    // x.attr('transform', `translate(0, ${this.height - this.margin.top})`);
     // Translate vertical axis
-    y.attr('transform', `translate(${this.margin.left}, 0)`);
+    this.axes.y.attr('transform', `translate(${this.margin.left}, 0)`);
   }
 
   public updateRangeX(): void {

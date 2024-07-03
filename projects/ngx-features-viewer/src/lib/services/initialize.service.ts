@@ -6,6 +6,7 @@ import { v4 as UUID } from 'uuid';
 import * as d3 from 'd3';
 import { Feature } from "../features/feature";
 import { Range } from "../features/locus";
+import { Sequence } from '../sequence';
 
 export interface SelectionContext {
   // Trace is available in both trace and feature context
@@ -43,7 +44,9 @@ export class InitializeService {
   // Define root element reference
   public root!: ElementRef;
 
-  public seqLen!: number;
+  // Define reference to sequence, for late use
+  // NOTE This avoids retrieving seuence from ReplaySubject
+  public sequence!: Sequence;
 
   public focusMousedown!: ((this: SVGGElement, event: unknown, d: undefined) => void);
 

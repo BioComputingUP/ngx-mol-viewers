@@ -98,7 +98,7 @@ export class ZoomService implements OnDestroy {
             // From the selection coordinates get the start and end domain
             const [start, end] = selection.map(current.invert);
             // Calculate the transform to apply to the zoom
-            const k = (this.initService.seqLen + 1) / (end - start);
+            const k = (this.initService.sequence.length + 1) / (end - start);
             // Why the margin left is divided by k? Who knows, but without it the zoom is not centered
             const x = -initial(start) + this.initService.margin.left / k;
             // Create the transformation
@@ -125,15 +125,15 @@ export class ZoomService implements OnDestroy {
         if (start < 0.5) {
           x.domain([0.5, end]);
         }
-        if (end > this.initService.seqLen + .5) {
-          x.domain([start, this.initService.seqLen + 0.5]);
+        if (end > this.initService.sequence.length + .5) {
+          x.domain([start, this.initService.sequence.length + 0.5]);
         }
 
         // Define horizontal axis ticks
         const ticks = scale.x
           .ticks()
           // Do not show ticks outside the sequence
-          .filter((d) => Number.isInteger(d) && d >= 0.5 && d <= this.initService.seqLen);
+          .filter((d) => Number.isInteger(d) && d >= 0.5 && d <= this.initService.sequence.length);
         // Define horizontal axis
         const axis = d3.axisBottom(scale.x)
           .tickValues(ticks.concat(1))

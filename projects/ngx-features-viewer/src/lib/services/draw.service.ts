@@ -170,36 +170,40 @@ export class DrawService implements OnDestroy {
 
   // Update vertical scale
   public updateScale(traces: InternalTraces): void {
-    // Get current vertical scale
-    const y = this.initializeService.scale.y;
+    const axis = this.initializeService.axes;
+    const scale = this.initializeService.scale;
+    const sequence = this.initializeService.sequence;
+    const settings = this.initializeService.settings;
     // Update domain
-    const domain = ['sequence', ...traces.map(({id}) => id + '')];
+    const domain = ['sequence', ...traces.map(({ id }) => id + '')];
+    // Intiialize range
+    const range = [settings['margin-top']];
+    // Set sequence line height
+    if (Array.isArray(sequence) || (typeof sequence === 'string')) {
+      range.push(settings['margin-top'] + settings['line-height'])
+    } else {
+      range.push(settings['margin-top']);
+    }
     // Update range
-    const range = domain.reduce((range: number[], id: string, i: number) => {
-      // Handle sequence
-      if (i === 0 && id === 'sequence') {
-        // Get default line height, margin top
-        const lh = this.initializeService.settings['line-height'];
-        const mt = this.initializeService.settings['margin-top'];
-        // Update range
-        return [mt, mt + lh];
-      }
+    domain.slice(1).forEach((id: string) => {
       // Get current trace
       const trace = this.featuresService.getTrace(+id);
       // Case trace is defined
       if (trace) {
         // Get offset for current trace
-        const mt = range.at(-1) as number;
+        const mt = range[range.length - 1];
         // Initialize line height for current trace
-        const lh = trace.options?.['line-height'] || this.initializeService.settings['line-height'];
+        const lh = trace.options?.['line-height'] || settings['line-height'];
         // Update range
-        return [...range, mt + lh];
+        range.push(mt + lh);
       }
       // Otherwise, throw error
-      throw new Error('Trace not found');
-    }, []);
+      else throw new Error('Trace not found');
+    });
     // Apply updates
-    y.domain(domain).range(range);
+    scale.y.domain(domain).range(range);
+    // Translate x axis position
+    axis.x.attr('transform', `translate(0, ${range[range.length - 1]})`);
   }
 
   private createTooltip() {
@@ -787,11 +791,11 @@ export class DrawService implements OnDestroy {
 
         if (feature.type === 'dssp') {
           const magicNumbers = {
-            "helix": {"bitWidth": 0.25, "xScale": 0.5, "yScale": 0.119, "center": -4},
-            "turn": {"bitWidth": 0.7, "xScale": 0.033, "yScale": 0.035, "center": +5.8},
+            "helix": { "bitWidth": 0.25, "xScale": 0.5, "yScale": 0.119, "center": -4 },
+            "turn": { "bitWidth": 0.7, "xScale": 0.033, "yScale": 0.035, "center": +5.8 },
             // Sheet is a special case as it is computed as a rectangle with a triangle on top at runtime
-            "sheet": {"bitWidth": 4, "xScale": 0, "yScale": 0, "center": 0},
-            "coil": {"bitWidth": 0.3, "xScale": 0, "yScale": 0, "center": 0},
+            "sheet": { "bitWidth": 4, "xScale": 0, "yScale": 0, "center": 0 },
+            "coil": { "bitWidth": 0.3, "xScale": 0, "yScale": 0, "center": 0 },
           }
 
           const shapeToDraw = dsspShape(feature.code);
@@ -806,7 +810,7 @@ export class DrawService implements OnDestroy {
           const bitOccupancy = bitWidth / widthPerResidue;
 
           // Calculate the position in reverse order
-          const xPositions = Array.from({length: numBits}, (_, i) => startPoint + i * bitOccupancy);
+          const xPositions = Array.from({ length: numBits }, (_, i) => startPoint + i * bitOccupancy);
 
           if (xPositions.length < 2) {
             xPositions.push(endPoint);

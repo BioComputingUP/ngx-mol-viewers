@@ -36,7 +36,8 @@ export class PageFeaturesViewerComponent {
   };
 
   // Define input sequence
-  readonly sequence = Array.from(P04637);
+  // readonly sequence = Array.from(P04637);
+  readonly sequence = { length: P04637.length };
 
   traces: Trace[];
 
@@ -55,7 +56,7 @@ export class PageFeaturesViewerComponent {
       'grid-line-color': 'rgb(213,255,0)',
       'text-color': 'black',
       // Define margins
-      'margin-top': 30,
+      'margin-top': 0,
       'margin-right': 0,
       'margin-bottom': 30,
       'margin-left': 80,
