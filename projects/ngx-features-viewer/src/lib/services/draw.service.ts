@@ -1,14 +1,14 @@
-import {combineLatest, map, Observable, ReplaySubject, shareReplay, switchMap, tap} from 'rxjs';
-import {Injectable} from '@angular/core';
-import {InitializeService, Scale} from './initialize.service';
-import {FeaturesService} from './features.service';
-import {Continuous} from '../features/continuous';
-import {Locus} from '../features/locus'
+import { combineLatest, map, Observable, ReplaySubject, shareReplay, switchMap, tap } from 'rxjs';
+import { Injectable } from '@angular/core';
+import { InitializeService, Scale } from './initialize.service';
+import { FeaturesService } from './features.service';
+import { Continuous } from '../features/continuous';
+import { Locus } from '../features/locus'
 import * as d3 from 'd3';
-import {InternalTrace, InternalTraces} from "../trace";
-import {Feature} from "../features/feature";
-import {Pin} from "../features/pin";
-import {DSSP, DSSPPaths, dsspShape} from "../features/dssp";
+import { InternalTrace, InternalTraces } from "../trace";
+import { Feature } from "../features/feature";
+import { Pin } from "../features/pin";
+import { DSSP, DSSPPaths, dsspShape } from "../features/dssp";
 
 export type Sequence = string[];
 
@@ -105,7 +105,7 @@ export class DrawService {
     // Define draw initialization
     this.draw$ = combineLatest([this.initializeService.initialized$, this.sequence$]).pipe(
       // Update horizontal scale domain
-      tap(([,sequence]) => {
+      tap(([, sequence]) => {
         // Get horizontal scale
         const x = this.initializeService.scale.x;
         // Generate horizontal domain for sequence
@@ -115,7 +115,7 @@ export class DrawService {
         x.domain(domain);
       }),
       // Draw sequence
-      map(([,sequence]) => this.createSequence(sequence)),
+      map(([, sequence]) => this.createSequence(sequence)),
       // Initialize tooltip
       tap(() => this.initializeTooltip()),
       // Cache result

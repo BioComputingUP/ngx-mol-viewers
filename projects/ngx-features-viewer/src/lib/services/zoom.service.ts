@@ -1,16 +1,16 @@
 import {
   distinctUntilChanged,
   map,
-  Observable, pairwise,
+  Observable,
   ReplaySubject,
   shareReplay,
   startWith,
   Subscription,
   switchMap,
 } from 'rxjs';
-import {Injectable, OnDestroy} from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 // Custom providers
-import {InitializeService, Scale} from './initialize.service';
+import { InitializeService, Scale } from './initialize.service';
 // D3 library
 import * as d3 from 'd3';
 

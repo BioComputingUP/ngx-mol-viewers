@@ -1,6 +1,6 @@
-import {Injectable} from '@angular/core';
-import {InternalTrace, InternalTraces, Trace, Traces} from "../trace";
-import {Feature} from "../features/feature";
+import { Injectable } from '@angular/core';
+import { InternalTrace, InternalTraces, Trace, Traces } from "../trace";
+import { Feature } from "../features/feature";
 
 
 @Injectable({providedIn: 'root'})

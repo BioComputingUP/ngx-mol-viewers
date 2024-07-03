@@ -1,5 +1,5 @@
-import {TraceSettings} from "./settings";
-import {Feature} from "./features/feature";
+import { TraceSettings } from "./settings";
+import { Feature } from "./features/feature";
 
 /**
  * Represents a trace in the features viewer (a single row), it can contain multiple features and has its own settings.
@@ -34,7 +34,7 @@ export interface InternalTrace extends Trace {
   expanded: boolean;
   show: boolean;
   level: number;
-  domain: {min: number, max: number};
+  domain: { min: number, max: number };
   nested?: InternalTraces;
 }
 

@@ -1,4 +1,4 @@
-import {BaseFeature} from "./feature";
+import { BaseFeature } from "./feature";
 
 /**
  * Range is a range of values with a start and an end.

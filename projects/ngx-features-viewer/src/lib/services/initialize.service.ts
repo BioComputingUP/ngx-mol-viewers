@@ -1,8 +1,8 @@
-import {map, Observable, ReplaySubject, shareReplay, tap} from 'rxjs';
-import {ElementRef, Injectable} from '@angular/core';
-import {Settings} from '../settings';
+import { map, Observable, ReplaySubject, shareReplay, tap } from 'rxjs';
+import { ElementRef, Injectable } from '@angular/core';
+import { Settings } from '../settings';
 import * as d3 from 'd3';
-import {NgxFeaturesViewerLabelDirective} from "@ngx-features-viewer";
+import { NgxFeaturesViewerLabelDirective } from "@ngx-features-viewer";
 
 type SVG = d3.Selection<SVGSVGElement, undefined, null, undefined>;
 

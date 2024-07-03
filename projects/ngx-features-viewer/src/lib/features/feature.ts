@@ -1,7 +1,7 @@
-import {Continuous} from "./continuous";
-import {DSSP} from "./dssp";
-import {Pin} from "./pin";
-import {Locus} from "./locus";
+import { Continuous } from "./continuous";
+import { DSSP } from "./dssp";
+import { Pin } from "./pin";
+import { Locus } from "./locus";
 
 /**
  * Type that can be associated with a feature in its `type` property.

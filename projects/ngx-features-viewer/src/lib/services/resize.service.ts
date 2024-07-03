@@ -1,4 +1,4 @@
-import { Observable, ReplaySubject, distinctUntilChanged, map, startWith } from 'rxjs';
+import { distinctUntilChanged, map, Observable, ReplaySubject, startWith } from 'rxjs';
 import { Injectable } from '@angular/core';
 // Custom providers
 import { InitializeService } from './initialize.service';
@@ -19,7 +19,7 @@ export interface Margin {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function resize<E extends d3.Selection<any, undefined, null, undefined>,>(element: E, size: Size, margin: Margin) {
+export function resize<E extends d3.Selection<any, undefined, null, undefined>, >(element: E, size: Size, margin: Margin) {
   // Return element
   element
     // After resizing
@@ -84,7 +84,7 @@ export class ResizeService {
     // Trigger resize event
     const resize$: Observable<void> = this.resize$.pipe(
       // Get width, height from root HTML div
-      map(() => ({ width: this.width, height: this.height })),
+      map(() => ({width: this.width, height: this.height})),
       // // Add some delay, avoid flooding of resize events
       // debounceTime(10),
       // Check that width value actually changed
@@ -114,7 +114,7 @@ export class ResizeService {
 
   public updateRoot(): void {
     // Get vertical scale
-    const { y } = this.scale;
+    const {y} = this.scale;
     // Get vertical range
     const range = y.range();
     // Compute height as the difference between the first and the last value in range
@@ -129,7 +129,7 @@ export class ResizeService {
 
   public updateDraw(): void {
     // Initialize horizontal, vertical size
-    const size = { width: 0, height: 0 };
+    const size = {width: 0, height: 0};
     // Update horizontal, vertical size
     size.height = this.height - this.margin.top - this.margin.bottom;
     size.width = this.width - this.margin.left - this.margin.right;
@@ -140,7 +140,7 @@ export class ResizeService {
 
   public updateAxes(): void {
     // Unpack horizontal, vertical axis
-    const { x, y } = this.axes;
+    const {x, y} = this.axes;
     // Translate horizontal axis
     x.attr('transform', `translate(0, ${this.height - this.margin.top})`);
     // Translate vertical axis
@@ -153,7 +153,7 @@ export class ResizeService {
     // Get width of root SVG element
     const width = this.width;
     // Get left, right margin of root SVG element
-    const { left, right } = this.margin;
+    const {left, right} = this.margin;
     // Update range in scale according to horizontal margins
     x.range([left, width - right]);
   }

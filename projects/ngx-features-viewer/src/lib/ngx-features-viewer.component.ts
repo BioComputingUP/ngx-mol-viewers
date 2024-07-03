@@ -14,21 +14,21 @@ import {
   ViewChild,
   ViewEncapsulation
 } from '@angular/core';
-import {Observable, Subscription, switchMap, tap} from 'rxjs';
-import {CommonModule} from '@angular/common';
+import { Observable, Subscription, switchMap, tap } from 'rxjs';
+import { CommonModule } from '@angular/common';
 // Custom components
-import {NgxFeaturesViewerLabelDirective} from './ngx-features-viewer.directive';
+import { NgxFeaturesViewerLabelDirective } from './ngx-features-viewer.directive';
 // Custom providers
-import {InitializeService} from './services/initialize.service';
-import {FeaturesService} from './services/features.service';
-import {ResizeService} from './services/resize.service';
-import {ZoomService} from './services/zoom.service';
-import {DrawService} from './services/draw.service';
+import { InitializeService } from './services/initialize.service';
+import { FeaturesService } from './services/features.service';
+import { ResizeService } from './services/resize.service';
+import { ZoomService } from './services/zoom.service';
+import { DrawService } from './services/draw.service';
 // Custom data types
-import {Settings} from './settings';
-import {Traces} from "./trace";
+import { Settings } from './settings';
+import { Traces } from "./trace";
 import * as d3 from "d3";
-import {KeyboardEvent} from "react";
+import { KeyboardEvent } from "react";
 
 
 // TODO Define sequence type

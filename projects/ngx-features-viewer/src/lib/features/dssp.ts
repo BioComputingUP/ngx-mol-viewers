@@ -1,5 +1,5 @@
-import {BaseFeature} from "./feature";
-import {Range} from "./locus";
+import { BaseFeature } from "./feature";
+import { Range } from "./locus";
 
 /**
  * The code that represents the secondary structure of the protein.

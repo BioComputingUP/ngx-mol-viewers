@@ -1,4 +1,4 @@
-import {BaseFeature} from './feature';
+import { BaseFeature } from './feature';
 
 /**
  * A point feature that is represented by a single point in a position (index of the residue).

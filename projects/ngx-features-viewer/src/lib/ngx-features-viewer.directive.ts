@@ -14,6 +14,7 @@ export class NgxFeaturesViewerLabelDirective {
 
   @Input() padding = 0;
 
-  constructor(public templateRef: TemplateRef<unknown>) { }
+  constructor(public templateRef: TemplateRef<unknown>) {
+  }
 
 }

@@ -1,4 +1,4 @@
-import {BaseFeature} from './feature';
+import { BaseFeature } from './feature';
 
 /**
  * A continuous feature is a feature that has a range of values.
