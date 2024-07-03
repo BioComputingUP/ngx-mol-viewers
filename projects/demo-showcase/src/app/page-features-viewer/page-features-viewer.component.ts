@@ -1,7 +1,7 @@
 import {
   NgxFeaturesViewerComponent,
   NgxFeaturesViewerLabelDirective,
-  NgxFeaturesViewerTooltipDirective,
+  NgxFeaturesViewerTooltipDirective, SelectionContext,
   Settings,
   Trace
 } from '@ngx-features-viewer';
@@ -173,5 +173,9 @@ export class PageFeaturesViewerComponent {
   getTraceContentSize(label: string | undefined): number {
     const trace = this.traces.find((trace) => trace.label === label)!;
     return trace ? (trace.options ? trace.options['content-size']! : 0) : 0;
+  }
+
+  onFeatureSelected($event: SelectionContext | undefined) {
+    alert(`Feature selected: ${JSON.stringify($event)}`);
   }
 }

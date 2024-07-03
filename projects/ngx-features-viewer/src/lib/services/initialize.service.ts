@@ -1,11 +1,20 @@
-import { NgxFeaturesViewerTooltipDirective } from '../ngx-features-viewer.component';
-import { NgxFeaturesViewerLabelDirective } from "../ngx-features-viewer.component";
-import { Observable, ReplaySubject, map, shareReplay, tap } from 'rxjs';
+import { NgxFeaturesViewerLabelDirective, NgxFeaturesViewerTooltipDirective, Trace } from '@ngx-features-viewer';
+import { map, Observable, ReplaySubject, shareReplay, tap } from 'rxjs';
 import { ElementRef, Injectable } from '@angular/core';
 import { Settings } from '../settings';
 import { v4 as UUID } from 'uuid';
 import * as d3 from 'd3';
+import { Feature } from "../features/feature";
+import { Range } from "../features/locus";
 
+export interface SelectionContext {
+  // Trace is available in both trace and feature context
+  trace?: Trace;
+  // Feature, index are available in feature context, but not in trace context
+  feature?: Feature;
+  // Define specific coordinates
+  range?: Range;
+}
 
 type SVG = d3.Selection<SVGSVGElement, undefined, null, undefined>;
 
@@ -13,7 +22,7 @@ type Group = d3.Selection<SVGGElement, undefined, null, undefined>;
 
 type Rect = d3.Selection<SVGRectElement, undefined, null, undefined>;
 
-// type Zoom = d3.ZoomBehavior<SVGSVGElement, unknown>;
+type RectShadow = d3.Selection<SVGRectElement, SelectionContext, null, undefined>;
 
 export interface Scale {
   x: d3.ScaleLinear<number, number>,
@@ -25,7 +34,7 @@ export interface Axes {
   x: Group;
 }
 
-@Injectable({ providedIn: 'platform' })
+@Injectable({providedIn: 'platform'})
 export class InitializeService {
 
   // Define emitter for root element
@@ -97,6 +106,9 @@ export class InitializeService {
   // Define rectangle for events binding
   public events!: Rect;
 
+  // Define rectangle for shadow effect
+  public shadow!: RectShadow;
+
   // Define zoom callback
   public zoom!: d3.ZoomBehavior<SVGGElement, undefined>;
 
@@ -161,7 +173,7 @@ export class InitializeService {
         this.draw = this.focus.append('g')
           // Bind features group to clip path
           .attr('class', 'features')
-          .attr('clip-path', `url(${ '#' + uuid })`);
+          .attr('clip-path', `url(${'#' + uuid})`);
         // Define zoom event
         this.zoom = d3.zoom<SVGGElement, undefined>();
         // Add an invisible rectangle on top of the chart.
@@ -183,6 +195,15 @@ export class InitializeService {
         this.focus.on('mousedown.zoom', null);
 
         this.brush = d3.brushX();
+
+        // Create a rectangle in the draw area to create a "shadow" effect when clicking on a feature
+        this.shadow = this.draw
+          .append('rect')
+          .attr('id', 'shadow')
+          .attr('fill', 'black')
+          .attr('fill-opacity', 0.15)
+          .attr('height', '100%')
+          .data([{trace: undefined, feature: undefined, range: undefined} as SelectionContext])
       }),
       // Initialize horizontal, vertical axis
       tap((svg) => {

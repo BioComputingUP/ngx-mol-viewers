@@ -6,3 +6,4 @@ export { NgxFeaturesViewerLabelDirective } from './lib/ngx-features-viewer.compo
 export { NgxFeaturesViewerComponent } from './lib/ngx-features-viewer.component';
 export { Settings } from './lib/settings';
 export { Trace } from './lib/trace';
+export { SelectionContext } from './lib/services/initialize.service';

@@ -10,7 +10,7 @@ import {
   HostListener,
   Input,
   OnChanges,
-  OnDestroy,
+  OnDestroy, Output,
   QueryList,
   SimpleChanges,
   TemplateRef,
@@ -119,6 +119,8 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, AfterContentIn
   }
 
   @Input() public sequence!: Sequence;
+
+  @Output() public selectedFeature = this.drawService.selectedFeature$;
 
   private readonly sequence$ = this.drawService.sequence$;
 
@@ -270,9 +272,17 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, AfterContentIn
 
   private brushRegion(event: d3.D3BrushEvent<unknown>) {
     if (!event.sourceEvent) return;
-    let selection: [number, number] | undefined = undefined;
+
+    if (!event.selection) {
+      // if selection is empty it means that we clicked on the canvas, so we should deselect the feature if any is selected
+      this.drawService.selectedFeature$.next(undefined);
+      return;
+    }
+
     // Ensure that if a selection is made, at least 5 residues are selected
     if (event.selection) {
+      let selection: [number, number] | undefined;
+
       const x = this.initService.scale.x;
       let [x0, x1] = (event.selection as [number, number]).map(x.invert);
       let cont = Math.round(x1 - x0);
@@ -294,13 +304,7 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, AfterContentIn
       }
       selection = [x0, x1];
       selection = selection!.map(x) as [number, number];
+      this.zoomService.brush$.next(selection);
     }
-    this.zoomService.brush$.next(selection);
   }
-
-  // // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  // onFeaturesZoom(event: any) {
-  //   // Emit zoom event
-  //   this.zoomService.zoom$.next(event);
-  // }
 }

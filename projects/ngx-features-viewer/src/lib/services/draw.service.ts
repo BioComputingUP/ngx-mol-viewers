@@ -1,9 +1,9 @@
 // Common
-import { combineLatest, map, Observable, ReplaySubject, shareReplay, switchMap, tap } from 'rxjs';
-import { Injectable } from '@angular/core';
+import { combineLatest, map, Observable, ReplaySubject, shareReplay, Subscription, switchMap, tap } from 'rxjs';
+import { EventEmitter, Injectable, OnDestroy } from '@angular/core';
 import * as d3 from 'd3';
 // Services
-import { InitializeService } from './initialize.service';
+import { InitializeService, SelectionContext } from './initialize.service';
 import { FeaturesService } from './features.service';
 import { TooltipService } from './tooltip.service';
 // Data types
@@ -69,11 +69,15 @@ export const index = (f: unknown, i: number) => i;
 const alreadyExitedFromView = new Set<Feature>();
 
 @Injectable({providedIn: 'platform'})
-export class DrawService {
+export class DrawService implements OnDestroy {
 
   public readonly traces$ = new ReplaySubject<InternalTraces>(1);
 
   public readonly sequence$ = new ReplaySubject<Sequence>(1);
+
+  public readonly selectedFeature$ = new EventEmitter<SelectionContext | undefined>();
+
+  private _selectedFeature: Subscription;
 
   public 'group.residues'!: ResidueGroup;
 
@@ -122,6 +126,8 @@ export class DrawService {
       }),
       // Draw sequence
       map(([, sequence]) => this.createSequence(sequence)),
+      // Initialize brush region
+      tap(() => this.createBrush()),
       // Initialize tooltip
       tap(() => this.createTooltip()),
       // Cache result
@@ -145,11 +151,21 @@ export class DrawService {
       tap(() => this.updateSequence()),
       // Move grid in correct position
       tap(() => this.updateGrid()),
-      // Move labels in correct position
-      //map(() => this.updateLabels()),
       // Move traces in correct position
       map(() => this.updateTraces()),
+      // Move the selection shadow in correct position
+      map(() => this.updateShadowPosition())
     );
+
+    this._selectedFeature = this.selectedFeature$.pipe(
+      tap((selectionContext) => {
+        if (selectionContext) {
+          this.setSelectionShadow(selectionContext);
+        } else {
+          this.removeSelectionShadow();
+        }
+      })
+    ).subscribe()
   }
 
   // Update vertical scale
@@ -157,7 +173,7 @@ export class DrawService {
     // Get current vertical scale
     const y = this.initializeService.scale.y;
     // Update domain
-    const domain = ['sequence', ...traces.map(({ id }) => id + '')];
+    const domain = ['sequence', ...traces.map(({id}) => id + '')];
     // Update range
     const range = domain.reduce((range: number[], id: string, i: number) => {
       // Handle sequence
@@ -238,36 +254,48 @@ export class DrawService {
       .style('font-family', 'monospace') // TODO: Add more fonts (always monospace)
       .attr('class', 'name')
       .text((d) => '' + d)
-    // Loop through each text element
-    //.each(function () {
-    // Update text width
-    //charWidth = Math.max(charWidth, this.getBBox().width);
-    //});
+  }
 
-
+  private createBrush() {
     this.initializeService.brushRegion = this.initializeService.draw.append('g').attr('class', 'brush');
+  }
+
+  private setSelectionShadow(selectionContext: SelectionContext) {
+    const scale = this.initializeService.scale;
+    const [start, end] = [selectionContext.range!.start, selectionContext.range!.end];
+
+    this.initializeService.shadow
+      .data([selectionContext])
+      .attr('x', scale.x(start))
+      .attr('width', scale.x(end) - scale.x(start))
+  }
+
+  private removeSelectionShadow() {
+    this.initializeService.shadow
+      .attr('x', 0)
+      .attr('width', 0);
   }
 
   public updateSequence() {
     // Get height, width, margins
     const margin = this.initializeService.margin;
     // Get scale (x, y axis)
-    const { x, y } = this.initializeService.scale;
+    const {x, y} = this.initializeService.scale;
     // Get line height
-    const { 'line-height': lineHeight } = this.initializeService.settings;
+    const {'line-height': lineHeight} = this.initializeService.settings;
     // Define container/cell width and (maximum) text width
     const cellWidth = x(1) - x(0);
     // Get maximum character width
     const charWidth = this['char.width'];
     // Define residues group
-    const { 'group.residues': residues } = this;
+    const {'group.residues': residues} = this;
     // Update size, position of residue background
     residues
       .select('rect.color')
       .attr('x', (_, i) => x(i + 0.5))
       .attr('y', margin.top)
       .attr('width', () => cellWidth)
-      .attr('height', '100%');
+      .attr('height', lineHeight);
     // Update size, position of residue names
     residues.select<SVGTextElement>('text.name')
       .attr('x', (_, i) => x(i + 1))
@@ -296,7 +324,7 @@ export class DrawService {
     // Add labels to their group
     this['group.labels'] = group
       .selectAll('g')
-      .data([{ id: 'sequence', label: 'Sequence', expanded: true }, ...traces] as InternalTraces, identity)
+      .data([{id: 'sequence', label: 'Sequence', expanded: true}, ...traces] as InternalTraces, identity)
       .join(
         (enter) => enter.append('g'),
         (update) => update,
@@ -315,7 +343,7 @@ export class DrawService {
 
   private setLabelsPosition(trace: InternalTrace) {
     const y = this.initializeService.scale.y;
-    const { left: ml, right: mr } = this.initializeService.margin;
+    const {left: ml, right: mr} = this.initializeService.margin;
     const settings = this.initializeService.settings
     // Get identifier trace
     const identifier = '' + trace.id;
@@ -455,6 +483,8 @@ export class DrawService {
     // Get references to local variables as `this` might be lost
     const settings = this.initializeService.settings;
     const tooltipService = this.tooltipService;
+    const selectionEmitter$ = this.selectedFeature$;
+
     // Generate and store traces groups
     this['group.traces'] = this.initializeService.draw
       .selectAll('g.trace')
@@ -512,7 +542,19 @@ export class DrawService {
               'ry': 4
             };
 
-            appendElementWithAttributes(container, 'rect', rectAttributes);
+            const rect = appendElementWithAttributes(container, 'rect', rectAttributes);
+
+            rect.on('click', (event, d) => {
+              const feature = d as Locus;
+              // Create a rectangle that covers the entire height of the FV, and spans from start to end of the locus
+              const selectionContext: SelectionContext = {
+                trace,
+                feature,
+                range: {start: feature.start - .5, end: feature.end + .5}
+              }
+              selectionEmitter$.next(selectionContext);
+            });
+
             // addMouseEvents(rect, tooltip, trace, feature);
             if (feature.label) {
               // Based on the color of the feature, determine if the fill of the text should be white or black
@@ -607,7 +649,6 @@ export class DrawService {
       const traceGroups = d3.select<d3.BaseType, InternalTraces>(this);
       // Select all feature groups
       const featureGroups = traceGroups.selectAll<d3.BaseType, Feature>('g.feature');
-      console.time('Drawing features')
       // Loop through each feature group
       featureGroups.each(function (feature, featureIdx: number) {
         let featureStart, featureEnd;
@@ -892,8 +933,23 @@ export class DrawService {
           }
         }
       });
-      console.timeEnd('Drawing features')
     });
+  }
+
+  private updateShadowPosition() {
+    const shadow = this.initializeService.shadow;
+    const scale = this.initializeService.scale;
+
+    const selectionContext = shadow.datum();
+
+    if (selectionContext.range) {
+      // Get the feature associated with the shadow
+      const selectionContext = shadow.datum();
+      // Update the position of the shadow
+      shadow
+        .attr('x', scale.x(selectionContext.range!.start))
+        .attr('width', scale.x(selectionContext.range!.end) - scale.x(selectionContext.range!.start));
+    }
   }
 
   public onLabelClick(trace: InternalTrace): void {
@@ -915,5 +971,10 @@ export class DrawService {
 
     // Emit current traces
     this.traces$.next(this.featuresService.tracesNoNesting.filter(trace => trace.show));
+  }
+
+
+  public ngOnDestroy() {
+    this._selectedFeature.unsubscribe();
   }
 }
