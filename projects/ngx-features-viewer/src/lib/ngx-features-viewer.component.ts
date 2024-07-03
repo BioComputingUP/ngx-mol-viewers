@@ -10,17 +10,18 @@ import {
   HostListener,
   Input,
   OnChanges,
-  OnDestroy, Output,
+  OnDestroy,
+  Output,
   QueryList,
   SimpleChanges,
   TemplateRef,
   ViewChild,
   ViewEncapsulation
 } from '@angular/core';
-import { Observable, Subscription, switchMap, tap } from 'rxjs';
+import { map, Observable, Subscription, switchMap, tap } from 'rxjs';
 import { CommonModule } from '@angular/common';
 // Custom components
-import { InitializeService } from './services/initialize.service';
+import { InitializeService, SelectionContext } from './services/initialize.service';
 import { FeaturesService } from './services/features.service';
 import { ResizeService } from './services/resize.service';
 import { ZoomService } from './services/zoom.service';
@@ -120,7 +121,16 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, AfterContentIn
 
   @Input() public sequence!: Sequence;
 
-  @Output() public selectedFeature = this.drawService.selectedFeature$;
+  @Output() public selectedFeature: Observable<SelectionContext | undefined> = this.drawService.selectedFeature$.pipe(
+    // Adjust for the .5 offset
+    map((context) => context ? {
+      ...context!,
+      range: {
+        start: context.range!.start + .5,
+        end: context.range!.end - .5
+      }
+    } : undefined)
+  );
 
   private readonly sequence$ = this.drawService.sequence$;
 
@@ -271,12 +281,12 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, AfterContentIn
     this.initializeService.brushRegion.call(this.initializeService.brush.move, d1.map(x) as [number, number]);
   }
 
+
   private brushRegion(event: d3.D3BrushEvent<unknown>) {
     if (!event.sourceEvent) return;
-
-    if (!event.selection) {
+    if (!event.selection && event.sourceEvent.detail === 1) {
       // if selection is empty it means that we clicked on the canvas, so we should deselect the feature if any is selected
-      this.drawService.selectedFeature$.next(undefined);
+      this.drawService.selectedFeatureEmit$.next(undefined);
       return;
     }
 

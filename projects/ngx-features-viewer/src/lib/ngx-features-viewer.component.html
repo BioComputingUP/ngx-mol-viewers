@@ -42,3 +42,5 @@
   Index: {{ index }}<br>
   Coordinates: ({{ coordinates[0] }}, {{ coordinates[1] }})<br>
 </ng-template>
+
+<ng-container *ngIf="drawService.selectedFeature$ | async"></ng-container>

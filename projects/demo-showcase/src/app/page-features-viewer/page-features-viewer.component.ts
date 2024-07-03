@@ -173,6 +173,6 @@ export class PageFeaturesViewerComponent {
   }
 
   onFeatureSelected($event: SelectionContext | undefined) {
-    console.log(`Feature selected: ${JSON.stringify($event)}`);
+    //console.log(`Feature selected: ${JSON.stringify($event)}`);
   }
 }

@@ -1,6 +1,6 @@
 // Common
-import { combineLatest, map, Observable, ReplaySubject, shareReplay, Subscription, switchMap, tap } from 'rxjs';
-import { EventEmitter, Injectable, OnDestroy } from '@angular/core';
+import { combineLatest, map, Observable, ReplaySubject, shareReplay, switchMap, tap, throttleTime } from 'rxjs';
+import { EventEmitter, Injectable } from '@angular/core';
 import * as d3 from 'd3';
 // Services
 import { InitializeService, SelectionContext } from './initialize.service';
@@ -69,15 +69,15 @@ export const index = (f: unknown, i: number) => i;
 const alreadyExitedFromView = new Set<Feature>();
 
 @Injectable({providedIn: 'platform'})
-export class DrawService implements OnDestroy {
+export class DrawService {
 
   public readonly traces$ = new ReplaySubject<InternalTraces>(1);
 
   public readonly sequence$ = new ReplaySubject<Sequence>(1);
 
-  public readonly selectedFeature$ = new EventEmitter<SelectionContext | undefined>();
+  public readonly selectedFeatureEmit$ = new EventEmitter<SelectionContext | undefined>();
 
-  private _selectedFeature: Subscription;
+  public readonly selectedFeature$: Observable<SelectionContext | undefined>;
 
   public 'group.residues'!: ResidueGroup;
 
@@ -157,15 +157,18 @@ export class DrawService implements OnDestroy {
       map(() => this.updateShadowPosition())
     );
 
-    this._selectedFeature = this.selectedFeature$.pipe(
+    this.selectedFeature$ = this.selectedFeatureEmit$.pipe(
+      // Debounce the event to avoid multiple updates in a short time
+      throttleTime(300),
       tap((selectionContext) => {
         if (selectionContext) {
           this.setSelectionShadow(selectionContext);
         } else {
           this.removeSelectionShadow();
         }
-      })
-    ).subscribe()
+      }),
+      shareReplay(1)
+    );
   }
 
   // Update vertical scale
@@ -175,7 +178,7 @@ export class DrawService implements OnDestroy {
     const sequence = this.initializeService.sequence;
     const settings = this.initializeService.settings;
     // Update domain
-    const domain = ['sequence', ...traces.map(({ id }) => id + '')];
+    const domain = ['sequence', ...traces.map(({id}) => id + '')];
     // Initialize range
     const range = [settings['margin-top']];
     // Set sequence line height
@@ -489,7 +492,7 @@ export class DrawService implements OnDestroy {
     const settings = this.initializeService.settings;
     const tooltipService = this.tooltipService;
     const initializeService = this.initializeService;
-    const selectionEmitter$ = this.selectedFeature$;
+    const selectionEmitter$ = this.selectedFeatureEmit$;
 
     // Generate and store traces groups
     this['group.traces'] = this.initializeService.draw
@@ -570,7 +573,7 @@ export class DrawService implements OnDestroy {
               const text = appendElementWithAttributes(container, 'text', labelAttributes);
               text.text(feature.label)
               text.style("text-anchor", "left")
-              // text.style("pointer-events", "none")
+              // text.style("pinter-events", "none")
             }
           }
 
@@ -583,9 +586,7 @@ export class DrawService implements OnDestroy {
               'fill-opacity': feature.opacity || 1,
             };
 
-            // const path = appendElementWithAttributes(container, 'path', pathAttributes);
             appendElementWithAttributes(container, 'path', pathAttributes);
-            // addMouseEvents(path, tooltip, trace, feature);
           }
 
           if (feature.type === 'pin') {
@@ -595,9 +596,7 @@ export class DrawService implements OnDestroy {
               'fill': feature.color || 'black',
               'fill-opacity': feature.opacity || 1
             };
-            // const circle = appendElementWithAttributes(container, 'circle', circleAttributes);
             appendElementWithAttributes(container, 'circle', circleAttributes);
-            // addMouseEvents(circle, tooltip, trace, feature);
           }
 
           if (feature.type === 'dssp') {
@@ -611,7 +610,6 @@ export class DrawService implements OnDestroy {
                 'fill-opacity': feature.opacity || 0.5
               };
               appendElementWithAttributes(container, 'polygon', bSheetAttributes);
-              // addMouseEvents(bSheet, tooltip, trace, feature);
             }
 
             if (shapeToDraw == "coil") {
@@ -625,7 +623,6 @@ export class DrawService implements OnDestroy {
                 'fill': 'none',
               };
               appendElementWithAttributes(container, 'path', coilAttributes);
-              // addMouseEvents(coil, tooltip, trace, feature);
             }
           }
         })
@@ -763,11 +760,11 @@ export class DrawService implements OnDestroy {
 
         if (feature.type === 'dssp') {
           const magicNumbers = {
-            "helix": { "bitWidth": 0.25, "xScale": 0.5, "yScale": 0.119, "center": -4 },
-            "turn": { "bitWidth": 0.7, "xScale": 0.033, "yScale": 0.035, "center": +5.8 },
+            "helix": {"bitWidth": 0.25, "xScale": 0.5, "yScale": 0.119, "center": -4},
+            "turn": {"bitWidth": 0.7, "xScale": 0.033, "yScale": 0.035, "center": +5.8},
             // Sheet is a special case as it is computed as a rectangle with a triangle on top at runtime
-            "sheet": { "bitWidth": 4, "xScale": 0, "yScale": 0, "center": 0 },
-            "coil": { "bitWidth": 0.3, "xScale": 0, "yScale": 0, "center": 0 },
+            "sheet": {"bitWidth": 4, "xScale": 0, "yScale": 0, "center": 0},
+            "coil": {"bitWidth": 0.3, "xScale": 0, "yScale": 0, "center": 0},
           }
 
           const shapeToDraw = dsspShape(feature.code);
@@ -782,7 +779,7 @@ export class DrawService implements OnDestroy {
           const bitOccupancy = bitWidth / widthPerResidue;
 
           // Calculate the position in reverse order
-          const xPositions = Array.from({ length: numBits }, (_, i) => startPoint + i * bitOccupancy);
+          const xPositions = Array.from({length: numBits}, (_, i) => startPoint + i * bitOccupancy);
 
           if (xPositions.length < 2) {
             xPositions.push(endPoint);
@@ -947,11 +944,6 @@ export class DrawService implements OnDestroy {
 
     // Emit current traces
     this.traces$.next(this.featuresService.tracesNoNesting.filter(trace => trace.show));
-  }
-
-
-  public ngOnDestroy() {
-    this._selectedFeature.unsubscribe();
   }
 }
 
