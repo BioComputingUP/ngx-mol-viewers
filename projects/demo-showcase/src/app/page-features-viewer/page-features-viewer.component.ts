@@ -56,7 +56,7 @@ export class PageFeaturesViewerComponent {
       'grid-line-color': 'rgb(213,255,0)',
       'text-color': 'black',
       // Define margins
-      'margin-top': 30,
+      'margin-top': 0,
       'margin-right': 0,
       'margin-bottom': 30,
       'margin-left': 80,

@@ -68,7 +68,7 @@ export const index = (f: unknown, i: number) => i;
 
 const alreadyExitedFromView = new Set<Feature>();
 
-@Injectable({providedIn: 'platform'})
+@Injectable({ providedIn: 'platform' })
 export class DrawService {
 
   public readonly traces$ = new ReplaySubject<InternalTraces>(1);
@@ -154,7 +154,8 @@ export class DrawService {
 
   // Update vertical scale
   public updateScale(traces: InternalTraces): void {
-    const y = this.initializeService.scale.y;
+    const axis = this.initializeService.axes;
+    const scale = this.initializeService.scale;
     const sequence = this.initializeService.sequence;
     const settings = this.initializeService.settings;
     // Update domain
@@ -184,7 +185,9 @@ export class DrawService {
       else throw new Error('Trace not found');
     });
     // Apply updates
-    y.domain(domain).range(range);
+    scale.y.domain(domain).range(range);
+    // Translate x axis position
+    axis.x.attr('transform', `translate(0, ${range[range.length - 1]})`);
   }
 
   private createTooltip() {
@@ -747,11 +750,11 @@ export class DrawService {
 
         if (feature.type === 'dssp') {
           const magicNumbers = {
-            "helix": {"bitWidth": 0.25, "xScale": 0.5, "yScale": 0.119, "center": -4},
-            "turn": {"bitWidth": 0.7, "xScale": 0.033, "yScale": 0.035, "center": +5.8},
+            "helix": { "bitWidth": 0.25, "xScale": 0.5, "yScale": 0.119, "center": -4 },
+            "turn": { "bitWidth": 0.7, "xScale": 0.033, "yScale": 0.035, "center": +5.8 },
             // Sheet is a special case as it is computed as a rectangle with a triangle on top at runtime
-            "sheet": {"bitWidth": 4, "xScale": 0, "yScale": 0, "center": 0},
-            "coil": {"bitWidth": 0.3, "xScale": 0, "yScale": 0, "center": 0},
+            "sheet": { "bitWidth": 4, "xScale": 0, "yScale": 0, "center": 0 },
+            "coil": { "bitWidth": 0.3, "xScale": 0, "yScale": 0, "center": 0 },
           }
 
           const shapeToDraw = dsspShape(feature.code);
@@ -766,7 +769,7 @@ export class DrawService {
           const bitOccupancy = bitWidth / widthPerResidue;
 
           // Calculate the position in reverse order
-          const xPositions = Array.from({length: numBits}, (_, i) => startPoint + i * bitOccupancy);
+          const xPositions = Array.from({ length: numBits }, (_, i) => startPoint + i * bitOccupancy);
 
           if (xPositions.length < 2) {
             xPositions.push(endPoint);
