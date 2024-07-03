@@ -157,7 +157,7 @@ export class DrawService {
     // Get current vertical scale
     const y = this.initializeService.scale.y;
     // Update domain
-    const domain = ['sequence', ...traces.map(({id}) => id + '')];
+    const domain = ['sequence', ...traces.map(({ id }) => id + '')];
     // Update range
     const range = domain.reduce((range: number[], id: string, i: number) => {
       // Handle sequence
@@ -252,15 +252,15 @@ export class DrawService {
     // Get height, width, margins
     const margin = this.initializeService.margin;
     // Get scale (x, y axis)
-    const {x, y} = this.initializeService.scale;
+    const { x, y } = this.initializeService.scale;
     // Get line height
-    const {'line-height': lineHeight} = this.initializeService.settings;
+    const { 'line-height': lineHeight } = this.initializeService.settings;
     // Define container/cell width and (maximum) text width
     const cellWidth = x(1) - x(0);
     // Get maximum character width
     const charWidth = this['char.width'];
     // Define residues group
-    const {'group.residues': residues} = this;
+    const { 'group.residues': residues } = this;
     // Update size, position of residue background
     residues
       .select('rect.color')
@@ -296,7 +296,7 @@ export class DrawService {
     // Add labels to their group
     this['group.labels'] = group
       .selectAll('g')
-      .data([{id: 'sequence', label: 'Sequence', expanded: true}, ...traces] as InternalTraces, identity)
+      .data([{ id: 'sequence', label: 'Sequence', expanded: true }, ...traces] as InternalTraces, identity)
       .join(
         (enter) => enter.append('g'),
         (update) => update,
@@ -315,7 +315,7 @@ export class DrawService {
 
   private setLabelsPosition(trace: InternalTrace) {
     const y = this.initializeService.scale.y;
-    const {left: ml, right: mr} = this.initializeService.margin;
+    const { left: ml, right: mr } = this.initializeService.margin;
     const settings = this.initializeService.settings
     // Get identifier trace
     const identifier = '' + trace.id;

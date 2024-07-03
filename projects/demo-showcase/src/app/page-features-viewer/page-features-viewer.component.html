@@ -28,12 +28,12 @@
           <div [class.text-muted]="trace.nested?.length > 0 && !trace.expanded">
             {{ '&nbsp;'.repeat(trace.level) }}{{ trace.label }}
             @if (trace.nested?.length > 0) {
-              <!-- Add symbol if expanded -->
-              @if (trace.expanded) {
-                <i class="bi bi-caret-down-fill"></i>
-              } @else {
-                <i class="bi bi-caret-right"></i>
-              }
+            <!-- Add symbol if expanded -->
+            @if (trace.expanded) {
+            <i class="bi bi-caret-down-fill"></i>
+            } @else {
+            <i class="bi bi-caret-right"></i>
+            }
             }
           </div>
         </div>
