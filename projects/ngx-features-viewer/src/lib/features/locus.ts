@@ -17,6 +17,7 @@ export type Range = {
 export interface Locus extends BaseFeature, Range {
   type: 'locus';
   height?: number;
+  'text-color'?: string;
   'stroke-color'?: string;
   'stroke-width'?: number;
 }

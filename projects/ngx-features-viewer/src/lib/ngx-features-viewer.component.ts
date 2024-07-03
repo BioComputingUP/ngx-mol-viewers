@@ -20,8 +20,6 @@ import {
 import { Observable, Subscription, switchMap, tap } from 'rxjs';
 import { CommonModule } from '@angular/common';
 // Custom components
-import { NgxFeaturesViewerLabelDirective } from './ngx-features-viewer.directive';
-// Custom providers
 import { InitializeService } from './services/initialize.service';
 import { FeaturesService } from './services/features.service';
 import { ResizeService } from './services/resize.service';
@@ -32,6 +30,7 @@ import { Settings } from './settings';
 import { Traces } from "./trace";
 import * as d3 from "d3";
 import { KeyboardEvent } from "react";
+import { TooltipService } from "./services/tooltip.service";
 
 
 @Directive({
@@ -49,8 +48,8 @@ export class NgxFeaturesViewerLabelDirective {
 
   @Input() padding = 0;
 
-  constructor(public templateRef: TemplateRef<unknown>) { }
-
+  constructor(public templateRef: TemplateRef<unknown>) {
+  }
 }
 
 @Directive({
@@ -59,9 +58,8 @@ export class NgxFeaturesViewerLabelDirective {
   standalone: true
 })
 export class NgxFeaturesViewerTooltipDirective {
-
-  constructor(public templateRef: TemplateRef<unknown>) {}
-
+  constructor(public templateRef: TemplateRef<unknown>) {
+  }
 }
 
 // TODO Define sequence type

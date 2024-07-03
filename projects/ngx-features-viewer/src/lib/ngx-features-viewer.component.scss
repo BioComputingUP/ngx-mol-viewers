@@ -24,9 +24,10 @@ g.features {
 }
 
 .brush .selection {
-    stroke: #fff;
+    stroke: #0b2ea2;
+    stroke-width: 1;
     fill: #4682b4;
-    fill-opacity: .125;
+    fill-opacity: .325;
     shape-rendering: crispEdges;
     display: block;
     height: 100%;

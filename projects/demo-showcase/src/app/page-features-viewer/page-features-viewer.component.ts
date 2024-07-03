@@ -1,9 +1,15 @@
-import { NgxFeaturesViewerComponent, NgxFeaturesViewerLabelDirective, NgxFeaturesViewerTooltipDirective, Settings, Trace } from '@ngx-features-viewer';
+import {
+  NgxFeaturesViewerComponent,
+  NgxFeaturesViewerLabelDirective,
+  NgxFeaturesViewerTooltipDirective,
+  Settings,
+  Trace
+} from '@ngx-features-viewer';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 // >sp|P04637|P53_HUMAN Cellular tumor antigen p53 OS=Homo sapiens OX=9606 GN=TP53 PE=1 SV=4
-const P04637 = 'MEEPQSDPSVEPPLSQETFSMEEPQSDPSVEPPLSQETFSMEEPQSDPSVEPPLSQETFSMEEPQSDPSVEPPLSQETFS';
+const P04637 = 'MEEPQSDPSVEPPLSQETFSMEEPQSDPSVEPPLSQETFSMEEPQSDPSVEPPLSQETFSMEEPQSDPSVEPPLSQETFSMEEPQSDPSVEPPLSQETFSMEEPQSDPSVEPPLSQETFSMEEPQSDPSVEPPLSQETFSMEEPQSDPSVEPPLSQETFSMEEPQSDPSVEPPLSQETFSMEEPQSDPSVEPPLSQETFSMEEPQSDPSVEPPLSQETFSMEEPQSDPSVEPPLSQETFS';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
@@ -32,7 +38,7 @@ export class PageFeaturesViewerComponent {
   // Define input sequence
   readonly sequence = Array.from(P04637);
 
-  readonly traces: Trace[];
+  traces: Trace[];
 
   // test($event: MouseEvent, trace: unknown) {
   //   console.log('test', $event, trace)
@@ -42,16 +48,16 @@ export class PageFeaturesViewerComponent {
     // Define settings for outer Features Viewer component
     const outer = {
       // Define height
-      'line-height': 32,
-      'content-size': 16,
+      'line-height': 64,
+      'content-size': 32,
       // Define color
       'background-color': 'transparent',
       'grid-line-color': 'rgb(213,255,0)',
       'text-color': 'black',
       // Define margins
-      'margin-top': 0,
+      'margin-top': 30,
       'margin-right': 0,
-      'margin-bottom': 24,
+      'margin-bottom': 30,
       'margin-left': 80,
     };
     // Define settings for inner Features Viewer component
@@ -60,10 +66,10 @@ export class PageFeaturesViewerComponent {
       'margin-left': 80,
       'margin-right': 0,
       'margin-top': 24,
-      'margin-bottom': 24,
+      'margin-bottom': 30,
     };
     // Store settings
-    this.settings = { outer, inner };
+    this.settings = {outer, inner};
 
     // Set traces
     this.traces = [{
@@ -80,13 +86,29 @@ export class PageFeaturesViewerComponent {
         "zero-line-width": 1,
       },
       features: [{
-        label: "feature-2",
+        label: "feature-1",
         type: "dssp",
         color: "red",
         start: 1,
-        end: 200,
+        end: 30,
         opacity: 1,
         code: "H",
+      },{
+        label: "feature-2",
+        type: "dssp",
+        color: "blue",
+        start: 32,
+        end: 45,
+        opacity: 1,
+        code: "H",
+      },{
+        label: "feature-2",
+        type: "dssp",
+        color: "orange",
+        start: 47,
+        end: 80,
+        opacity: 1,
+        code: "C",
       }]
     }, {
       label: "Trace 2",
@@ -95,8 +117,8 @@ export class PageFeaturesViewerComponent {
         "grid-line-color": "gray",
         "grid-line-width": 0.5,
         "grid-y-values": [65, 130],
-        "content-size": 16,
-        "line-height": 32,
+        //"content-size": 16,
+        //"line-height": 32,
         "zero-line": true,
         "zero-line-color": "black",
         "zero-line-width": 1,
@@ -104,11 +126,12 @@ export class PageFeaturesViewerComponent {
       features: [{
         label: "feature-0",
         type: "continuous",
-        values: Array.from({ length: 47 }, () => Math.floor(Math.random() * 100) + 30),
+        values: Array.from({length: 47}, () => Math.floor(Math.random() * 100) + 30),
         min: 30,
         max: 130,
         color: "blue",
-        curveType: "curveBasis",
+        curveType: "curveStep",
+        opacity: 0.3,
         showArea: true,
       }, {
         label: "feature-1",
@@ -118,7 +141,7 @@ export class PageFeaturesViewerComponent {
         "stroke-width": 4,
         // height: 80,
         start: 1,
-        end: 40,
+        end: 20,
       }, {
         label: "feature-1",
         type: "locus",
@@ -126,8 +149,9 @@ export class PageFeaturesViewerComponent {
         opacity: 0.4,
         "stroke-color": "red",
         "stroke-width": 4,
+        "text-color": "black",
         // height: 70,
-        start: 20,
+        start: 27,
         end: 50,
       }]
     }]

@@ -12,7 +12,9 @@
       @if (trace.options?.["content-size"]) {
         <div class="col d-flex gap-2 justify-content-center">
           <label [for]="trace.label!.replace(' ', '-')" class="form-label">Content size trace {{ trace.label }}</label>
-          <input min="5" max="500" [value]="getTraceContentSize(trace.label!)" (change)="updateContentSize($event, trace.label)" type="range" class="form-range" [id]="trace.label!.replace(' ', '-')">
+          <input min="5" max="500" [value]="getTraceContentSize(trace.label!)"
+                 (change)="updateContentSize($event, trace.label)" type="range" class="form-range"
+                 [id]="trace.label!.replace(' ', '-')">
         </div>
       }
     }
@@ -26,12 +28,12 @@
           <div [class.text-muted]="trace.nested?.length > 0 && !trace.expanded">
             {{ '&nbsp;'.repeat(trace.level) }}{{ trace.label }}
             @if (trace.nested?.length > 0) {
-            <!-- Add symbol if expanded -->
-            @if (trace.expanded) {
-            <i class="bi bi-caret-down-fill"></i>
-            } @else {
-            <i class="bi bi-caret-right"></i>
-            }
+              <!-- Add symbol if expanded -->
+              @if (trace.expanded) {
+                <i class="bi bi-caret-down-fill"></i>
+              } @else {
+                <i class="bi bi-caret-right"></i>
+              }
             }
           </div>
         </div>
@@ -40,17 +42,27 @@
       <ng-template let-trace="trace" ngx-features-viewer-label where="right">
         test
       </ng-template>
-      <!-- Tootlip template -->
-      <ng-template let-trace="trace" let-feature="feature" let-index="index" let-coordinates="coordinates" ngx-features-viewer-tooltip>
+      <!-- Tooltip template -->
+      <ng-template let-trace="trace" let-feature="feature" let-index="index" let-coordinates="coordinates"
+                   ngx-features-viewer-tooltip>
         <div class="rounded bg-white shadow-sm p-3" style="width: 400px; height: auto">
-          <ngx-features-viewer [sequence]="sequence" [settings]="settings.inner" [traces]="[trace]">
-            <!-- Define simple label left -->
-            <ng-template let-trace="trace" ngx-features-viewer-label>
-              <div class="d-flex h-100 w-100 justify-content-start pe-0 align-items-center font-monospace">
-                {{ trace.label }}
-              </div>
-            </ng-template>
-          </ngx-features-viewer>
+          <p>
+            {{feature.label}}
+          </p>
+          <p>
+            {{index}}
+          </p>
+          <p>
+            {{coordinates}}
+          </p>
+<!--          <ngx-features-viewer [sequence]="sequence" [settings]="settings.inner" [traces]="[trace]">-->
+<!--            &lt;!&ndash; Define simple label left &ndash;&gt;-->
+<!--            <ng-template let-trace="trace" ngx-features-viewer-label>-->
+<!--              <div class="d-flex h-100 w-100 justify-content-start pe-0 align-items-center font-monospace">-->
+<!--                {{ trace.label }}-->
+<!--              </div>-->
+<!--            </ng-template>-->
+<!--          </ngx-features-viewer>-->
         </div>
       </ng-template>
     </ngx-features-viewer>

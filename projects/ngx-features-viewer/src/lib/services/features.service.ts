@@ -54,7 +54,6 @@ export class FeaturesService {
         // Check and modify values if necessary
         this.checkValues(tmpTrace);
         const domain = this.globalMinMax(tmpTrace);
-        console.info("Domain for trace", tmpTrace.label, domain)
         // Initialize internal trace
         const internalTrace: InternalTrace = {
           ...tmpTrace,

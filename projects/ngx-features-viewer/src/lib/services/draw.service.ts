@@ -1,21 +1,19 @@
 // Common
-import { map, Observable, ReplaySubject, shareReplay, switchMap, tap } from 'rxjs';
+import { combineLatest, map, Observable, ReplaySubject, shareReplay, switchMap, tap } from 'rxjs';
 import { Injectable } from '@angular/core';
 import * as d3 from 'd3';
 // Services
 import { InitializeService } from './initialize.service';
 import { FeaturesService } from './features.service';
 import { TooltipService } from './tooltip.service';
-import { ZoomService } from './zoom.service';
 // Data types
 import { InternalTrace, InternalTraces } from '../trace';
 import { Feature } from '../features/feature';
 import { Continuous } from '../features/continuous';
 import { Locus } from '../features/locus'
 import { DSSP, DSSPPaths, dsspShape } from "../features/dssp";
-import { DSSP } from "../features/dssp";
 import { Pin } from "../features/pin";
-import { TooltipService } from './tooltip.service';
+import { Sequence } from "../sequence";
 
 type ResidueGroup = d3.Selection<SVGGElement | d3.BaseType, string, SVGGElement | d3.BaseType, Sequence>;
 
@@ -68,7 +66,9 @@ export const identity = (f: unknown) => (f as { id: any }).id;
 // Define function for extracting index out of unknown object
 export const index = (f: unknown, i: number) => i;
 
-@Injectable({ providedIn: 'platform' })
+const alreadyExitedFromView = new Set<Feature>();
+
+@Injectable({providedIn: 'platform'})
 export class DrawService {
 
   public readonly traces$ = new ReplaySubject<InternalTraces>(1);
@@ -107,7 +107,7 @@ export class DrawService {
   constructor(
     private initializeService: InitializeService,
     private featuresService: FeaturesService,
-    private zoomService: ZoomService,
+    private tooltipService: TooltipService,
   ) {
     // Define draw initialization
     this.draw$ = combineLatest([this.initializeService.initialized$, this.sequence$]).pipe(
@@ -117,7 +117,6 @@ export class DrawService {
         const x = this.initializeService.scale.x;
         // Generate horizontal domain for sequence
         const domain = [0, sequence.length + 1];
-        console.log("Setting domain", domain)
         // Update horizontal scale
         x.domain(domain);
       }),
@@ -158,7 +157,7 @@ export class DrawService {
     // Get current vertical scale
     const y = this.initializeService.scale.y;
     // Update domain
-    const domain = ['sequence', ...traces.map(({ id }) => id + '')];
+    const domain = ['sequence', ...traces.map(({id}) => id + '')];
     // Update range
     const range = domain.reduce((range: number[], id: string, i: number) => {
       // Handle sequence
@@ -253,15 +252,15 @@ export class DrawService {
     // Get height, width, margins
     const margin = this.initializeService.margin;
     // Get scale (x, y axis)
-    const { x, y } = this.initializeService.scale;
+    const {x, y} = this.initializeService.scale;
     // Get line height
-    const { 'line-height': lineHeight } = this.initializeService.settings;
+    const {'line-height': lineHeight} = this.initializeService.settings;
     // Define container/cell width and (maximum) text width
     const cellWidth = x(1) - x(0);
     // Get maximum character width
     const charWidth = this['char.width'];
     // Define residues group
-    const { 'group.residues': residues } = this;
+    const {'group.residues': residues} = this;
     // Update size, position of residue background
     residues
       .select('rect.color')
@@ -282,18 +281,6 @@ export class DrawService {
       .attr('fill', this.initializeService.settings['text-color'])
       // Update opacity according to text width
       .attr('opacity', () => charWidth > cellWidth ? 0 : 1);
-    // .each(function() {
-    //   // Get the width of the text element
-    //   const textWidth = this.getBBox().width;
-    //   // Get the width of the text element
-    //   const elementWidth = d3.select(this).attr('width');
-    //   // If the actual text width is greater than the element width, replace the text with nothing
-    //   if (textWidth > elementWidth) {
-    //     d3.select(this).text('');
-    //   }
-    // });
-    // // TODO Hide if width is not sufficient
-    // .text((d) => width > (1 * REM) ? d : ' ');
   }
 
   public createLabels(traces: InternalTraces): void {
@@ -309,7 +296,7 @@ export class DrawService {
     // Add labels to their group
     this['group.labels'] = group
       .selectAll('g')
-      .data([{ id: 'sequence', label: 'Sequence', expanded: true }, ...traces] as InternalTraces, identity)
+      .data([{id: 'sequence', label: 'Sequence', expanded: true}, ...traces] as InternalTraces, identity)
       .join(
         (enter) => enter.append('g'),
         (update) => update,
@@ -328,7 +315,7 @@ export class DrawService {
 
   private setLabelsPosition(trace: InternalTrace) {
     const y = this.initializeService.scale.y;
-    const { left: ml, right: mr } = this.initializeService.margin;
+    const {left: ml, right: mr} = this.initializeService.margin;
     const settings = this.initializeService.settings
     // Get identifier trace
     const identifier = '' + trace.id;
@@ -466,8 +453,8 @@ export class DrawService {
 
   public createTraces(traces: InternalTraces): void {
     // Get references to local variables as `this` might be lost
+    const settings = this.initializeService.settings;
     const tooltipService = this.tooltipService;
-    // const scale = this.initializeService.scale;
     // Generate and store traces groups
     this['group.traces'] = this.initializeService.draw
       .selectAll('g.trace')
@@ -525,14 +512,19 @@ export class DrawService {
               'ry': 4
             };
 
-            const rect = appendElementWithAttributes(container, 'rect', rectAttributes);
+            appendElementWithAttributes(container, 'rect', rectAttributes);
             // addMouseEvents(rect, tooltip, trace, feature);
             if (feature.label) {
               // Based on the color of the feature, determine if the fill of the text should be white or black
-              const textColor = d3.hsl(d3.color(feature.color || 'black')!);
+              let textColor = feature["text-color"];
+
+              if (!textColor) {
+                const featureColor = d3.hsl(d3.color(feature.color || 'black')!);
+                textColor = (Number.isNaN(featureColor.l) || featureColor.l > 0.5) ? "black" : "white";
+              }
 
               const labelAttributes = {
-                "fill": textColor.l > 0.5 ? "black" : "white",
+                "fill": textColor,
                 "dominant-baseline": "central"
               }
 
@@ -579,7 +571,7 @@ export class DrawService {
                 'fill': feature.color || 'white',
                 'fill-opacity': feature.opacity || 0.5
               };
-              const bSheet = appendElementWithAttributes(container, 'polygon', bSheetAttributes);
+              appendElementWithAttributes(container, 'polygon', bSheetAttributes);
               // addMouseEvents(bSheet, tooltip, trace, feature);
             }
 
@@ -593,8 +585,8 @@ export class DrawService {
                 'stroke-dasharray': `${sw}, ${sw * 1.5}`,
                 'fill': 'none',
               };
-              const coil = appendElementWithAttributes(container, 'path', coilAttributes);
-              addMouseEvents(coil, tooltip, trace, feature);
+              appendElementWithAttributes(container, 'path', coilAttributes);
+              // addMouseEvents(coil, tooltip, trace, feature);
             }
           }
         })
@@ -615,8 +607,51 @@ export class DrawService {
       const traceGroups = d3.select<d3.BaseType, InternalTraces>(this);
       // Select all feature groups
       const featureGroups = traceGroups.selectAll<d3.BaseType, Feature>('g.feature');
+      console.time('Drawing features')
       // Loop through each feature group
       featureGroups.each(function (feature, featureIdx: number) {
+        let featureStart, featureEnd;
+        switch (feature.type) {
+          case 'locus':
+            featureStart = feature.start - 0.5;
+            featureEnd = feature.end + 0.5;
+            break;
+          case 'dssp':
+            featureStart = feature.start - 0.5;
+            featureEnd = feature.end + 0.5;
+            break;
+          case 'continuous':
+            featureStart = 0.5;
+            featureEnd = feature.values.length + 0.5;
+            break;
+          case 'pin':
+            featureStart = feature.position - 0.5;
+            featureEnd = feature.position + 0.5;
+            break;
+          default:
+            featureStart = 0;
+            featureEnd = 10;
+        }
+
+        const currentDomainStart = scale.x.domain()[0];
+        const currentDomainEnd = scale.x.domain()[1];
+
+        // Calculate the starting point relative to the current domain (the shown part of the sequence)
+        const startPoint = Math.max(featureStart, currentDomainStart);
+        const endPoint = Math.min(featureEnd, currentDomainEnd);
+        // If end is less than start, then the feature is not visible, so we skip it
+        if (endPoint < startPoint) {
+          if (alreadyExitedFromView.has(feature)) {
+            // The feature was already not visible before and its position has already been updated outside the view
+            return;
+          } else {
+            // The feature is not visible anymore, but we need to update its position to be outside the view
+            alreadyExitedFromView.add(feature);
+          }
+        }
+        // The feature is now visible, so we remove it from the set of features that are outside the view
+        alreadyExitedFromView.delete(feature);
+
         // Get line height, content size
         const mt = scale.y('' + trace.id);
         const lh = trace.options?.['line-height'] || settings['line-height'];
@@ -721,9 +756,6 @@ export class DrawService {
           const shapeToDraw = dsspShape(feature.code);
           const shapePath = DSSPPaths[shapeToDraw];
 
-          const startPoint = feature.start - 0.5;
-          const endPoint = feature.end + 0.5;
-
           const totalFeatureWidth = scale.x(endPoint) - scale.x(startPoint);
           const widthPerResidue = totalFeatureWidth / (endPoint - startPoint);
 
@@ -777,7 +809,7 @@ export class DrawService {
                   .attr('x', scale.x(startPoint))
                   .attr('y', top),
                 update => update.select('rect')
-                  .attr('width', totalFeatureWidth)
+                  .attr('width', totalFeatureWidth > 0 ? totalFeatureWidth : 0)
                   .attr('height', cs)
                   .attr('x', scale.x(startPoint))
                   .attr('y', top),
@@ -860,6 +892,7 @@ export class DrawService {
           }
         }
       });
+      console.timeEnd('Drawing features')
     });
   }
 
