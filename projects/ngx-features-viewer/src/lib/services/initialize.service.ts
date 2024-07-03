@@ -124,6 +124,14 @@ export class InitializeService {
   // Declare initialization pipeline
   public readonly initialized$: Observable<d3.Selection<SVGSVGElement, undefined, null, undefined>>;
 
+  public getCoordinates(mouseEvent: MouseEvent, traceId: unknown): [number, number] {
+    // Define coordinates
+    const x = Math.floor(this.scale.x.invert(mouseEvent.offsetX) + .5);
+    const y = Math.round(this.scale.y('' + traceId));
+    // Return coordinates
+    return [x, y];
+  }
+
   constructor() {
     // Set default settings
     this.settings = {

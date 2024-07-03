@@ -176,7 +176,7 @@ export class DrawService implements OnDestroy {
     const settings = this.initializeService.settings;
     // Update domain
     const domain = ['sequence', ...traces.map(({ id }) => id + '')];
-    // Intiialize range
+    // Initialize range
     const range = [settings['margin-top']];
     // Set sequence line height
     if (Array.isArray(sequence) || (typeof sequence === 'string')) {
@@ -276,6 +276,7 @@ export class DrawService implements OnDestroy {
 
   private removeSelectionShadow() {
     this.initializeService.shadow
+      .data([{trace: undefined, feature: undefined, range: undefined} as SelectionContext])
       .attr('x', 0)
       .attr('width', 0);
   }
@@ -487,6 +488,7 @@ export class DrawService implements OnDestroy {
     // Get references to local variables as `this` might be lost
     const settings = this.initializeService.settings;
     const tooltipService = this.tooltipService;
+    const initializeService = this.initializeService;
     const selectionEmitter$ = this.selectedFeature$;
 
     // Generate and store traces groups
@@ -520,6 +522,8 @@ export class DrawService implements OnDestroy {
           selection.on('mousemove', (event: MouseEvent) => tooltipService.onMouseMove(event, trace, feature, index));
           // On mouse leave
           selection.on('mouseleave', () => tooltipService.onMouseLeave());
+          // On feature click
+          selection.on('click', (event: MouseEvent) => selectFeature(feature, initializeService, event, trace, selectionEmitter$));
 
           const appendElementWithAttributes = (
             parent: d3.Selection<SVGGElement, unknown, null, undefined>,
@@ -546,18 +550,7 @@ export class DrawService implements OnDestroy {
               'ry': 4
             };
 
-            const rect = appendElementWithAttributes(container, 'rect', rectAttributes);
-
-            rect.on('click', (event, d) => {
-              const feature = d as Locus;
-              // Create a rectangle that covers the entire height of the FV, and spans from start to end of the locus
-              const selectionContext: SelectionContext = {
-                trace,
-                feature,
-                range: {start: feature.start - .5, end: feature.end + .5}
-              }
-              selectionEmitter$.next(selectionContext);
-            });
+            appendElementWithAttributes(container, 'rect', rectAttributes);
 
             // addMouseEvents(rect, tooltip, trace, feature);
             if (feature.label) {
@@ -655,28 +648,7 @@ export class DrawService implements OnDestroy {
       const featureGroups = traceGroups.selectAll<d3.BaseType, Feature>('g.feature');
       // Loop through each feature group
       featureGroups.each(function (feature, featureIdx: number) {
-        let featureStart, featureEnd;
-        switch (feature.type) {
-          case 'locus':
-            featureStart = feature.start - 0.5;
-            featureEnd = feature.end + 0.5;
-            break;
-          case 'dssp':
-            featureStart = feature.start - 0.5;
-            featureEnd = feature.end + 0.5;
-            break;
-          case 'continuous':
-            featureStart = 0.5;
-            featureEnd = feature.values.length + 0.5;
-            break;
-          case 'pin':
-            featureStart = feature.position - 0.5;
-            featureEnd = feature.position + 0.5;
-            break;
-          default:
-            featureStart = 0;
-            featureEnd = 10;
-        }
+        const {featureStart, featureEnd} = getStartEndPositions(feature);
 
         const currentDomainStart = scale.x.domain()[0];
         const currentDomainEnd = scale.x.domain()[1];
@@ -981,4 +953,47 @@ export class DrawService implements OnDestroy {
   public ngOnDestroy() {
     this._selectedFeature.unsubscribe();
   }
+}
+
+
+function getStartEndPositions(feature: Continuous | Locus | DSSP | Pin) {
+  let featureStart, featureEnd;
+  switch (feature.type) {
+    case 'locus':
+      featureStart = feature.start - 0.5;
+      featureEnd = feature.end + 0.5;
+      break;
+    case 'dssp':
+      featureStart = feature.start - 0.5;
+      featureEnd = feature.end + 0.5;
+      break;
+    case 'continuous':
+      featureStart = 0.5;
+      featureEnd = feature.values.length + 0.5;
+      break;
+    case 'pin':
+      featureStart = feature.position - 0.5;
+      featureEnd = feature.position + 0.5;
+      break;
+    default:
+      featureStart = 0;
+      featureEnd = 10;
+  }
+  return {featureStart, featureEnd};
+}
+
+function selectFeature(feature: Continuous | Locus | DSSP | Pin, initializeService: InitializeService, event: MouseEvent, trace: InternalTrace, selectionEmitter$: EventEmitter<SelectionContext | undefined>) {
+  let {featureStart, featureEnd} = getStartEndPositions(feature);
+
+  const coordinates = initializeService.getCoordinates(event, trace.id);
+  if (feature.type === 'continuous') {
+    featureStart = coordinates[0] - 0.5;
+    featureEnd = coordinates[0] + 0.5;
+  }
+  const selectionContext: SelectionContext = {
+    trace,
+    feature,
+    range: {start: featureStart, end: featureEnd}
+  }
+  selectionEmitter$.next(selectionContext);
 }

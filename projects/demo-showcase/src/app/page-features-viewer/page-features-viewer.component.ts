@@ -41,10 +41,6 @@ export class PageFeaturesViewerComponent {
 
   traces: Trace[];
 
-  // test($event: MouseEvent, trace: unknown) {
-  //   console.log('test', $event, trace)
-  // }
-
   constructor() {
     // Define settings for outer Features Viewer component
     const outer = {
@@ -177,6 +173,6 @@ export class PageFeaturesViewerComponent {
   }
 
   onFeatureSelected($event: SelectionContext | undefined) {
-    alert(`Feature selected: ${JSON.stringify($event)}`);
+    console.log(`Feature selected: ${JSON.stringify($event)}`);
   }
 }

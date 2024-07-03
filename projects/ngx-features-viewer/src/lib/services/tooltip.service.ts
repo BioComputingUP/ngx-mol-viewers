@@ -38,19 +38,11 @@ export class TooltipService {
 
   constructor(public initializeService: InitializeService) { }
 
-  public getCoordinates(mouseEvent: MouseEvent, traceId: unknown): [number, number] {
-    // Define coordinates
-    const x = Math.floor(this.initializeService.scale.x.invert(mouseEvent.offsetX));
-    const y = Math.floor(this.initializeService.scale.y('' + traceId));
-    // Return coordinates
-    return [x, y];
-  }
-
   public onMouseEnter(event: MouseEvent, trace: InternalTrace, feature?: Feature, index?: number) {
     // Define tooltip
     const tooltip = this._tooltip;
     // Define coordinates
-    const coordinates = this.getCoordinates(event, trace.id);
+    const coordinates = this.initializeService.getCoordinates(event, trace.id);
     // Emit tooltip context
     this.tooltip$.next({ trace, feature, index, coordinates });
     // Set tooltip visible
@@ -61,10 +53,10 @@ export class TooltipService {
   public onMouseMove(event: MouseEvent, trace: InternalTrace, feature?: Feature, index?: number) {
     // Define tooltip
     const tooltip = this._tooltip;
-    // Re-rendering tooltip on move is required only for continuouse features
+    // Re-rendering tooltip on move is required only for continuous features
     if (feature && feature.type === 'continuous') {
       // Define coordinates
-      const coordinates = this.getCoordinates(event, trace.id);
+      const coordinates = this.initializeService.getCoordinates(event, trace.id);
       // Emit tooltip context
       this.tooltip$.next({ trace, feature, index, coordinates });
     }
