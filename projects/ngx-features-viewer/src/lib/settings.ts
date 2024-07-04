@@ -6,6 +6,7 @@ export interface Settings {
   'margin-left': number;
   // Define colors
   'background-color': string;
+  'plot-background-color': string;
   'grid-line-color': string;
   'text-color': string;
   // Define content size (height), line height

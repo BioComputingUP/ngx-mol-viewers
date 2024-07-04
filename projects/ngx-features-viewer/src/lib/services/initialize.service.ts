@@ -100,11 +100,12 @@ export class InitializeService {
   // Define horizontal, vertical axis
   public axes!: Axes;
 
-  // TODO Define graph content (everything drawed)
   public draw!: Group;
 
-  // TODO Define clip rectangle
   public clip!: Rect;
+
+  // Define mask rectangle
+  public mask!: Rect;
 
   // Define rectangle for events binding
   public events!: Rect;
@@ -140,6 +141,7 @@ export class InitializeService {
       'margin-bottom': 0,
       'margin-left': 0,
       'background-color': 'transparent',
+      'plot-background-color': 'transparent',
       'grid-line-color': 'rgb(213,255,0)',
       'text-color': 'white',
       'content-size': 16,
@@ -168,13 +170,47 @@ export class InitializeService {
       // Generate SVG container (draw)
       tap((svg) => {
         // Define unique identifier
-        const uuid = '' + UUID();
+        const uuidClip = '' + UUID();
+        const uuidMask = '' + UUID();
+
+        const defs = svg.append('defs');
+
         // Define clip path: everything out of this area won't be drawn
-        this.clip = svg.append('defs').append('clipPath')
+        this.clip = defs.append('clipPath')
           // Set clip identifier, required in <defs>
-          .attr('id', uuid)
+          .attr('id', uuidClip)
           // Add inner rectangle
           .append('rect')
+
+        // Define the mask element to create a hole where the plot will be
+        defs
+          .append("mask")
+          .attr("id", "hole-mask")
+          .append("rect")
+          .attr("width", "100%")
+          .attr("height", "100%")
+          .attr("fill", "white");
+
+        // Create the rectangle which position and dimension will be set in the resize, to adapt to the plot dimensions
+        this.mask = svg.select("mask")
+          .append("rect");
+
+        // Create the outer rectangle and apply the mask, applying the background color set by the user
+        svg.append("rect")
+          .attr('class', 'background')
+          .attr("width", '100%')
+          .attr("height", '100%')
+          .attr("fill", this.settings["background-color"])
+          .attr("mask", "url(#hole-mask)");
+
+        // Add a background rectangle to the SVG to show the background color for only the plot
+        svg.append('rect')
+          .attr('id', 'plot-background')
+          .attr('fill', this.settings["plot-background-color"])
+          .attr('width', '100%')
+          .attr('height', '100%')
+          .attr('clip-path', `url(${'#' + uuidClip})`);
+
         // NOTE Add middle layer, in order to allow both zoom and mouse events to be captured
         // https://stackoverflow.com/questions/58125180/d3-zoom-and-mouseover-tooltip
         this.focus = svg.append('g')
@@ -184,7 +220,7 @@ export class InitializeService {
         this.draw = this.focus.append('g')
           // Bind features group to clip path
           .attr('class', 'features')
-          .attr('clip-path', `url(${'#' + uuid})`);
+          .attr('clip-path', `url(${'#' + uuidClip})`);
         // Define zoom event
         this.zoom = d3.zoom<SVGGElement, undefined>();
         // Add an invisible rectangle on top of the chart.

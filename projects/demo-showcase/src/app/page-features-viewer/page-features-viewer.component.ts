@@ -39,7 +39,7 @@ export class PageFeaturesViewerComponent {
 
   // Define input sequence
   // readonly sequence = Array.from(P04637);
-  readonly sequence: Sequence = {length: P04637.length};
+  readonly sequence: Sequence = {length: 240};
 
   traces: Trace[];
 
@@ -50,12 +50,13 @@ export class PageFeaturesViewerComponent {
       'line-height': 64,
       'content-size': 32,
       // Define color
-      'background-color': 'transparent',
+      'background-color': '#e1e1e1',
+      'plot-background-color': '#f1f1f1a0',
       'grid-line-color': 'rgb(213,255,0)',
       'text-color': 'black',
       // Define margins
-      'margin-top': 0,
-      'margin-right': 0,
+      'margin-top': 30,
+      'margin-right': 30,
       'margin-bottom': 30,
       'margin-left': 140,
     };
@@ -75,14 +76,14 @@ export class PageFeaturesViewerComponent {
       label: "Trace 1",
       options: {
         "grid": true,
-        "grid-line-color": "gray",
-        "grid-line-width": 0.5,
+        "grid-line-color": "white",
+        "grid-line-width": 1,
         "grid-y-values": [-1, 1],
         // "content-size": 30,
         // "line-height": 300,
-        "zero-line": false,
-        "zero-line-color": "black",
-        "zero-line-width": 1,
+        "zero-line": true,
+        "zero-line-color": "white",
+        "zero-line-width": 2,
       },
       features: [{
         label: "feature-1",
@@ -256,6 +257,7 @@ export class PageFeaturesViewerComponent {
         color: "purple",
         opacity: .5,
         position: 77,
+        adjustToWidth: true,
         "stroke-width": 2,
         sides: 7,
         radius: 30

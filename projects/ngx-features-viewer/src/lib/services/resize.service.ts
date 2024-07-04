@@ -135,6 +135,7 @@ export class ResizeService {
     size.width = this.width - this.margin.left - this.margin.right;
     // Resize inner clip container
     resize(this.initializeService.clip, size, this.margin);
+    resize(this.initializeService.mask, size, this.margin);
     resize(this.initializeService.events, size, this.margin);
   }
 

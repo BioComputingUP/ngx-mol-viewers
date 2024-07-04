@@ -392,7 +392,7 @@ export class DrawService {
   }
 
   public createGrid(traces: InternalTraces): void {
-    const group = this.initializeService.svg
+    const group = this.initializeService.focus
       // Create parent grid element
       .selectAll('g.grid')
       .data([traces], index)
@@ -416,6 +416,7 @@ export class DrawService {
           .enter()
           .append('line')
           .attr('class', 'grid-line')
+          .style('shape-rendering', 'crispedges')
           .attr('id', (d, index) => 'grid-line-' + index);
       }
 
@@ -427,6 +428,7 @@ export class DrawService {
           .enter()
           .append('line')
           .attr('class', 'zero-line')
+          .style('shape-rendering', 'crispedges')
           .attr('id', 'zero-line');
       }
     });
