@@ -463,7 +463,7 @@ export class DrawService {
         .data(trace.options?.grid ? trace.options?.['grid-y-values'] || [] : [])
         .attr('x1', x1)
         .attr('x2', x2)
-        .attr('y1', d=> rescaleY(d))
+        .attr('y1', d => rescaleY(d))
         .attr('y2', d => rescaleY(d))
         .attr('stroke', trace.options?.["grid-line-color"] || settings["grid-line-color"])
         .attr('stroke-width', trace.options?.["grid-line-width"] || 1);
@@ -754,25 +754,38 @@ export class DrawService {
         }
 
         if (feature.type === 'pin') {
+          let radius;
+          if (feature.adjustToWidth) {
+            radius = Math.min(trace.options?.["content-size"] || settings["content-size"], (scale.x(1) - scale.x(0))) / 2;
+          } else {
+            radius = feature.radius || 8;
+          }
           // Select all circles (and bound data)
           d3.select<d3.BaseType, Pin>(this)
             .selectAll<d3.BaseType, Pin>('circle')
             // Set position
             .attr('cx', (pin) => scale.x(pin.position))
             .attr('cy', center)
-            .attr('r', feature.radius || 8);
+            .attr('r', radius);
         }
 
         if (feature.type === 'poly') {
           // Given the position of the feature and the radius, we can calculate the points of the polygon
           // that will be drawn inscribed in a circle with center at the position of the feature and radius equal to the radius of the feature
           const sides = feature.sides || 3;
-          const radius = feature.radius || 8;
+          let radius;
+          if (feature.adjustToWidth) {
+            radius = Math.min(trace.options?.["content-size"] || settings["content-size"], (scale.x(1) - scale.x(0))) / 2;
+          } else {
+            radius = feature.radius || 8;
+          }
+
           const angle = 2 * Math.PI / sides;
+          const rotationAdjustment = Math.PI / 2 - Math.PI / sides;
           // Calculate the points remembering that the polygon should not be stretched in the x-y axis, but it is always of size radius*2
-          const points = Array.from({ length: sides }, (_, i) => {
-            const x = radius * Math.cos(i * angle + Math.PI / 2 - Math.PI / sides);
-            const y = radius * Math.sin(i * angle + Math.PI / 2 - Math.PI / sides);
+          const points = Array.from({length: sides}, (_, i) => {
+            const x = radius * Math.cos(i * angle + rotationAdjustment);
+            const y = radius * Math.sin(i * angle + rotationAdjustment);
             return [x + scale.x(feature.position), y + center];
           });
           d3.select<d3.BaseType, Pin>(this)

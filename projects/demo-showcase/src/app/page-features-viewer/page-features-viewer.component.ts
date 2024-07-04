@@ -119,6 +119,7 @@ export class PageFeaturesViewerComponent {
       }, {
         label: "feature-5",
         type: "pin",
+        adjustToWidth: true,
         color: "orange",
         position: 105,
         opacity: 1,

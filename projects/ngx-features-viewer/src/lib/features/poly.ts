@@ -1,21 +1,13 @@
-import { BaseFeature } from './feature';
+import { Pin } from "./pin";
 
 /**
  * A point feature that is represented by a single regular polygon in a position (index of the residue).
  * @interface Poly
- * @extends {BaseFeature}
- * @property {number} position The position of the polygon.
+ * @extends {Pin}
  * @property {number} sides The number of sides of the polygon.
- * @property {number} [radius] The radius of the circle that circumscribes the polygon.
- * @property {string} [stroke-color] The border color of the polygon.
- * @property {number} [stroke-width] The border width of the polygon.
  */
-export interface Poly extends BaseFeature {
+export interface Poly extends Omit<Pin, 'type'> {
   type: 'poly';
-  position: number;
   sides: number;
-  radius?: number;
-  'stroke-color'?: string;
-  'stroke-width'?: number;
 }
 
