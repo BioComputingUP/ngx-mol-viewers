@@ -164,7 +164,7 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, AfterContentIn
         // Apply scale limit to 5 residues
         this.initializeService.zoom
           .translateExtent([[ms, 0], [w - me, h - mb]])
-          .scaleExtent([1, n / 5])
+          .scaleExtent([0.998, n / 5])
           .extent([[ms, 0], [w - me, h - mb]])
           .on('zoom', (event) => {
             this.zoomService.zoom$.next(event);

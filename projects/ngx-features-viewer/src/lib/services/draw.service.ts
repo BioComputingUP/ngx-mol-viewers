@@ -406,22 +406,28 @@ export class DrawService {
       .join('g')
       .attr('id', (d) => 'grid-' + d.id)
       .attr('class', 'grid-line-group')
-      .join('line')
+      .join('line');
 
     this['group.grid'].each((trace) => {
       if (trace.options?.['grid']) {
-        // Create initial lines without setting their attributes yet
+        // In each group of grid lines, create the lines
         this['group.grid'].selectAll('line.grid-line')
           .data(trace.options?.['grid-y-values'] || [])
           .enter()
           .append('line')
-          .attr('class', 'grid-line');
+          .attr('class', 'grid-line')
+          .attr('id', (d, index) => 'grid-line-' + index);
       }
 
       // Create initial zero-line if defined
       if (trace.options?.['zero-line']) {
-        this['group.grid'].append('line')
-          .attr('class', 'zero-line');
+        // Create zero line
+        this['group.grid'].selectAll('line.zero-line')
+          .data([true])
+          .enter()
+          .append('line')
+          .attr('class', 'zero-line')
+          .attr('id', 'zero-line');
       }
     });
   }
@@ -452,38 +458,26 @@ export class DrawService {
       }
 
       // Update grid lines
-      const gridLines = traceGroup.selectAll<SVGLineElement, number>('line.grid-line')
-        .data(trace.options?.['grid-y-values'] || []);
-
-      gridLines.enter()
-        .append('line')
-        .attr('class', 'grid-line')
-        .merge(gridLines)
+      traceGroup
+        .selectAll('line.grid-line')
+        .data(trace.options?.grid ? trace.options?.['grid-y-values'] || [] : [])
         .attr('x1', x1)
         .attr('x2', x2)
-        .attr('y1', d => rescaleY(d))
+        .attr('y1', d=> rescaleY(d))
         .attr('y2', d => rescaleY(d))
         .attr('stroke', trace.options?.["grid-line-color"] || settings["grid-line-color"])
         .attr('stroke-width', trace.options?.["grid-line-width"] || 1);
 
-      gridLines.exit().remove();
-
       // Update zero-line if defined
-      const zeroLine = traceGroup.selectAll<SVGLineElement, number>('line.zero-line')
-        .data(trace.options?.['zero-line'] ? [true] : []);
-
-      zeroLine.enter()
-        .append('line')
-        .attr('class', 'zero-line')
-        .merge(zeroLine)
+      traceGroup
+        .selectAll('line.zero-line')
+        .data(trace.options?.['zero-line'] ? [true] : [])
         .attr('x1', x1)
         .attr('x2', x2)
         .attr('y1', rescaleY(0))
         .attr('y2', rescaleY(0))
         .attr('stroke', trace.options?.["zero-line-color"] || 'black')
         .attr('stroke-width', trace.options?.["zero-line-width"] || 1);
-
-      zeroLine.exit().remove();
     });
   }
 
@@ -597,6 +591,17 @@ export class DrawService {
               'fill-opacity': feature.opacity || 1
             };
             appendElementWithAttributes(container, 'circle', circleAttributes);
+          }
+
+          if (feature.type === 'poly') {
+            const polyAttributes = {
+              'stroke': feature["stroke-color"] || 'black',
+              'stroke-opacity': feature.opacity || 1,
+              'stroke-width': feature["stroke-width"] || 1,
+              'fill': feature.color || 'black',
+              'fill-opacity': feature.opacity || 1
+            };
+            appendElementWithAttributes(container, 'polygon', polyAttributes);
           }
 
           if (feature.type === 'dssp') {
@@ -758,10 +763,27 @@ export class DrawService {
             .attr('r', feature.radius || 8);
         }
 
+        if (feature.type === 'poly') {
+          // Given the position of the feature and the radius, we can calculate the points of the polygon
+          // that will be drawn inscribed in a circle with center at the position of the feature and radius equal to the radius of the feature
+          const sides = feature.sides || 3;
+          const radius = feature.radius || 8;
+          const angle = 2 * Math.PI / sides;
+          // Calculate the points remembering that the polygon should not be stretched in the x-y axis, but it is always of size radius*2
+          const points = Array.from({ length: sides }, (_, i) => {
+            const x = radius * Math.cos(i * angle + Math.PI / 2 - Math.PI / sides);
+            const y = radius * Math.sin(i * angle + Math.PI / 2 - Math.PI / sides);
+            return [x + scale.x(feature.position), y + center];
+          });
+          d3.select<d3.BaseType, Pin>(this)
+            .selectAll<d3.BaseType, Pin>('polygon')
+            .attr('points', points.map(point => point.join(',')).join(' '));
+        }
+
         if (feature.type === 'dssp') {
           const magicNumbers = {
             "helix": {"bitWidth": 0.25, "xScale": 0.5, "yScale": 0.119, "center": -4},
-            "turn": {"bitWidth": 0.7, "xScale": 0.033, "yScale": 0.035, "center": +5.8},
+            "turn": {"bitWidth": 0.8, "xScale": 0.033, "yScale": 0.035, "center": +5.8},
             // Sheet is a special case as it is computed as a rectangle with a triangle on top at runtime
             "sheet": {"bitWidth": 4, "xScale": 0, "yScale": 0, "center": 0},
             "coil": {"bitWidth": 0.3, "xScale": 0, "yScale": 0, "center": 0},
@@ -948,7 +970,7 @@ export class DrawService {
 }
 
 
-function getStartEndPositions(feature: Continuous | Locus | DSSP | Pin) {
+function getStartEndPositions(feature: Feature) {
   let featureStart, featureEnd;
   switch (feature.type) {
     case 'locus':
@@ -967,6 +989,10 @@ function getStartEndPositions(feature: Continuous | Locus | DSSP | Pin) {
       featureStart = feature.position - 0.5;
       featureEnd = feature.position + 0.5;
       break;
+    case 'poly':
+      featureStart = feature.position - 0.5;
+      featureEnd = feature.position + 0.5;
+      break;
     default:
       featureStart = 0;
       featureEnd = 10;
@@ -974,7 +1000,7 @@ function getStartEndPositions(feature: Continuous | Locus | DSSP | Pin) {
   return {featureStart, featureEnd};
 }
 
-function selectFeature(feature: Continuous | Locus | DSSP | Pin, initializeService: InitializeService, event: MouseEvent, trace: InternalTrace, selectionEmitter$: EventEmitter<SelectionContext | undefined>) {
+function selectFeature(feature: Feature, initializeService: InitializeService, event: MouseEvent, trace: InternalTrace, selectionEmitter$: EventEmitter<SelectionContext | undefined>) {
   let {featureStart, featureEnd} = getStartEndPositions(feature);
 
   const coordinates = initializeService.getCoordinates(event, trace.id);

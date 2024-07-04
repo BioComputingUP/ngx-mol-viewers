@@ -1,7 +1,9 @@
 import {
   NgxFeaturesViewerComponent,
   NgxFeaturesViewerLabelDirective,
-  NgxFeaturesViewerTooltipDirective, SelectionContext,
+  NgxFeaturesViewerTooltipDirective,
+  SelectionContext,
+  Sequence,
   Settings,
   Trace
 } from '@ngx-features-viewer';
@@ -37,7 +39,7 @@ export class PageFeaturesViewerComponent {
 
   // Define input sequence
   // readonly sequence = Array.from(P04637);
-  readonly sequence = { length: P04637.length };
+  readonly sequence: Sequence = {length: P04637.length};
 
   traces: Trace[];
 
@@ -55,7 +57,7 @@ export class PageFeaturesViewerComponent {
       'margin-top': 0,
       'margin-right': 0,
       'margin-bottom': 30,
-      'margin-left': 80,
+      'margin-left': 140,
     };
     // Define settings for inner Features Viewer component
     const inner = {
@@ -78,7 +80,7 @@ export class PageFeaturesViewerComponent {
         "grid-y-values": [-1, 1],
         // "content-size": 30,
         // "line-height": 300,
-        "zero-line": true,
+        "zero-line": false,
         "zero-line-color": "black",
         "zero-line-width": 1,
       },
@@ -90,22 +92,84 @@ export class PageFeaturesViewerComponent {
         end: 30,
         opacity: 1,
         code: "H",
-      },{
+      }, {
         label: "feature-2",
         type: "dssp",
         color: "blue",
-        start: 32,
-        end: 45,
+        start: 31,
+        end: 55,
         opacity: 1,
         code: "H",
-      },{
-        label: "feature-2",
+      }, {
+        label: "feature-3",
         type: "dssp",
         color: "orange",
-        start: 47,
+        start: 56,
         end: 80,
         opacity: 1,
         code: "C",
+      }, {
+        label: "feature-4",
+        type: "dssp",
+        color: "orange",
+        start: 81,
+        end: 90,
+        opacity: 1,
+        code: "T",
+      }, {
+        label: "feature-5",
+        type: "pin",
+        color: "orange",
+        position: 105,
+        opacity: 1,
+        radius: 8,
+      }],
+      nested: [{
+        label: "Trace 1.1",
+        options: {
+          "grid": false,
+          "grid-line-color": "gray",
+          "grid-line-width": 0.5,
+          "grid-y-values": [-1, 1],
+          // "content-size": 30,
+          // "line-height": 300,
+          "zero-line": true,
+          "zero-line-color": "black",
+          "zero-line-width": 1,
+        },
+        features: [{
+          label: "feature-1",
+          type: "dssp",
+          color: "violet",
+          start: 1,
+          end: 30,
+          opacity: 1,
+          code: "H",
+        }, {
+          label: "feature-2",
+          type: "dssp",
+          color: "red",
+          start: 31,
+          end: 55,
+          opacity: 1,
+          code: "H",
+        }, {
+          label: "feature-3",
+          type: "dssp",
+          color: "green",
+          start: 56,
+          end: 80,
+          opacity: 1,
+          code: "C",
+        }, {
+          label: "feature-3",
+          type: "dssp",
+          color: "blue",
+          start: 81,
+          end: 90,
+          opacity: 1,
+          code: "T",
+        }]
       }]
     }, {
       label: "Trace 2",
@@ -114,8 +178,8 @@ export class PageFeaturesViewerComponent {
         "grid-line-color": "gray",
         "grid-line-width": 0.5,
         "grid-y-values": [65, 130],
-        //"content-size": 16,
-        //"line-height": 32,
+        "content-size": 80,
+        "line-height": 100,
         "zero-line": true,
         "zero-line-color": "black",
         "zero-line-width": 1,
@@ -123,33 +187,77 @@ export class PageFeaturesViewerComponent {
       features: [{
         label: "feature-0",
         type: "continuous",
-        values: Array.from({length: 47}, () => Math.floor(Math.random() * 100) + 30),
+        values: Array.from({length: 240}, () => Math.floor(Math.random() * 100) + 30),
         min: 30,
         max: 130,
         color: "blue",
         curveType: "curveStep",
         opacity: 0.3,
         showArea: true,
-      }, {
+      }]
+    }, {
+      label: "Trace 3",
+      options: {
+        "grid": true,
+        "grid-line-color": "gray",
+        "grid-line-width": 0.5,
+        "grid-y-values": [65, 130],
+        "content-size": 80,
+        "line-height": 100,
+        "zero-line": true,
+        "zero-line-color": "black",
+        "zero-line-width": 1,
+      },
+      features: [{
         label: "feature-1",
         type: "locus",
-        color: "none",
+        color: "transparent",
         "stroke-color": "purple",
         "stroke-width": 4,
-        // height: 80,
+        height: 40,
         start: 1,
-        end: 20,
-      }, {
-        label: "feature-1",
-        type: "locus",
-        color: "red",
-        opacity: 0.4,
-        "stroke-color": "red",
-        "stroke-width": 4,
-        "text-color": "black",
-        // height: 70,
-        start: 27,
         end: 50,
+      }, {
+        label: "feature-2",
+        type: "poly",
+        color: "red",
+        opacity: 1,
+        position: 73,
+        sides: 3,
+        radius: 30
+      }, {
+        label: "feature-2",
+        type: "poly",
+        color: "red",
+        opacity: 1,
+        position: 74,
+        sides: 4,
+        radius: 12
+      }, {
+        label: "feature-2",
+        type: "poly",
+        color: "red",
+        opacity: 1,
+        position: 75,
+        sides: 5,
+        radius: 12
+      }, {
+        label: "feature-2",
+        type: "poly",
+        color: "red",
+        opacity: 1,
+        position: 76,
+        sides: 6,
+        radius: 12
+      }, {
+        label: "feature-2",
+        type: "poly",
+        color: "purple",
+        opacity: .5,
+        position: 77,
+        "stroke-width": 2,
+        sides: 7,
+        radius: 30
       }]
     }]
   }

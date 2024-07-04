@@ -2,12 +2,14 @@ import { Continuous } from "./continuous";
 import { DSSP } from "./dssp";
 import { Pin } from "./pin";
 import { Locus } from "./locus";
+import { Poly } from "./poly";
 
 /**
  * Type that can be associated with a feature in its `type` property.
  * @type FeatureType
  */
-export type FeatureType = 'continuous' | 'locus' | 'dssp' | 'pin';
+export type FeatureType = 'continuous' | 'locus' | 'dssp' | 'pin' | 'poly';
+
 
 /**
  * Base feature interface
@@ -31,4 +33,4 @@ export interface BaseFeature {
 /**
  * Any feature that can be displayed in the features viewer.
  */
-export type Feature = Continuous | Locus | DSSP | Pin;
+export type Feature = Continuous | Locus | DSSP | Pin | Poly;

@@ -134,9 +134,15 @@ export class ZoomService implements OnDestroy {
           .ticks()
           // Do not show ticks outside the sequence
           .filter((d) => Number.isInteger(d) && d >= 0.5 && d <= this.initService.sequence.length);
+
+        // If the 1 tick can be shown, add it
+        if (scale.x.domain()[0] < 1) {
+          ticks.unshift(1);
+        }
+
         // Define horizontal axis
         const axis = d3.axisBottom(scale.x)
-          .tickValues(ticks.concat(1))
+          .tickValues(ticks)
           .tickFormat(d3.format('.0f'));
         // Update horizontal axis
         axes.x.call(axis);
