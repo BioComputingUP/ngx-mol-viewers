@@ -13,9 +13,9 @@ import { Continuous } from '../features/continuous';
 import { Locus } from '../features/locus'
 import { DSSP, DSSPPaths, dsspShape } from "../features/dssp";
 import { Pin } from "../features/pin";
-import { Sequence } from "../sequence";
+import { Sequence, sequenceColors } from "../sequence";
 
-type ResidueGroup = d3.Selection<SVGGElement | d3.BaseType, string, SVGGElement | d3.BaseType, Sequence>;
+type SequenceContainer = d3.Selection<SVGGElement, Sequence, SVGGElement, undefined>;
 
 type LabelGroup = d3.Selection<SVGGElement | d3.BaseType, InternalTrace, SVGGElement | d3.BaseType, InternalTraces>;
 
@@ -23,37 +23,6 @@ type TraceGroup = d3.Selection<SVGGElement | d3.BaseType, InternalTrace, SVGGEle
 
 type GridLines = d3.Selection<SVGGElement | d3.BaseType, InternalTrace, SVGGElement | d3.BaseType, InternalTraces>;
 
-// type DivTooltip = d3.Selection<HTMLDivElement, unknown, null, unknown>;
-
-// type d3Selection = d3.Selection<d3.BaseType, unknown, null, undefined>
-
-// TODO This should not be there
-export const CINEMA = {
-  H: 'blue',
-  K: 'blue',
-  R: 'blue', // Polar, positive
-  D: 'red',
-  E: 'red', // Polar, negative
-  S: 'green',
-  T: 'green',
-  N: 'green',
-  Q: 'green', // Polar, neutral
-  A: 'white',
-  V: 'white',
-  L: 'white',
-  I: 'white',
-  M: 'white', // Non polar, aliphatic
-  F: 'magenta',
-  W: 'magenta',
-  Y: 'magenta', // Non polar, aromatic
-  P: 'brown',
-  G: 'brown',
-  C: 'yellow',
-  B: 'grey',
-  Z: 'grey',
-  X: 'grey',
-  '-': 'grey', // Special characters
-};
 
 // Get size of 1rem in pixel
 // https://stackoverflow.com/questions/36532307/rem-px-in-javascript
@@ -79,7 +48,9 @@ export class DrawService {
 
   public readonly selectedFeature$: Observable<SelectionContext | undefined>;
 
-  public 'group.residues'!: ResidueGroup;
+  public 'group.residues'!: SequenceContainer;
+
+  public 'group.dots'!: SequenceContainer;
 
   public 'group.labels'!: LabelGroup;
 
@@ -120,7 +91,7 @@ export class DrawService {
         // Get horizontal scale
         const x = this.initializeService.scale.x;
         // Generate horizontal domain for sequence
-        const domain = [0, sequence.length + 1];
+        const domain = [0, sequence.sequence.length + 1];
         // Update horizontal scale
         x.domain(domain);
       }),
@@ -172,7 +143,7 @@ export class DrawService {
   }
 
   // Update vertical scale
-  public updateScale(traces: InternalTraces): void {
+  private updateScale(traces: InternalTraces): void {
     const axis = this.initializeService.axes;
     const scale = this.initializeService.scale;
     const sequence = this.initializeService.sequence;
@@ -182,7 +153,7 @@ export class DrawService {
     // Initialize range
     const range = [settings['margin-top']];
     // Set sequence line height
-    if (Array.isArray(sequence) || (typeof sequence === 'string')) {
+    if ((Array.isArray(sequence) || (typeof sequence.sequence === 'string')) && sequence.show) {
       range.push(settings['margin-top'] + settings['line-height'])
     } else {
       range.push(settings['margin-top']);
@@ -214,8 +185,6 @@ export class DrawService {
   }
 
   private createSequence(sequence: Sequence) {
-    // Color residue according to code
-    const color = (d: string) => CINEMA[d as never] || CINEMA.X;
     // Initialize residues group
     const group = this.initializeService.draw
       // Select previous residues group
@@ -225,43 +194,115 @@ export class DrawService {
       // Create current residues group
       .join('g')
       .attr('class', 'sequence');
-    // Define residues list
-    const residues = [];
-    // Case sequence is an array
-    if (Array.isArray(sequence)) {
-      // Update residues list
-      residues.push(...sequence);
-    }
-    // Case sequence is a string
-    else if (typeof sequence === 'string') {
-      // Update residues list
-      residues.push(...sequence.split(''));
-    }
-    // TODO Append background rectangles to SVG element
+
+    // Create residues container inside the sequence group
     this['group.residues'] = group
-      // Select previous residue groups
-      .selectAll('g.residue')
-      // Bind residue one-letter-code to each group
-      .data(residues)
-      // Generate group
-      .join('g')
-      .attr('id', (_, i) => `residue-${i + 1}`)
-      .attr('class', 'residue');
-    // Add background rectangle to each residue group
-    this['group.residues']
-      .append('rect')
-      .attr('class', 'color')
-      .attr('fill', (d) => color(d))
-      .attr('fill-opacity', 0.1);
-    // Define maximum width of text
-    this['char.width'] = 9.64  // TODO : Change char width based on font
-    // Add text to each residue group
-    this['group.residues']
-      .append('text')
-      .style('font-family', 'monospace') // TODO: Add more fonts (always monospace)
-      .attr('class', 'name')
-      .text((d) => '' + d)
+      .append('g')
+      .attr('class', 'residues');
+
+    this['group.dots'] = group
+      .append('g')
+      .attr('class', 'dots');
+
+    this['char.width'] = 9.64;  // TODO: Change char width based on font
   }
+
+  private updateSequence() {
+    // Get the sequence and from the sequence the residues
+    const sequence = this.initializeService.sequence;
+    const residues = parseSequence(sequence);
+
+    // The list of residues can be empty in the case the sequence is a length only
+    if (residues.length === 0 || (sequence.show === false)) {
+      return;
+    }
+
+    // Get scale (x, y axis)
+    const {x, y} = this.initializeService.scale;
+    // Get line height
+    const lh = this.initializeService.settings["line-height"];
+    const cs = this.initializeService.settings["content-size"];
+    // Define container/cell width and (maximum) text width
+    const cellWidth = x(1) - x(0);
+    // Get maximum character width
+    const charWidth = this['char.width'];
+    // Define residues group
+    const residuesContainer = this['group.residues'];
+    const dotsContainer = this['group.dots'];
+
+    const domainStart = x.domain()[0];
+    const domainEnd = x.domain()[1];
+
+    if (charWidth + 0.5 > cellWidth) {
+      // Remove residues if dots are to be shown
+      residuesContainer.selectAll('*').remove();
+
+      // Calculate number of dots needed
+      const domainLength = domainEnd - domainStart;
+
+      // Calculate how many cells are needed for each dot
+      const spacing = 2;
+      const bits = domainLength * cellWidth / charWidth / spacing;
+      const bitSize = domainLength / bits + 1;
+
+      const xPositions = d3.range(domainStart, domainEnd, bitSize).map((i) => x(i + bitSize / 2));
+
+      // Create or update dots
+      dotsContainer
+        .selectAll('text.dot')
+        .data(xPositions)
+        .join('text')
+        .attr('class', 'dot')
+        .text('.')
+        .attr('x', d => d)
+        .attr('y', y('sequence') + lh / 2)
+        .attr('width', charWidth)
+        .attr('height', lh)
+        .attr('dominant-baseline', 'central')
+        .style('text-anchor', 'middle')
+        .attr('fill', this.initializeService.settings['text-color']);
+    } else {
+      // Ensure dots are removed if residues are to be shown
+      this['group.dots'].selectAll('*').remove();
+
+      const domainStartFloor = Math.floor(domainStart + .5);
+      const domainEndCeil = Math.ceil(domainEnd);
+
+      const visibleResidues = residues.slice(domainStartFloor - 1, domainEndCeil);
+
+
+      // Create the visible residues inside the residues container as rect with the color of the residue
+      if (sequence["background-color"]) {
+        const color = (d: string) => sequenceColors[sequence["background-color"]!][d as never] || sequenceColors[sequence["background-color"]!].X;
+
+        residuesContainer
+          .selectAll('rect.residue')
+          .data(visibleResidues)
+          .join('rect')
+          .attr('class', 'residue')
+          .attr('x', (d, i) => x(i + domainStartFloor - .5))
+          .attr('y', y('sequence') + lh / 2 - cs / 2)
+          .attr('width', cellWidth)
+          .attr('height', cs)
+          .attr('fill', color)
+          .attr('fill-opacity', .4);
+      }
+
+      // Create the visible residues inside the residues container as text elements
+      residuesContainer
+        .selectAll('text.residue')
+        .data(visibleResidues)
+        .join('text')
+        .attr('class', 'residue')
+        .text((d) => '' + d)
+        .attr('x', (d, i) => x(i + domainStartFloor))
+        .attr('y', y('sequence') + lh / 2)
+        .attr('dominant-baseline', 'central')
+        .style('text-anchor', 'middle')
+        .attr('fill', this.initializeService.settings['text-color']);
+    }
+  }
+
 
   private createBrush() {
     this.initializeService.brushRegion = this.initializeService.draw.append('g').attr('class', 'brush');
@@ -284,42 +325,7 @@ export class DrawService {
       .attr('width', 0);
   }
 
-  public updateSequence() {
-    // Get height, width, margins
-    const margin = this.initializeService.margin;
-    // Get scale (x, y axis)
-    const {x, y} = this.initializeService.scale;
-    // Get line height
-    const {'line-height': lineHeight} = this.initializeService.settings;
-    // Define container/cell width and (maximum) text width
-    const cellWidth = x(1) - x(0);
-    // Get maximum character width
-    const charWidth = this['char.width'];
-    // Define residues group
-    const {'group.residues': residues} = this;
-    // Update size, position of residue background
-    residues
-      .select('rect.color')
-      .attr('x', (_, i) => x(i + 0.5))
-      .attr('y', margin.top)
-      .attr('width', () => cellWidth)
-      .attr('height', lineHeight);
-    // Update size, position of residue names
-    residues.select<SVGTextElement>('text.name')
-      .attr('x', (_, i) => x(i + 1))
-      .attr('y', y('sequence') + lineHeight / 2)
-      .attr('width', () => cellWidth)
-      .attr('height', lineHeight)
-      // Style positioning
-      .attr('dominant-baseline', 'central')
-      .style('text-anchor', 'middle')
-      // Style color text
-      .attr('fill', this.initializeService.settings['text-color'])
-      // Update opacity according to text width
-      .attr('opacity', () => charWidth > cellWidth ? 0 : 1);
-  }
-
-  public createLabels(traces: InternalTraces): void {
+  private createLabels(traces: InternalTraces): void {
     // Initialize labels SVG group
     const group = this.initializeService.svg
       // Select previous labels group
@@ -391,7 +397,7 @@ export class DrawService {
     }
   }
 
-  public createGrid(traces: InternalTraces): void {
+  private createGrid(traces: InternalTraces): void {
     const group = this.initializeService.focus
       // Create parent grid element
       .selectAll('g.grid')
@@ -434,7 +440,7 @@ export class DrawService {
     });
   }
 
-  public updateGrid(): void {
+  private updateGrid(): void {
     const group: GridLines = this['group.grid'];
 
     const y = this.initializeService.scale.y;
@@ -483,7 +489,7 @@ export class DrawService {
     });
   }
 
-  public createTraces(traces: InternalTraces): void {
+  private createTraces(traces: InternalTraces): void {
     // Get references to local variables as `this` might be lost
     const settings = this.initializeService.settings;
     const tooltipService = this.tooltipService;
@@ -638,7 +644,7 @@ export class DrawService {
     });
   }
 
-  public updateTraces(): void {
+  private updateTraces(): void {
     const scale = this.initializeService.scale;
     const settings = this.initializeService.settings;
     const coilPoints = this.coilPoints;
@@ -727,6 +733,10 @@ export class DrawService {
           const values = feature.values;
           // Initialize horizontal, vertical values
           const xy: [number, number][] = values.map((v: number, i: number) => [i + 1, v]);
+
+          // Add another value at the start and end that is the same as the first and last value
+          xy.unshift([0, xy[0][1]]);
+          xy.push([values.length + 1, xy[xy.length - 1][1]]);
 
           let line: d3.Line<[number, number]> | d3.Area<[number, number]>;
 
@@ -984,6 +994,20 @@ export class DrawService {
   }
 }
 
+function parseSequence(sequence: Sequence): string[] {
+  const residues: string[] = [];
+  // Case sequence is an array
+  if (Array.isArray(sequence.sequence)) {
+    // Update residues list
+    residues.push(...sequence.sequence);
+  }
+  // Case sequence is a string
+  else if (typeof sequence.sequence === 'string') {
+    // Update residues list
+    residues.push(...sequence.sequence.split(''));
+  }
+  return residues;
+}
 
 function getStartEndPositions(feature: Feature) {
   let featureStart, featureEnd;

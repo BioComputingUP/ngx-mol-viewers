@@ -35,11 +35,11 @@ export interface Settings {
  * @member {number[]} grid-y-values: Y values for the grid
  */
 export interface TraceSettings {
-  'margin-top': number;
-  'margin-bottom': number;
+  //'margin-top': number;
+  //'margin-bottom': number;
 
-  'background-color': string;
-  'text-color': string;
+  //'background-color': string;
+  //'text-color': string;
   'content-size': number;
   'line-height': number;
 

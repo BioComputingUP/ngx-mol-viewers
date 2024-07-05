@@ -32,6 +32,7 @@ import { Traces } from "./trace";
 import * as d3 from "d3";
 import { KeyboardEvent } from "react";
 import { TooltipService } from "./services/tooltip.service";
+import { Sequence } from "./sequence";
 
 
 @Directive({
@@ -62,9 +63,6 @@ export class NgxFeaturesViewerTooltipDirective {
   constructor(public templateRef: TemplateRef<unknown>) {
   }
 }
-
-// TODO Define sequence type
-export type Sequence = { length: number } & Partial<Record<number, string>>;
 
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
@@ -160,7 +158,7 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, AfterContentIn
         const h = this.resizeService.height;
         const w = this.resizeService.width;
         // Define number of residues in sequence
-        const n = this.sequence.length + 1;
+        const n = this.sequence.sequence.length + 1;
         // Apply scale limit to 5 residues
         this.initializeService.zoom
           .translateExtent([[ms, 0], [w - me, h - mb]])
@@ -276,7 +274,7 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, AfterContentIn
     const x = this.initializeService.scale.x;
     let [x0, x1] = (event.selection as [number, number]).map(x.invert);
     x0 = Math.max(1, Math.round(x0));
-    x1 = Math.min(this.sequence.length, Math.round(x1));
+    x1 = Math.min(this.sequence.sequence.length, Math.round(x1));
     const d1 = [x0 - 0.5, x1 + 0.5] as [number, number];
     this.initializeService.brushRegion.call(this.initializeService.brush.move, d1.map(x) as [number, number]);
   }
@@ -307,7 +305,7 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, AfterContentIn
           cont += 1;
         }
         // Add a position to dx if possible
-        if (x1 <= this.sequence.length && !toSx) {
+        if (x1 <= this.sequence.sequence.length && !toSx) {
           x1 += 1;
           cont += 1;
         }

@@ -11,7 +11,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 // >sp|P04637|P53_HUMAN Cellular tumor antigen p53 OS=Homo sapiens OX=9606 GN=TP53 PE=1 SV=4
-const P04637 = 'MEEPQSDPSVEPPLSQETFSMEEPQSDPSVEPPLSQETFSMEEPQSDPSVEPPLSQETFSMEEPQSDPSVEPPLSQETFSMEEPQSDPSVEPPLSQETFSMEEPQSDPSVEPPLSQETFSMEEPQSDPSVEPPLSQETFSMEEPQSDPSVEPPLSQETFSMEEPQSDPSVEPPLSQETFSMEEPQSDPSVEPPLSQETFSMEEPQSDPSVEPPLSQETFSMEEPQSDPSVEPPLSQETFS';
+const P04637 = 'MEEPQSDPSVEPPLSQETFSMEEPQSDPSVEPPLSQETFSMEEPQSDPSVEPPLSQETFSMEEPQSDPSVEPPLSQETFSMEEPQSDPSVEPPLSQETFSMEEPQSDPSVEPPLSQETFSMEEPQSDPSVEPPLSQETFSMEEPQSDPSVEPPLSQETFSMEEPQSDPSVEPPLSQETFSMEEPQSDPSVEPPLSQETFSMEEPQSDPSVEPPLSQE';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
@@ -39,7 +39,11 @@ export class PageFeaturesViewerComponent {
 
   // Define input sequence
   // readonly sequence = Array.from(P04637);
-  readonly sequence: Sequence = {length: 240};
+  readonly sequence: Sequence = {
+    sequence: P04637,
+    show: true,
+    "background-color": "clustal",
+  };
 
   traces: Trace[];
 
@@ -47,11 +51,11 @@ export class PageFeaturesViewerComponent {
     // Define settings for outer Features Viewer component
     const outer = {
       // Define height
-      'line-height': 64,
+      'line-height': 48,
       'content-size': 32,
       // Define color
-      'background-color': '#e1e1e1',
-      'plot-background-color': '#f1f1f1a0',
+      'background-color': 'transparent',
+      'plot-background-color': 'lightblue',
       'grid-line-color': 'rgb(213,255,0)',
       'text-color': 'black',
       // Define margins
@@ -76,13 +80,13 @@ export class PageFeaturesViewerComponent {
       label: "Trace 1",
       options: {
         "grid": true,
-        "grid-line-color": "white",
+        "grid-line-color": "rgb(223, 213, 245)",
         "grid-line-width": 1,
         "grid-y-values": [-1, 1],
         // "content-size": 30,
         // "line-height": 300,
         "zero-line": true,
-        "zero-line-color": "white",
+        "zero-line-color": "rgb(223, 213, 245)",
         "zero-line-width": 2,
       },
       features: [{
@@ -225,6 +229,7 @@ export class PageFeaturesViewerComponent {
         color: "red",
         opacity: 1,
         position: 73,
+        adjustToWidth: true,
         sides: 3,
         radius: 30
       }, {
@@ -233,6 +238,7 @@ export class PageFeaturesViewerComponent {
         color: "red",
         opacity: 1,
         position: 74,
+        adjustToWidth: true,
         sides: 4,
         radius: 12
       }, {
@@ -241,12 +247,14 @@ export class PageFeaturesViewerComponent {
         color: "red",
         opacity: 1,
         position: 75,
+        adjustToWidth: true,
         sides: 5,
         radius: 12
       }, {
         label: "feature-2",
         type: "poly",
         color: "red",
+        adjustToWidth: true,
         opacity: 1,
         position: 76,
         sides: 6,

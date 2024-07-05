@@ -45,7 +45,7 @@ export class InitializeService {
   public root!: ElementRef;
 
   // Define reference to sequence, for late use
-  // NOTE This avoids retrieving seuence from ReplaySubject
+  // NOTE This avoids retrieving sequence from ReplaySubject
   public sequence!: Sequence;
 
   public focusMousedown!: ((this: SVGGElement, event: unknown, d: undefined) => void);
@@ -185,7 +185,7 @@ export class InitializeService {
         // Define the mask element to create a hole where the plot will be
         defs
           .append("mask")
-          .attr("id", "hole-mask")
+          .attr("id", uuidMask)
           .append("rect")
           .attr("width", "100%")
           .attr("height", "100%")
@@ -201,7 +201,7 @@ export class InitializeService {
           .attr("width", '100%')
           .attr("height", '100%')
           .attr("fill", this.settings["background-color"])
-          .attr("mask", "url(#hole-mask)");
+          .attr("mask", `url(#${uuidMask})`);
 
         // Add a background rectangle to the SVG to show the background color for only the plot
         svg.append('rect')
