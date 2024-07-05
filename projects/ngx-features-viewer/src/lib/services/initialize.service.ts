@@ -1,4 +1,3 @@
-import { NgxFeaturesViewerLabelDirective, NgxFeaturesViewerTooltipDirective, Trace } from '@ngx-features-viewer';
 import { map, Observable, ReplaySubject, shareReplay, tap } from 'rxjs';
 import { ElementRef, Injectable } from '@angular/core';
 import { Settings } from '../settings';
@@ -7,6 +6,8 @@ import * as d3 from 'd3';
 import { Feature } from "../features/feature";
 import { Range } from "../features/locus";
 import { Sequence } from '../sequence';
+import { Trace } from "../trace";
+import { NgxFeaturesViewerLabelDirective, NgxFeaturesViewerTooltipDirective } from "../ngx-features-viewer.component";
 
 export interface SelectionContext {
   // Trace is available in both trace and feature context
