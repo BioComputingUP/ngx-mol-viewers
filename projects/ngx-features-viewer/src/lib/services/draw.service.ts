@@ -736,7 +736,7 @@ export class DrawService {
 
           // Add another value at the start and end that is the same as the first and last value
           xy.unshift([0, xy[0][1]]);
-          xy.push([values.length + 1, xy[xy.length - 1][1]]);
+          xy.push([values.length + .5, xy[xy.length - 1][1]]);
 
           let line: d3.Line<[number, number]> | d3.Area<[number, number]>;
 
