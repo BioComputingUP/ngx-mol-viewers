@@ -17,7 +17,8 @@ g.features {
 }
 
 // Variable for styling the features
-:host {
+:root {
+    --overlay-cursor: crosshair;
     --feature-cursor: default;
     --locus-hover-outline: none;
     --locus-hover-border-radius: 0;
@@ -47,4 +48,8 @@ g .feature {
         outline: var(--locus-hover-outline);
         border-radius: var(--locus-hover-border-radius);
     }
+}
+
+.overlay {
+    cursor: var(--overlay-cursor);
 }

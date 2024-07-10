@@ -38,6 +38,29 @@ export class TooltipService {
 
   constructor(public initializeService: InitializeService) { }
 
+  private setTooltipPosition(event: MouseEvent) {
+    const tooltip = this._tooltip;
+
+    // If we are over the center of the page, we move the tooltip to the left
+    if (event.clientX > window.innerWidth / 2) {
+      tooltip.style("left", "auto");
+      tooltip.style("right", `${window.innerWidth - event.clientX + (event.offsetX - event.clientX) + 10}px`);
+    } else {
+      tooltip.style("right", "auto");
+      tooltip.style("left", `${event.offsetX + 10}px`);
+    }
+
+    if (event.clientY > window.innerHeight / 2) {
+      console.log(window.innerHeight / 2 - (window.innerHeight - event.clientY) + window.innerHeight / 2);
+      tooltip.style("top", "auto");
+      tooltip.style("bottom", `${event.offsetY - window.innerHeight / 2 -  + 10}px`);
+    } else {
+      tooltip.style("bottom", "auto");
+      tooltip.style("top", `${event.offsetY + 10}px`);
+    }
+
+  }
+
   public onMouseEnter(event: MouseEvent, trace: InternalTrace, feature?: Feature, index?: number) {
     // Define tooltip
     const tooltip = this._tooltip;
@@ -47,12 +70,11 @@ export class TooltipService {
     this.tooltip$.next({ trace, feature, index, coordinates });
     // Set tooltip visible
     tooltip.style("display", "block");
-    tooltip.style("opacity", 1);
+
+    this.setTooltipPosition(event);
   }
 
   public onMouseMove(event: MouseEvent, trace: InternalTrace, feature?: Feature, index?: number) {
-    // Define tooltip
-    const tooltip = this._tooltip;
     // Re-rendering tooltip on move is required only for continuous features
     if (feature && feature.type === 'continuous') {
       // Define coordinates
@@ -60,12 +82,7 @@ export class TooltipService {
       // Emit tooltip context
       this.tooltip$.next({ trace, feature, index, coordinates });
     }
-    // Define left, top position
-    const left = event.offsetX + 10;
-    const top = event.offsetY + 10;
-    // Set tooltip position
-    tooltip.style("left", `${left}px`);
-    tooltip.style("top", `${top}px`);
+    this.setTooltipPosition(event);
   }
 
   public onMouseLeave() {
@@ -73,7 +90,6 @@ export class TooltipService {
     const tooltip = this._tooltip;
     // Hide tooltip
     tooltip.style("display", "none");
-    tooltip.style("opacity", 0);
     // Remove tooltip context
     this.tooltip$.next(null);
   }
