@@ -1,19 +1,19 @@
 // Common
-import { combineLatest, map, Observable, ReplaySubject, shareReplay, switchMap, tap, throttleTime } from 'rxjs';
 import { EventEmitter, Injectable } from '@angular/core';
 import * as d3 from 'd3';
-// Services
-import { InitializeService, SelectionContext } from './initialize.service';
-import { FeaturesService } from './features.service';
-import { TooltipService } from './tooltip.service';
-// Data types
-import { InternalTrace, InternalTraces } from '../trace';
-import { Feature } from '../features/feature';
+import { combineLatest, map, Observable, ReplaySubject, shareReplay, switchMap, tap, throttleTime } from 'rxjs';
 import { Continuous } from '../features/continuous';
-import { Locus } from '../features/locus'
 import { DSSP, DSSPPaths, dsspShape } from "../features/dssp";
+import { Feature } from '../features/feature';
+import { Locus } from '../features/locus'
 import { Pin } from "../features/pin";
 import { Sequence, sequenceColors } from "../sequence";
+// Data types
+import { InternalTrace, InternalTraces } from '../trace';
+import { FeaturesService } from './features.service';
+// Services
+import { InitializeService, SelectionContext } from './initialize.service';
+import { TooltipService } from './tooltip.service';
 
 type SequenceContainer = d3.Selection<SVGGElement, Sequence, SVGGElement, undefined>;
 
@@ -37,7 +37,7 @@ export const index = (f: unknown, i: number) => i;
 
 const alreadyExitedFromView = new Set<Feature>();
 
-@Injectable({providedIn: 'platform'})
+@Injectable({providedIn : 'platform'})
 export class DrawService {
 
   public readonly traces$ = new ReplaySubject<InternalTraces>(1);
@@ -58,7 +58,8 @@ export class DrawService {
 
   public 'group.grid'!: GridLines;
 
-  public 'char.width' = 0.0;
+  public sequenceCharWidth = 0.0;
+  public featureLabelCharWidth = 0.0;
 
   public tooltip!: d3.Selection<HTMLDivElement, unknown, null, unknown>;
 
@@ -91,10 +92,11 @@ export class DrawService {
         // Get horizontal scale
         const x = this.initializeService.scale.x;
         // Generate horizontal domain for sequence
-        const domain = [0, sequence.sequence.length + 1];
+        const domain = [0, sequence.length + 1];
         // Update horizontal scale
         x.domain(domain);
       }),
+      tap(() => this.calculateCharWidth()),
       // Draw sequence
       map(([, sequence]) => this.createSequence(sequence)),
       // Initialize brush region
@@ -125,7 +127,7 @@ export class DrawService {
       // Move traces in correct position
       map(() => this.updateTraces()),
       // Move the selection shadow in correct position
-      map(() => this.updateShadowPosition())
+      map(() => this.updateShadowPosition()),
     );
 
     this.selectedFeature$ = this.selectedFeatureEmit$.pipe(
@@ -138,8 +140,35 @@ export class DrawService {
           this.removeSelectionShadow();
         }
       }),
-      shareReplay(1)
+      shareReplay(1),
     );
+  }
+
+  private calculateCharWidth() {
+    const settings = this.initializeService.settings;
+    // Get the width of the character 'A' in the sequence
+    const text = this.initializeService.draw.append('text').attr('class', 'sequence').text('A');
+    const bbox = text.node()!.getBBox();
+    this.sequenceCharWidth = bbox.width;
+    text.remove();
+
+    // Get the width of the character 'A' in the feature label
+    const text2 = this.initializeService.draw.append('text').attr('class', 'feature').text('A');
+    const bbox2 = text2.node()!.getBBox();
+    this.featureLabelCharWidth = bbox2.width;
+    text2.remove();
+
+    // Get the width of the character 'A' in the x-axis
+    const text3 = this.initializeService.draw.append('text').attr('class', 'tick').text('A');
+    const bbox3 = text3.node()!.getBBox();
+    const xAxisXCharHeight = bbox3.height;
+    text3.remove();
+
+    // Update the margin bottom to accommodate at least the height of the character of the x-axis
+    if (settings['x-axis-show'] !== false) {
+      const settings = this.initializeService.settings;
+      settings['margin-bottom'] = Math.max(settings['margin-bottom'], xAxisXCharHeight + 6);
+    }
   }
 
   // Update vertical scale
@@ -153,31 +182,37 @@ export class DrawService {
     // Initialize range
     const range = [settings['margin-top']];
     // Set sequence line height
-    if ((Array.isArray(sequence) || (typeof sequence.sequence === 'string')) && sequence.show) {
+    if ((Array.isArray(sequence) || (typeof sequence === 'string')) && settings['sequence-show'] != false) {
       range.push(settings['margin-top'] + settings['line-height'])
     } else {
       range.push(settings['margin-top']);
     }
-    // Update range
-    domain.slice(1).forEach((id: string) => {
-      // Get current trace
-      const trace = this.featuresService.getTrace(+id);
-      // Case trace is defined
-      if (trace) {
-        // Get offset for current trace
-        const mt = range[range.length - 1];
-        // Initialize line height for current trace
-        const lh = trace.options?.['line-height'] || settings['line-height'];
-        // Update range
-        range.push(mt + lh);
-      }
-      // Otherwise, throw error
-      else throw new Error('Trace not found');
-    });
+
+    // take the first trace and add its margin-top if defined
+    const firstTrace = traces[0];
+    const firstTraceMt = firstTrace.options?.['margin-top'] || 0;
+    range[1] += firstTraceMt;
+
+    // Calculate range adding the margin-bottom of the previous trace, the line-height of the current trace and the margin-top of the next trace
+    for (let i = 1 ; i < domain.length ; i++) {
+      const trace = this.featuresService.getTrace(+domain[i]);
+      const nextTrace = this.featuresService.getTrace(+domain[i + 1]);
+
+      const prevSpace = range[range.length - 1];
+      const traceMb = trace?.options?.['margin-bottom'] || 0;
+      const lh = trace?.options?.['line-height'] || settings['line-height'];
+      const nextTraceMt = nextTrace?.options?.['margin-top'] || 0;
+
+      range.push(prevSpace + traceMb + nextTraceMt + lh);
+    }
+
     // Apply updates
     scale.y.domain(domain).range(range);
     // Translate x axis position
     axis.x.attr('transform', `translate(0, ${range[range.length - 1]})`);
+    if (settings['x-axis-show'] === false) {
+      axis.x.style('display', 'none');
+    }
   }
 
   private createTooltip() {
@@ -203,17 +238,16 @@ export class DrawService {
     this['group.dots'] = group
       .append('g')
       .attr('class', 'dots');
-
-    this['char.width'] = 9.64;  // TODO: Change char width based on font
   }
 
   private updateSequence() {
     // Get the sequence and from the sequence the residues
     const sequence = this.initializeService.sequence;
+    const settings = this.initializeService.settings;
     const residues = parseSequence(sequence);
 
     // The list of residues can be empty in the case the sequence is a length only
-    if (residues.length === 0 || (sequence.show === false)) {
+    if (residues.length === 0 || (settings['sequence-show'] === false)) {
       return;
     }
 
@@ -225,7 +259,7 @@ export class DrawService {
     // Define container/cell width and (maximum) text width
     const cellWidth = x(1) - x(0);
     // Get maximum character width
-    const charWidth = this['char.width'];
+    const charWidth = this.sequenceCharWidth;
     // Define residues group
     const residuesContainer = this['group.residues'];
     const dotsContainer = this['group.dots'];
@@ -266,14 +300,30 @@ export class DrawService {
       this['group.dots'].selectAll('*').remove();
 
       const domainStartFloor = Math.floor(domainStart + .5);
-      const domainEndCeil = Math.ceil(domainEnd);
+      const domainEndCeil = Math.min(Math.ceil(domainEnd), residues.length);
 
-      const visibleResidues = residues.slice(domainStartFloor - 1, domainEndCeil);
-
+      const visibleResidues = residues.slice(Math.max(0, domainStartFloor - 1), domainEndCeil);
 
       // Create the visible residues inside the residues container as rect with the color of the residue
-      if (sequence["background-color"]) {
-        const color = (d: string) => sequenceColors[sequence["background-color"]!][d as never] || sequenceColors[sequence["background-color"]!].X;
+      if (settings["sequence-background-color"]) {
+        const color = (d: string) => sequenceColors[settings["sequence-background-color"]!][d as never] || sequenceColors[settings["sequence-background-color"]!].X;
+        let height;
+        let yValue: number = y('sequence');
+
+        switch (settings["sequence-background-height"]) {
+          case '100%':
+            height = '100%';
+            break;
+          case 'content-size':
+            height = cs;
+            yValue += (lh - cs) / 2;
+            break;
+          case 'line-height':
+            height = lh;
+            break;
+          default:
+            height = cs;
+        }
 
         residuesContainer
           .selectAll('rect.residue')
@@ -281,11 +331,11 @@ export class DrawService {
           .join('rect')
           .attr('class', 'residue')
           .attr('x', (d, i) => x(i + domainStartFloor - .5))
-          .attr('y', y('sequence') + lh / 2 - cs / 2)
+          .attr('y', yValue)
           .attr('width', cellWidth)
-          .attr('height', cs)
+          .attr('height', height)
           .attr('fill', color)
-          .attr('fill-opacity', .4);
+          .attr('fill-opacity', settings["sequence-background-opacity"] || 0.5);
       }
 
       // Create the visible residues inside the residues container as text elements
@@ -320,7 +370,7 @@ export class DrawService {
 
   private removeSelectionShadow() {
     this.initializeService.shadow
-      .data([{trace: undefined, feature: undefined, range: undefined} as SelectionContext])
+      .data([{trace : undefined, feature : undefined, range : undefined} as SelectionContext])
       .attr('x', 0)
       .attr('width', 0);
   }
@@ -338,7 +388,7 @@ export class DrawService {
     // Add labels to their group
     this['group.labels'] = group
       .selectAll('g')
-      .data([{id: 'sequence', label: 'Sequence', expanded: true}, ...traces] as InternalTraces, identity)
+      .data([{id : 'sequence', label : 'Sequence', expanded : true}, ...traces] as InternalTraces, identity)
       .join(
         (enter) => enter.append('g'),
         (update) => update,
@@ -357,7 +407,7 @@ export class DrawService {
 
   private setLabelsPosition(trace: InternalTrace) {
     const y = this.initializeService.scale.y;
-    const {left: ml, right: mr} = this.initializeService.margin;
+    const {left : ml, right : mr} = this.initializeService.margin;
     const settings = this.initializeService.settings
     // Get identifier trace
     const identifier = '' + trace.id;
@@ -533,7 +583,7 @@ export class DrawService {
           const appendElementWithAttributes = (
             parent: d3.Selection<SVGGElement, unknown, null, undefined>,
             element: string,
-            attributes: { [key: string]: number | string }
+            attributes: { [key: string]: number | string },
           ): d3.Selection<d3.BaseType, unknown, null, undefined> => {
             const el = parent.append(element);
             Object.entries(attributes).forEach(([key, value]) => {
@@ -546,13 +596,13 @@ export class DrawService {
 
           if (feature.type === 'locus') {
             const rectAttributes = {
-              'stroke': feature["stroke-color"] || 'none',
-              'stroke-opacity': 1.0,
-              'stroke-width': feature["stroke-width"] || 0,
-              'fill': feature.color || 'white',
-              'fill-opacity': feature.opacity || 1,
-              'rx': 4,
-              'ry': 4
+              'stroke' : feature["stroke-color"] || 'none',
+              'stroke-opacity' : 1.0,
+              'stroke-width' : feature["stroke-width"] || 0,
+              'fill' : feature.color || 'white',
+              'fill-opacity' : feature.opacity || 1,
+              'rx' : 4,
+              'ry' : 4,
             };
 
             appendElementWithAttributes(container, 'rect', rectAttributes);
@@ -568,8 +618,8 @@ export class DrawService {
               }
 
               const labelAttributes = {
-                "fill": textColor,
-                "dominant-baseline": "central"
+                "fill" : textColor,
+                "dominant-baseline" : "central",
               }
 
               const text = appendElementWithAttributes(container, 'text', labelAttributes);
@@ -581,11 +631,11 @@ export class DrawService {
 
           if (feature.type === 'continuous') {
             const pathAttributes = {
-              'stroke': feature["stroke-color"] || feature.color || 'black',
-              'stroke-opacity': feature.opacity || 1,
-              'stroke-width': feature["stroke-width"] || 1,
-              'fill': feature.showArea ? feature.color || 'black' : 'none',
-              'fill-opacity': feature.opacity || 1,
+              'stroke' : feature["stroke-color"] || feature.color || 'black',
+              'stroke-opacity' : feature.opacity || 1,
+              'stroke-width' : feature["stroke-width"] || 1,
+              'fill' : feature.showArea ? feature.color || 'black' : 'none',
+              'fill-opacity' : feature.opacity || 1,
             };
 
             appendElementWithAttributes(container, 'path', pathAttributes);
@@ -593,21 +643,21 @@ export class DrawService {
 
           if (feature.type === 'pin') {
             const circleAttributes = {
-              'stroke': feature["stroke-color"] || 'none',
-              'stroke-width': feature["stroke-width"] || 0,
-              'fill': feature.color || 'black',
-              'fill-opacity': feature.opacity || 1
+              'stroke' : feature["stroke-color"] || 'none',
+              'stroke-width' : feature["stroke-width"] || 0,
+              'fill' : feature.color || 'black',
+              'fill-opacity' : feature.opacity || 1,
             };
             appendElementWithAttributes(container, 'circle', circleAttributes);
           }
 
           if (feature.type === 'poly') {
             const polyAttributes = {
-              'stroke': feature["stroke-color"] || 'black',
-              'stroke-opacity': feature.opacity || 1,
-              'stroke-width': feature["stroke-width"] || 1,
-              'fill': feature.color || 'black',
-              'fill-opacity': feature.opacity || 1
+              'stroke' : feature["stroke-color"] || 'black',
+              'stroke-opacity' : feature.opacity || 1,
+              'stroke-width' : feature["stroke-width"] || 1,
+              'fill' : feature.color || 'black',
+              'fill-opacity' : feature.opacity || 1,
             };
             appendElementWithAttributes(container, 'polygon', polyAttributes);
           }
@@ -617,10 +667,10 @@ export class DrawService {
 
             if (shapeToDraw == "sheet") {
               const bSheetAttributes = {
-                'stroke': d3.color(feature.color || 'white')!.darker(.5).formatHex(),
-                'stroke-width': 2,
-                'fill': feature.color || 'white',
-                'fill-opacity': feature.opacity || 0.5
+                'stroke' : d3.color(feature.color || 'white')!.darker(.5).formatHex(),
+                'stroke-width' : 2,
+                'fill' : feature.color || 'white',
+                'fill-opacity' : feature.opacity || 0.5,
               };
               appendElementWithAttributes(container, 'polygon', bSheetAttributes);
             }
@@ -628,12 +678,12 @@ export class DrawService {
             if (shapeToDraw == "coil") {
               const sw = Math.min(16, Math.max(3, (trace.options?.['content-size'] || settings['content-size']) / 8));
               const coilAttributes = {
-                'stroke': feature.color || 'black',
-                'stroke-opacity': feature.opacity || .5,
-                'stroke-width': sw,
-                'stroke-linecap': 'square',
-                'stroke-dasharray': `${sw}, ${sw * 1.5}`,
-                'fill': 'none',
+                'stroke' : feature.color || 'black',
+                'stroke-opacity' : feature.opacity || .5,
+                'stroke-width' : sw,
+                'stroke-linecap' : 'square',
+                'stroke-dasharray' : `${sw}, ${sw * 1.5}`,
+                'fill' : 'none',
               };
               appendElementWithAttributes(container, 'path', coilAttributes);
             }
@@ -648,7 +698,7 @@ export class DrawService {
     const scale = this.initializeService.scale;
     const settings = this.initializeService.settings;
     const coilPoints = this.coilPoints;
-    const charWidth = this['char.width'];
+    const charWidth = this.featureLabelCharWidth;
 
     // Loop through each trace
     this['group.traces'].each(function (trace) {
@@ -750,12 +800,12 @@ export class DrawService {
           // If showArea is true, then the line should be an area
           if (feature.showArea) {
             line = d3.area<[number, number]>().curve(curveType)
-              .x(([x,]) => scale.x(x))
+              .x(([x]) => scale.x(x))
               .y1(([, y]) => rescaleY(y))
               .y0(bottom);
           } else {
             line = d3.line<[number, number]>().curve(curveType)
-              .x(([x,]) => scale.x(x))
+              .x(([x]) => scale.x(x))
               .y(([, y]) => rescaleY(y));
           }
 
@@ -795,7 +845,7 @@ export class DrawService {
           const angle = 2 * Math.PI / sides;
           const rotationAdjustment = Math.PI / 2 - Math.PI / sides;
           // Calculate the points remembering that the polygon should not be stretched in the x-y axis, but it is always of size radius*2
-          const points = Array.from({length: sides}, (_, i) => {
+          const points = Array.from({length : sides}, (_, i) => {
             const x = radius * Math.cos(i * angle + rotationAdjustment);
             const y = radius * Math.sin(i * angle + rotationAdjustment);
             return [x + scale.x(feature.position), y + center];
@@ -807,11 +857,11 @@ export class DrawService {
 
         if (feature.type === 'dssp') {
           const magicNumbers = {
-            "helix": {"bitWidth": 0.25, "xScale": 0.5, "yScale": 0.119, "center": -4},
-            "turn": {"bitWidth": 0.8, "xScale": 0.033, "yScale": 0.035, "center": +5.8},
+            "helix" : {"bitWidth" : 0.25, "xScale" : 0.5, "yScale" : 0.119, "center" : -4},
+            "turn" : {"bitWidth" : 0.8, "xScale" : 0.033, "yScale" : 0.035, "center" : +5.8},
             // Sheet is a special case as it is computed as a rectangle with a triangle on top at runtime
-            "sheet": {"bitWidth": 4, "xScale": 0, "yScale": 0, "center": 0},
-            "coil": {"bitWidth": 0.3, "xScale": 0, "yScale": 0, "center": 0},
+            "sheet" : {"bitWidth" : 4, "xScale" : 0, "yScale" : 0, "center" : 0},
+            "coil" : {"bitWidth" : 0.3, "xScale" : 0, "yScale" : 0, "center" : 0},
           }
 
           const shapeToDraw = dsspShape(feature.code);
@@ -826,7 +876,7 @@ export class DrawService {
           const bitOccupancy = bitWidth / widthPerResidue;
 
           // Calculate the position in reverse order
-          const xPositions = Array.from({length: numBits}, (_, i) => startPoint + i * bitOccupancy);
+          const xPositions = Array.from({length : numBits}, (_, i) => startPoint + i * bitOccupancy);
 
           if (xPositions.length < 2) {
             xPositions.push(endPoint);
@@ -847,7 +897,7 @@ export class DrawService {
                   .attr("fill", feature.color || 'black')
                   .attr("transform-origin", "center center"),
                 update => update,
-                exit => exit.remove()
+                exit => exit.remove(),
               )
               .attr("fill-opacity", (_, i) => feature.opacity !== undefined ? (i % 2 == 0 ? feature.opacity - 0.2 : feature.opacity) : (i % 2 == 0 ? 0.5 : 0.7))
               .attr("transform", (xPosition, i) => {
@@ -874,7 +924,7 @@ export class DrawService {
                   .attr('height', cs)
                   .attr('x', scale.x(startPoint))
                   .attr('y', top),
-                exit => exit.remove()
+                exit => exit.remove(),
               );
           }
 
@@ -917,7 +967,7 @@ export class DrawService {
             }
 
             const line = d3.line<[number, number]>().curve(d3.curveBasis)
-              .x(([x,]) => scale.x(x))
+              .x(([x]) => scale.x(x))
               .y(([, y]) => rescaleY(y));
 
             d3.select<d3.BaseType, DSSP>(this)
@@ -926,13 +976,13 @@ export class DrawService {
                 const yValues = coilPoints.get(featureKey)!;
                 const totalXPoints = xPositions.length + 1
                 // If the number of points is less than the number of x positions, add random values at the end
-                for (let i = yValues.length; i < totalXPoints; i++) {
+                for (let i = yValues.length ; i < totalXPoints ; i++) {
                   const y = randomBetween(trace.domain.min, trace.domain.max);
                   // Put the value in the second to last position
                   yValues.splice(yValues.length - 1, 0, y);
                 }
                 // If the number of points is greater than the number of x positions, remove the last values
-                for (let i = yValues.length - 1; i >= totalXPoints; i--) {
+                for (let i = yValues.length - 1 ; i >= totalXPoints ; i--) {
                   // Remove the value in the second to last position
                   yValues.splice(i, 1);
                 }
@@ -997,14 +1047,14 @@ export class DrawService {
 function parseSequence(sequence: Sequence): string[] {
   const residues: string[] = [];
   // Case sequence is an array
-  if (Array.isArray(sequence.sequence)) {
+  if (Array.isArray(sequence)) {
     // Update residues list
-    residues.push(...sequence.sequence);
+    residues.push(...sequence);
   }
   // Case sequence is a string
-  else if (typeof sequence.sequence === 'string') {
+  else if (typeof sequence === 'string') {
     // Update residues list
-    residues.push(...sequence.sequence.split(''));
+    residues.push(...sequence.split(''));
   }
   return residues;
 }
@@ -1050,7 +1100,7 @@ function selectFeature(feature: Feature, initializeService: InitializeService, e
   const selectionContext: SelectionContext = {
     trace,
     feature,
-    range: {start: featureStart, end: featureEnd}
+    range : {start : featureStart, end : featureEnd},
   }
   selectionEmitter$.next(selectionContext);
 }

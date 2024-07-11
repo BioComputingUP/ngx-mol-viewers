@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
+import { ContentSettings } from '../settings';
 import { InternalTrace, InternalTraces, Trace, Traces } from "../trace";
 import { Feature } from "../features/feature";
+import { checkContentSettings } from './initialize.service';
 
 
 @Injectable({ providedIn: 'platform' })
@@ -50,7 +52,7 @@ export class FeaturesService {
         // Remove nested from the trace, as it will be processed recursively
         const {nested, ...tmpTrace} = trace;
         // Check and modify options if necessary
-        this.checkOptions(tmpTrace);
+        checkContentSettings(tmpTrace.options);
         // Check and modify values if necessary
         this.checkValues(tmpTrace);
         const domain = this.globalMinMax(tmpTrace);
@@ -115,8 +117,8 @@ export class FeaturesService {
     return features;
   }
 
-  public getTrace(id: number): InternalTrace {
-    return this.traceMap.get(id)!;
+  public getTrace(id: number): InternalTrace | undefined {
+    return this.traceMap.get(id);
   }
 
   /**
@@ -162,25 +164,7 @@ export class FeaturesService {
     // Get indices of child traces
     const indices = this._children.get(trace) || [];
     // Return child traces
-    return indices.map((index) => this.getTrace(index));
-  }
-
-  private checkOptions(tmpTrace: Trace) {
-    if (tmpTrace.options) {
-      if (tmpTrace.options["line-height"] && tmpTrace.options["line-height"] < 0) {
-        console.warn("Line height cannot be negative, setting to 32");
-        tmpTrace.options["line-height"] = 32;
-      }
-      if (tmpTrace.options["content-size"] && tmpTrace.options["content-size"] < 0) {
-        console.warn("Content size cannot be negative, setting to 16");
-        tmpTrace.options["content-size"] = 16;
-      }
-      // If content size is bigger than line height, set it to line height
-      if (tmpTrace.options["content-size"] && tmpTrace.options["line-height"] && tmpTrace.options["content-size"] > tmpTrace.options["line-height"]) {
-        console.warn("Content size cannot be bigger than line height, setting to line height");
-        tmpTrace.options["content-size"] = tmpTrace.options["line-height"];
-      }
-    }
+    return indices.map((index) => this.getTrace(index)!);
   }
 
   private checkValues(tmpTrace: Trace) {

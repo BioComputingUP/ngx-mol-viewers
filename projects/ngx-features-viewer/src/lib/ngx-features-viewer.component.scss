@@ -2,54 +2,68 @@
 @import '../styles/icons';
 
 svg * {
-    transform-box: fill-box;
-}
-
-// Global setting for all text elements
-text {
-    font-family: monospace;
-    user-select: none;
-}
-
-// Apply a cursor move to the features region
-g.features {
-    // cursor: col-resize;
+  transform-box: fill-box;
 }
 
 // Variable for styling the features
 :root {
-    --overlay-cursor: crosshair;
-    --feature-cursor: default;
-    --locus-hover-outline: none;
-    --locus-hover-border-radius: 0;
+  --overlay-cursor: crosshair;
+  --feature-cursor: default;
+  --locus-hover-outline: none;
+  --locus-hover-border-radius: 0;
+  --sequence-font-size: 16px;
+  --feature-font-size: 16px;
+  --x-axis-font-size: 16px;
+  --feature-font-family: monospace;
+  --sequence-font-family: monospace;
+  --x-axis-font-family: monospace;
 }
 
 .brush .selection {
-    stroke: #0b2ea2;
-    stroke-width: 1;
-    fill: #4682b4;
-    fill-opacity: .325;
-    shape-rendering: crispEdges;
-    display: block;
-    height: 100%;
+  stroke: #0b2ea2;
+  stroke-width: 1;
+  fill: #4682b4;
+  fill-opacity: .325;
+  shape-rendering: crispEdges;
+  display: block;
+  height: 100%;
 }
 
 g .feature {
-    // Cursor style on a specific feature
-    cursor: var(--feature-cursor);
-    // The text inside a feature is not clickable
-    > text {
-        pointer-events: none;
-    }
+  // Cursor style on a specific feature
+  cursor: var(--feature-cursor);
+  // The font size of the feature label
+  font-size: var(--feature-font-size);
+  font-family: var(--feature-font-family), monospace;
+  // The text inside a feature is not clickable
+  > text {
+    pointer-events: none;
+  }
 
-    // The locus and pin feature can be highlighted when hovered
-    &.locus > rect:hover,
-    &.pin > rect:hover {
-        outline: var(--locus-hover-outline);
-        border-radius: var(--locus-hover-border-radius);
-    }
+  // The locus and pin feature can be highlighted when hovered
+  &.locus > rect:hover,
+  &.pin > rect:hover {
+    outline: var(--locus-hover-outline);
+    border-radius: var(--locus-hover-border-radius);
+  }
+}
+
+g .sequence {
+  font-size: var(--sequence-font-size);
+  font-family: var(--sequence-font-family), monospace;
+}
+
+g .tick {
+  font-size: var(--x-axis-font-size);
+  font-family: var(--x-axis-font-family), monospace !important;
 }
 
 .overlay {
-    cursor: var(--overlay-cursor);
+  cursor: var(--overlay-cursor);
+}
+
+// Global setting for all text elements
+text {
+  //font-family: monospace;
+  user-select: none;
 }

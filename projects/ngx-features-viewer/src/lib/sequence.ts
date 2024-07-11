@@ -6,37 +6,43 @@
  */
 //export type Sequence = string | Array<string> | { length: number };
 
-export interface Sequence {
-  sequence: string | Array<string> | { length: number };
-  show?: boolean;
-  'background-color'?: 'clustal';
-}
+export type Sequence = string | Array<string> | { length: number };
+
 
 export const sequenceColors = {
-  clustal: {
-    H: 'blue',
-    K: 'blue',
-    R: 'blue', // Polar, positive
-    D: 'red',
-    E: 'red', // Polar, negative
-    S: 'green',
-    T: 'green',
-    N: 'green',
-    Q: 'green', // Polar, neutral
-    A: 'white',
-    V: 'white',
-    L: 'white',
-    I: 'white',
-    M: 'white', // Non polar, aliphatic
-    F: 'magenta',
-    W: 'magenta',
-    Y: 'magenta', // Non polar, aromatic
-    P: 'brown',
-    G: 'brown',
-    C: 'yellow',
-    B: 'grey',
-    Z: 'grey',
-    X: 'grey',
-    '-': 'grey', // Special characters
+  clustalx : {
+    A : '#7aa0ed',
+    I : '#7aa0ed',
+    L : '#7aa0ed',
+    M : '#7aa0ed',
+    F : '#7aa0ed',
+    W : '#7aa0ed',
+    V : '#7aa0ed',
+    K : '#fa161d',
+    R : '#fa161d',
+    E : '#c649bd',
+    D : '#c649bd',
+    N : '#00c02e',
+    Q : '#00c02e',
+    S : '#00c02e',
+    T : '#00c02e',
+    C : '#f88082',
+    G : '#f89051',
+    P : '#c1c02d',
+    H : '#00a4a3',
+    Y : '#00a4a3',
+    B : '#fff', // Unknown
+    X : '#fff', // Unknown
+    Z : '#fff', // Unknown
+    '-' : '#fff', // Special characters
+  },
+
+  nucleotide : {
+    A : '#45f752',
+    C : '#ffb34f',
+    G : '#f54142',
+    T : '#2188ea',
+    U : '#2188ea',
+    X : '#fff', // Unknown
   },
 };

@@ -1,6 +1,6 @@
 import { map, Observable, ReplaySubject, shareReplay, tap } from 'rxjs';
 import { ElementRef, Injectable } from '@angular/core';
-import { Settings } from '../settings';
+import { ContentSettings, Settings } from '../settings';
 import { v4 as UUID } from 'uuid';
 import * as d3 from 'd3';
 import { Feature } from "../features/feature";
@@ -79,8 +79,34 @@ export class InitializeService {
   // Get main SVG element
   public svg!: SVG;
 
+  // Define default settings
+  private _settings: Settings = {
+    // Define margins
+    'margin-top': 0,
+    'margin-right': 0,
+    'margin-bottom': 30,
+    'margin-left': 0,
+    // Define colors
+    'background-color': 'transparent',
+    'plot-background-color': 'transparent',
+    'grid-line-color': 'dimgray',
+    'text-color': 'black',
+    // Define content size (height), line height
+    'content-size': 0,
+    'line-height': 0,
+  }
+
   // Define settings
-  public settings!: Settings;
+  public set settings(settings: Partial<Settings>) {
+    checkContentSettings(settings);
+
+    // Override settings
+    this._settings = {...this._settings, ...settings};
+  }
+
+  public get settings(): Settings {
+    return this._settings;
+  }
 
   public get margin() {
     // Unpack settings
@@ -135,20 +161,6 @@ export class InitializeService {
   }
 
   constructor() {
-    // Set default settings
-    this.settings = {
-      'margin-top': 0,
-      'margin-right': 0,
-      'margin-bottom': 0,
-      'margin-left': 0,
-      'background-color': 'transparent',
-      'plot-background-color': 'transparent',
-      'grid-line-color': 'rgb(213,255,0)',
-      'text-color': 'white',
-      'content-size': 16,
-      'line-height': 32,
-    };
-
     // Define initialization pipeline
     this.initialized$ = this.initialize$.pipe(
       // Store root element reference
@@ -272,5 +284,31 @@ export class InitializeService {
       // Avoid re-drawing the graph each time another observable subscribes
       shareReplay(1)
     );
+  }
+}
+
+export function checkContentSettings(contentSettings: Partial<ContentSettings> | undefined) {
+  if (contentSettings) {
+    if (contentSettings["line-height"] && contentSettings["line-height"] < 0) {
+      console.warn("Line height cannot be negative, setting to 32");
+      contentSettings["line-height"] = 32;
+    }
+    if (contentSettings["content-size"] && contentSettings["content-size"] < 0) {
+      console.warn("Content size cannot be negative, setting to 16");
+      contentSettings["content-size"] = 16;
+    }
+    // If content size is bigger than line height, set it to line height
+    if (contentSettings["content-size"] && contentSettings["line-height"] && contentSettings["content-size"] > contentSettings["line-height"]) {
+      console.warn("Content size cannot be bigger than line height, setting to line height");
+      contentSettings["content-size"] = contentSettings["line-height"];
+    }
+    if (contentSettings["margin-top"] && contentSettings["margin-top"] < 0) {
+      console.warn("Margin top cannot be negative, setting to 0");
+      contentSettings["margin-top"] = 0;
+    }
+    if (contentSettings["margin-bottom"] && contentSettings["margin-bottom"] < 0) {
+      console.warn("Margin bottom cannot be negative, setting to 0");
+      contentSettings["margin-bottom"] = 0;
+    }
   }
 }

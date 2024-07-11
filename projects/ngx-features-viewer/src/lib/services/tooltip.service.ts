@@ -44,19 +44,18 @@ export class TooltipService {
     // If we are over the center of the page, we move the tooltip to the left
     if (event.clientX > window.innerWidth / 2) {
       tooltip.style("left", "auto");
-      tooltip.style("right", `${window.innerWidth - event.clientX + (event.offsetX - event.clientX) + 10}px`);
+      tooltip.style("right", `${window.innerWidth - event.clientX + 10}px`);
     } else {
       tooltip.style("right", "auto");
-      tooltip.style("left", `${event.offsetX + 10}px`);
+      tooltip.style("left", `${event.clientX + 10}px`);
     }
 
     if (event.clientY > window.innerHeight / 2) {
-      console.log(window.innerHeight / 2 - (window.innerHeight - event.clientY) + window.innerHeight / 2);
       tooltip.style("top", "auto");
-      tooltip.style("bottom", `${event.offsetY - window.innerHeight / 2 -  + 10}px`);
+      tooltip.style("bottom", `${window.innerHeight - event.clientY + 10}px`);
     } else {
       tooltip.style("bottom", "auto");
-      tooltip.style("top", `${event.offsetY + 10}px`);
+      tooltip.style("top", `${event.clientY + 10}px`);
     }
 
   }

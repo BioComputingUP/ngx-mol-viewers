@@ -12,28 +12,29 @@
     }
   }
   <!-- Case template for right label exists -->
-  @if (initializeService.labelRight) {
+  @if (initializeService.labelRight; as label) {
     <!-- Loop through each trace, generate custom tooltip -->
-    @for (trace of drawService.traces$ | async; track trace.id) {
+    @for (trace of featuresService.tracesNoNesting; track trace) {
       <!-- Then, generate trace as specified in the given template -->
       <div [id]="'label-right-' + trace.id" tabindex=0 [style.display]="trace.show ? 'block' : 'none'">
-        <ng-container [ngTemplateOutlet]="initializeService.labelRight.templateRef"
+        <ng-container [ngTemplateOutlet]="label.templateRef"
                       [ngTemplateOutletContext]="{ trace: trace }"></ng-container>
       </div>
     }
   }
 
-  <!-- Initialize tooltip -->
-  <div style="position: absolute; left: 0; top: 0; display: none" #tooltip>
-    <!-- Define tooltip inner scaffold -->
-    <div style="position: relative; display: block">
-      <!-- Subscribe to template emission -->
-      @if (tooltipService.tooltip$ | async; as context) {
-        <!-- Show template -->
-        <ng-container [ngTemplateOutlet]="tooltipService.templateRef"
-                      [ngTemplateOutletContext]="context"></ng-container>
-      }
-    </div>
+</div>
+
+<!-- Initialize tooltip -->
+<div style="position: fixed; left: 0; top: 0; display: none" #tooltip>
+  <!-- Define tooltip inner scaffold -->
+  <div style="position: relative; display: block">
+    <!-- Subscribe to template emission -->
+    @if (tooltipService.tooltip$ | async; as context) {
+      <!-- Show template -->
+      <ng-container [ngTemplateOutlet]="tooltipService.templateRef"
+                    [ngTemplateOutletContext]="context"></ng-container>
+    }
   </div>
 </div>
 

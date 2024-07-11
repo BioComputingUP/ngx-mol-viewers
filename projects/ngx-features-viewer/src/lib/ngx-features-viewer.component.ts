@@ -152,11 +152,11 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, AfterContentIn
         const h = this.resizeService.height;
         const w = this.resizeService.width;
         // Define number of residues in sequence
-        const n = this.sequence.sequence.length + 1;
+        const n = this.sequence.length + 1;
         // Apply scale limit to 5 residues
         this.initializeService.zoom
           .translateExtent([[ms, 0], [w - me, h - mb]])
-          .scaleExtent([0.998, n / 5])
+          .scaleExtent([1, n / 5])
           .extent([[ms, 0], [w - me, h - mb]])
           .on('zoom', (event) => {
             this.zoomService.zoom$.next(event);
@@ -268,7 +268,7 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, AfterContentIn
     const x = this.initializeService.scale.x;
     let [x0, x1] = (event.selection as [number, number]).map(x.invert);
     x0 = Math.max(1, Math.round(x0));
-    x1 = Math.min(this.sequence.sequence.length, Math.round(x1));
+    x1 = Math.min(this.sequence.length, Math.round(x1));
     const d1 = [x0 - 0.5, x1 + 0.5] as [number, number];
     this.initializeService.brushRegion.call(this.initializeService.brush.move, d1.map(x) as [number, number]);
   }
@@ -299,7 +299,7 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, AfterContentIn
           cont += 1;
         }
         // Add a position to dx if possible
-        if (x1 <= this.sequence.sequence.length && !toSx) {
+        if (x1 <= this.sequence.length && !toSx) {
           x1 += 1;
           cont += 1;
         }
