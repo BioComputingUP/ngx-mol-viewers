@@ -1,5 +1,1 @@
-<!-- Define container for Mol* instance -->
-<div class="ngx-structure-viewer-container" #container>
-  <canvas class="ngx-structure-viewer-canvas" #canvas></canvas>
-</div>
-
+<div [style.background-color]="background$ | async" #container></div>

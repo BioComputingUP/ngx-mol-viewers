@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { CanvasService } from './canvas.service';
+import { ThemeSelectorService } from './theme-selector.service';
 
-describe('CanvasService', () => {
-  let service: CanvasService;
+describe('ThemeSelectorService', () => {
+  let service: ThemeSelectorService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(CanvasService);
+    service = TestBed.inject(ThemeSelectorService);
   });
 
   it('should be created', () => {

@@ -1,20 +1,54 @@
+import { BehaviorSubject, combineLatest, Subscription } from 'rxjs';
+import { Injectable, OnDestroy } from '@angular/core';
 import { Settings } from '../interfaces/settings';
-import { Injectable } from '@angular/core';
-import { ReplaySubject } from 'rxjs';
+import { PluginService } from './plugin.service';
+import { fromHexString } from '../colors';
 
 @Injectable()
-export class SettingsService {
+export class SettingsService implements OnDestroy {
 
-  readonly settings$ = new ReplaySubject<Settings>();
+  // Define default settings
+  readonly defaults = {
+    "backbone-color": "#000000",
+    "background-color": "#FFFFFF",
+    "interaction-color": "#FF0000",
+    "interaction-size": 1,
+  }
 
-  protected _settings!: Settings;
-
-  set settings(settings: Settings) {
-    this.settings$.next(this._settings = settings);
+  set settings(settings: Settings | null) {
+    // Emit settings
+    this.settings$.next({ ...this.defaults, ...settings });
   }
 
   get settings(): Settings {
-    return this._settings;
+    // Return internal settings
+    return this.settings$.value;
   }
-  
+
+  readonly settings$ = new BehaviorSubject<Settings>(this.defaults);
+
+  readonly _settings: Subscription;
+
+  constructor(public pluginService: PluginService) {
+    // Subscribe to settings change and plugin instance
+    const settings$ = combineLatest([ this.pluginService.plugin$, this.settings$ ]);
+    // Subscribe to settings change
+    this._settings = settings$.subscribe(([plugin, settings]) => {
+      // Get background color
+      const [ color, alpha ] = fromHexString(settings["background-color"]);
+      // Update plugin settings
+      plugin.canvas3d?.setProps({ 
+        // Set background color
+        renderer: { backgroundColor: color },
+        // Set background opacity
+        transparentBackground: alpha === 1,
+      });
+    });
+  }
+
+  public ngOnDestroy() {
+    // Unsubscribe from settings
+    this._settings.unsubscribe();
+  }
+
 }

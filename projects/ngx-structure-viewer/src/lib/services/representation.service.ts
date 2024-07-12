@@ -9,16 +9,14 @@ import { Overpaint } from 'molstar/lib/mol-theme/overpaint';
 import { Vec3 } from 'molstar/lib/mol-math/linear-algebra';
 import { Script } from 'molstar/lib/mol-script/script';
 // Custom dependencies
+import { Interaction, Interactor } from '../interfaces/interaction';
+import { CreateMeshProvider } from './interactions.provider';
 import { StructureService } from './structure.service';
 import { SettingsService } from './settings.service';
 import { PluginService } from './plugin.service';
-import { Interaction, Interactor } from '../interfaces/interaction';
+import { Source } from '../interfaces/source';
 import { Locus } from '../interfaces/locus';
 import { fromHexString } from '../colors';
-import { CreateMeshProvider } from './interactions.provider';
-import { CanvasService } from './canvas.service';
-import { Source } from '../interfaces/source';
-
 
 export function getLocusFromQuery(query: Expression, structure: Structure): StructureElement.Loci {
   // Execute query, retrieve selection
@@ -77,13 +75,14 @@ export class RepresentationService implements OnDestroy {
     public structureService: StructureService,
     public settingsService: SettingsService,
     public pluginService: PluginService,
-    public canvasService: CanvasService,
   ) {
     // Get source
     const source$ = this.structureService.source$.pipe(
       // Filter out null values
       filter((source): source is Source => source != null),
     );
+
+
     // Get structure
     this.structure$ = this.structureService.structure$.pipe(
       // Get latest source
@@ -94,13 +93,13 @@ export class RepresentationService implements OnDestroy {
         const plugin = this.pluginService.plugin;
         // Create component for the whole structure
         const component = await plugin.builders.structure.tryCreateComponentStatic(structure, 'polymer', { label: source.label });
-        // Define color
-        const [ value ] = fromHexString(this.settingsService.settings['backbone-color']);
-        // Initialize white representation
+        // // Define color
+        // const [ value ] = fromHexString(this.settingsService.settings['backbone-color']);
+        // Initialize representation
         await plugin.builders.structure.representation.addRepresentation(component!, {
           type: 'cartoon',
           color: 'uniform',
-          colorParams: { value },
+          colorParams: { value: fromHexString('#FFFFFF') },
         });
         // Return initial structure
         return structure.cell.obj.data as Structure;
@@ -116,8 +115,6 @@ export class RepresentationService implements OnDestroy {
     
     // Combine structure emission
     this.representation$ = this.structure$.pipe(
-      // Combine with structure initialization
-      combineLatestWith(this.canvasService.initialized$),
       // With loci representation pipeline
       combineLatestWith(loci$),
       // And interactions representation pipeline
@@ -168,8 +165,10 @@ export class RepresentationService implements OnDestroy {
         // Return updated loci, as well as structure (data) and plugin
         return { structure, loci: curr };
       }),
+      // Combine with settings emission
+      combineLatestWith(this.settingsService.settings$),
       // Apply colors
-      switchMap(({ structure, loci }) => {
+      switchMap(([{ structure, loci }, settings]) => {
         // Initialize color layers
         const layers = [] as Overpaint.BundleLayer[];
         // Fill in map between color and residues
@@ -180,7 +179,7 @@ export class RepresentationService implements OnDestroy {
           // Define current Mol* bundle
           const bundle = StructureElement.Bundle.fromLoci(locus);
           // Compute color
-          const [color] = fromHexString(hex || this.settingsService.settings['backbone-color']);
+          const [color] = fromHexString(hex || settings['backbone-color']);
           // Define and store current layer
           layers.push({ bundle, color, clear: false });
         }

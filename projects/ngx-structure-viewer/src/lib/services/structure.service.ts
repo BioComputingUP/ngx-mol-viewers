@@ -67,16 +67,6 @@ export class StructureService {
         const model = await plugin.builders.structure.createModel(trajectory, { modelIndex: 0 });
         // TODO Create structure
         return plugin.builders.structure.createStructure(model, { name: 'model', params: {} });
-        // // Create component for the whole structure
-        // const component = await plugin.builders.structure.tryCreateComponentStatic(structure, 'polymer', { label: source.label });
-        // // Define color
-        // const [ value ] = fromHexString(this.settingsService.settings['backbone-color']);
-        // // Initialize white representation
-        // await plugin.builders.structure.representation.addRepresentation(component!, {
-        //   type: 'cartoon',
-        //   color: 'uniform',
-        //   colorParams: { value },
-        // });
       })())),
       // Get residues data out of structure
       tap((structure) => {

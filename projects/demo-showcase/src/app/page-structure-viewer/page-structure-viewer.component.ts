@@ -1,10 +1,10 @@
-import { SectionInteractionsComponent } from './sections/section-interactions.component';
-import { SectionSourcesComponent } from './sections/section-sources.component';
+// import { SectionInteractionsComponent } from './sections/section-interactions.component';
+// import { SectionSourcesComponent } from './sections/section-sources.component';
 import { SectionChainsComponent } from './sections/section-chains.component';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { SectionHighlightsComponent } from './sections/section-highlights.component';
+// import { SectionHighlightsComponent } from './sections/section-highlights.component';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
@@ -13,9 +13,9 @@ import { SectionHighlightsComponent } from './sections/section-highlights.compon
   imports: [
     // NgxStructureViewerComponent,
     // HttpClientModule,
-    SectionInteractionsComponent,
-    SectionHighlightsComponent,
-    SectionSourcesComponent,
+    // SectionInteractionsComponent,
+    // SectionHighlightsComponent,
+    // SectionSourcesComponent,
     SectionChainsComponent,
     RouterModule,
     CommonModule,

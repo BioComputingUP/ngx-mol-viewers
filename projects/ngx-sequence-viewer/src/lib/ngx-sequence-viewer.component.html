@@ -1,33 +1,35 @@
-<!-- Define container for index -->
-<div class="index">
-  @for (position of positions$ | async; track $index) {
-    <div class="index-residue" 
-      [id]="'index-residue-' + $index" 
-      [style.background]="position?.background" 
-      [style.color]="position?.color"
-      (mouseenter)="onMouseEnter($event, index[$index])"
-      (mousedown)="onMouseDown($event, index[$index])"
-      (mouseup)="onMouseUp($event)"
-    >
-      {{ index[$index] }}
-    </div>
+@if(sequences$ | async; as sequences) {
+  <!-- Loop through each chunk -->
+  @for (chunk of chunks; track $index) {
+    <table class="aligned-chunk" [id]="'chunk-' + $index">
+      <!-- TODO Add index -->
+      <tr>
+        <!-- Skip first cell -->
+        <td>&nbsp;</td>
+        <!-- Show index for chunk -->
+        <td class="residue-index" [attr.colspan]="chunk.end - chunk.start + 1">{{ chunk.end }}</td>
+      </tr>
+      <!-- Add alignment -->
+      @for (kv of sequences | keyvalue; track $index) {
+        <!-- Add sequence identifier  -->
+        <tr>
+          <!-- <td>{{ kv.key }}/{{chunk.start}}:{{chunk.end}}</td> -->
+          <td>{{ labels && labels[$index] || kv.key }}</td>
+          <!-- Add amino acids -->
+          @for(i of chunk.index; track i) {
+            @if (kv.value[i - 1] === '-') {
+              <!-- Case amino acid is gap -->
+              <td class="residue-code residue-code-gap">-</td>
+            } @else {
+              <!-- Case amino acid is valid -->
+              <td class="residue-code residue-code-{{(kv.value[i - 1]).toLowerCase()}}">
+                {{ (kv.value[i - 1]).toUpperCase() }}
+              </td>
+            }
+          <!-- Add amino acid -->
+          }
+        </tr>
+      }
+    </table>
   }
-  <!-- @for (i of index; track $index) {
-    <div class="index-residue" [id]="'index-residue-' + $index">{{ i }}</div>
-  } -->
-</div>
-<!-- Define container for sequence -->
-<div class="sequence">
-  @for (c of sequence; track $index) {
-    <div class="sequence-residue"
-      [id]="'sequence-residue-' + $index"
-      [style.background]="colors[c]['background'] || colors['-']['background']" 
-      [style.color]="colors[c]['color'] || colors['-']['color']"
-      (mouseenter)="onMouseEnter($event, index[$index])"
-      (mousedown)="onMouseDown($event, index[$index])"
-      (mouseup)="onMouseUp($event)"
-    >
-      {{ c }}
-    </div>
-  }
-</div>
+}

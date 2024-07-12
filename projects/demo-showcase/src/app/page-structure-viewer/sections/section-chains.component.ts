@@ -1,4 +1,5 @@
-import { NgxStructureViewerComponent, Locus, Settings, Source, StructureService, PluginService } from '@ngx-structure-viewer';
+import { NgxStructureViewerComponent, Locus, Settings, Source } from '@ngx-structure-viewer';
+import { ThemeSelectorService } from '../../theme-selector/theme-selector.service';
 import { Observable, interval, map, shareReplay, startWith } from 'rxjs';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -9,10 +10,6 @@ import { CommonModule } from '@angular/common';
     NgxStructureViewerComponent,
     CommonModule,
   ],
-  providers: [
-    StructureService,
-    PluginService,
-  ],
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './section-chains.component.html',
@@ -20,23 +17,35 @@ import { CommonModule } from '@angular/common';
 })
 export class SectionChainsComponent {
 
-  readonly settings: Settings;
+  readonly settings$: Observable<Settings>;
+
+  // Default settings
+  private readonly settings: Settings = {
+    'background-color': '#2b3035ff',
+    'backbone-color': '#6ea8fecc',
+    'interaction-color': '#ff0000ff',
+    'interaction-size': 1,
+  };
 
   readonly source: Source;
 
   readonly chains$: Observable<Locus[]>;
 
   constructor(
-    public structureService: StructureService,
-    public pluginService: PluginService,
+    public themeSelectorService: ThemeSelectorService,
   ) {
+    const theme$ = this.themeSelectorService.theme$;
     // Define settings
-    this.settings = {
-      'background-color': '#2b3035ff',
-      'backbone-color': '#6ea8fecc',
-      'interaction-color': '#ff0000ff',
-      'interaction-size': 1,
-    };
+    this.settings$ = theme$.pipe(
+      // Overwrite default settings
+      map((theme) => ({
+        ...this.settings,
+        'background-color': theme === 'light' ? '#f8f9fa' : '#2b3035',
+        'backbone-color': theme === 'light' ? '#2b3035' : '#f8f9fa',
+      })),
+      // Cache results
+      shareReplay(1),
+    );
 
     // Define source retrieval pipeline
     this.source = {
@@ -69,11 +78,6 @@ export class SectionChainsComponent {
       // Cache result
       shareReplay(1),
     );
-
-    // TODO Check that service has been imported
-    structureService.structure$.subscribe(() => {
-      console.log('Hello, world!');
-    });
   }
 
 }
