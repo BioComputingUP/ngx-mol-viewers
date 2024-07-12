@@ -210,6 +210,11 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, AfterContentIn
       // Emit sequence
       this.sequence$.next(this.initializeService.sequence);
     }
+
+    // Case input traces changes
+    if (changes && changes['traces'] && !changes['traces'].isFirstChange()) {
+      console.log('Traces changed');
+    }
   }
 
   public ngAfterContentInit(): void {

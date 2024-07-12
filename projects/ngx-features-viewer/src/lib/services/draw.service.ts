@@ -1,6 +1,7 @@
 // Common
 import { EventEmitter, Injectable } from '@angular/core';
 import * as d3 from 'd3';
+import { BaseType } from 'd3';
 import { combineLatest, map, Observable, ReplaySubject, shareReplay, switchMap, tap, throttleTime } from 'rxjs';
 import { Continuous } from '../features/continuous';
 import { DSSP, DSSPPaths, dsspShape } from "../features/dssp";
@@ -30,10 +31,13 @@ export const REM = parseFloat(getComputedStyle(document.documentElement).fontSiz
 
 // Define function for extracting identifier out of unknown object
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const identity = (f: unknown) => (f as { id: any }).id;
+export const identity = (f: InternalTrace) => (f as { id: any }).id;
 
 // Define function for extracting index out of unknown object
-export const index = (f: unknown, i: number) => i;
+export const index = (f: InternalTraces) => {
+  console.log(f);
+  return f.length;
+};
 
 const alreadyExitedFromView = new Set<Feature>();
 
@@ -376,19 +380,25 @@ export class DrawService {
   }
 
   private createLabels(traces: InternalTraces): void {
+    console.log('creating Labels')
     // Initialize labels SVG group
     const group = this.initializeService.svg
       // Select previous labels group
-      .selectAll('g.labels')
+      .selectAll<SVGGElement, InternalTraces>('g.labels')
       // Bind group to current traces
-      .data([traces], index)
+      .data<InternalTraces>([traces], index)
       // Create current labels group
       .join('g')
-      .attr('class', 'labels')
+      .attr('class', 'labels');
+
     // Add labels to their group
     this['group.labels'] = group
-      .selectAll('g')
-      .data([{id : 'sequence', label : 'Sequence', expanded : true}, ...traces] as InternalTraces, identity)
+      .selectAll<SVGGElement | BaseType, InternalTrace>('g')
+      .data<InternalTrace>([{
+        id : 'sequence',
+        label : 'Sequence',
+        expanded : true,
+      }, ...traces] as InternalTraces, identity)
       .join(
         (enter) => enter.append('g'),
         (update) => update,
@@ -450,15 +460,15 @@ export class DrawService {
   private createGrid(traces: InternalTraces): void {
     const group = this.initializeService.focus
       // Create parent grid element
-      .selectAll('g.grid')
-      .data([traces], index)
+      .selectAll<SVGGElement, InternalTraces>('g.grid')
+      .data<InternalTraces>([traces], index)
       .join('g')
       .attr('class', 'grid')
       .lower();
 
     this['group.grid'] = group
-      .selectAll('g.grid-line-group')
-      .data(traces, identity)
+      .selectAll<SVGGElement | BaseType, InternalTrace>('g.grid-line-group')
+      .data<InternalTrace>(traces, identity)
       .join('g')
       .attr('id', (d) => 'grid-' + d.id)
       .attr('class', 'grid-line-group')
@@ -548,8 +558,8 @@ export class DrawService {
 
     // Generate and store traces groups
     this['group.traces'] = this.initializeService.draw
-      .selectAll('g.trace')
-      .data(traces, identity)
+      .selectAll<SVGGElement | BaseType, InternalTrace>('g.trace')
+      .data<InternalTrace>(traces, identity)
       .join('g')
       .attr('id', (trace) => 'trace-' + trace.id)
       .attr('class', 'trace');
