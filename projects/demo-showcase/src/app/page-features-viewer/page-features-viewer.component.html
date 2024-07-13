@@ -49,18 +49,8 @@
         <!-- Tooltip template -->
         <ng-template let-trace="trace" let-feature="feature" let-index="index" let-coordinates="coordinates"
                      ngx-features-viewer-tooltip>
-          <div class="card">
-            <div class="card-header">
-              <h5 class="card-title">{{ feature.label }}</h5>
-            </div>
-            <div class="card-body">
-              <p class="card-text">
-                {{ index }}
-              </p>
-              <p class="card-text">
-                {{ coordinates }}
-              </p>
-            </div>
+          <div>
+            {{ feature.label }}
           </div>
 
           <!--          <ngx-features-viewer [sequence]="sequence" [settings]="settings.inner" [traces]="[trace]">-->

@@ -38,26 +38,34 @@ export class TooltipService {
 
   constructor(public initializeService: InitializeService) { }
 
+  private getTooltipSize(tooltip: Selection<HTMLDivElement, unknown, null, unknown>) {
+    // Define tooltip size
+    const width = tooltip.node()?.clientWidth || 0;
+    const height = tooltip.node()?.clientHeight || 0;
+    return { width, height };
+  }
+
   private setTooltipPosition(event: MouseEvent) {
     const tooltip = this._tooltip;
 
-    // If we are over the center of the page, we move the tooltip to the left
-    if (event.clientX > window.innerWidth / 2) {
-      tooltip.style("left", "auto");
-      tooltip.style("right", `${window.innerWidth - event.clientX + 10}px`);
-    } else {
-      tooltip.style("right", "auto");
-      tooltip.style("left", `${event.clientX + 10}px`);
+    // Get tooltip size
+    const { width, height } = this.getTooltipSize(tooltip);
+
+    // Default position at bottom left
+    let offsetX = 10;
+    let offsetY = 10;
+
+    // Adjust if the tooltip would go out of bounds
+    if (event.clientX + offsetX + width > window.innerWidth) {
+      offsetX = -width - 10;
     }
 
-    if (event.clientY > window.innerHeight / 2) {
-      tooltip.style("top", "auto");
-      tooltip.style("bottom", `${window.innerHeight - event.clientY + 10}px`);
-    } else {
-      tooltip.style("bottom", "auto");
-      tooltip.style("top", `${event.clientY + 10}px`);
+    if (event.clientY + offsetY + height > window.innerHeight) {
+      offsetY = -height - 10;
     }
 
+    // Apply the new position using transform
+    tooltip.style("transform", `translate(${event.clientX + offsetX}px, ${event.clientY + offsetY}px)`);
   }
 
   public onMouseEnter(event: MouseEvent, trace: InternalTrace, feature?: Feature, index?: number) {
@@ -68,7 +76,8 @@ export class TooltipService {
     // Emit tooltip context
     this.tooltip$.next({ trace, feature, index, coordinates });
     // Set tooltip visible
-    tooltip.style("display", "block");
+    tooltip.style("opacity", "1");
+    tooltip.style("visibility", "visible");
 
     this.setTooltipPosition(event);
   }
@@ -88,7 +97,8 @@ export class TooltipService {
     // Define tooltip
     const tooltip = this._tooltip;
     // Hide tooltip
-    tooltip.style("display", "none");
+    tooltip.style("opacity", "0");
+    tooltip.style("visibility", "hidden");
     // Remove tooltip context
     this.tooltip$.next(null);
   }
