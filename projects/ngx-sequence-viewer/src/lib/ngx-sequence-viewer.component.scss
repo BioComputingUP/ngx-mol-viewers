@@ -1,48 +1,100 @@
-:host {
-  // Set cursor to default one
-  cursor: default;
+.not-selectable {
   // Disable text selection
   user-select: none;
+  // Set cursor to default one
+  cursor: default;
+}
 
-  .sequence,
-  .index {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    justify-content: flex-start;
-    align-items: stretch;
+:host {
+  @extend .not-selectable;
+  // Set font monospace
+  font-family: monospace, monospace;
+  // Set display properties
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  // justify-content: flex-start;
+  // Set gap to separate chunks
+  // gap: .5em;
+  // Set component to fit parent container
+  height: auto;
+  // width: 100%;
+  // Set overflow properties
+  overflow-y: hidden;
+  overflow-x: auto;
+
+  .chunk {
+
+    // Style labels
+    td:first-child {
+      // Align label to right
+      text-align: right;
+      // Add padding to label
+      padding-right: .5em;
+    }
+
+    // Style index
+    tr:first-child {
+      // Align text to right
+      text-align: right;
+      // Decrease font size
+      font-size: .75em;
+    }
   }
 
-  .sequence>div,
-  .index>div {
-    // Expolit flex properties
-    flex: 0 0 auto;
-    // Define properties for containing div
-    display: block;
-    height: 1rem;
-    width: 1rem;
-    // Define outer, inner size and positioning
-    text-align: center;
-    font-size: inherit;
-    line-height: 1rem;
+  .chunk:not(:first-child) {
+
+    // Hide first cell
+    td:first-child {
+      // Set opacity to 0
+      opacity: 0;
+      // Unset padding
+      padding: 0 !important;
+      // Unset width
+      max-width: 0;
+      width: 0;
+    }
   }
 
-  .sequence>div {
-    text-align: center;
-    vertical-align: center;
-  }
+  //   .sequence,
+  //   .index {
+  //     display: flex;
+  //     flex-direction: row;
+  //     flex-wrap: nowrap;
+  //     justify-content: flex-start;
+  //     align-items: stretch;
+  //   }
 
-  .index>div {
-    // Overwrite height property
-    height: auto;
-    // Align text to left (bottom)
-    text-align: left;
-    // Rotate text
-    transform: rotate(-180deg);
-    writing-mode: vertical-rl;
-    white-space: nowrap;
-    // Add padding
-    padding-bottom: .25rem;
-    padding-top: .25rem;
-  }
+  //   .sequence>div,
+  //   .index>div {
+  //     // Expolit flex properties
+  //     flex: 0 0 auto;
+  //     // Define properties for containing div
+  //     display: block;
+  //     height: 1rem;
+  //     width: 1rem;
+  //     // Define outer, inner size and positioning
+  //     text-align: center;
+  //     font-size: inherit;
+  //     line-height: 1rem;
+  //   }
+
+  //   .sequence>div {
+  //     text-align: center;
+  //     vertical-align: center;
+  //   }
+
+  //   .index>div {
+  //     // Overwrite height property
+  //     height: auto;
+  //     // Align text to left (bottom)
+  //     text-align: left;
+  //     // Rotate text
+  //     transform: rotate(-180deg);
+  //     writing-mode: vertical-rl;
+  //     white-space: nowrap;
+  //     // Add padding
+  //     padding-bottom: .25rem;
+  //     padding-top: .25rem;
+  //   }
 }

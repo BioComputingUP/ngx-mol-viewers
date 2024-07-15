@@ -67,3 +67,36 @@ export const Physical: Schema = {
   X: { background: '#FFA500', color: '#000000' },
   '-': { background: '#FFFFFF', color: '#000000' },
 };
+
+// Define custom ZAPPO scheme
+// Original ZAPPO scheme: 
+// Custom colorblind Wong palette: 
+export const ZAPPO: Schema = {
+  // Aliphatic/hydrophobic
+  I: { background: '#CC79A7', color: 'black' },
+  L: { background: '#CC79A7', color: 'black' },
+  V: { background: '#CC79A7', color: 'black' },
+  A: { background: '#CC79A7', color: 'black' },
+  M: { background: '#CC79A7', color: 'black' },
+  // Aromatic
+  F: { background: '#E69F00', color: 'black' },
+  W: { background: '#E69F00', color: 'black' },
+  Y: { background: '#E69F00', color: 'black' },
+  // Positive charge
+  K: { background: '#0072B2', color: 'white' },
+  R: { background: '#0072B2', color: 'white' },
+  H: { background: '#0072B2', color: 'white' },
+  // Negative charge
+  D: { background: '#D55E00', color: 'black' },
+  E: { background: '#D55E00', color: 'black' },
+  // Hydrophilic
+  N: { background: '#009E73', color: 'black' },
+  Q: { background: '#009E73', color: 'black' },
+  S: { background: '#009E73', color: 'black' },
+  T: { background: '#009E73', color: 'black' },
+  // Conformationally special
+  P: { background: '#56B4E9', color: 'black' },
+  G: { background: '#56B4E9', color: 'black' },
+  // Cysteine
+  C: { background: '#F0E442', color: 'black' },
+}

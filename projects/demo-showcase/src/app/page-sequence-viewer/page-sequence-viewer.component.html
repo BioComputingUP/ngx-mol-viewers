@@ -1,19 +1,7 @@
 <div class="container pt-3">
   <h1>Sequence viewer</h1>
-  <div>
-    <h2>Visualize structure</h2>
-    <div class="row">
-      <div class="col-7">
-        In this example, the sequence underlying the PDB structure `1BRR`, chain `A` is shown.
-        The colouring scheme chosen is based on the structural characteristics of the amino acids.
-      </div>
-      <div class="col-5">
-        <code>
-          <pre class="rounded bg-body-tertiary p-3">{{ source | json }}</pre>
-        </code>
-      </div>
-    </div>
-    <div id="sequence-viewer-structure" class="d-block rounded border w-100 h-auto" style="overflow-x: auto; overflow-y: hidden;">
-    </div>
+  <!-- Test sequence viewer -->
+  <div class="mb-3">
+    <ngx-sequence-viewer [fasta]="fasta" [split]="split"></ngx-sequence-viewer>
   </div>
 </div>

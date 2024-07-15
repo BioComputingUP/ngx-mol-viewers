@@ -1,35 +1,30 @@
-@if(sequences$ | async; as sequences) {
-  <!-- Loop through each chunk -->
-  @for (chunk of chunks; track $index) {
-    <table class="aligned-chunk" [id]="'chunk-' + $index">
-      <!-- TODO Add index -->
-      <tr>
-        <!-- Skip first cell -->
-        <td>&nbsp;</td>
-        <!-- Show index for chunk -->
-        <td class="residue-index" [attr.colspan]="chunk.end - chunk.start + 1">{{ chunk.end }}</td>
-      </tr>
-      <!-- Add alignment -->
-      @for (kv of sequences | keyvalue; track $index) {
-        <!-- Add sequence identifier  -->
-        <tr>
-          <!-- <td>{{ kv.key }}/{{chunk.start}}:{{chunk.end}}</td> -->
-          <td>{{ labels && labels[$index] || kv.key }}</td>
-          <!-- Add amino acids -->
-          @for(i of chunk.index; track i) {
-            @if (kv.value[i - 1] === '-') {
-              <!-- Case amino acid is gap -->
-              <td class="residue-code residue-code-gap">-</td>
-            } @else {
-              <!-- Case amino acid is valid -->
-              <td class="residue-code residue-code-{{(kv.value[i - 1]).toLowerCase()}}">
-                {{ (kv.value[i - 1]).toUpperCase() }}
-              </td>
-            }
-          <!-- Add amino acid -->
-          }
-        </tr>
+<!-- Loop through each chunk -->
+@for (chunk of chunks; track $index) {
+  <table class="chunk" [id]="'chunk-' + $index">
+    <!-- Render index -->
+    <tr>
+      <td>&nbsp;</td>
+      <td [attr.colspan]="split">{{ chunk.end }}</td>
+    </tr>
+    <!-- Render consensus -->
+    <tr>
+      <td>Consensus</td>
+      @for(aa of consensus.slice(chunk.start, chunk.end); track $index) {
+        <td [style.opacity]="asOpacity(aa[1])">{{ aa[0] }}</td>
       }
-    </table>
-  }
+    </tr>
+    <!-- Render alignment -->
+    @for (sequence of sequences; track i; let i = $index) {
+      <tr>
+        <!-- First column: label -->
+        <td>{{ labels && labels[i] }}</td>
+        <!-- Other columns: amino acids -->
+        @for(aa of sequence.slice(chunk.start, chunk.end); track j; let j = $index) {
+          <td class="residue-code residue-code-{{ aa !== '--' ? aa : 'gap' }}">
+            {{ aa.toUpperCase() }}
+          </td>
+        }
+      </tr>
+    }
+  </table>
 }

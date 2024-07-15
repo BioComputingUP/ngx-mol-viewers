@@ -36,10 +36,13 @@ VKD-----`;
     CommonModule,
   ],
   templateUrl: './page-sequence-viewer.component.html',
-  styleUrl: './page-sequence-viewer.component.scss'
+  styleUrl: './page-sequence-viewer.component.scss',
+  // changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PageSequenceViewerComponent {
 
-  readonly source = { type: 'local', data: FASTA };
+  readonly fasta = FASTA;
+
+  readonly split = 5;
 
 }
