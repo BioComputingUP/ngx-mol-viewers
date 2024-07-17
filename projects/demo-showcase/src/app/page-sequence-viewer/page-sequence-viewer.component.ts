@@ -45,4 +45,10 @@ export class PageSequenceViewerComponent {
 
   readonly split = 5;
 
+  readonly loci = [
+    {start: 20, end: 30, background: '#648FFF' },
+    {start: 40, end: 50, background: '#FE6100' },
+    {start: 60, end: 70, background: '#648FFF' },
+  ]
+
 }

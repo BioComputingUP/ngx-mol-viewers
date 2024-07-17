@@ -15,7 +15,7 @@
   flex-wrap: nowrap;
   // justify-content: flex-start;
   // Set gap to separate chunks
-  // gap: .5em;
+  gap: .5em;
   // Set component to fit parent container
   height: auto;
   // width: 100%;
@@ -24,6 +24,23 @@
   overflow-x: auto;
 
   .chunk {
+    // Collapse borders
+    border-collapse: collapse;
+
+    td {
+      // Remove borders
+      padding: 0;
+      border: 0;
+      // Intercept pointer events
+      pointer-events: all;
+
+      span {
+        // Set positioning
+        position: relative;
+        // Remove events, allows selection on td
+        pointer-events: none;
+      }
+    }
 
     // Style labels
     td:first-child {
@@ -31,6 +48,8 @@
       text-align: right;
       // Add padding to label
       padding-right: .5em;
+      // Disable pointer events
+      pointer-events: none;
     }
 
     // Style index
@@ -39,7 +58,28 @@
       text-align: right;
       // Decrease font size
       font-size: .75em;
+
+      td {
+        // Initialize positioning for table cells
+        position: relative;
+
+        // Update positioning for inner index
+        span {
+          position: absolute;
+          right: 0;
+          top: 0;
+          // Hide all indices by default
+          display: none;
+        }
+
+        // Show only last index
+        &:last-child span {
+          display: block;
+        }
+      }
+
     }
+
   }
 
   .chunk:not(:first-child) {
@@ -56,45 +96,107 @@
     }
   }
 
-  //   .sequence,
-  //   .index {
-  //     display: flex;
-  //     flex-direction: row;
-  //     flex-wrap: nowrap;
-  //     justify-content: flex-start;
-  //     align-items: stretch;
-  //   }
+}
 
-  //   .sequence>div,
-  //   .index>div {
-  //     // Expolit flex properties
-  //     flex: 0 0 auto;
-  //     // Define properties for containing div
-  //     display: block;
-  //     height: 1rem;
-  //     width: 1rem;
-  //     // Define outer, inner size and positioning
-  //     text-align: center;
-  //     font-size: inherit;
-  //     line-height: 1rem;
-  //   }
+// Define selection color
+$selected-color: greenyellow;
+$selected-width: 0.25em;
 
-  //   .sequence>div {
-  //     text-align: center;
-  //     vertical-align: center;
-  //   }
+// Style selected cells
+.selected {
+  // Set positioning
+  position: relative;
+  box-sizing: border-box;
+  // border: 2px solid greenyellow !important;
+  // // Initialize outline
+  // outline-width: 0;
+  // outline-style: solid;
+  // outline-color: $selected-color;
+  // // Update outline
+  // &.left {
+  //   outline-width: 0 0 0 $selected-width;
+  // }
+  // &.right {
+  //   outline-width: 0 $selected-width 0 0;
+  // }
+  // &.top {
+  //   outline-width: $selected-width 0 0 0;
+  // }
+  // &.bottom {
+  //   outline-width: 0 0 $selected-width 0;
+  // }
+  // &.top.left {
+  //   outline-width: $selected-width 0 0 $selected-width;
+  // }
+  // &.top.right {
+  //   outline-width: $selected-width $selected-width 0 0;
+  // }
+  // &.top.left.right {
+  //   outline-width: $selected-width $selected-width 0 $selected-width;
+  // }
+  // &.bottom.left {
+  //   outline-width: 0 0 $selected-width $selected-width;
+  // }
+  // &.bottom.right {
+  //   outline-width: 0 $selected-width $selected-width 0;
+  // }
+  // &.bottom.left.right {
+  //   outline-width: 0 $selected-width $selected-width $selected-width;
+  // }
 
-  //   .index>div {
-  //     // Overwrite height property
-  //     height: auto;
-  //     // Align text to left (bottom)
-  //     text-align: left;
-  //     // Rotate text
-  //     transform: rotate(-180deg);
-  //     writing-mode: vertical-rl;
-  //     white-space: nowrap;
-  //     // Add padding
-  //     padding-bottom: .25rem;
-  //     padding-top: .25rem;
-  //   }
+  // &::after {
+  //   // Set positioning
+  //   position: absolute;
+  //   left: 0;
+  //   top: 0;
+  //   // Set size
+  //   display: block;
+  //   height: 100%;
+  //   width: 100%;
+  //   // Set background color
+  //   border-style: solid;
+  //   border-width: 0;
+  //   border-color: $selected-color;
+  //   // Set empty cell
+  //   content: '';
+  // }
+
+  // &.left::after {
+  //   border-left-width: $selected-width;
+  // }
+
+  // &.right::after {
+  //   border-right-width: $selected-width;
+  // }
+
+  // &.top::after {
+  //   border-top-width: $selected-width;
+  // }
+
+  // &.bottom::after {
+  //   border-bottom-width: $selected-width;
+  // }
+
+  // If background is transparent, then turn it to greenyellow
+  &::before {
+    // Set positioning
+    position: absolute;
+    left: 0;
+    top: 0;
+    // Set size
+    display: block;
+    height: 100%;
+    width: 100%;
+    // Set background color
+    background-color: $selected-color;
+    // background: repeating-linear-gradient(
+    //   45deg,
+    //   transparent, 
+    //   transparent .25em, 
+    //   rgba(30, 255, 0, 0.3) .25em, 
+    //   rgba(30, 255, 0, 0.3) .25em calc(.25em + 1px)
+    // );
+    // Set empty cell
+    content: '';
+  }
 }

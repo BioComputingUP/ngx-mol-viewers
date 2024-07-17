@@ -1,17 +1,50 @@
+<!-- Define first chunk: labels only -->
+<table class="chunk" style="position: sticky">
+  <!-- Empty rows -->
+  <tr>&nbsp;</tr>
+  <tr>Consensus</tr>
+  <!-- Render alignment -->
+  @for (sequence of sequences; track i; let i = $index) {
+    <tr>
+      <!-- First column: label -->
+      <td>{{ labels && labels[i] }}</td>
+    </tr>
+  }
+</table>
 <!-- Loop through each chunk -->
 @for (chunk of chunks; track $index) {
   <table class="chunk" [id]="'chunk-' + $index">
     <!-- Render index -->
     <tr>
       <td>&nbsp;</td>
-      <td [attr.colspan]="split">{{ chunk.end }}</td>
+      <!-- Create cell for each index, even if it is not visible -->
+      @for(aa of first.slice(chunk.start, chunk.end); track j; let j = $index) {
+        <!-- Compute index (starts from 1, so it is always defined) -->
+        @if(chunk.start + j + 1; as index) {
+          <!-- Case something is selected -->
+          <ng-container *ngTemplateOutlet="cellTemplate; context: { 
+            code: index, 
+            col: index, 
+            row: 0,
+            selected: selected$ | async,
+            loci: loci$ | async
+          }"></ng-container>
+        }
+      }
     </tr>
     <!-- Render consensus -->
     <tr>
       <td>Consensus</td>
-      @for(aa of consensus.slice(chunk.start, chunk.end); track $index) {
-        <td [style.opacity]="asOpacity(aa[1])">{{ aa[0] }}</td>
-      }
+        @for(aa of consensus.slice(chunk.start, chunk.end); track j; let j = $index) {
+          <ng-container *ngTemplateOutlet="cellTemplate; context: { 
+            code: aa[0], 
+            col: chunk.start + j + 1, 
+            row: 1,
+            colors: colors[aa[0]],
+            selected: selected$ | async, 
+            loci: loci$ | async
+          }"></ng-container>
+        }
     </tr>
     <!-- Render alignment -->
     @for (sequence of sequences; track i; let i = $index) {
@@ -20,11 +53,30 @@
         <td>{{ labels && labels[i] }}</td>
         <!-- Other columns: amino acids -->
         @for(aa of sequence.slice(chunk.start, chunk.end); track j; let j = $index) {
-          <td class="residue-code residue-code-{{ aa !== '--' ? aa : 'gap' }}">
-            {{ aa.toUpperCase() }}
-          </td>
+          <ng-container *ngTemplateOutlet="cellTemplate; context: { 
+            code: aa[0], 
+            col: chunk.start + j + 1, 
+            row: i + 2, 
+            colors: colors[aa[0]],
+            selected: selected$ | async,
+            loci: loci$ | async
+          }"></ng-container>
         }
       </tr>
     }
   </table>
 }
+
+<!-- Define template for index -->
+<ng-template let-code="code" let-col="col" let-row="row" let-selected="selected" let-colors="colors" let-loci="loci" #cellTemplate>
+  <td [class.selected]="selected && (selected['start'] <= col && col <= selected['end'])"
+    [style.background-color]="loci && loci[col] && loci[col]['background']"
+    [style.color]="loci && loci[col] && loci[col]['color']"
+    (mouseenter)="onMouseEnter($event, col)"
+    (mousedown)="onMouseDown($event, col)">
+    <!-- Actual content -->
+    <span [style.background-color]="colors && colors['background']" [style.color]="colors && colors['color']">
+      {{ ('' + code).toUpperCase() }}
+    </span>
+  </td>
+</ng-template>

@@ -1,9 +1,11 @@
-import { ChangeDetectionStrategy, Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostListener, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 // import { combineLatestWith, map, shareReplay, startWith } from 'rxjs';
 // import { SelectionService } from './services/selection.service';
 // import { PositionsService } from './services/positions.service';
 import { CommonModule } from '@angular/common';
-// import * as Colors from './colors';
+import { ColorMap, ZAPPO } from './colors';
+import { SelectionService } from './services/selection.service';
+import { BehaviorSubject } from 'rxjs';
 
 // export interface Locus<T> {
 //   // Define start position (for both point and range loci)
@@ -19,11 +21,13 @@ import { CommonModule } from '@angular/common';
 
 // export type Loci<T> = Locus<T>[];
 
-export interface Locus {
+export interface Locus<T=number> {
   // These are the boundaries of the locus
-  start: number;
-  end: number;
+  start: T;
+  end: T;
 }
+
+type ColoredLocus = Locus & Partial<ColorMap[string]>;
 
 /** Defines logo of aligned sequences
  * 
@@ -45,6 +49,7 @@ export type Consensus = [string, number][];
   // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'ngx-sequence-viewer',
   // providers: [PositionsService, SelectionService],
+  providers: [SelectionService],
   imports: [CommonModule],
   standalone: true,
   templateUrl: './ngx-sequence-viewer.component.html',
@@ -67,21 +72,56 @@ export class NgxSequenceViewerComponent implements OnChanges {
 
   public sequences!: string[];
 
+  public get first(): string {
+    // Just return first sequence
+    return this.sequences[0];
+  }
+
   public get length(): number {
-    // Get first sequence
-    const sequence = this.sequences[0];
     // Just return length of first sequence
-    return sequence.length;
+    return this.first.length;
   }
 
   @Input()
-  public colors: Record<string, string> = ZAPPO;
+  public colors: ColorMap = ZAPPO;
 
   public chunks!: Locus[];
 
   public logo!: Logo;
 
   public consensus!: Consensus;
+
+  public loci$ = new BehaviorSubject<Record<number, ColoredLocus>>({});
+
+  @Input()
+  public loci: ColoredLocus[] = [];
+
+  @Input()
+  public set select(locus: Locus | null) {
+    // Just emit locus or null
+    this.selectionService.select = locus;
+  }
+
+  @Output()
+  public selected$ = this.selectionService.selected$;
+
+  // Dependency injection
+  constructor(
+    public selectionService: SelectionService,
+  ) {}
+
+  @HostListener('window:mouseup', ['$event'])
+  public onMouseUp(event: MouseEvent) {
+    this.selectionService.onMouseUp(event);
+  }
+
+  public onMouseDown(event:MouseEvent, index: number) {
+    this.selectionService.onMouseDown(event, index);
+  }
+
+  public onMouseEnter(event: MouseEvent, index: number) {
+    this.selectionService.onMouseEnter(event, index);
+  }
 
   public ngOnChanges(changes: SimpleChanges): void {
     // Check for input change
@@ -94,8 +134,8 @@ export class NgxSequenceViewerComponent implements OnChanges {
       this.setLogo();
       // Calculate consensus
       this.setConsensus();
-      // TODO Remove this
-      console.log('Updated!');
+      // Update loci
+      this.setLoci();
     }
   }
 
@@ -252,6 +292,21 @@ export class NgxSequenceViewerComponent implements OnChanges {
       // Retrieve first entry (as they are already sorted by probability)
       this.consensus.push(positions[0]);
     }
+  }
+
+  public setLoci(): void {
+    // Define residue (index) to color map
+    const colors = this.loci.reduce((cmap: Record<number, ColoredLocus>, locus: ColoredLocus) => {
+      // Loop through each position in locus
+      for (let i = locus.start; i <= locus.end; i++) {
+        // Update color map
+        cmap[i] = locus;
+      }
+      // Return updated color map
+      return cmap;
+    }, {});
+    // Just emit loci
+    this.loci$.next(colors);
   }
 
   public asOpacity(opacity: number): string {

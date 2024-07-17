@@ -1,10 +1,10 @@
-export interface Schema {
+export interface ColorMap {
   // Define amino-acid code to color mapping
   [key: string]: { background: string; color: string };
 }
 
 // Define ClustalX color scheme
-export const ClustalX: Schema = {
+export const ClustalX: ColorMap = {
   A: { background: '#FFBF00', color: '#000000' },
   R: { background: '#FF0000', color: '#FFFFFF' },
   N: { background: '#00FFFF', color: '#000000' },
@@ -32,7 +32,7 @@ export const ClustalX: Schema = {
 };
 
 // Define color scheme based on physical characteristics
-export const Physical: Schema = {
+export const Physical: ColorMap = {
   // Nonpolar amino acids
   G: { background: '#808080', color: '#FFFFFF' }, // Glycine
   A: { background: '#808080', color: '#FFFFFF' }, // Alanine
@@ -71,7 +71,7 @@ export const Physical: Schema = {
 // Define custom ZAPPO scheme
 // Original ZAPPO scheme: 
 // Custom colorblind Wong palette: 
-export const ZAPPO: Schema = {
+export const ZAPPO: ColorMap = {
   // Aliphatic/hydrophobic
   I: { background: '#CC79A7', color: 'black' },
   L: { background: '#CC79A7', color: 'black' },
