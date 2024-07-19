@@ -1,82 +1,57 @@
-<!-- Define first chunk: labels only -->
-<table class="chunk" style="position: sticky">
-  <!-- Empty rows -->
-  <tr>&nbsp;</tr>
-  <tr>Consensus</tr>
-  <!-- Render alignment -->
-  @for (sequence of sequences; track i; let i = $index) {
-    <tr>
-      <!-- First column: label -->
-      <td>{{ labels && labels[i] }}</td>
-    </tr>
-  }
-</table>
-<!-- Loop through each chunk -->
-@for (chunk of chunks; track $index) {
-  <table class="chunk" [id]="'chunk-' + $index">
-    <!-- Render index -->
-    <tr>
-      <td>&nbsp;</td>
-      <!-- Create cell for each index, even if it is not visible -->
-      @for(aa of first.slice(chunk.start, chunk.end); track j; let j = $index) {
-        <!-- Compute index (starts from 1, so it is always defined) -->
-        @if(chunk.start + j + 1; as index) {
-          <!-- Case something is selected -->
-          <ng-container *ngTemplateOutlet="cellTemplate; context: { 
-            code: index, 
-            col: index, 
-            row: 0,
-            selected: selected$ | async,
-            loci: loci$ | async
-          }"></ng-container>
+<!-- Outer scaffold -->
+<div class="scaffold">
+  <!-- Show labels -->
+  <div class="labels">
+    <!-- First label is empty (index) -->
+    <div class="label">Index</div>
+    <!-- Second label is consensus -->
+    <div class="label">Consensus</div>
+    <!-- Other labels are sequences -->
+    @for (label of labels; track $index) {
+      <div class="label">{{ label }}</div>
+    }
+  </div>
+  <!-- Show content -->
+  <div class="positions">
+    <!-- Loop through each position -->
+    @for (position of first; track j; let j = $index) {
+    <!-- Define position wrapper -->
+    <div class="position">
+      <!-- Show index -->
+      <ng-container *ngTemplateOutlet="index; context: { i: 'index', j }"></ng-container>
+      <!-- TODO Show consensus -->
+      <!-- <ng-container *ngTemplateOutlet="residue; context: { i: 'consensus', j }"></ng-container> -->
+      <!-- Show residues -->
+      @for(sequence of sequences; track i; let i = $index) {
+        <!-- Get amino-acid -->
+        @if(sequence[j]; as aa) {
+          <!-- Define residue wrapper -->
+          <ng-container *ngTemplateOutlet="residue; context: { i, j }"></ng-container>
         }
       }
-    </tr>
-    <!-- Render consensus -->
-    <tr>
-      <td>Consensus</td>
-        @for(aa of consensus.slice(chunk.start, chunk.end); track j; let j = $index) {
-          <ng-container *ngTemplateOutlet="cellTemplate; context: { 
-            code: aa[0], 
-            col: chunk.start + j + 1, 
-            row: 1,
-            colors: colors[aa[0]],
-            selected: selected$ | async, 
-            loci: loci$ | async
-          }"></ng-container>
-        }
-    </tr>
-    <!-- Render alignment -->
-    @for (sequence of sequences; track i; let i = $index) {
-      <tr>
-        <!-- First column: label -->
-        <td>{{ labels && labels[i] }}</td>
-        <!-- Other columns: amino acids -->
-        @for(aa of sequence.slice(chunk.start, chunk.end); track j; let j = $index) {
-          <ng-container *ngTemplateOutlet="cellTemplate; context: { 
-            code: aa[0], 
-            col: chunk.start + j + 1, 
-            row: i + 2, 
-            colors: colors[aa[0]],
-            selected: selected$ | async,
-            loci: loci$ | async
-          }"></ng-container>
-        }
-      </tr>
+    </div>
     }
-  </table>
-}
+  </div>
+</div>
 
-<!-- Define template for index -->
-<ng-template let-code="code" let-col="col" let-row="row" let-selected="selected" let-colors="colors" let-loci="loci" #cellTemplate>
-  <td [class.selected]="selected && (selected['start'] <= col && col <= selected['end'])"
-    [style.background-color]="loci && loci[col] && loci[col]['background']"
-    [style.color]="loci && loci[col] && loci[col]['color']"
-    (mouseenter)="onMouseEnter($event, col)"
-    (mousedown)="onMouseDown($event, col)">
-    <!-- Actual content -->
-    <span [style.background-color]="colors && colors['background']" [style.color]="colors && colors['color']">
-      {{ ('' + code).toUpperCase() }}
-    </span>
-  </td>
+<!-- Define index template -->
+<ng-template let-j="j" #index>
+  <div class="index">{{ j * 10 + 1 }}</div>
+</ng-template>
+
+<!-- Define cell template -->
+<ng-template let-i="i" let-j="j" #residue>
+  <!-- Get selection boundaries (if any) -->
+  @if(styles$ | async; as styles) {
+    <!-- Get style for current cell -->
+    @if(styles[i][j]; as style) {
+      <!-- Define residue wrapper -->
+      <div class="residue" [id]="'residue-' + i + '-' + j"
+        [style.background-color]="style['background-color']"
+        [style.border-color]="style['border-color']"
+        [style.color]="style['color']">
+        {{ sequences[i][j] }}
+      </div>
+    }
+  }
 </ng-template>

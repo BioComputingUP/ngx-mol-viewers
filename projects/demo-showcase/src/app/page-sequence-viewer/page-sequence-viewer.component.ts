@@ -43,7 +43,7 @@ export class PageSequenceViewerComponent {
 
   readonly fasta = FASTA;
 
-  readonly split = 5;
+  readonly split = -1; // 5;
 
   readonly loci = [
     {start: 20, end: 30, background: '#648FFF' },

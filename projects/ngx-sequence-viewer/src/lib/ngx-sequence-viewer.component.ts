@@ -2,10 +2,10 @@ import { ChangeDetectionStrategy, Component, HostListener, Input, OnChanges, Out
 // import { combineLatestWith, map, shareReplay, startWith } from 'rxjs';
 // import { SelectionService } from './services/selection.service';
 // import { PositionsService } from './services/positions.service';
+import { BehaviorSubject, combineLatestWith, map, shareReplay } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { ColorMap, ZAPPO } from './colors';
 import { SelectionService } from './services/selection.service';
-import { BehaviorSubject } from 'rxjs';
 
 // export interface Locus<T> {
 //   // Define start position (for both point and range loci)
@@ -58,6 +58,14 @@ export type Consensus = [string, number][];
 })
 export class NgxSequenceViewerComponent implements OnChanges {
 
+  /** Define split of alignment
+   * 
+   * For values from 0 and greater, the index above is positioned horizontally and
+   * gap is set between each chunk.
+   * For values less than 0 (tipically -1), the index above is positioned vertically 
+   * (rotated 90 degrees), no gap is set between each chunk. Each chunk will contain
+   * exactly one position, hence an index is defined for each residue.
+   */
   @Input()
   public split = 5;
 
@@ -104,6 +112,63 @@ export class NgxSequenceViewerComponent implements OnChanges {
 
   @Output()
   public selected$ = this.selectionService.selected$;
+
+  // Merge loci with selection in a single styles emitter
+  readonly styles$ = this.loci$.pipe(
+    // Combine with latest loci emission
+    combineLatestWith(this.selected$),
+    // Define a matrix for styles, according to row and column
+    map(([loci, selection]) => {
+      // Initialize styles matrix
+      const styles: Record<string, Array<{ 'background-color'?: string, 'border-color'?: string, 'color'?: string }>> = {};
+      // Define sequences: index, consensus, input sequences
+      const consensus = this.consensus.map(([aa]) => aa).join('');
+      const sequences = [consensus, ...this.sequences];
+      // Loop through each row (sequence)
+      for (let i = 0; i < sequences.length; i++) {
+        // Update index
+        const k = i < 1 ? 'consensus' : i;
+        // Initialize row
+        styles[k] = [];
+        // Loop through each column (position)
+        for (let j = 0; j < this.length; j++) {
+          // Get loci at current position
+          const locus = loci[j];
+          // Define whether current position is selected or not
+          const selected = selection?.start <= j && j <= selection?.end;
+          // Define residue name
+          const residue = sequences[i][j];
+          // Define color for current position
+          const color = this.colors[residue];
+          // Define style for current position
+          const style = {
+            'background-color': color ? color['background'] : locus ? locus['background'] : selected ? 'greenyellow' : 'transparent',
+            'border-color': selected ? 'grenyellow' : locus ? locus['background'] : undefined,
+            'color': color ? color['color'] : selected ? 'black' : undefined,
+          };
+          // Store style for current position
+          styles[k][j] = style;
+        }
+      }
+      // Add style for index
+      styles['index'] = [];
+      // Loop through each position
+      for (let j = 0; j < this.length; j++) {
+        // Check whether current position is selected
+        const selected = selection?.start <= j && j <= selection?.end;
+        // Initialize style for current position
+        styles['index'][j] = {
+          'background-color': selected ? 'greenyellow' : undefined,
+          'border-color': selected ? 'greenyellow' : undefined,
+          'color': selected ? 'black' : undefined,
+        };
+      }
+      // Return styles matrix
+      return styles;
+    }),
+    // Cache results
+    shareReplay(1),
+  );
 
   // Dependency injection
   constructor(
@@ -233,7 +298,8 @@ export class NgxSequenceViewerComponent implements OnChanges {
     // Initialize chunks
     this.chunks = [];
     // Get maximum chunk size, length of any (first) seqeunce
-    const { split, length } = this;
+    const length = this.length;
+    const split = this.split >= 0 ? this.split : 1;
     // Loop until sequence ends
     for (let start = 0; start < length; start = start + split) {
       // Define start of chunk
