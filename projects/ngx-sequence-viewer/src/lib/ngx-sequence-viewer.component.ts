@@ -6,6 +6,7 @@ import { BehaviorSubject, combineLatestWith, map, shareReplay } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { ColorMap, ZAPPO } from './colors';
 import { SelectionService } from './services/selection.service';
+import { IndexService } from './services/index.service';
 
 // export interface Locus<T> {
 //   // Define start position (for both point and range loci)
@@ -21,13 +22,13 @@ import { SelectionService } from './services/selection.service';
 
 // export type Loci<T> = Locus<T>[];
 
-export interface Locus<T=number> {
+export interface Locus<T=unknown> {
   // These are the boundaries of the locus
   start: T;
   end: T;
 }
 
-type ColoredLocus = Locus & Partial<ColorMap[string]>;
+export type Colored<L extends Locus> = L & Partial<ColorMap[string]>;
 
 /** Defines logo of aligned sequences
  * 
@@ -45,18 +46,58 @@ export type Logo = { [aa: string]: number }[];
  */
 export type Consensus = [string, number][];
 
+/** Define settings for sequence viewer
+ * 
+ */
+export interface Settings {
+  // Define chunk size, might be negative for single residue chunks
+  'chunk-size': number;
+  // Define background color, fallback to this color if residue is not locus, nor selected
+  'background-color': string;
+  // Define selection color, use this color if residue is selected
+  'selection-color': string;
+  // Define text color, fallback to this color if residue is not locus, nor selected
+  'text-color': string;
+  // Whether to rotate index, default to false
+  'rotate-index': boolean;
+  // Define color map for residues
+  'color-map': ColorMap;
+}
+
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'ngx-sequence-viewer',
-  // providers: [PositionsService, SelectionService],
-  providers: [SelectionService],
-  imports: [CommonModule],
-  standalone: true,
   templateUrl: './ngx-sequence-viewer.component.html',
   styleUrls: ['./ngx-sequence-viewer.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [SelectionService, IndexService],
+  imports: [CommonModule],
+  standalone: true,
 })
 export class NgxSequenceViewerComponent implements OnChanges {
+
+  protected _settings: Settings = {
+    'chunk-size': 5,
+    'background-color': 'transparent',
+    'selection-color': 'greenyellow',
+    'text-color': 'black',
+    'rotate-index': false,
+    'color-map': ZAPPO,
+  };
+
+  @Input()
+  set settings(settings: Partial<Settings> | null) {
+    // Initialize settings
+    this._settings = { ...this.settings, ...(settings || {}) };
+    // Get chunk size, rotate index
+    const { 'chunk-size': chunkSize, 'rotate-index': rotateIndex } = this.settings;
+    // Update index rotation according to chunk size
+    this._settings['rotate-index'] = chunkSize < 0 ? true : rotateIndex;
+  }
+
+  get settings(): Settings {
+    return this._settings;
+  }
 
   /** Define split of alignment
    * 
@@ -66,8 +107,16 @@ export class NgxSequenceViewerComponent implements OnChanges {
    * (rotated 90 degrees), no gap is set between each chunk. Each chunk will contain
    * exactly one position, hence an index is defined for each residue.
    */
+  get split(): number {
+    return this.settings['chunk-size'];
+  }
+
+  get cmap(): ColorMap {
+    return this.settings['color-map'];
+  }
+
   @Input()
-  public split = 5;
+  public label?: string;
 
   @Input()
   public labels?: string[];
@@ -91,7 +140,7 @@ export class NgxSequenceViewerComponent implements OnChanges {
   }
 
   @Input()
-  public colors: ColorMap = ZAPPO;
+  public index? : unknown[];
 
   public chunks!: Locus[];
 
@@ -99,10 +148,10 @@ export class NgxSequenceViewerComponent implements OnChanges {
 
   public consensus!: Consensus;
 
-  public loci$ = new BehaviorSubject<Record<number, ColoredLocus>>({});
+  public loci$ = new BehaviorSubject<Record<string, Colored<Locus>>>({});
 
   @Input()
-  public loci: ColoredLocus[] = [];
+  public loci: Colored<Locus>[] = [];
 
   @Input()
   public set select(locus: Locus | null) {
@@ -127,25 +176,52 @@ export class NgxSequenceViewerComponent implements OnChanges {
       // Loop through each row (sequence)
       for (let i = 0; i < sequences.length; i++) {
         // Update index
-        const k = i < 1 ? 'consensus' : i;
+        const k = (i < 1) ? 'consensus' : (i - 1);
         // Initialize row
         styles[k] = [];
         // Loop through each column (position)
         for (let j = 0; j < this.length; j++) {
-          // Get loci at current position
-          const locus = loci[j];
-          // Define whether current position is selected or not
-          const selected = selection?.start <= j && j <= selection?.end;
           // Define residue name
           const residue = sequences[i][j];
-          // Define color for current position
-          const color = this.colors[residue];
-          // Define style for current position
-          const style = {
-            'background-color': color ? color['background'] : locus ? locus['background'] : selected ? 'greenyellow' : 'transparent',
-            'border-color': selected ? 'grenyellow' : locus ? locus['background'] : undefined,
-            'color': color ? color['color'] : selected ? 'black' : undefined,
-          };
+          // Initialize background color
+          let backgroundColor = this.settings['background-color'];
+          let borderColor = this.settings['background-color'];
+          let textColor = this.settings['text-color'];
+          // Case residue is defined in color map
+          if (residue in this.settings['color-map']) {
+            // Define border color here, as it will be overwritten later
+            borderColor = this.settings['color-map'][residue]['background-color'];
+          }
+          // Case residue is among the selected ones
+          if (selection) {
+            // Get numeric start, end
+            const { start, end } = this.indexService.map(selection);
+            // Case residue is within selection
+            if (start <= j && j <= end) {
+              // Define selection color
+              const selectionColor = this.settings['selection-color'];
+              // Update background color
+              backgroundColor = selectionColor;
+              borderColor = selectionColor;
+            }
+          }
+          // Case residue is within locus
+          else if (j in loci) {
+            // Get current locus
+            const locus = loci[j];
+            // Update background color
+            backgroundColor = locus['background-color'] || backgroundColor;
+            borderColor = locus['background-color'] || borderColor;
+            textColor = locus['text-color'] || textColor;
+          }
+          // Case residue is defined in color map
+          if (residue in this.settings['color-map']) {
+            // Initialize background color
+            backgroundColor = this.settings['color-map'][residue]['background-color'];
+            textColor = this.settings['color-map'][residue]['text-color'];
+          }
+          // Define CSS colpiant styles
+          const style = { 'background-color': backgroundColor, 'border-color': borderColor, 'color': textColor };
           // Store style for current position
           styles[k][j] = style;
         }
@@ -154,14 +230,30 @@ export class NgxSequenceViewerComponent implements OnChanges {
       styles['index'] = [];
       // Loop through each position
       for (let j = 0; j < this.length; j++) {
-        // Check whether current position is selected
-        const selected = selection?.start <= j && j <= selection?.end;
-        // Initialize style for current position
-        styles['index'][j] = {
-          'background-color': selected ? 'greenyellow' : undefined,
-          'border-color': selected ? 'greenyellow' : undefined,
-          'color': selected ? 'black' : undefined,
-        };
+        // Initialize background color
+        let backgroundColor = this.settings['background-color'];
+        const textColor = this.settings['text-color'];
+        // Case locus is selected
+        if (selection) {
+          // Get numeric start, end
+          const { start, end } = this.indexService.map(selection);
+          // Case residue is within selection
+          if (start <= j && j <= end) {
+            // Define selection color
+            const selectionColor = this.settings['selection-color'];
+            // Update background color
+            backgroundColor = selectionColor;
+          }
+        }
+        // Case residue is within locus
+        else if (j in loci) {
+          // Get current locus
+          const locus = loci[j];
+          // Update background color
+          backgroundColor = locus['background-color'] || backgroundColor;
+        }
+        // Initialize CSS style for current index position
+        styles['index'][j] = { 'background-color': backgroundColor, 'border-color': backgroundColor, 'color': textColor };
       }
       // Return styles matrix
       return styles;
@@ -173,6 +265,7 @@ export class NgxSequenceViewerComponent implements OnChanges {
   // Dependency injection
   constructor(
     public selectionService: SelectionService,
+    public indexService: IndexService,
   ) {}
 
   @HostListener('window:mouseup', ['$event'])
@@ -180,11 +273,22 @@ export class NgxSequenceViewerComponent implements OnChanges {
     this.selectionService.onMouseUp(event);
   }
 
-  public onMouseDown(event:MouseEvent, index: number) {
+  public onMouseDown(event:MouseEvent, index: string) {
+    // Set selection
     this.selectionService.onMouseDown(event, index);
+    // Prevent default behavior
+    event.preventDefault();
+    // Prevent bubbling
+    event.stopPropagation();
   }
 
-  public onMouseEnter(event: MouseEvent, index: number) {
+  @HostListener('window:mousedown')
+  public onMouseDownOut() {
+    // Reset selection
+    this.selectionService.select$.next(null);
+  }
+
+  public onMouseEnter(event: MouseEvent, index: string) {
     this.selectionService.onMouseEnter(event, index);
   }
 
@@ -199,6 +303,8 @@ export class NgxSequenceViewerComponent implements OnChanges {
       this.setLogo();
       // Calculate consensus
       this.setConsensus();
+      // Handle input index
+      this.setIndex();
       // Update loci
       this.setLoci();
     }
@@ -227,6 +333,7 @@ export class NgxSequenceViewerComponent implements OnChanges {
     // Case sequence is provided
     else if (this.sequence) {
       // Set sequence as the only sequence in sequences list
+      this.labels = [this.label || '']; 
       this.sequences = [this.sequence];
     }
     // Otherwise, throw an error
@@ -360,13 +467,29 @@ export class NgxSequenceViewerComponent implements OnChanges {
     }
   }
 
+  public setIndex(): void {
+    // Get initial index
+    let index = this.index; 
+    // Case input index is not defined
+    if (!index) {
+      // Then define index as a range from 0 to length of alignment
+      index = Array.from({ length: this.length }, (_, i) => i + 1);
+    }
+    // Define index
+    this.indexService.index = index;
+  }
+
   public setLoci(): void {
     // Define residue (index) to color map
-    const colors = this.loci.reduce((cmap: Record<number, ColoredLocus>, locus: ColoredLocus) => {
+    const colors = this.loci.reduce((cmap: Record<string, Colored<Locus>>, locus: Colored<Locus>) => {
+      // Cast start, end position to number
+      const { start, end } = this.indexService.map(locus);
       // Loop through each position in locus
-      for (let i = locus.start; i <= locus.end; i++) {
+      for (let i = start; i <= end; i++) {
+        // Get current index as string
+        const index = this.indexService.keys[i];
         // Update color map
-        cmap[i] = locus;
+        cmap[index] = locus;
       }
       // Return updated color map
       return cmap;

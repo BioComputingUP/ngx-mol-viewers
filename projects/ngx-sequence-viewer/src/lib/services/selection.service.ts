@@ -1,8 +1,9 @@
-import { Locus } from '../ngx-sequence-viewer.component';
 import { BehaviorSubject, map, Observable, shareReplay } from 'rxjs';
+import { Locus } from '../ngx-sequence-viewer.component';
+import { IndexService } from './index.service';
 import { Injectable } from '@angular/core';
 
-@Injectable({ providedIn: 'platform' })
+@Injectable()
 export class SelectionService {
 
   // Define currently selected locus
@@ -31,6 +32,9 @@ export class SelectionService {
   // Define flag to state where selection is ongoing
   protected selecting = false;
 
+  // Dependency injection
+  constructor(public indexService: IndexService) {}
+
   /** Handle mouse down event
    * 
    * If curren selection is already defined, then unset it
@@ -39,7 +43,7 @@ export class SelectionService {
    * @param event Mouse event
    * @param position Position of mouse event
    */
-  public onMouseDown(event: MouseEvent, position: number): void {
+  public onMouseDown(event: MouseEvent, position: string): void {
     // Set selection flag
     this.selecting = true;
     // Update selection with current residue (column) only
@@ -54,15 +58,26 @@ export class SelectionService {
    * @param event Mouse event
    * @param position Position of mouse event
    */
-  public onMouseEnter(event: MouseEvent, position: number): void {
+  public onMouseEnter(event: MouseEvent, position: string): void {
     // In case selection is ongoing
     if (this.selecting) {
-      // Get start position
-      const start = Math.min(this.select?.start || position, position);
-      // Get end position
-      const end = Math.max(this.select?.end || position, position, start);
-      // Emit new selection
-      this.select = { start, end };
+      // Cast current position to numeric
+      const current = this.indexService.index[position];
+      // In case selection is defined
+      if (this.select) {
+        // Get numeric start, end values
+        const { start, end } = this.indexService.map(this.select);
+        // Case current position is before start
+        if (current < start) {
+          // Update start position
+          this.select = { ...this.select, start: position };
+        } 
+        // Case current position is after end
+        else if (current > end) {
+          // Update end position
+          this.select = { ...this.select, end: position };
+        }
+      }
     }
   }
 

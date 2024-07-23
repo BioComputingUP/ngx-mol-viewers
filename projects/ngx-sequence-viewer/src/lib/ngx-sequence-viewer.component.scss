@@ -1,251 +1,16 @@
-// .not-selectable {
-//   // Disable text selection
-//   user-select: none;
-//   // Set cursor to default one
-//   cursor: default;
-// }
-
-// .no-split {
-//   gap: 0;
-// }
-
-// :host {
-//   @extend .not-selectable;
-//   // Set font monospace
-//   font-family: monospace, monospace;
-//   // Set display properties
-//   display: flex;
-//   flex-direction: row;
-//   flex-wrap: nowrap;
-//   // justify-content: flex-start;
-//   // Set gap to separate chunks
-//   gap: .5em;
-//   // Set component to fit parent container
-//   height: auto;
-//   // width: 100%;
-//   // Set overflow properties
-//   overflow-y: hidden;
-//   overflow-x: auto;
-
-//   .chunk {
-//     // Collapse borders
-//     border-collapse: collapse;
-
-//     td {
-//       // Remove borders
-//       padding: 0;
-//       border: 0;
-//       // Intercept pointer events
-//       pointer-events: all;
-
-//       span {
-//         // Set positioning
-//         position: relative;
-//         // Remove events, allows selection on td
-//         pointer-events: none;
-//         // Alignn text to center
-//         text-align: center;
-//         // Stretch to the whole cell
-//         width: 100%;
-//       }
-//     }
-
-//     // Style labels
-//     td:first-child {
-//       // Align label to right
-//       text-align: right;
-//       // Add padding to label
-//       padding-right: .5em;
-//       // Disable pointer events
-//       pointer-events: none;
-//     }
-
-//     // Style index
-//     tr:first-child {
-//       // Align text to right
-//       text-align: right;
-//       // Decrease font size
-//       font-size: .75em;
-
-//       td {
-//         // Initialize positioning for table cells
-//         position: relative;
-
-//         // Update positioning for inner index
-//         span {
-//           position: absolute;
-//           right: 0;
-//           top: 0;
-//           // Hide all indices by default
-//           display: none;
-//         }
-
-//         // Show only last index
-//         &:last-child span {
-//           display: block;
-//         }
-//       }
-
-//     }
-
-//   }
-
-//   .chunk:not(:first-child) {
-
-//     // Hide first cell
-//     td:first-child {
-//       // Set opacity to 0
-//       opacity: 0;
-//       // Unset padding
-//       padding: 0 !important;
-//       // Unset width
-//       max-width: 0;
-//       width: 0;
-//     }
-//   }
-
-// }
-
-// // Define selection color
-// $selected-color: greenyellow;
-// $selected-width: 0.25em;
-
-// // Style selected cells
-// td.selected {
-//   // Set positioning
-//   position: relative;
-//   box-sizing: border-box;
-//   // border: 2px solid greenyellow !important;
-//   // // Initialize outline
-//   // outline-width: 0;
-//   // outline-style: solid;
-//   // outline-color: $selected-color;
-//   // // Update outline
-//   // &.left {
-//   //   outline-width: 0 0 0 $selected-width;
-//   // }
-//   // &.right {
-//   //   outline-width: 0 $selected-width 0 0;
-//   // }
-//   // &.top {
-//   //   outline-width: $selected-width 0 0 0;
-//   // }
-//   // &.bottom {
-//   //   outline-width: 0 0 $selected-width 0;
-//   // }
-//   // &.top.left {
-//   //   outline-width: $selected-width 0 0 $selected-width;
-//   // }
-//   // &.top.right {
-//   //   outline-width: $selected-width $selected-width 0 0;
-//   // }
-//   // &.top.left.right {
-//   //   outline-width: $selected-width $selected-width 0 $selected-width;
-//   // }
-//   // &.bottom.left {
-//   //   outline-width: 0 0 $selected-width $selected-width;
-//   // }
-//   // &.bottom.right {
-//   //   outline-width: 0 $selected-width $selected-width 0;
-//   // }
-//   // &.bottom.left.right {
-//   //   outline-width: 0 $selected-width $selected-width $selected-width;
-//   // }
-
-//   // &::after {
-//   //   // Set positioning
-//   //   position: absolute;
-//   //   left: 0;
-//   //   top: 0;
-//   //   // Set size
-//   //   display: block;
-//   //   height: 100%;
-//   //   width: 100%;
-//   //   // Set background color
-//   //   border-style: solid;
-//   //   border-width: 0;
-//   //   border-color: $selected-color;
-//   //   // Set empty cell
-//   //   content: '';
-//   // }
-
-//   // &.left::after {
-//   //   border-left-width: $selected-width;
-//   // }
-
-//   // &.right::after {
-//   //   border-right-width: $selected-width;
-//   // }
-
-//   // &.top::after {
-//   //   border-top-width: $selected-width;
-//   // }
-
-//   // &.bottom::after {
-//   //   border-bottom-width: $selected-width;
-//   // }
-
-//   // If background is transparent, then turn it to greenyellow
-//   &::before {
-//     // Set positioning
-//     position: absolute;
-//     left: 0;
-//     top: 0;
-//     // Set size
-//     display: block;
-//     height: 100%;
-//     width: 100%;
-//     // Set background color
-//     background-color: $selected-color;
-//     // background: repeating-linear-gradient(
-//     //   45deg,
-//     //   transparent, 
-//     //   transparent .25em, 
-//     //   rgba(30, 255, 0, 0.3) .25em, 
-//     //   rgba(30, 255, 0, 0.3) .25em calc(.25em + 1px)
-//     // );
-//     // Set empty cell
-//     content: '';
-//   }
-// }
-
-// td.rotated {
-
-//   span {
-//     // Change display
-//     display: block;
-//     // Change positioning
-//     position: relative !important;
-//     // Overwrite height property
-//     height: auto;
-//     // Align text to left (bottom)
-//     text-align: left;
-//     // Rotate text
-//     transform: rotate(-180deg);
-//     writing-mode: vertical-rl;
-//     white-space: nowrap;
-//     // Add padding
-//     padding-bottom: .25rem;
-//     padding-top: .25rem;
-//   }
-
-// }
-
-
 :host {
+  position: relative;
+  display: block;
+  height: auto;
+  width: 100%;
+  // Unset scrolling
+  overflow: hidden;
   // Set font monospace
   font-family: monospace, monospace;
   // Disable text selection
   user-select: none;
   // Set cursor to default one
   cursor: default;
-  // Set display properties
-  overflow: auto;
-  position: relative;
-  display: block;
-  height: auto;
-  width: 100%;
-
 
   .scaffold {
     display: flex;
@@ -253,6 +18,8 @@
     flex-wrap: nowrap;
     justify-content: start;
     align-items: stretch;
+    // Set overflow on this element
+    overflow: auto;
     // Add gap between labels and positions
     gap: .25rem;
 
@@ -262,16 +29,14 @@
       flex-direction: column;
       justify-content: end;
       align-items: end;
-      // // Set positioning
-      // position: sticky;
-      // bottom: 0;
-      // left: 0;
+      // Set positioning
+      position: sticky;
+      left: 0;
       // Bring forward
       z-index: 999;
-      // Set background not transparent
-      // backdrop-filter: blur(99px);
-      // Set right shadow
-      // box-shadow: 0 0 .25em 0 rgba(0, 0, 0, .75);
+      // Force background color inheritance
+      background-color: inherit;
+      color: inherit;
     }
 
     .positions {
@@ -286,28 +51,6 @@
         justify-content: end;
         align-items: center;
         // border: 1px solid blueviolet;
-
-        .index {
-          // Change display
-          display: block;
-          // Stretch to the whole cell
-          flex-grow: 1;
-          // Set font size
-          font-size: .75em;
-          // Change positioning
-          position: relative !important;
-          // Overwrite height property
-          height: auto;
-          // Align text to left (bottom)
-          text-align: left;
-          // Rotate text
-          transform: rotate(-180deg);
-          writing-mode: vertical-rl;
-          white-space: nowrap;
-          // Add padding
-          padding-bottom: .25rem;
-          padding-top: .25rem;
-        }
 
         .residue,
         .consensus {
@@ -327,6 +70,31 @@
       border-color: transparent;
       border-width: 1px;
       border-style: solid;
+    }
+  }
+
+  .scaffold.rotate-index {
+
+    .cell.index {
+      // Change display
+      display: block;
+      // Stretch to the whole cell
+      flex-grow: 1;
+      // Set font size
+      font-size: .75em;
+      // Change positioning
+      position: relative !important;
+      // Overwrite height property
+      height: auto;
+      // Align text to left (bottom)
+      text-align: left;
+      // Rotate text
+      transform: rotate(-180deg);
+      writing-mode: vertical-rl;
+      white-space: nowrap;
+      // Add padding
+      padding-bottom: .25rem;
+      padding-top: .25rem;
     }
   }
 }

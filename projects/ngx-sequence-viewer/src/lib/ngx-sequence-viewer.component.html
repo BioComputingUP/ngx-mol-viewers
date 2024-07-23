@@ -1,14 +1,20 @@
 <!-- Outer scaffold -->
-<div class="scaffold">
+<div class="scaffold" 
+  [class.rotate-index]="settings['rotate-index']"
+  [style.background-color]="settings['background-color']" 
+  [style.color]="settings['text-color']">
   <!-- Show labels -->
   <div class="labels">
     <!-- First label is empty (index) -->
     <div class="label">Index</div>
-    <!-- Second label is consensus -->
-    <div class="label">Consensus</div>
+    <!-- Case there is more than one sequence -->
+    @if(sequences.length > 1) {
+      <!-- Then, show consensus -->
+      <div class="label">Consensus</div>
+    }
     <!-- Other labels are sequences -->
     @for (label of labels; track $index) {
-      <div class="label">{{ label }}</div>
+      <div class="label">{{ label || 'Sequence' }}</div>
     }
   </div>
   <!-- Show content -->
@@ -18,15 +24,18 @@
     <!-- Define position wrapper -->
     <div class="position">
       <!-- Show index -->
-      <ng-container *ngTemplateOutlet="index; context: { i: 'index', j }"></ng-container>
-      <!-- TODO Show consensus -->
-      <!-- <ng-container *ngTemplateOutlet="residue; context: { i: 'consensus', j }"></ng-container> -->
+      <ng-container *ngTemplateOutlet="indexCellTemplate; context: { j }"></ng-container>
+      <!-- Case there is more than one sequence -->
+      @if(sequences.length > 1) {
+        <!-- Then, show consensus -->
+        <ng-container *ngTemplateOutlet="consensusCellTemplate; context: { j }"></ng-container>
+      }
       <!-- Show residues -->
       @for(sequence of sequences; track i; let i = $index) {
         <!-- Get amino-acid -->
         @if(sequence[j]; as aa) {
           <!-- Define residue wrapper -->
-          <ng-container *ngTemplateOutlet="residue; context: { i, j }"></ng-container>
+          <ng-container *ngTemplateOutlet="residueCellTemplate; context: { i, j }"></ng-container>
         }
       }
     </div>
@@ -35,23 +44,36 @@
 </div>
 
 <!-- Define index template -->
-<ng-template let-j="j" #index>
-  <div class="index">{{ j * 10 + 1 }}</div>
+<ng-template let-j="j" #indexCellTemplate>
+  <ng-container *ngTemplateOutlet="cellTemplate, context: { i: 'index', name: 'index', j, value: indexService.keys[j] }"></ng-container>
+</ng-template>
+
+<!-- Define consensus cell template -->
+<ng-template let-j="j" #consensusCellTemplate>
+  <ng-container *ngTemplateOutlet="cellTemplate, context: { i: 'consensus', name: 'consensus', j, value: consensus[j][0] }"></ng-container>
 </ng-template>
 
 <!-- Define cell template -->
-<ng-template let-i="i" let-j="j" #residue>
-  <!-- Get selection boundaries (if any) -->
-  @if(styles$ | async; as styles) {
-    <!-- Get style for current cell -->
-    @if(styles[i][j]; as style) {
-      <!-- Define residue wrapper -->
-      <div class="residue" [id]="'residue-' + i + '-' + j"
-        [style.background-color]="style['background-color']"
-        [style.border-color]="style['border-color']"
-        [style.color]="style['color']">
-        {{ sequences[i][j] }}
-      </div>
-    }
-  }
+<ng-template let-i="i" let-j="j" #residueCellTemplate>
+  <ng-container *ngTemplateOutlet="cellTemplate, context: { i, j, name: 'residue' }"></ng-container>
 </ng-template>
+
+<!-- Define generic cell template -->
+ <ng-template let-i="i" let-j="j" let-value="value" let-name="name" #cellTemplate>
+    <!-- Get selection boundaries (if any) -->
+    @if(styles$ | async; as styles) {
+      <!-- Get style for current cell -->
+      @if(styles[i][j]; as style) {
+        <!-- Define residue wrapper -->
+        <div [id]="'cell' + '-' + i + '-' + j"
+          [class]="['cell', name]"
+          [style.background-color]="style['background-color']"
+          [style.border-color]="style['border-color']"
+          [style.color]="style['color']"
+          (mouseenter)="onMouseEnter($event, j)"
+          (mousedown)="onMouseDown($event, j)">
+          {{ value ? value : sequences[i][j] }}
+        </div>
+      }
+    }
+ </ng-template>
