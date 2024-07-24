@@ -39,6 +39,17 @@ export class MultipleSequenceAlignmentComponent {
 
   readonly fasta = FASTA;
 
+  // Define default settings
+  readonly settings: Partial<Settings> = {
+    // Default settings for light theme
+    'background-color': '#FFFFFF',
+    'text-color': 'black',
+    // Split sequence in chunks of 5
+    'chunk-size': 5,
+    // Do not rotate  index
+    'rotate-index': false,
+  }
+
   readonly loci = [
     { start: 20, end: 30, 'background-color': '#648FFF' },
     { start: 40, end: 50, 'background-color': '#FE6100' },
@@ -49,7 +60,7 @@ export class MultipleSequenceAlignmentComponent {
   public settings$: Observable<Partial<Settings>>;
 
   // Define emitter for selected locus
-  public selected$ = new EventEmitter<Locus>();
+  public selected$ = new EventEmitter<Locus | null>();
 
   // Dependency injection
   constructor(public themeSelectorService: ThemeSelectorService) {
@@ -65,24 +76,22 @@ export class MultipleSequenceAlignmentComponent {
         if (theme === 'dark') {
           // Then return dark parameters
           return { 
+            // Unpack default settings
+            ...this.settings,
+            // Override with dark theme settings
             'background-color': '#212529', 
             'text-color': 'white',
-            'chunk-size': -1,
           };
         }
         // Otherwise, return light parameters
-        return {
-          'background-color': '#FFFFFF',
-          'text-color': 'black',
-          'chunk-size': -1,
-        }
+        return this.settings
       }),
       // Cache results
       shareReplay(1),
     );
   }
 
-  public onSelected(locus: Locus) {
+  public onSelected(locus: Locus | null) {
     // Just emit selected value
     this.selected$.emit(locus);
   }

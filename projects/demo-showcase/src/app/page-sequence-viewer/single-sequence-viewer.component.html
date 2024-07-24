@@ -1,9 +1,24 @@
-  <!-- Show single sequence -->
+<!-- Show single sequence -->
+<div class="mb-3">
+  <!-- Section title -->
+  <h2>Single sequence viewer</h2>
+  <!-- Show single sequence viewer -->
   <div class="mb-3">
-    <!-- Section title -->
-    <h2>Single sequence viewer</h2>
-    <!-- Show single sequence viewer -->
-    <div class="mb-3">
-      <ngx-sequence-viewer [sequence]="sequence" [index]="index" [settings]="settings$ | async"></ngx-sequence-viewer>
-    </div>
+    <ngx-sequence-viewer [sequence]="sequence" [index]="index" [settings]="settings$ | async"></ngx-sequence-viewer>
   </div>
+  <!-- Explain example -->
+  <div class="mb-3">
+    <p class="mb-1">
+      In this case, a single sequence is shown by the sequence viewer. No split parameter has been set for chunks, so no
+      chunk is visible. Instead, the <b>index</b> of each position is visualized. Each index is <b>rotated</b>, in order
+      for
+      each position to mantain the same width.
+    </p>
+    <p class="mb-0">
+      A custom index has been set in this specific example. Doing so, not only we allow to show sequences with a numeric
+      index (e.g. protein sequences from the UniProtKB). Instead, we allow also other kind of sequences, such as those
+      underlying protein structures from the PDB to be represented. In fact, those have a particular <b>alpha-numeric</b>
+      index.
+    </p>
+  </div>
+</div>

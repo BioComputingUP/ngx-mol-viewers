@@ -33,7 +33,7 @@ export class SingleSequenceViewerComponent {
         index = index + v;
       }
       // If index is even, then return negative index
-      if (i % 2 === 0) {
+      if (i % 2 === 1) {
         index = '-' + index;
       }
       // Return changed index

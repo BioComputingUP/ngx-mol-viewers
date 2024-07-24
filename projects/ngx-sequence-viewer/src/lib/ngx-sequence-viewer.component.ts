@@ -7,6 +7,7 @@ import { CommonModule } from '@angular/common';
 import { ColorMap, ZAPPO } from './colors';
 import { SelectionService } from './services/selection.service';
 import { IndexService } from './services/index.service';
+import { parseFasta } from './utils';
 
 // export interface Locus<T> {
 //   // Define start position (for both point and range loci)
@@ -60,6 +61,8 @@ export interface Settings {
   'text-color': string;
   // Whether to rotate index, default to false
   'rotate-index': boolean;
+  // Thether to add space between chunks, default to false
+  'split-chunks': boolean;
   // Define color map for residues
   'color-map': ColorMap;
 }
@@ -82,6 +85,7 @@ export class NgxSequenceViewerComponent implements OnChanges {
     'selection-color': 'greenyellow',
     'text-color': 'black',
     'rotate-index': false,
+    'split-chunks': false,
     'color-map': ZAPPO,
   };
 
@@ -93,6 +97,8 @@ export class NgxSequenceViewerComponent implements OnChanges {
     const { 'chunk-size': chunkSize, 'rotate-index': rotateIndex } = this.settings;
     // Update index rotation according to chunk size
     this._settings['rotate-index'] = chunkSize < 0 ? true : rotateIndex;
+    // Update chunk split according to chunk size
+    this._settings['split-chunks'] = chunkSize < 0 ? false : true;
   }
 
   get settings(): Settings {
@@ -142,7 +148,7 @@ export class NgxSequenceViewerComponent implements OnChanges {
   @Input()
   public index? : unknown[];
 
-  public chunks!: Locus[];
+  public chunks!: Locus<number>[];
 
   public logo!: Logo;
 
@@ -192,6 +198,15 @@ export class NgxSequenceViewerComponent implements OnChanges {
             // Define border color here, as it will be overwritten later
             borderColor = this.settings['color-map'][residue]['background-color'];
           }
+          // Case residue is within locus
+          if (j in loci) {
+            // Get current locus
+            const locus = loci[j];
+            // Update background color
+            backgroundColor = locus['background-color'] || backgroundColor;
+            borderColor = locus['background-color'] || borderColor;
+            textColor = locus['text-color'] || textColor;
+          }
           // Case residue is among the selected ones
           if (selection) {
             // Get numeric start, end
@@ -204,15 +219,6 @@ export class NgxSequenceViewerComponent implements OnChanges {
               backgroundColor = selectionColor;
               borderColor = selectionColor;
             }
-          }
-          // Case residue is within locus
-          else if (j in loci) {
-            // Get current locus
-            const locus = loci[j];
-            // Update background color
-            backgroundColor = locus['background-color'] || backgroundColor;
-            borderColor = locus['background-color'] || borderColor;
-            textColor = locus['text-color'] || textColor;
           }
           // Case residue is defined in color map
           if (residue in this.settings['color-map']) {
@@ -233,6 +239,13 @@ export class NgxSequenceViewerComponent implements OnChanges {
         // Initialize background color
         let backgroundColor = this.settings['background-color'];
         const textColor = this.settings['text-color'];
+        // Case residue is within locus
+        if (j in loci) {
+          // Get current locus
+          const locus = loci[j];
+          // Update background color
+          backgroundColor = locus['background-color'] || backgroundColor;
+        }
         // Case locus is selected
         if (selection) {
           // Get numeric start, end
@@ -244,13 +257,6 @@ export class NgxSequenceViewerComponent implements OnChanges {
             // Update background color
             backgroundColor = selectionColor;
           }
-        }
-        // Case residue is within locus
-        else if (j in loci) {
-          // Get current locus
-          const locus = loci[j];
-          // Update background color
-          backgroundColor = locus['background-color'] || backgroundColor;
         }
         // Initialize CSS style for current index position
         styles['index'][j] = { 'background-color': backgroundColor, 'border-color': backgroundColor, 'color': textColor };
@@ -325,7 +331,7 @@ export class NgxSequenceViewerComponent implements OnChanges {
     // Case fasta file is provided
     if (this.fasta) {
       // Attempt to parse fasta file
-      const parsed = this.parseFasta(this.fasta);
+      const parsed = parseFasta(this.fasta);
       // Set sequences and labels
       this.sequences = parsed.map((entry) => entry.sequence);
       this.labels = this.labels || parsed.map((entry) => entry.label);
@@ -362,38 +368,6 @@ export class NgxSequenceViewerComponent implements OnChanges {
     }
     // Otherwise, throw an error
     else throw new Error('No labels were provided');
-  }
-
-  /** Parse fasta file
-   * 
-   * @param {string} text - Input text, in fasta format.
-   * @returns {{ sequence: string, label: string }[]} - Parsed sequences and labels.
-   */
-  public parseFasta(text: string): { sequence: string, label: string }[] {
-    // Split line by newline character
-    const lines = text.split(/[\n\r]+/);
-    // Define output
-    const parsed: { sequence: string, label: string }[] = [];
-    // Define current index
-    let index = -1;
-    // Loop through each line
-    for (let line of lines) {
-      // Sanitize line
-      line = line.trim();
-      // In case line starts with '>' character, then define new sequence entry
-      if (line.startsWith('>')) {
-        // Define new sequence entry
-        parsed.push({ sequence: '', label: line.slice(1) });
-        // Update index
-        index++
-      }
-      // In case index (0) has been defined beforehand, then current line is sequence
-      else if (index > -1) parsed[index].sequence += line;
-      // Otherwise, fine is not fasta formatted and an error is thrown
-      else throw new Error('Provided text is not in fasta format');
-    }
-    // Return parsed sequences and labels
-    return parsed;
   }
 
   /** Define chunks

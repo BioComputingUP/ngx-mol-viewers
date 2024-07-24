@@ -34,42 +34,73 @@
       left: 0;
       // Bring forward
       z-index: 999;
+      // Add padding right
+      padding-right: .25rem;
       // Force background color inheritance
       background-color: inherit;
       color: inherit;
     }
 
-    .positions {
+    .chunks {
       display: flex;
+      flex-direction: row;
       flex-shrink: 0;
       flex-grow: 1;
+    }
+
+    .chunk {
+      display: flex;
       flex-direction: row;
+      flex-wrap: nowrap;
+      // Set overflow on this element
+      overflow: hidden;
+      // Unset gap
+      gap: 0;
+    }
 
-      .position {
-        display: flex;
-        flex-direction: column;
-        justify-content: end;
-        align-items: center;
-        // border: 1px solid blueviolet;
+    .position {
+      display: flex;
+      flex-direction: column;
+      justify-content: end;
+      align-items: center;
+      // Set positioning
+      position: relative;
+      // border: 1px solid blueviolet;
 
-        .residue,
-        .consensus {
-          // Set residue to stretch the whole cell
-          width: 100%;
-          // Show text in the middle of the cell
-          text-align: center;
-        }
+      .placeholder.index {
+        // Position absolutely, exit cell
+        position: absolute;
+        right: 0;
+        top: 0;
+        // Hide all indices
+        display: none;
+        // Disable actions
+        pointer-events: none;
+      }
+
+      .residue,
+      .consensus {
+        // Set residue to stretch the whole cell
+        width: 100%;
+        // Show text in the middle of the cell
+        text-align: center;
       }
     }
 
     // TODO Remove this
-    .labels .label,
-    .positions .index,
-    .positions .residue,
-    .positions .consensus {
+    .label,
+    .cell.index,
+    .cell.residue,
+    .cell.consensus {
       border-color: transparent;
       border-width: 1px;
       border-style: solid;
+    }
+
+    .cell.index,
+    .placeholder.index {
+      // Set font size
+      font-size: .75em;
     }
   }
 
@@ -80,8 +111,6 @@
       display: block;
       // Stretch to the whole cell
       flex-grow: 1;
-      // Set font size
-      font-size: .75em;
       // Change positioning
       position: relative !important;
       // Overwrite height property
@@ -97,4 +126,26 @@
       padding-top: .25rem;
     }
   }
+
+  .scaffold.split-chunks {
+
+    .chunks {
+      // Add gap between chunks
+      gap: .25rem;
+    }
+
+    .cell.index { 
+      // Hide cell content
+      font-size: 0;
+      // Expand width
+      height: 100%;
+      width: 100%;
+    }
+
+    .position:last-child .placeholder.index {
+      // Show only last index
+      display: block;
+    }
+  }
+
 }

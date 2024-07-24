@@ -1,7 +1,7 @@
-import { BehaviorSubject, map, Observable, shareReplay } from 'rxjs';
 import { Locus } from '../ngx-sequence-viewer.component';
 import { IndexService } from './index.service';
 import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable()
 export class SelectionService {
@@ -22,12 +22,13 @@ export class SelectionService {
   }
 
   // TODO
-  readonly selected$: Observable<Locus> = this.select$.pipe(
-    // Case selected locus is null
-    map((locus) => locus ? locus : { start: -1, end: -1 }),
-    // Cache result
-    shareReplay(1),
-  );
+  // readonly selected$: Observable<Locus | null> = this.select$.pipe(
+  //   // // Case selected locus is null
+  //   // map((locus) => locus ? locus : { start: -1, end: -1 }),
+  //   // Cache result
+  //   shareReplay(1),
+  // );
+  readonly selected$ = this.select$;
 
   // Define flag to state where selection is ongoing
   protected selecting = false;

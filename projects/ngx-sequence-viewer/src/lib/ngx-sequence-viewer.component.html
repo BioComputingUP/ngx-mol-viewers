@@ -1,5 +1,6 @@
 <!-- Outer scaffold -->
 <div class="scaffold" 
+  [class.split-chunks]="settings['split-chunks']"
   [class.rotate-index]="settings['rotate-index']"
   [style.background-color]="settings['background-color']" 
   [style.color]="settings['text-color']">
@@ -18,34 +19,42 @@
     }
   </div>
   <!-- Show content -->
-  <div class="positions">
-    <!-- Loop through each position -->
-    @for (position of first; track j; let j = $index) {
-    <!-- Define position wrapper -->
-    <div class="position">
-      <!-- Show index -->
-      <ng-container *ngTemplateOutlet="indexCellTemplate; context: { j }"></ng-container>
-      <!-- Case there is more than one sequence -->
-      @if(sequences.length > 1) {
-        <!-- Then, show consensus -->
-        <ng-container *ngTemplateOutlet="consensusCellTemplate; context: { j }"></ng-container>
-      }
-      <!-- Show residues -->
-      @for(sequence of sequences; track i; let i = $index) {
-        <!-- Get amino-acid -->
-        @if(sequence[j]; as aa) {
-          <!-- Define residue wrapper -->
-          <ng-container *ngTemplateOutlet="residueCellTemplate; context: { i, j }"></ng-container>
+  <div class="chunks">
+    <!-- Loop through each chunk -->
+    @for (chunk of chunks; track $index) {
+      <div class="chunk">
+        <!-- Loop through each position in chunk -->
+        @for (position of first.slice(chunk.start, chunk.end); track j; let j = $index) {
+          <!-- Define position wrapper -->
+          <div class="position">
+            <!-- Add index (and placeholder) -->
+            <ng-container *ngTemplateOutlet="indexCellTemplate; context: { j: chunk.start + j }"></ng-container>
+            <!-- Case there is more than one sequence -->
+            @if(sequences.length > 1) {
+              <!-- Then, show consensus -->
+              <ng-container *ngTemplateOutlet="consensusCellTemplate; context: { j: chunk.start + j }"></ng-container>
+            }
+            <!-- Show residues -->
+            @for(sequence of sequences; track i; let i = $index) {
+              <!-- Get amino-acid -->
+              @if(sequence[j]; as aa) {
+                <!-- Define residue wrapper -->
+                <ng-container *ngTemplateOutlet="residueCellTemplate; context: { i, j: chunk.start + j }"></ng-container>
+              }
+            }
+          </div>
         }
-      }
-    </div>
+      </div>
     }
   </div>
 </div>
 
 <!-- Define index template -->
 <ng-template let-j="j" #indexCellTemplate>
+  <!-- Add index cell -->
   <ng-container *ngTemplateOutlet="cellTemplate, context: { i: 'index', name: 'index', j, value: indexService.keys[j] }"></ng-container>
+  <!-- Add placeholder -->
+  <div class="placeholder index">{{ indexService.keys[j] }}</div>
 </ng-template>
 
 <!-- Define consensus cell template -->
@@ -59,21 +68,21 @@
 </ng-template>
 
 <!-- Define generic cell template -->
- <ng-template let-i="i" let-j="j" let-value="value" let-name="name" #cellTemplate>
-    <!-- Get selection boundaries (if any) -->
-    @if(styles$ | async; as styles) {
-      <!-- Get style for current cell -->
-      @if(styles[i][j]; as style) {
-        <!-- Define residue wrapper -->
-        <div [id]="'cell' + '-' + i + '-' + j"
-          [class]="['cell', name]"
-          [style.background-color]="style['background-color']"
-          [style.border-color]="style['border-color']"
-          [style.color]="style['color']"
-          (mouseenter)="onMouseEnter($event, j)"
-          (mousedown)="onMouseDown($event, j)">
-          {{ value ? value : sequences[i][j] }}
-        </div>
-      }
-    }
- </ng-template>
+<ng-template let-i="i" let-j="j" let-value="value" let-name="name" #cellTemplate>
+<!-- Get selection boundaries (if any) -->
+@if(styles$ | async; as styles) {
+  <!-- Get style for current cell -->
+  @if(styles[i][j]; as style) {
+    <!-- Define residue wrapper -->
+    <div [id]="'cell' + '-' + i + '-' + j"
+      [class]="['cell', name]"
+      [style.background-color]="style['background-color']"
+      [style.border-color]="style['border-color']"
+      [style.color]="style['color']"
+      (mouseenter)="onMouseEnter($event, indexService.keys[j])"
+      (mousedown)="onMouseDown($event, indexService.keys[j])">
+      {{ value ? value : sequences[i][j] }}
+    </div>
+  }
+}
+</ng-template>
