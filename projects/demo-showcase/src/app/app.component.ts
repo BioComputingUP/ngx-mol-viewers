@@ -5,7 +5,6 @@ import { Component } from '@angular/core';
 // Custom dependencies
 import { ThemeSelectorComponent } from './theme-selector/theme-selector.component';
 import { ThemeSelectorService } from './theme-selector/theme-selector.service';
-import { PageSequenceViewerModule } from './page-sequence-viewer/page-sequence-viewer.module';
 
 
 @Component({
@@ -14,8 +13,10 @@ import { PageSequenceViewerModule } from './page-sequence-viewer/page-sequence-v
   imports: [
     // Custom components
     ThemeSelectorComponent,
-    // TODO Import pages
-    PageSequenceViewerModule,
+    // // TODO Import pages
+    // PageStructureViewerModule,
+    // PageFeaturesViewerModule,
+    // PageSequenceViewerModule,
     // Core modules
     CommonModule, 
     RouterModule, 

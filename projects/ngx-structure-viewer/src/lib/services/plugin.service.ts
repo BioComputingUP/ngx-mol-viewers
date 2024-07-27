@@ -1,57 +1,59 @@
-import { DefaultPluginUISpec, PluginUISpec } from 'molstar/lib/mol-plugin-ui/spec';
+import { combineLatest, from, Observable, ReplaySubject, shareReplay, switchMap } from 'rxjs';
 import { PluginUIContext } from 'molstar/lib/mol-plugin-ui/context';
-import { renderReact18 } from 'molstar/lib/mol-plugin-ui/react18';
-import { PluginConfig } from 'molstar/lib/mol-plugin/config';
-import { createPluginUI } from 'molstar/lib/mol-plugin-ui';
-// import { PluginContext } from 'molstar/lib/mol-plugin/context';
-import { Observable, ReplaySubject, from, map, shareReplay, switchMap, tap } from 'rxjs';
+import { PluginUISpec } from 'molstar/lib/mol-plugin-ui/spec';
 import { ElementRef, Injectable } from '@angular/core';
+import { MolstarService } from './molstar.service';
 
 @Injectable()
 export class PluginService {
 
-  public plugin!: PluginUIContext;
-
-  readonly specs: PluginUISpec = { ...DefaultPluginUISpec(),
-    // Show commands
-    config: [
-      [PluginConfig.VolumeStreaming.Enabled, false]
-    ],
-    // TODO Remove this
+  // Define default specs
+  protected spec: Partial<PluginUISpec> = {
     canvas3d: {
-      // renderer: {
-      //   backgroundColor: Color(0x000000),
-      // }
+      // Make background transparent
       transparentBackground: true,
-    }
-  };
+    },
+  }
 
-  readonly initialize$ = new ReplaySubject<ElementRef>(1);
+  // Define 
+  readonly container$ = new ReplaySubject<ElementRef>(1);
 
+  // NOTE This must be emitted after initialization, as it requires the container div
   readonly plugin$: Observable<PluginUIContext>;
 
-  constructor() {
-    // Define plugin initialization pipeline
-    this.plugin$ = this.initialize$.pipe(
-      // Get HTML div container
-      map((container) => container.nativeElement as HTMLDivElement),
-      // Create plugin context
-      switchMap((div) => from(createPluginUI({
-        // Define container div
-        target: div,
-        // Define rendered 
-        render: renderReact18,
-        // Define plugin specs
-        spec: this.specs,
-      }))),
-      // TODO Remove this
-      tap((plugin) => {
-        console.log('Plugin created', plugin)
-      }),
-      // Get current plugin instance
-      map((plugin) => this.plugin = plugin),
+  protected _plugin!: PluginUIContext;
+
+  public get plugin(): PluginUIContext {
+    return this._plugin;
+  }
+
+  constructor(
+    public molstarService: MolstarService
+  ) {
+    const { molstar$ } = this.molstarService;
+    // Emit plugin after initialization
+    this.plugin$ = combineLatest([ this.container$, molstar$ ]).pipe(
+      // Initialize plugin
+      switchMap(([elementRef]) => from(this.initPlugin(elementRef))),
       // Cache result
       shareReplay(1),
     );
   }
+
+  public async initPlugin(elementRef: ElementRef): Promise<PluginUIContext> {
+    // Load MolStar asynchronously
+    const { createPluginUI, renderReact18, DefaultPluginUISpec } = this.molstarService.molstar;
+    // Define plugin initial settings
+    const spec = { ...this.spec, ...DefaultPluginUISpec() };
+    // Create plugin instance
+    return this._plugin = await createPluginUI({
+      // Define container div
+      target: elementRef.nativeElement as HTMLDivElement,
+      // Define rendered 
+      render: renderReact18,
+      // Define plugin specs
+      spec,
+    });
+  }
+
 }

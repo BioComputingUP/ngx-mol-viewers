@@ -8,36 +8,33 @@ import { fromHexString } from '../colors';
 export class SettingsService implements OnDestroy {
 
   // Define default settings
-  readonly defaults = {
+  readonly DEFAULT = {
     "backbone-color": "#000000",
     "background-color": "#FFFFFF",
     "interaction-color": "#FF0000",
-    "interaction-size": 1,
+    "interaction-size": .1,
   }
 
-  set settings(settings: Settings | null) {
-    // Emit settings
-    this.settings$.next({ ...this.defaults, ...settings });
-  }
+  readonly settings$ = new BehaviorSubject<Settings>(this.DEFAULT);
 
-  get settings(): Settings {
+  public get settings(): Settings {
     // Return internal settings
     return this.settings$.value;
   }
 
-  readonly settings$ = new BehaviorSubject<Settings>(this.defaults);
-
   readonly _settings: Subscription;
 
   constructor(public pluginService: PluginService) {
+    // Get plugin emission
+    const { plugin$ } = this.pluginService;
     // Subscribe to settings change and plugin instance
-    const settings$ = combineLatest([ this.pluginService.plugin$, this.settings$ ]);
+    const settings$ = combineLatest([ plugin$, this.settings$ ]);
     // Subscribe to settings change
     this._settings = settings$.subscribe(([plugin, settings]) => {
       // Get background color
       const [ color, alpha ] = fromHexString(settings["background-color"]);
       // Update plugin settings
-      plugin.canvas3d?.setProps({ 
+      plugin.canvas3d?.setProps({
         // Set background color
         renderer: { backgroundColor: color },
         // Set background opacity

@@ -1,8 +1,16 @@
 :host {
+    // Cover the whole container
     overflow: hidden;
     display: block;
     height: 100%;
     width: 100%;
+
+    // Adapt inner container
+    div {
+        display: block;
+        height: inherit;
+        width: inherit;
+    }
 
     ::ng-deep {
         @import 'molstar/lib/mol-plugin-ui/skin/dark.scss';
@@ -10,6 +18,10 @@
         canvas {
             background-image: none !important;
             background: transparent !important;
+        }
+
+        &.msp-logo {
+            display: none !important;
         }
 
         &.msp-plugin .msp-viewport {

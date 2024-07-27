@@ -1,6 +1,5 @@
-import { NgxFeaturesViewerLabelDirective, NgxFeaturesViewerComponent, Hierarchy, Settings } from '@ngx-features-viewer';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Hierarchy, Settings } from '@ngx-features-viewer';
 
 // >sp|P04637|P53_HUMAN Cellular tumor antigen p53 OS=Homo sapiens OX=9606 GN=TP53 PE=1 SV=4
 const P04637 = 'MEEPQSDPSVEPPLSQETFSDLWKLLPENNVLSPLPSQAMDDLMLSP' +
@@ -16,12 +15,6 @@ const P04637 = 'MEEPQSDPSVEPPLSQETFSDLWKLLPENNVLSPLPSQAMDDLMLSP' +
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'page-features-viewer',
-  // Handle dependencies
-  imports: [
-    NgxFeaturesViewerLabelDirective,
-    NgxFeaturesViewerComponent,
-    CommonModule,],
-  standalone: true,
   // Handle representation
   templateUrl: './page-features-viewer.component.html',
   styleUrl: './page-features-viewer.component.scss',

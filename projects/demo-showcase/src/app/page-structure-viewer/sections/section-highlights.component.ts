@@ -1,17 +1,11 @@
-import { NgxStructureViewerComponent, Settings, Source, Locus } from '@ngx-structure-viewer';
+import { Settings, Source, Locus } from '@ngx-structure-viewer';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { ReplaySubject } from 'rxjs';
 
 type Highlights = Locus | undefined;
 
 @Component({
   selector: 'app-section-highlights',
-  imports: [
-    NgxStructureViewerComponent,
-    CommonModule,
-  ],
-  standalone: true,
   templateUrl: './section-highlights.component.html',
   styleUrl: './section-highlights.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

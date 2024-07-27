@@ -1,4 +1,4 @@
-<div class="container pt-3">
+<div class="container placeholder-glow pt-3">
     <!-- Section: introduction -->
     <div class="mb-3">
         <h1>Structure viewer</h1>
@@ -8,12 +8,35 @@
             releases of Angular and automatized the most common features of Mol*.
         </p>
     </div>
+    <!-- TODO Remove this -->
+    <div class="row">
+        <!-- Sequence viewer -->
+        <div class="col-6">
+            <!-- Define squared container -->
+            <div class="position-relative overflow-hidden squared rounded">
+                <!-- Define placeholder -->
+                <div class="position-absolute left-0 top-0 w-100 h-100 placeholder"></div>
+                <!-- Define the viewer -->
+                <ngx-structure-viewer [settings]="settings$ | async" [source]="{
+                    link: 'https://files.rcsb.org/download/1crn.pdb',
+                    format: 'pdb',
+                    type: 'remote',
+                    label: '1CRN',
+                    binary: false
+                }"></ngx-structure-viewer>
+        </div>
+        <!-- Change settings -->
+        <div class="col-3">
+            <!--  -->
+        </div>
+    </div>
     <!-- Section: choose sources -->
     <!-- <app-section-sources></app-section-sources> -->
     <!-- Section: color chains -->
-    <app-section-chains></app-section-chains>
+    <!-- <app-section-chains></app-section-chains> -->
     <!-- Section: show contacts -->
     <!-- <app-section-interactions></app-section-interactions> -->
     <!-- Section: show highlights -->
     <!-- <app-section-highlights></app-section-highlights> -->
 </div>
+    

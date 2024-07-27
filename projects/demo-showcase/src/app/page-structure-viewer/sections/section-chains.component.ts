@@ -1,16 +1,10 @@
-import { NgxStructureViewerComponent, Locus, Settings, Source } from '@ngx-structure-viewer';
 import { ThemeSelectorService } from '../../theme-selector/theme-selector.service';
+import { Locus, Settings, Source } from '@ngx-structure-viewer';
 import { Observable, interval, map, shareReplay, startWith } from 'rxjs';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-section-chains',
-  imports: [
-    NgxStructureViewerComponent,
-    CommonModule,
-  ],
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './section-chains.component.html',
   styleUrl: './section-chains.component.scss',
