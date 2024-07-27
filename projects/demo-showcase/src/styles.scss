@@ -35,6 +35,24 @@
 // 7. Optionally include utilities API last to generate classes based on the Sass map in `_utilities.scss`
 @import "bootstrap/scss/utilities/api";
 
+@include color-mode(dark) {
+  .dark-only {
+    display: initial;
+  }
+  .light-only {
+    display: none;
+  }
+}
+
+@include color-mode(light) {
+  .dark-only {
+    display: none;
+  }
+  .light-only {
+    display: initial;
+  }
+}
+
 // 8. Add additional custom code here
 @import "bootstrap-icons";
 @import "./styles/background";

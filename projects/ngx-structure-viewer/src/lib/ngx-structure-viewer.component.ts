@@ -14,7 +14,7 @@ import { StructureService } from './services/structure.service';
 import { SettingsService } from './services/settings.service';
 import { MolstarService } from './services/molstar.service';
 import { PluginService } from './services/plugin.service';
-import { map, shareReplay } from 'rxjs';
+import { combineLatestWith, map, shareReplay, startWith } from 'rxjs';
 // import { Interaction } from './interfaces/interaction';
 // import { Settings } from './interfaces/settings';
 // import { Source } from './interfaces/source';
@@ -87,8 +87,12 @@ export class NgxStructureViewerComponent implements AfterViewInit, OnChanges {
 
   // Allow acces to background color in background
   public background$ = this.settingsService.settings$.pipe(
+    // Wait for pluing to be loaded
+    combineLatestWith(this.pluginService.plugin$),
     // Extract background color
-    map((settings) => settings['background-color']),
+    map(([settings]) => settings['background-color']),
+    // Start with transparent background
+    startWith('transparent'),
     // Cache result
     shareReplay(1),
   );
@@ -120,7 +124,8 @@ export class NgxStructureViewerComponent implements AfterViewInit, OnChanges {
     }
     // Handle loci changes
     if (changes['loci']) {
-      // TODO
+      // Emit loci
+      this.representationService.loci$.next(this.loci || []);
     }
   }
 

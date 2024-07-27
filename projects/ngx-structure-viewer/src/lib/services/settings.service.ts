@@ -1,11 +1,9 @@
-import { BehaviorSubject, combineLatest, Subscription } from 'rxjs';
-import { Injectable, OnDestroy } from '@angular/core';
 import { Settings } from '../interfaces/settings';
-import { PluginService } from './plugin.service';
-import { fromHexString } from '../colors';
+import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable()
-export class SettingsService implements OnDestroy {
+export class SettingsService {
 
   // Define default settings
   readonly DEFAULT = {
@@ -20,32 +18,6 @@ export class SettingsService implements OnDestroy {
   public get settings(): Settings {
     // Return internal settings
     return this.settings$.value;
-  }
-
-  readonly _settings: Subscription;
-
-  constructor(public pluginService: PluginService) {
-    // Get plugin emission
-    const { plugin$ } = this.pluginService;
-    // Subscribe to settings change and plugin instance
-    const settings$ = combineLatest([ plugin$, this.settings$ ]);
-    // Subscribe to settings change
-    this._settings = settings$.subscribe(([plugin, settings]) => {
-      // Get background color
-      const [ color, alpha ] = fromHexString(settings["background-color"]);
-      // Update plugin settings
-      plugin.canvas3d?.setProps({
-        // Set background color
-        renderer: { backgroundColor: color },
-        // Set background opacity
-        transparentBackground: alpha === 1,
-      });
-    });
-  }
-
-  public ngOnDestroy() {
-    // Unsubscribe from settings
-    this._settings.unsubscribe();
   }
 
 }

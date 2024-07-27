@@ -16,11 +16,13 @@ export { Asset } from 'molstar/lib/mol-util/assets';
 
 export const OverpaintStructureRepresentation3DFromBundle = StateTransforms.Representation.OverpaintStructureRepresentation3DFromBundle;
 
-export function overpaintToBundle(filteredBundle: Overpaint<Loci>) {
-  return Overpaint.toBundle(filteredBundle);
-}
+export const TransparencyStructureRepresentation3DFromBundle = StateTransforms.Representation.TransparencyStructureRepresentation3DFromBundle;
 
-export function colorFromHex(hex: string): [Color, number] {
+export const overpaintToBundle = Overpaint.toBundle;
+
+export type BundleLayer = Overpaint.BundleLayer & { alpha: number };
+
+export function colorFromHexString(hex: string): [Color, number] {
   // Declare hue string
   let hue: string;
   // Remove starting hashtag
@@ -56,7 +58,7 @@ export function getLocusFromSet(set: string[], structure: Structure): StructureE
       MolScriptBuilder.set(...set),
       // Define set of residue identifiers (author sequence identifiers)
       MolScriptBuilder.core.str.concat([
-        MolScriptBuilder.ammp('auth_asym_id'), ',',
+        MolScriptBuilder.ammp('auth_asym_id'),
         MolScriptBuilder.ammp('auth_seq_id'),
         MolScriptBuilder.ammp('pdbx_PDB_ins_code'),
       ]),

@@ -17,7 +17,7 @@
                 <!-- Define placeholder -->
                 <div class="position-absolute left-0 top-0 w-100 h-100 placeholder"></div>
                 <!-- Define the viewer -->
-                <ngx-structure-viewer [settings]="settings$ | async" [source]="{
+                <ngx-structure-viewer [loci]="loci" [settings]="settings$ | async" [source]="{
                     link: 'https://files.rcsb.org/download/1crn.pdb',
                     format: 'pdb',
                     type: 'remote',

@@ -8,6 +8,10 @@ import { MolstarService } from './molstar.service';
 import { PluginService } from './plugin.service';
 import { Source } from '../interfaces/source';
 
+export type DataStateObject = Exclude<Awaited<ReturnType<StructureService['parseSource']>>, null>;
+
+export type StructureStateObject = Awaited<ReturnType<StructureService['createStructure']>>;
+
 @Injectable()
 export class StructureService {
 
@@ -22,9 +26,21 @@ export class StructureService {
 
   public i2r!: Map<number, string>;
 
+  // Define start, end indices for each chain
+  public c2i!: Map<string, [number, number]>;
+
   // public residues!: Array<Residue>;
 
-  readonly structure$: Observable<unknown>;
+  readonly structure$: Observable<Awaited<ReturnType<typeof this.createStructure>>>;
+
+  // Inner structure wrapper
+  protected _structure!: Awaited<ReturnType<typeof this.createStructure>>;
+
+  // Return structure content
+  public get structure(): Structure {
+    // Return structure object
+    return this._structure.cell?.obj?.data as Structure;
+  }
 
   constructor(
     // public settingsService: SettingsService,
@@ -40,11 +56,13 @@ export class StructureService {
       // Join source and plugin
       switchMap(([, source]) => from(this.parseSource(source))),
       // Case data is defined
-      filter((data) => data ? true : false),
+      filter((data): data is DataStateObject => data ? true : false),
       // Generate trajectory
       switchMap((data) => from(this.createStructure(data, this.source!))),
+      // Store structure wrapper
+      tap((structure) => this._structure = structure),
       // Store mappings between residue and numeric index
-      tap((structure) => this.setResidues(structure.cell?.obj?.data as Structure)),
+      tap(() => this.setResidues(this.structure)),
       // Cache results
       shareReplay(1),
     );
@@ -120,8 +138,7 @@ export class StructureService {
     return data;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  protected async createStructure(data: any, source: Source) {
+  protected async createStructure(data: DataStateObject, source: Source) {
     // Define plugin instance
     const plugin = this.pluginService.plugin;
     // Parse data
@@ -138,6 +155,8 @@ export class StructureService {
     // Initialize map between residue (sequence number, insertion code) to numeric index
     const r2i = this.r2i = new Map();
     const i2r = this.i2r = new Map();
+    // Initialize map between chain identifier to start, end indices
+    const c2i = this.c2i = new Map();
     // Loop through each residue
     Structure.eachAtomicHierarchyElement(structure, ({
       residue: (r) => {
@@ -148,10 +167,14 @@ export class StructureService {
         // Define residue name
         const authAsymId = StructureProperties.chain.auth_asym_id(r);
         // Define residue unique identifier
-        const identifier = (authAsymId + ',' + authSeqId + pdbInsCode).trim();
+        const identifier = (authAsymId + authSeqId + pdbInsCode).trim();
         // Map residue id to its index
         r2i.set(identifier, index);
         i2r.set(index, identifier);
+        // Get chain start, end indices
+        const [cs, ] = c2i.get(authAsymId) || [index, index];
+        // Update chain start, end indices
+        this.c2i.set(authAsymId, [cs, index]);
         // Update index
         index++;
       }
