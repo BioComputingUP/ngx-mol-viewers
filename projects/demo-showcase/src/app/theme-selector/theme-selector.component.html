@@ -1,0 +1,36 @@
+<!-- Get current theme -->
+<ng-container *ngIf="theme$ | async as theme">
+    <!-- Open theme options -->
+    <a class="nav-link dropdown-toggle text-white" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <!-- Set icon according to choosen theme -->
+        <ng-container [ngSwitch]="theme">
+            <!-- Light theme -->
+            <i class="bi bi-sun-fill" *ngSwitchCase="'light'"></i>
+            <!-- Dark theme -->
+            <i class="bi bi-moon-stars-fill" *ngSwitchCase="'dark'"></i>
+            <!-- Auto theme -->
+            <i class="bi bi-circle-half" *ngSwitchDefault></i>
+        </ng-container>
+    </a>
+    <!-- Select theme options  -->
+    <ul class="dropdown-menu dropdown-menu-end">
+        <!-- Use light theme -->
+        <li>
+            <button class="dropdown-item" [class.fw-bold]="theme === 'light'" type="button" (click)="setTheme('light')">
+                <i class="bi bi-sun-fill"></i> Light
+            </button>
+        </li>
+        <!-- Use night theme -->
+        <li>
+            <button class="dropdown-item" [class.fw-bold]="theme === 'dark'" type="button" (click)="setTheme('dark')">
+                <i class="bi bi-moon-stars-fill"></i> Dark
+            </button>
+        </li>
+        <!-- Use system default -->
+        <li>
+            <button class="dropdown-item" [class.fw-bold]="theme === 'auto'" type="button" (click)="setTheme('auto')">
+                <i class="bi bi-circle-half"></i> Auto
+            </button>
+        </li>
+    </ul>
+</ng-container>

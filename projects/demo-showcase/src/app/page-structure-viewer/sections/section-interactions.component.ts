@@ -1,16 +1,11 @@
-import { NgxStructureViewerComponent, Source, Settings, Interaction } from '@ngx-structure-viewer';
+import { Source, Settings, Interaction } from '@ngx-structure-viewer';
 import { Observable, interval, map, shareReplay, startWith } from 'rxjs';
 import { Vec3 } from 'molstar/lib/mol-math/linear-algebra';
-import { CommonModule, Location } from '@angular/common';
+import { Location } from '@angular/common';
 import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-section-interactions',
-  standalone: true,
-  imports: [
-    NgxStructureViewerComponent,
-    CommonModule,
-  ],
   templateUrl: './section-interactions.component.html',
   styleUrl: './section-interactions.component.scss'
 })

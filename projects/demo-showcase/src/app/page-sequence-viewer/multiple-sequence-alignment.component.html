@@ -1,0 +1,64 @@
+<!-- Multiple sequence alignment -->
+<div class="mb-3">
+    <!-- Section title -->
+    <h2>Mutliple sequence alignment</h2>
+    <!-- Introduction -->
+    <div class="mb-3">
+      <p class="mb-1">
+        This sequence viewer allows to visualize a multiple sequence alignment (MSA). <b>Index</b> can be shown for each
+        position in the alignment. Otherwise, positions can be grouped in chunks. Hence,
+        onlythe index of the last position in each chunk is shown.<br>
+      </p>
+      <p class="mb-1">
+        For each position in the alignment, logo is computed.<br>The <b>logo</b> is the relative frequency of a each
+        amino-acid within a specific
+        position. <b>Consensus</b> is shown in the first row: the most frequent amino-acid in each specific position.
+      </p>
+      <p class="mb-0">
+        Custom <b>color map</b> can be defined for each residue. However, by default we offer a color map based on the
+        broadly adopted ZAPPO scheme.
+        Such scheme has been implemented using the Wong et al. palette for color blindness.
+      </p>
+    </div>
+    <!-- Test sequence viewer -->
+    <div class="mb-3">
+      <ngx-sequence-viewer [fasta]="fasta" [loci]="loci" [settings]="settings$ | async"
+        (selected$)="onSelected($event)"></ngx-sequence-viewer>
+    </div>
+    <!-- Show loci changes -->
+    <div class="mb-3">
+      <p class="mb-1">
+        The tool allows to <b>highlight</b> one or more loci. A <b>locus</b> is defined as one or more contiguous
+        positions. It is
+        identified by its start and end positions.
+      </p>
+      <p class="mb-1">
+        Each locus allows to define a custom <code>background-color</code> property which is then applied to the border
+        of
+        cells within locus' boundaries, as well as the background for those cells for which the selected color map does
+        not
+        have an associated color (e.g. gaps) and index.
+      </p>
+      <p class="mb-0">
+        Currently highlighted loci are: <code>
+          [<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;{{ loci[0] | json }}<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;{{ loci[1] | json }}<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;{{ loci[2] | json }}<br>
+          ]
+        </code>
+      </p>
+    </div>
+    <!-- Show selection changes -->
+    <div class="mb-3">
+      <p class="mb-1">
+        <b>Selection</b> functionality is provided by the component. An event is emitted when a locus is selected.
+        Selected locus applies `selection-color`, defined in settings, to the border of cells within selected
+        locus boundaries, to the background of those cells for which the selected color map does not
+        have an associated color (e.g. gaps) and index. This overrides the style applied by other loci beforehand.
+      </p>
+      <p class="mb-0">
+        Currently selected locus is: <code>{{ selected$ | async | json }}</code>
+      </p>
+    </div>
+  </div>

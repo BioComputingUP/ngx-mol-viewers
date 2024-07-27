@@ -1,27 +1,43 @@
-.ngx-structure-viewer {
-  // Define outer container
-  &-container {
-    position: relative;
+:host {
+    // Cover the whole container
+    overflow: hidden;
+    display: block;
     height: 100%;
-    width: 100%; 
-  }
-  // Define inner canvas
-  &-canvas {
-    position: absolute; 
-    height: 100%;
-    width: 100%; 
-    left: 0; 
-    top: 0; 
-  }
-  // // Define inner label
-  // &-label {
-  //   position: absolute;
-  //   padding: .25rem;
-  //   margin: 1rem;
-  //   height: auto;
-  //   width: auto; 
-  //   bottom: 0;
-  //   right: 0; 
-  // }
-}
+    width: 100%;
 
+    // Adapt inner container
+    div {
+        display: block;
+        height: inherit;
+        width: inherit;
+    }
+
+    ::ng-deep {
+        @import 'molstar/lib/mol-plugin-ui/skin/dark.scss';
+
+        canvas {
+            background-image: none !important;
+            background: transparent !important;
+        }
+
+        &.msp-logo {
+            display: none !important;
+        }
+
+        &.msp-plugin .msp-viewport {
+            background: revert;
+        }
+
+        .msp-plugin {
+            background: revert;
+        }
+
+        .msp-plugin .msp-layout-standard {
+            border: revert;
+        }
+
+        .msp-highlight-toast-wrapper {
+            z-index: 3 !important;
+        }
+    }
+}

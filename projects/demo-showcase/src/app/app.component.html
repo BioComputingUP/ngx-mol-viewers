@@ -1,11 +1,18 @@
 <!-- Define header (navigation) -->
 <header>
-  <nav class="navbar">
-    <div class="container-fluid justify-content-center">
+  <nav class="navbar navbar-expand">
+    <div class="container-fluid">
+      <!-- Main icon -->
       <a class="navbar-brand d-flex flex-row align-items-center gap-3" href="#">
-        <img src="assets/ngx-biocomp-up-white.png" alt="ngx-biocomp-up" height="48">
-        <h1 class="h2">ngx-biocomp-up</h1>
+        <img src="assets/ngx-biocomp-up-white.png" alt="ngx-biocomp-up" height="38">
+        <h1 class="h2 text-white m-0">ngx-biocomp-up</h1>
       </a>
+      <!-- Right side -->
+      <ul class="navbar-nav">
+        <li class="nav-item dropdown">
+          <app-theme-selector></app-theme-selector>
+        </li>
+      </ul>
     </div>
   </nav>
 </header>
@@ -23,9 +30,9 @@
     </div>
     <!-- Center: my own GitHub -->
     <div class="col-6 d-flex align-items-center justify-content-center">
-        <a class="text-light small" href="https://github.com/damiclem">
-          Developed by Damiano Clementel <i class="bi bi-github"></i>
-        </a>
+      <a class="text-light small" href="https://github.com/damiclem">
+        Developed by Damiano Clementel <i class="bi bi-github"></i>
+      </a>
     </div>
     <!-- Right side: UniPD -->
     <div class="col-3 d-flex justify-content-end">
@@ -33,4 +40,3 @@
     </div>
   </div>
 </footer>
-

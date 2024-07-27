@@ -4,6 +4,6 @@ export { Interaction, Interactor } from './lib/interfaces/interaction';
 export { Settings } from './lib/interfaces/settings';
 export { Source } from './lib/interfaces/source';
 export { Locus } from './lib/interfaces/locus';
-// Export services
-export { StructureService } from './lib/services/structure.service';
-export { PluginService } from './lib/services/plugin.service';
+// // Export services
+// export { StructureService } from './lib/services/structure.service';
+// export { PluginService } from './lib/services/plugin.service';

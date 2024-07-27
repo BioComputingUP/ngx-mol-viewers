@@ -1,17 +1,10 @@
-import { NgxStructureViewerComponent, Settings, Source } from '@ngx-structure-viewer';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Settings, Source } from '@ngx-structure-viewer';
 import { Observable, map, of, tap } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-section-sources',
-  standalone: true,
-  imports: [
-    NgxStructureViewerComponent,
-    HttpClientModule,
-    CommonModule,
-  ],
   templateUrl: './section-sources.component.html',
   styleUrl: './section-sources.component.scss'
 })

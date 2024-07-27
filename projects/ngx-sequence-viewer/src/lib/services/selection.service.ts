@@ -1,41 +1,40 @@
 import { Locus } from '../ngx-sequence-viewer.component';
+import { IndexService } from './index.service';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
-@Injectable({ providedIn: 'platform' })
+@Injectable()
 export class SelectionService {
 
   // Define currently selected locus
   // It might be undefined if selection has not yet been initialized
   // It might not have end position if selection is ongoing
-  readonly selected$ = new BehaviorSubject<Locus<string | number> | undefined>(undefined);
+  readonly select$ = new BehaviorSubject<Locus | null>(null);
 
-  public set selected(value: Locus<string | number> | undefined) {
-    this.selected$.next(value);
+  public set select(locus: Locus | null) {
+    // Just emit locus or null
+    this.select$.next(locus);
   }
 
-  public get selected(): Locus<string | number> | undefined {
-    return this.selected$.value;
+  public get select(): Locus | null {
+    // Just get previously emitted locus
+    return this.select$.value;
   }
 
-  // constructor() {
-  //   // this.selected$ = this.select$.pipe(
-  //   //   // Handle position emission
-  //   //   map((position) => {
-  //   //     // When position is emitted, fit into existing locus object or create a new one
-  //   //     if (this.selected) {
-  //   //       // Update end position in previous locus object
-  //   //       return this.selected = { ...this.selected, end: position, type: 'range' };
-  //   //     }
-  //   //     // Generate new locus object with start position
-  //   //     return this.selected = { start: position, end: undefined, type: 'range' };
-  //   //   }),
-  //   //   // If locus has both start and end positions, then unset it
-  //   //   tap(() => this.selected = (this.selected && this.selected.end !== undefined) ? undefined : this.selected),
-  //   //   // Cache result
-  //   //   shareReplay(1),
-  //   // );
-  // }
+  // TODO
+  // readonly selected$: Observable<Locus | null> = this.select$.pipe(
+  //   // // Case selected locus is null
+  //   // map((locus) => locus ? locus : { start: -1, end: -1 }),
+  //   // Cache result
+  //   shareReplay(1),
+  // );
+  readonly selected$ = this.select$;
+
+  // Define flag to state where selection is ongoing
+  protected selecting = false;
+
+  // Dependency injection
+  constructor(public indexService: IndexService) {}
 
   /** Handle mouse down event
    * 
@@ -45,9 +44,11 @@ export class SelectionService {
    * @param event Mouse event
    * @param position Position of mouse event
    */
-  public onMouseDown(event: MouseEvent, position: string | number): void {
-    // Case selection is already defined
-    this.selected = this.selected ? undefined : { start: position, end: position, type: 'range' };
+  public onMouseDown(event: MouseEvent, position: string): void {
+    // Set selection flag
+    this.selecting = true;
+    // Update selection with current residue (column) only
+    this.select = { start: position, end: position };
   }
 
   /** Handle mouse enter event
@@ -58,11 +59,33 @@ export class SelectionService {
    * @param event Mouse event
    * @param position Position of mouse event
    */
-  public onMouseEnter(event: MouseEvent, position: string | number): void {
-    // Case selection is defined
-    if (event.buttons === 1 && this.selected) {
-      this.selected = { ...this.selected, end: position };
+  public onMouseEnter(event: MouseEvent, position: string): void {
+    // In case selection is ongoing
+    if (this.selecting) {
+      // Cast current position to numeric
+      const current = this.indexService.index[position];
+      // In case selection is defined
+      if (this.select) {
+        // Get numeric start, end values
+        const { start, end } = this.indexService.map(this.select);
+        // Case current position is before start
+        if (current < start) {
+          // Update start position
+          this.select = { ...this.select, start: position };
+        } 
+        // Case current position is after end
+        else if (current > end) {
+          // Update end position
+          this.select = { ...this.select, end: position };
+        }
+      }
     }
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public onMouseUp(event: MouseEvent): void {
+    // Just unset selection flag
+    this.selecting = false;
   }
 
 }

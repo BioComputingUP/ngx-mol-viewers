@@ -1,48 +1,154 @@
 :host {
-  // Set cursor to default one
-  cursor: default;
+  position: relative;
+  display: block;
+  height: auto;
+  width: 100%;
+  // Unset scrolling
+  overflow: hidden;
+  // Set font monospace
+  font-family: monospace, monospace;
   // Disable text selection
   user-select: none;
+  // Set cursor to default one
+  cursor: default;
 
-  .sequence,
-  .index {
+  .scaffold {
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
-    justify-content: flex-start;
+    justify-content: start;
     align-items: stretch;
+    // Set overflow on this element
+    overflow: auto;
+    // Add gap between labels and positions
+    gap: .25rem;
+
+    .labels {
+      // Set representation
+      display: flex;
+      flex-direction: column;
+      justify-content: end;
+      align-items: end;
+      // Set positioning
+      position: sticky;
+      left: 0;
+      // Bring forward
+      z-index: 999;
+      // Add padding right
+      padding-right: .25rem;
+      // Force background color inheritance
+      background-color: inherit;
+      color: inherit;
+    }
+
+    .chunks {
+      display: flex;
+      flex-direction: row;
+      flex-shrink: 0;
+      flex-grow: 1;
+    }
+
+    .chunk {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      // Set overflow on this element
+      overflow: hidden;
+      // Unset gap
+      gap: 0;
+    }
+
+    .position {
+      display: flex;
+      flex-direction: column;
+      justify-content: end;
+      align-items: center;
+      // Set positioning
+      position: relative;
+      // border: 1px solid blueviolet;
+
+      .placeholder.index {
+        // Position absolutely, exit cell
+        position: absolute;
+        right: 0;
+        top: 0;
+        // Hide all indices
+        display: none;
+        // Disable actions
+        pointer-events: none;
+      }
+
+      .residue,
+      .consensus {
+        // Set residue to stretch the whole cell
+        width: 100%;
+        // Show text in the middle of the cell
+        text-align: center;
+      }
+    }
+
+    // TODO Remove this
+    .label,
+    .cell.index,
+    .cell.residue,
+    .cell.consensus {
+      border-color: transparent;
+      border-width: 1px;
+      border-style: solid;
+    }
+
+    .cell.index,
+    .placeholder.index {
+      // Set font size
+      font-size: .75em;
+    }
   }
 
-  .sequence>div,
-  .index>div {
-    // Expolit flex properties
-    flex: 0 0 auto;
-    // Define properties for containing div
-    display: block;
-    height: 1rem;
-    width: 1rem;
-    // Define outer, inner size and positioning
-    text-align: center;
-    font-size: inherit;
-    line-height: 1rem;
+  .scaffold.rotate-index {
+
+    .cell.index {
+      // Change display
+      display: block;
+      // Stretch to the whole cell
+      flex-grow: 1;
+      // Change positioning
+      position: relative !important;
+      // Overwrite height property
+      height: auto;
+      // Align text to left (bottom)
+      text-align: left;
+      // Rotate text
+      transform: rotate(-180deg);
+      writing-mode: vertical-rl;
+      white-space: nowrap;
+      // Add padding
+      padding-bottom: .25rem;
+      padding-top: .25rem;
+    }
   }
 
-  .sequence>div {
-    text-align: center;
-    vertical-align: center;
+  .scaffold.split-chunks {
+
+    .chunks {
+      // Add gap between chunks
+      gap: .25rem;
+    }
+
+    .cell.index { 
+      // Hide cell content
+      font-size: 0;
+      // Expand width
+      height: 100%;
+      width: 100%;
+    }
+
+    .position:last-child .placeholder.index {
+      // Show only last index
+      display: block;
+      // Unset opacity
+      opacity: unset;
+      background: inherit;
+    }
   }
 
-  .index>div {
-    // Overwrite height property
-    height: auto;
-    // Align text to left (bottom)
-    text-align: left;
-    // Rotate text
-    transform: rotate(-180deg);
-    writing-mode: vertical-rl;
-    white-space: nowrap;
-    // Add padding
-    padding-bottom: .25rem;
-    padding-top: .25rem;
-  }
 }

@@ -1,20 +1,23 @@
 import { Settings } from '../interfaces/settings';
 import { Injectable } from '@angular/core';
-import { ReplaySubject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable()
 export class SettingsService {
 
-  readonly settings$ = new ReplaySubject<Settings>();
-
-  protected _settings!: Settings;
-
-  set settings(settings: Settings) {
-    this.settings$.next(this._settings = settings);
+  // Define default settings
+  readonly DEFAULT = {
+    "backbone-color": "#000000",
+    "background-color": "#FFFFFF",
+    "interaction-color": "#FF0000",
+    "interaction-size": .1,
   }
 
-  get settings(): Settings {
-    return this._settings;
+  readonly settings$ = new BehaviorSubject<Settings>(this.DEFAULT);
+
+  public get settings(): Settings {
+    // Return internal settings
+    return this.settings$.value;
   }
-  
+
 }

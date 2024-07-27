@@ -1,33 +1,88 @@
-<!-- Define container for index -->
-<div class="index">
-  @for (position of positions$ | async; track $index) {
-    <div class="index-residue" 
-      [id]="'index-residue-' + $index" 
-      [style.background]="position?.background" 
-      [style.color]="position?.color"
-      (mouseenter)="onMouseEnter($event, index[$index])"
-      (mousedown)="onMouseDown($event, index[$index])"
-      (mouseup)="onMouseUp($event)"
-    >
-      {{ index[$index] }}
+<!-- Outer scaffold -->
+<div class="scaffold" 
+  [class.split-chunks]="settings['split-chunks']"
+  [class.rotate-index]="settings['rotate-index']"
+  [style.background-color]="settings['background-color']" 
+  [style.color]="settings['text-color']">
+  <!-- Show labels -->
+  <div class="labels">
+    <!-- First label is empty (index) -->
+    <div class="label">Index</div>
+    <!-- Case there is more than one sequence -->
+    @if(sequences.length > 1) {
+      <!-- Then, show consensus -->
+      <div class="label">Consensus</div>
+    }
+    <!-- Other labels are sequences -->
+    @for (label of labels; track $index) {
+      <div class="label">{{ label || 'Sequence' }}</div>
+    }
+  </div>
+  <!-- Show content -->
+  <div class="chunks">
+    <!-- Loop through each chunk -->
+    @for (chunk of chunks; track $index) {
+      <div class="chunk">
+        <!-- Loop through each position in chunk -->
+        @for (position of first.slice(chunk.start, chunk.end); track j; let j = $index) {
+          <!-- Define position wrapper -->
+          <div class="position">
+            <!-- Add index (and placeholder) -->
+            <ng-container *ngTemplateOutlet="indexCellTemplate; context: { j: chunk.start + j }"></ng-container>
+            <!-- Case there is more than one sequence -->
+            @if(sequences.length > 1) {
+              <!-- Then, show consensus -->
+              <ng-container *ngTemplateOutlet="consensusCellTemplate; context: { j: chunk.start + j }"></ng-container>
+            }
+            <!-- Show residues -->
+            @for(sequence of sequences; track i; let i = $index) {
+              <!-- Get amino-acid -->
+              @if(sequence[j]; as aa) {
+                <!-- Define residue wrapper -->
+                <ng-container *ngTemplateOutlet="residueCellTemplate; context: { i, j: chunk.start + j }"></ng-container>
+              }
+            }
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>
+
+<!-- Define index template -->
+<ng-template let-j="j" #indexCellTemplate>
+  <!-- Add index cell -->
+  <ng-container *ngTemplateOutlet="cellTemplate, context: { i: 'index', name: 'index', j, value: indexService.keys[j] }"></ng-container>
+  <!-- Add placeholder -->
+  <div class="placeholder index">{{ indexService.keys[j] }}</div>
+</ng-template>
+
+<!-- Define consensus cell template -->
+<ng-template let-j="j" #consensusCellTemplate>
+  <ng-container *ngTemplateOutlet="cellTemplate, context: { i: 'consensus', name: 'consensus', j, value: consensus[j][0] }"></ng-container>
+</ng-template>
+
+<!-- Define cell template -->
+<ng-template let-i="i" let-j="j" #residueCellTemplate>
+  <ng-container *ngTemplateOutlet="cellTemplate, context: { i, j, name: 'residue' }"></ng-container>
+</ng-template>
+
+<!-- Define generic cell template -->
+<ng-template let-i="i" let-j="j" let-value="value" let-name="name" #cellTemplate>
+<!-- Get selection boundaries (if any) -->
+@if(styles$ | async; as styles) {
+  <!-- Get style for current cell -->
+  @if(styles[i][j]; as style) {
+    <!-- Define residue wrapper -->
+    <div [id]="'cell' + '-' + i + '-' + j"
+      [class]="['cell', name]"
+      [style.background-color]="style['background-color']"
+      [style.border-color]="style['border-color']"
+      [style.color]="style['color']"
+      (mouseenter)="onMouseEnter($event, indexService.keys[j])"
+      (mousedown)="onMouseDown($event, indexService.keys[j])">
+      {{ value ? value : sequences[i][j] }}
     </div>
   }
-  <!-- @for (i of index; track $index) {
-    <div class="index-residue" [id]="'index-residue-' + $index">{{ i }}</div>
-  } -->
-</div>
-<!-- Define container for sequence -->
-<div class="sequence">
-  @for (c of sequence; track $index) {
-    <div class="sequence-residue"
-      [id]="'sequence-residue-' + $index"
-      [style.background]="colors[c]['background'] || colors['-']['background']" 
-      [style.color]="colors[c]['color'] || colors['-']['color']"
-      (mouseenter)="onMouseEnter($event, index[$index])"
-      (mousedown)="onMouseDown($event, index[$index])"
-      (mouseup)="onMouseUp($event)"
-    >
-      {{ c }}
-    </div>
-  }
-</div>
+}
+</ng-template>
