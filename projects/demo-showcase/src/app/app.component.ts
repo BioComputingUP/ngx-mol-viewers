@@ -5,6 +5,7 @@ import { Component } from '@angular/core';
 // Custom dependencies
 import { ThemeSelectorComponent } from './theme-selector/theme-selector.component';
 import { ThemeSelectorService } from './theme-selector/theme-selector.service';
+import { PageHomeModule } from './page-home/page-home.module';
 
 
 @Component({
@@ -13,6 +14,7 @@ import { ThemeSelectorService } from './theme-selector/theme-selector.service';
   imports: [
     // Custom components
     ThemeSelectorComponent,
+    PageHomeModule,
     // // TODO Import pages
     // PageStructureViewerModule,
     // PageFeaturesViewerModule,
