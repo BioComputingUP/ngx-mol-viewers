@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
-import { ContentSettings } from '../settings';
-import { InternalTrace, InternalTraces, Trace, Traces } from "../trace";
 import { Feature } from "../features/feature";
+import { InternalTrace, InternalTraces, Trace, Traces } from "../trace";
 import { checkContentSettings } from './initialize.service';
 
 
-@Injectable({ providedIn: 'platform' })
+@Injectable({providedIn : 'platform'})
 export class FeaturesService {
   protected traceMap = new Map<number, InternalTrace>();
+  public tracesNoNesting!: InternalTraces;
   protected internalTraces!: InternalTraces;
 
   protected _parent = new Map<InternalTrace, number>();
@@ -59,11 +59,11 @@ export class FeaturesService {
         // Initialize internal trace
         const internalTrace: InternalTrace = {
           ...tmpTrace,
-          id: idx++,
-          expanded: false,
-          show: level === 0,
-          domain: domain,
-          level
+          id : idx++,
+          expanded : false,
+          show : level === 0,
+          domain : domain,
+          level,
         };
 
         this.traceMap.set(internalTrace.id, internalTrace);
@@ -86,14 +86,11 @@ export class FeaturesService {
     }
     // Set internal traces
     this.internalTraces = convert(traces, 0);
+    this.tracesNoNesting = Array.from(this.traceMap.values());
   }
 
   public get traces(): InternalTraces {
     return this.internalTraces;
-  }
-
-  public get tracesNoNesting(): InternalTraces {
-    return Array.from(this.traceMap.values());
   }
 
   /**

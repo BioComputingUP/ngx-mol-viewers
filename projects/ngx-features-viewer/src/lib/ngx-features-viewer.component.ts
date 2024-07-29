@@ -1,7 +1,7 @@
 import {
   AfterContentInit,
   AfterViewInit,
-  ChangeDetectionStrategy,
+  ChangeDetectionStrategy, ChangeDetectorRef,
   Component,
   ContentChild,
   ContentChildren,
@@ -16,7 +16,7 @@ import {
   SimpleChanges,
   TemplateRef,
   ViewChild,
-  ViewEncapsulation
+  ViewEncapsulation,
 } from '@angular/core';
 import { map, Observable, Subscription, switchMap, tap } from 'rxjs';
 import { CommonModule } from '@angular/common';
@@ -139,9 +139,9 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, AfterContentIn
     public zoomService: ZoomService,
     public drawService: DrawService,
   ) {
-    // TODO Update SVG according to inputs
+    // Update SVG according to inputs
     this.update$ = this.initializeService.initialized$.pipe(
-      // TODO Initialize drawings
+      // Initialize drawings
       switchMap(() => this.drawService.draw$),
       // Subscribe to resize event (set width, height)
       switchMap(() => this.resizeService.resized$),

@@ -56,7 +56,7 @@ export class PageFeaturesViewerComponent {
       'text-color' : 'black',
       // Define margins
       'margin-top' : 0,
-      'margin-right' : 0,
+      'margin-right' : 50,
       'margin-bottom' : 0,
       'margin-left' : 140,
       'sequence-show' : true,
@@ -77,7 +77,7 @@ export class PageFeaturesViewerComponent {
 
     // Set traces
     this.traces = [{
-      label : "Trace 1",
+      label : "Very long Trace 1",
       options : {
         "grid" : true,
         'margin-top' : 0,

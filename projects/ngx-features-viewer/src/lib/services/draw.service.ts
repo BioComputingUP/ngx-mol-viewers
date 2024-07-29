@@ -31,12 +31,13 @@ export const REM = parseFloat(getComputedStyle(document.documentElement).fontSiz
 
 // Define function for extracting identifier out of unknown object
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const identity = (f: InternalTrace) => (f as { id: any }).id;
+export const identity = (f: InternalTrace) => {
+  return f.id;
+};
 
 // Define function for extracting index out of unknown object
 export const index = (f: InternalTraces) => {
-  console.log(f);
-  return f.length;
+  return f.map((t) => t.id).join('-');
 };
 
 const alreadyExitedFromView = new Set<Feature>();
@@ -111,14 +112,15 @@ export class DrawService {
       shareReplay(1),
       // Switch to traces emission
       switchMap(() => this.traces$),
+      tap(() => console.log("traces emitted")),
       // Update vertical scale
-      tap((traces) => this.updateScale(traces)),
+      tap((traces: InternalTraces) => this.updateScale(traces)),
       // Draw labels, without setting position but saving references
-      tap((traces) => this.createLabels(traces)),
+      tap((traces: InternalTraces) => this.setLabelsPosition(traces)),
       // Draw grid, without setting position but saving references
-      tap((traces) => this.createGrid(traces)),
+      tap((traces: InternalTraces) => this.createGrid(traces)),
       // Draw features, without setting position but saving references
-      tap((traces) => this.createTraces(traces)),
+      tap((traces: InternalTraces) => this.createTraces(traces)),
       // NOTE This is required to avoid re-drawing everything on each resize/zoom event
       shareReplay(1),
     );
@@ -379,66 +381,33 @@ export class DrawService {
       .attr('width', 0);
   }
 
-  private createLabels(traces: InternalTraces): void {
-    console.log('creating Labels')
-    // Initialize labels SVG group
-    const group = this.initializeService.svg
-      // Select previous labels group
-      .selectAll<SVGGElement, InternalTraces>('g.labels')
-      // Bind group to current traces
-      .data<InternalTraces>([traces], index)
-      // Create current labels group
-      .join('g')
-      .attr('class', 'labels');
-
-    // Add labels to their group
-    this['group.labels'] = group
-      .selectAll<SVGGElement | BaseType, InternalTrace>('g')
-      .data<InternalTrace>([{
-        id : 'sequence',
-        label : 'Sequence',
-        expanded : true,
-      }, ...traces] as InternalTraces, identity)
-      .join(
-        (enter) => enter.append('g'),
-        (update) => update,
-        (exit) => {
-          // Hide labels
-          exit.each((d) => {
-            this.hideLabels(d);
-          });
-          return exit;
-        },
-      )
-    this['group.labels'].each((trace: InternalTrace) => {
-      this.setLabelsPosition(trace);
-    });
-  }
-
-  private setLabelsPosition(trace: InternalTrace) {
+  private setLabelsPosition(traces: InternalTraces) {
     const y = this.initializeService.scale.y;
     const {left : ml, right : mr} = this.initializeService.margin;
-    const settings = this.initializeService.settings
-    // Get identifier trace
-    const identifier = '' + trace.id;
-    for (const place of ['left', 'right']) {
-      // Get associated trace
-      const label = this.initializeService.div.querySelector<HTMLDivElement>(`div#label-${place}-` + identifier);
-      // If label exists, update its positioning
-      if (label) {
-        label.classList.add('label');
-        if (place === 'left') {
-          // Position the label to the left
-          label.style.left = '0px';
-          label.style.width = `${ml}px`;
-        } else {
-          // Position the label to the right, ad add a "margin" left of 8 px to space the label from the traces
-          label.style.right = '0px';
-          label.style.width = `${mr}px`;
+    const settings = this.initializeService.settings;
+
+    for (const trace of traces) {
+      // Get identifier trace
+      const identifier = '' + trace.id;
+      for (const place of ['left', 'right']) {
+        // Get associated trace
+        const label = this.initializeService.div.querySelector<HTMLDivElement>(`div#label-${place}-` + identifier);
+        // If label exists, update its positioning
+        if (label) {
+          label.classList.add('label');
+          if (place === 'left') {
+            // Position the label to the left
+            label.style.left = '0px';
+            label.style.width = `${ml}px`;
+          } else {
+            // Position the label to the right, ad add a "margin" left of 8 px to space the label from the traces
+            label.style.right = '0px';
+            label.style.width = `${mr}px`;
+          }
+          label.style.top = y(identifier) + 'px';
+          label.style.display = 'block';
+          label.style.height = (trace.options?.['line-height'] || settings['line-height']) + 'px';
         }
-        label.style.top = y(identifier) + 'px';
-        label.style.display = 'block';
-        label.style.height = (trace.options?.['line-height'] || settings['line-height']) + 'px';
       }
     }
   }
