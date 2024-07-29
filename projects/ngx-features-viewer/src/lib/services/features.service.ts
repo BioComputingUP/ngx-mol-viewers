@@ -1,23 +1,102 @@
 import { Injectable } from '@angular/core';
-import { Hierarchy } from '../hierarchy';
-import { Feature } from '../features';
+import { Feature } from "../features/feature";
+import { InternalTrace, InternalTraces, Trace, Traces } from "../trace";
+import { checkContentSettings } from './initialize.service';
 
-// Define local trace
-type Trace = Hierarchy[number] & { type: 'trace' };
 
-@Injectable({ providedIn: 'root' })
+@Injectable({providedIn : 'platform'})
 export class FeaturesService {
+  protected traceMap = new Map<number, InternalTrace>();
+  public tracesNoNesting!: InternalTraces;
+  protected internalTraces!: InternalTraces;
 
-  public set hierarchy(hierarchy: Hierarchy) {
-    this.setHierarchy(hierarchy);
+  protected _parent = new Map<InternalTrace, number>();
+  protected _children = new Map<InternalTrace, number[]>();
+
+
+  private globalMinMax(trace: Trace) {
+    let min = Number.MAX_SAFE_INTEGER;
+    let max = Number.MIN_SAFE_INTEGER;
+    for (const feature of trace.features) {
+      if (feature.type === 'continuous') {
+        min = Math.min(min, feature.min !== undefined ? feature.min : Math.min(...feature.values));
+        max = Math.max(max, feature.max !== undefined ? feature.max : Math.max(...feature.values));
+      }
+      if (trace.options?.['zero-line']) {
+        min = Math.min(min, 0);
+        max = Math.max(max, 0);
+      }
+      if (trace.options?.['grid'] && trace.options['grid-y-values']) {
+        for (const value of trace.options['grid-y-values']) {
+          min = Math.min(min, value);
+          max = Math.max(max, value);
+        }
+      }
+    }
+    // If min and max equal 0 set min to -1 and max to 1
+    if (min === 0 && max === 0) {
+      min = -1;
+      max = 1;
+    }
+
+    return {min, max};
   }
 
-  protected _traces = new Map<number, Trace>();
+  public set traces(traces: Traces) {
+    this.internalTraces = [];
+    // Initialize the index used as id for an InternalTrace
+    let idx = 0;
+    // Recursively convert traces to internal traces, setting level as the nesting level in the hierarchy
+    const convert = (traces: Traces, level: number): InternalTraces => {
+      return traces.map((trace) => {
+        // Remove nested from the trace, as it will be processed recursively
+        const {nested, ...tmpTrace} = trace;
+        // Check and modify options if necessary
+        checkContentSettings(tmpTrace.options);
+        // Check and modify values if necessary
+        this.checkValues(tmpTrace);
+        const domain = this.globalMinMax(tmpTrace);
+        // Initialize internal trace
+        const internalTrace: InternalTrace = {
+          ...tmpTrace,
+          id : idx++,
+          expanded : false,
+          show : level === 0,
+          domain : domain,
+          level,
+        };
 
-  public get traces() {
-    return this._traces;
+        this.traceMap.set(internalTrace.id, internalTrace);
+        // Recursively convert nested traces
+        internalTrace.nested = convert(nested || [], level + 1);
+        // Sort the features by type, so to have the continuous features first, but keep the order of the other types
+        internalTrace.features = internalTrace.features.sort((a, b) => {
+          if (a.type === 'continuous' && b.type !== 'continuous') return 1;
+          if (a.type !== 'continuous' && b.type === 'continuous') return -1;
+          return 0;
+        });
+        // Set the parent / children relationship
+        internalTrace.nested.forEach((child) => {
+          this._parent.set(child, internalTrace.id);
+          this._children.set(internalTrace, [...(this._children.get(internalTrace) || []), child.id]);
+        });
+        // Return internal trace
+        return internalTrace;
+      });
+    }
+    // Set internal traces
+    this.internalTraces = convert(traces, 0);
+    this.tracesNoNesting = Array.from(this.traceMap.values());
   }
 
+  public get traces(): InternalTraces {
+    return this.internalTraces;
+  }
+
+  /**
+   * Get all the features in the traces, setting the key as `trace-${trace.id}-feature-${index}`
+   * @returns (Map<string, Feature>) - The features map
+   */
   public get features() {
     // Get traces
     const traces = this.traces;
@@ -26,7 +105,7 @@ export class FeaturesService {
     // Loop through each trace
     for (const trace of traces.values()) {
       // Loop through each feature
-      for (const [i, feature] of Object.entries(trace.values)) {
+      for (const [i, feature] of Object.entries(trace.features)) {
         // Store feature
         features.set(`trace-${trace.id}-feature-${i}`, feature);
       }
@@ -35,149 +114,78 @@ export class FeaturesService {
     return features;
   }
 
-  protected _parent = new Map<Trace, number>();
-
-  protected _children = new Map<Trace, number[]>();
-
-  // /** Initialize hierarchy
-  //  * 
-  //  * 1. Extract each feature/trace in the hierarchy
-  //  * 2. Wrap each feature in a trace
-  //  * 3. Associate an unique identifier (ID) to each trace
-  //  * 4. Associate a parent to each trace, if any
-  //  * 5. Associate children to each parent trace, if any
-  //  */
-  // public set hierarchy(hierarchy: Hierarchy) {
-  //   // Initialize index
-  //   let index = 0;
-  //   // Copy input hierarchy
-  //   hierarchy = [...hierarchy];
-  //   // Initialize traces hashmap
-  //   this._traces = new Map<number, Trace<Feature>>();
-  //   // Initialize parent hashmap
-  //   this._parent = new Map<Trace<Feature>, number>();
-  //   // Initialize children hashmap
-  //   this._children = new Map<Trace<Feature>, number[]>();
-  //   // Loop through each 
-  //   while (hierarchy.length > 0) {
-  //     // Get first trace / feature
-  //     const first = hierarchy.splice(0, 1).at(0) as Hierarchy[number];
-  //     // Get nested features
-  //     const { nested, ...params } = first;
-  //     // Cast trace / feature to trace
-  //     const trace = Object.assign(first, asTrace(params)) as Trace<Feature>;
-  //     // Initialize children for current parent
-  //     this._children.set(trace, []);
-  //     // Loop through each nested trace / feature
-  //     for (const child of (nested || [])) {
-  //       // Associate current child to parent
-  //       this._parent.set(child as Trace<Feature>, index);
-  //       // Push child traces in hierarchy
-  //       hierarchy.push(child);
-  //     }
-  //     // Get parent, if any
-  //     const parent = this.getParent(trace);
-  //     // Case parent exists
-  //     if (parent) {
-  //       // Get children for current parent
-  //       const children = this._children.get(parent) as number[];
-  //       // Store index of current trace as child
-  //       children.push(index);
-  //     }
-  //     // Store parent
-  //     this._traces.set(index, trace);
-  //     // Finally, update index
-  //     index++;
-  //   }
-  // }
-
-  public setHierarchy(_hierarchy: Hierarchy) {
-    // Initialize index
-    let index = 0;
-    // Define hierarchy array in order to not mutate input
-    let hierarchy = [..._hierarchy];
-    // Do until hierarchy is empty
-    while (hierarchy.length > 0) {
-      // Remove first trace from hierarchy
-      const [first] = hierarchy.splice(0, 1);
-      const nested = first.nested || [];
-      // Initialize parsed traces
-      const traces = new Array<Trace>();
-      // Loop through first, nested trace
-      for (const feature of [first, ...nested]) {
-        // Wrap feature in trace, if not already a trace
-        const trace = feature.type === 'trace' ? feature : {
-          type: 'trace' as const,
-          values: [feature],
-          label: feature.label,
-          id: undefined,
-          expanded: undefined
-        };
-        // Sort trace values to have continuous features first
-        trace.values = trace.values.sort((a, b) => {
-          // Otheriwse, return -1 if a is continuous
-          if (a.type !== 'continuous') return -1;
-          if (b.type !== 'continuous') return 1;
-          // Otherwise, return 0
-          return 0;
-        });
-        // Update trace properties
-        trace.id = trace.id !== undefined ? trace.id : index++;
-        trace.expanded = trace.expanded === false ? false : true;
-        // Store identifier to trace
-        this._traces.set(trace.id, trace);
-        // Store trace in parsed traces
-        traces.push(trace);
-      }
-      // Separate parent, child traces
-      const parent = traces[0];
-      const children = traces.slice(1);
-      // Associate children to parent
-      children.forEach((child) => this._parent.set(child, parent.id!));
-      // Associate parent to children
-      this._children.set(parent, children.map((child) => child.id!));
-      // Insert nested traces in hierarchy
-      hierarchy = [...traces.slice(1), ...hierarchy];
-    }
+  public getTrace(id: number): InternalTrace | undefined {
+    return this.traceMap.get(id);
   }
 
-  // TODO
-  public getTrace(id: number): Trace {
-    return this.traces.get(id)!;
-  }
-
-  public getParent(trace: Trace) {
-    // Get parent index
-    const index = this._parent.get(trace);
+  /**
+   * Get the parent trace of the given trace, if any
+   * @param trace - The trace for which to get the parent
+   * @returns (InternalTrace | undefined) - The parent trace or undefined if the trace has no parent
+   */
+  public getParentTrace(trace: InternalTrace) {
+    const parentIdx = this._parent.get(trace);
     // Return parent trace
-    return index && this._traces.get(index);
+    return parentIdx !== undefined ? this.getTrace(parentIdx) : undefined;
   }
 
-  public getBranch(trace: Trace): Hierarchy {
-    // Define branch
-    const branch: Hierarchy = [];
-    // Define leaves
-    const leaves: Hierarchy = [trace];
-    // Do until leaves are empty
-    while (leaves.length > 0) {
-      // Get parent trace
-      const parent = leaves.pop() as Trace;
-      // Update branch
-      branch.push(parent);
-      // Get children
-      const children = this.getChildren(parent);
-      // Update leaves
-      leaves.push(...children);
+  /**
+   * Return the ids of all the traces that are children of the given trace
+   * @param trace - The trace for which to get the children
+   * @returns (Traces) - The ids of the children traces
+   */
+  public getBranch(trace: InternalTrace): InternalTraces {
+    // Initialize branch
+    const branch: InternalTraces = [];
+    // Initialize stack
+    const stack = [trace];
+    // Loop through stack
+    while (stack.length > 0) {
+      // Get current trace
+      const current = stack.pop()!;
+      // Push current trace to branch
+      branch.push(current);
+      // Push children to stack
+      stack.push(...this.getChildren(current));
     }
     // Return branch
     return branch;
   }
 
-  public getChildren(trace: Trace): Hierarchy {
+  /**
+   * Get the children traces of the given trace
+   * @param trace - The trace for which to get the children
+   * @returns (InternalTraces) - The children traces, can be empty if the trace has no children
+   */
+  public getChildren(trace: InternalTrace): InternalTraces {
     // Get indices of child traces
     const indices = this._children.get(trace) || [];
     // Return child traces
-    return indices.map((i) => this._traces.get(i)!);
+    return indices.map((index) => this.getTrace(index)!);
   }
 
+  private checkValues(tmpTrace: Trace) {
+    for (const feature of tmpTrace.features) {
+      if (feature.type === 'locus') {
+        if (feature.start < 0) {
+          console.warn("Locus start cannot be negative, setting to 0");
+          feature.start = 0;
+        }
+        if (feature.end < 0) {
+          console.warn("Locus end cannot be negative, setting to 0");
+          feature.end = 0;
+        }
+        if (feature.height) {
+          if (feature.height < 0) {
+            console.warn("Locus height cannot be negative, setting to 1");
+            feature.height = 1;
+          }
+          if (tmpTrace.options?.["content-size"] && feature.height > tmpTrace.options["content-size"]) {
+            console.warn("Locus height cannot be bigger than content size, setting to content size");
+            feature.height = tmpTrace.options["content-size"];
+          }
+        }
+      }
+    }
+  }
 }

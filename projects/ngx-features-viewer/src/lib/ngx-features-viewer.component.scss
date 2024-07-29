@@ -1,19 +1,92 @@
 @import '../styles/labels';
 @import '../styles/icons';
-@import '../styles/loci';
-@import '../styles/pins';
-@import '../styles/dssp';
 
-// Define style for generic grid line
-.axis-grid line {
-  stroke-opacity: 0.3;
-  stroke: gray;
+svg * {
+  transform-box: fill-box;
 }
-// Do not show line for sequence
-.axis-grid line:nth-child(1) {
-  stroke-dasharray: 2;
+
+// Variable for styling the features
+:root {
+  --overlay-cursor: crosshair;
+  --feature-cursor: default;
+  --feature-hover-outline: none;
+  --locus-hover-border-radius: 0;
+  --sequence-font-size: 16px;
+  --feature-font-size: 16px;
+  --x-axis-font-size: 16px;
+  --feature-font-family: monospace;
+  --sequence-font-family: monospace;
+  --x-axis-font-family: monospace;
 }
-// Hide default y-axis ticks
-.y.axis .tick text {
-  display: none;
+
+.brush .selection {
+  stroke: #0b2ea2;
+  stroke-width: 1;
+  fill: #4682b4;
+  fill-opacity: .325;
+  shape-rendering: crispEdges;
+  display: block;
+  height: 100%;
 }
+
+g .feature {
+  // Cursor style on a specific feature
+  cursor: var(--feature-cursor);
+  // The font size of the feature label
+  font-size: var(--feature-font-size);
+  font-family: var(--feature-font-family), monospace;
+  // The text inside a feature is not clickable
+  > text {
+    pointer-events: none;
+  }
+
+  // The locus and pin feature can be highlighted when hovered
+  &.locus > rect:hover {
+    outline: var(--feature-hover-outline);
+    border-radius: var(--locus-hover-border-radius);
+  }
+
+  &.pin > circle:hover {
+    outline: var(--feature-hover-outline);
+    border-radius: 100%;
+  }
+}
+
+g .sequence {
+  font-size: var(--sequence-font-size);
+  font-family: var(--sequence-font-family), monospace;
+}
+
+g .tick {
+  font-size: var(--x-axis-font-size);
+  font-family: var(--x-axis-font-family), monospace !important;
+}
+
+.overlay {
+  cursor: var(--overlay-cursor);
+}
+
+// Global setting for all text elements
+text {
+  //font-family: monospace;
+  user-select: none;
+}
+
+
+.tooltip {
+  user-select: none;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  margin: 0;
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  white-space: nowrap;
+  z-index: 9999999;
+  transition: opacity 0.2s cubic-bezier(0.23, 1, 0.32, 1) 0s, visibility 0.2s cubic-bezier(0.23, 1, 0.32, 1) 0s, transform 0.4s cubic-bezier(0.23, 1, 0.32, 1) 0s;
+  transform: translate3d(0px, 0px, 0px);
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+}
+

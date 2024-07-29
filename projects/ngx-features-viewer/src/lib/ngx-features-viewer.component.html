@@ -1,22 +1,49 @@
 <div style="position: relative; display: block; width: 100%; height: 100%;" #root>
   <!-- Case template for left label exists -->
-  @if (labelLeft) {
+  @if (initializeService.labelLeft; as label) {
     <!-- Loop through each trace, generate custom tooltip -->
-    @for(kv of featuresService.traces | keyvalue; track $index) {
+    @for (trace of featuresService.tracesNoNesting; track trace.id) {
       <!-- Then, generate trace as specified in the given template -->
-      <div [id]="'label-left-' + kv.key" tabindex=0 (click)="drawService.onLabelClick(kv.value)" (keyup)="drawService.onLabelClick(kv.value)">
-        <ng-container [ngTemplateOutlet]="labelLeft.templateRef" [ngTemplateOutletContext]="{ trace: kv.value }"></ng-container>
+      <div [id]="'label-left-' + trace.id" tabindex=0 (click)="drawService.onLabelClick(trace)"
+           (keyup)="drawService.onLabelClick(trace)" [style.display]="trace.show ? 'block' : 'none'">
+        <ng-container [ngTemplateOutlet]="label.templateRef"
+                      [ngTemplateOutletContext]="{ trace: trace }"></ng-container>
       </div>
     }
   }
   <!-- Case template for right label exists -->
-   @if(labelRight) {
+  @if (initializeService.labelRight; as label) {
     <!-- Loop through each trace, generate custom tooltip -->
-    @for(kv of featuresService.traces | keyvalue; track $index) {
+    @for (trace of featuresService.tracesNoNesting; track trace.id) {
       <!-- Then, generate trace as specified in the given template -->
-      <div [id]="'label-right-' + kv.key" tabindex=0>
-        <ng-container [ngTemplateOutlet]="labelRight.templateRef" [ngTemplateOutletContext]="{ trace: kv.value }"></ng-container>
+      <div [id]="'label-right-' + trace.id" tabindex=0 [style.display]="trace.show ? 'block' : 'none'">
+        <ng-container [ngTemplateOutlet]="label.templateRef"
+                      [ngTemplateOutletContext]="{ trace: trace }"></ng-container>
       </div>
     }
   }
+
 </div>
+
+<!-- Initialize tooltip -->
+<div class="tooltip" #tooltip>
+  <!-- Define tooltip inner scaffold -->
+  <div style="position: relative; display: block">
+    <!-- Subscribe to template emission -->
+    @if (tooltipService.tooltip$ | async; as context) {
+      <!-- Show template -->
+      <ng-container [ngTemplateOutlet]="tooltipService.templateRef"
+                    [ngTemplateOutletContext]="context"></ng-container>
+    }
+  </div>
+</div>
+
+<ng-template let-trace="trace" let-feature="feature" let-index="index" let-coordinates="coordinates"
+             ngx-features-viewer-tooltip>
+  Trace: {{ trace.id }}<br>
+  Feature: {{ feature.type }}<br>
+  Index: {{ index }}<br>
+  Coordinates: ({{ coordinates[0] }}, {{ coordinates[1] }})<br>
+</ng-template>
+
+<ng-container *ngIf="drawService.selectedFeature$ | async"></ng-container>

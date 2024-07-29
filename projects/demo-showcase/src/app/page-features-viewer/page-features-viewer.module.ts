@@ -10,13 +10,14 @@ const routes: Routes = [{ path: '', component: PageFeaturesViewerComponent }];
 
 @NgModule({
   declarations: [
-    PageFeaturesViewerComponent,
+
   ],
-  imports: [
+  imports : [
     NgxFeaturesViewerLabelDirective,
     NgxFeaturesViewerComponent,
     RouterModule.forChild(routes),
-    CommonModule
-  ]
+    CommonModule,
+    PageFeaturesViewerComponent,
+  ],
 })
 export class PageFeaturesViewerModule { }

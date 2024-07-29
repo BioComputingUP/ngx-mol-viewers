@@ -1,4 +1,4 @@
-import { Observable, ReplaySubject, debounceTime, distinctUntilChanged, map, startWith } from 'rxjs';
+import { distinctUntilChanged, map, Observable, ReplaySubject, startWith } from 'rxjs';
 import { Injectable } from '@angular/core';
 // Custom providers
 import { InitializeService } from './initialize.service';
@@ -19,7 +19,7 @@ export interface Margin {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function resize<E extends d3.Selection<any, undefined, null, undefined>,>(element: E, size: Size, margin: Margin) {
+export function resize<E extends d3.Selection<any, undefined, null, undefined>, >(element: E, size: Size, margin: Margin) {
   // Return element
   element
     // After resizing
@@ -30,12 +30,10 @@ export function resize<E extends d3.Selection<any, undefined, null, undefined>,>
     .attr('x', margin.left);
 }
 
-@Injectable({
-  providedIn: 'platform'
-})
+@Injectable({providedIn: 'platform'})
 export class ResizeService {
   /** Resize handler for SVG container
-   * 
+   *
    * 1. Resizes the root SVG element according to the width of its parent DIV element.
    * 2. Resizes the inner containers to match the root SVG element size.
    * 3. Update horizontal, vertical axes positions, to meet SVG margin. This, requires to have
@@ -84,9 +82,7 @@ export class ResizeService {
     // Trigger resize event
     const resize$: Observable<void> = this.resize$.pipe(
       // Get width, height from root HTML div
-      map(() => ({ width: this.width, height: this.height })),
-      // // Add some delay, avoid flooding of resize events
-      // debounceTime(10),
+      map(() => ({width: this.width, height: this.height})),
       // Check that width value actually changed
       distinctUntilChanged((p: Size, c: Size) => p.width === c.width),
       // Map to void
@@ -107,14 +103,12 @@ export class ResizeService {
       map(() => this.updateRangeX()),
       // 4.2 Update vertical range
       map(() => this.updateRangeY()),
-      // // TODO Remove this
-      // tap(() => console.log('Resized!')),
     );
   }
 
   public updateRoot(): void {
     // Get vertical scale
-    const { y } = this.scale;
+    const {y} = this.scale;
     // Get vertical range
     const range = y.range();
     // Compute height as the difference between the first and the last value in range
@@ -129,22 +123,23 @@ export class ResizeService {
 
   public updateDraw(): void {
     // Initialize horizontal, vertical size
-    const size = { width: 0, height: 0 };
+    const size = {width: 0, height: 0};
     // Update horizontal, vertical size
     size.height = this.height - this.margin.top - this.margin.bottom;
     size.width = this.width - this.margin.left - this.margin.right;
     // Resize inner clip container
     resize(this.initializeService.clip, size, this.margin);
+    resize(this.initializeService.mask, size, this.margin);
     resize(this.initializeService.events, size, this.margin);
   }
 
   public updateAxes(): void {
-    // Unpack horizontal, vertical axis
-    const { x, y } = this.axes;
-    // Translate horizontal axis
-    x.attr('transform', `translate(0, ${this.height - this.margin.top})`);
+    // // Unpack horizontal, vertical axis
+    // const {x, y} = this.axes;
+    // // Translate horizontal axis
+    // x.attr('transform', `translate(0, ${this.height - this.margin.top})`);
     // Translate vertical axis
-    y.attr('transform', `translate(${this.margin.left}, 0)`);
+    this.axes.y.attr('transform', `translate(${this.margin.left}, 0)`);
   }
 
   public updateRangeX(): void {
@@ -153,46 +148,10 @@ export class ResizeService {
     // Get width of root SVG element
     const width = this.width;
     // Get left, right margin of root SVG element
-    const { left, right } = this.margin;
+    const {left, right} = this.margin;
     // Update range in scale according to horizontal margins
     x.range([left, width - right]);
   }
-
-  // public updateRangeY(): void {
-  //   // Get vertical scale
-  //   const y = this.scale.y;
-  //   // Get domain, as previously defined in draw pipeline
-  //   // NOTE It includes start, end empty positions
-  //   const domain = y.domain();
-  //   // // Get map between feature identifier and its height
-  //   // const height = this.initService.height;
-  //   // Compute range
-  //   const range = domain.reduce((range: number[], id: string, i: number) => {
-  //     // Initialize offset
-  //     let offset = 0;
-  //     // Case on first feature (sequence)
-  //     if (i === 0 && id === 'sequence') {
-  //       // Update offset adding initial top margin
-  //       offset += this.margin.top;
-  //       offset += height.get(id)! / 2;
-  //     }
-  //     // Otherwise
-  //     else {
-  //       // Get height according to previous element
-  //       offset += range[i - 1]!;
-  //       offset += height.get(domain[i-1])! / 2;
-  //       offset += height.get(domain[i])! / 2;
-  //     }
-  //     // Finally, update range
-  //     return [...range, offset];
-  //   }, []);
-  //   // Add last offset
-  //   let offset = 0;
-  //   offset += range.at(-1)!;
-  //   offset += height.get(domain.at(-1)!)! / 2;
-  //   // Update vertical axis range
-  //   y.range([...range, offset]);
-  // }
 
   public updateRangeY(): void {
     // Do nothing

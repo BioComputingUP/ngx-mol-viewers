@@ -1,9 +1,10 @@
 /*
  * Public API Surface of ngx-features-viewer
  */
-
-// export * from './lib/ngx-features-viewer.service';
-export { NgxFeaturesViewerLabelDirective } from './lib/ngx-features-viewer.directive';
+export { NgxFeaturesViewerTooltipDirective } from './lib/ngx-features-viewer.component';
+export { NgxFeaturesViewerLabelDirective } from './lib/ngx-features-viewer.component';
 export { NgxFeaturesViewerComponent } from './lib/ngx-features-viewer.component';
-export { Hierarchy } from './lib/hierarchy';
 export { Settings } from './lib/settings';
+export { Sequence } from './lib/sequence';
+export { Trace } from './lib/trace';
+export { SelectionContext } from './lib/services/initialize.service';
