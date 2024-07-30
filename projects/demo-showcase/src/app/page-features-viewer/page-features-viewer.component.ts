@@ -168,6 +168,7 @@ export class PageFeaturesViewerComponent {
       }],
     }, {
       label : "Continuous Step",
+      expanded : false,
       options : {
         "grid" : true,
         "grid-line-color" : "gray",
@@ -193,6 +194,7 @@ export class PageFeaturesViewerComponent {
       }],
       nested : [{
         label : "Continuous Basis",
+        expanded : false,
         options : {
           "grid" : true,
           "grid-line-color" : "gray",
@@ -215,6 +217,33 @@ export class PageFeaturesViewerComponent {
           curveType : "curveBasis",
           opacity : 0.3,
           showArea : true,
+        }],
+        nested : [{
+          label : "Continuous Basis 2",
+          expanded : true,
+          options : {
+            "grid" : true,
+            "grid-line-color" : "gray",
+            "grid-line-width" : 0.5,
+            "grid-y-values" : [65, 130],
+            "content-size" : 100,
+            'margin-top' : 0,
+            "line-height" : 100,
+            "zero-line" : true,
+            "zero-line-color" : "black",
+            "zero-line-width" : 1,
+          },
+          features : [{
+            label : "feature-0",
+            type : "continuous",
+            values : this.curvePoints,
+            min : 30,
+            max : 130,
+            color : "purple",
+            curveType : "curveBasis",
+            opacity : 0.3,
+            showArea : true,
+          }],
         }],
       }, {
         label : "Continuous Linear No Area",
