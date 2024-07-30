@@ -22,6 +22,8 @@ type SVG = d3.Selection<SVGSVGElement, undefined, null, undefined>;
 
 type Group = d3.Selection<SVGGElement, undefined, null, undefined>;
 
+type Circle = d3.Selection<SVGCircleElement, undefined, null, undefined>;
+
 type Rect = d3.Selection<SVGRectElement, undefined, null, undefined>;
 
 type RectShadow = d3.Selection<SVGRectElement, SelectionContext, null, undefined>;
@@ -151,6 +153,8 @@ export class InitializeService implements OnDestroy {
 
   public focus!: Group;
 
+  public hoverCircleMarker!: Circle;
+
   // Declare initialization pipeline
   public readonly initialized$: Observable<d3.Selection<SVGSVGElement, undefined, null, undefined>>;
 
@@ -265,6 +269,12 @@ export class InitializeService implements OnDestroy {
           .attr('fill-opacity', 0.15)
           .attr('height', '100%')
           .data([{trace : undefined, feature : undefined, range : undefined} as SelectionContext])
+
+        this.hoverCircleMarker = this.svg.append('circle')
+          .attr('class', 'hover-circle-marker')
+          .attr('r', 4)
+          .attr('fill', 'none')
+          .attr('fill-opacity', 1);
       }),
       // Initialize horizontal, vertical axis
       tap((svg) => {

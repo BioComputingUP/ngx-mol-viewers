@@ -1,7 +1,8 @@
 ngx-features-viewer {
     --feature-cursor: pointer;
     --overlay-cursor: col-resize;
-    --feature-hover-outline: 2px outset #00ffa0;
+    --feature-hover-color: #00ffa0;
+    --feature-hover-width: 2px;
     --locus-hover-border-radius: 4px;
 }
 

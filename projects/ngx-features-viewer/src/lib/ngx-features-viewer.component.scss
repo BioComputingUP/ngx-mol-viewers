@@ -9,7 +9,8 @@ svg * {
 :root {
   --overlay-cursor: crosshair;
   --feature-cursor: default;
-  --feature-hover-outline: none;
+  --feature-hover-color: none;
+  --feature-hover-width: none;
   --locus-hover-border-radius: 0;
   --sequence-font-size: 16px;
   --feature-font-size: 16px;
@@ -41,15 +42,33 @@ g .feature {
   }
 
   // The locus and pin feature can be highlighted when hovered
-  &.locus > rect:hover {
-    outline: var(--feature-hover-outline);
-    border-radius: var(--locus-hover-border-radius);
+  &.locus > rect:hover,
+  &.pin > circle:hover,
+  &.poly > polygon:hover {
+    stroke: var(--feature-hover-color);
+    stroke-width: var(--feature-hover-width);
   }
 
-  &.pin > circle:hover {
-    outline: var(--feature-hover-outline);
-    border-radius: 100%;
+  &.dssp:hover {
+    > .sheet,
+    > .turn {
+      stroke: var(--feature-hover-color);
+      stroke-width: var(--feature-hover-width);
+    }
+
+    > .helix {
+      stroke: var(--feature-hover-color);
+      stroke-width: 0.5;
+    }
+
+    > .coil {
+      filter: drop-shadow(0 2px var(--feature-hover-color));
+    }
   }
+}
+
+.hover-circle-marker {
+  fill: var(--feature-hover-color);
 }
 
 g .sequence {

@@ -63,6 +63,8 @@ export class PageFeaturesViewerComponent {
   traces: Trace[];
 
   readonly curvePoints = Array.from({length : 240}, () => Math.floor(Math.random() * 100) + 30);
+  public traceButtonClicked: string | null = null;
+  public featureSelected: SelectionContext | null = null;
 
   constructor(public themeSelectorService: ThemeSelectorService) {
     // Define theme retrieval pipeline
@@ -538,10 +540,10 @@ export class PageFeaturesViewerComponent {
   }
 
   onFeatureSelected($event: SelectionContext | undefined) {
-    //console.log(`Feature selected: ${JSON.stringify($event)}`);
+    this.featureSelected = $event || null;
   }
 
   onTraceButtonClick(trace: Trace) {
-    alert(`Trace button clicked: ${trace.label}`);
+    this.traceButtonClicked = trace.label || 'Label not defined';
   }
 }

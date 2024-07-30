@@ -361,7 +361,6 @@ export class DrawService {
     dotsContainer.selectAll('text.dot').attr('fill', textColor);
   }
 
-
   private createBrush() {
     this.initializeService.brushRegion = this.initializeService.draw.append('g').attr('class', 'brush');
   }
@@ -526,6 +525,8 @@ export class DrawService {
     const tooltipService = this.tooltipService;
     const initializeService = this.initializeService;
     const selectionEmitter$ = this.selectedFeatureEmit$;
+    const scale = this.initializeService.scale;
+    const circle = this.initializeService.hoverCircleMarker;
 
     // Generate and store traces groups
     this['group.traces'] = this.initializeService.draw
@@ -536,6 +537,7 @@ export class DrawService {
       .attr('class', 'trace');
     // .raise();
     // Iterate over each trace
+
     this['group.traces'].each(function (trace) {
       // Define trace group
       const traceGroup = d3.select(this);
@@ -553,11 +555,41 @@ export class DrawService {
           // Bind data to selection
           selection.data([feature]);
           // On mouse enter / over
-          selection.on('mouseenter', (event: MouseEvent) => tooltipService.onMouseEnter(event, trace, feature, index));
+          selection.on('mouseenter', (event: MouseEvent) => {
+            tooltipService.onMouseEnter(event, trace, feature, index)
+          });
           // On mouse move
-          selection.on('mousemove', (event: MouseEvent) => tooltipService.onMouseMove(event, trace, feature, index));
+          selection.on('mousemove', (event: MouseEvent) => {
+            tooltipService.onMouseMove(event, trace, feature, index);
+
+            // Get all the necessary values to compute the position of the grid lines
+            const mt = scale.y('' + trace.id);
+            const lh = trace.options?.['line-height'] || settings['line-height'];
+            const cs = trace.options?.['content-size'] || settings['content-size'];
+
+            // top is calculated as the distance to the top, plus the lh/2 to get the mid-point of the line, plus the cs/2 to get the bottom of the line
+            const bottom = mt + lh / 2 + cs / 2;
+            const top = mt + lh / 2 - cs / 2;
+
+            function rescaleY(yValue: number): number {
+              // top and bottom are actually switched, as the y-axis is inverted
+              return bottom + (yValue - trace.domain.min) / (trace.domain.max - trace.domain.min) * (top - bottom);
+            }
+
+            if (feature.type == 'continuous') {
+              const coordinates = initializeService.getCoordinates(event, trace.id);
+              // Add a small circle to the feature to indicate the position of the mouse
+              circle
+                .attr('cx', scale.x(coordinates[0]))
+                .attr('cy', rescaleY(feature.values[coordinates[0] - 1]))
+                .attr('display', 'block')
+            }
+          });
           // On mouse leave
-          selection.on('mouseleave', () => tooltipService.onMouseLeave());
+          selection.on('mouseleave', () => {
+            tooltipService.onMouseLeave();
+            circle.attr('display', 'none');
+          });
           // On feature click
           selection.on('click', (event: MouseEvent) => selectFeature(feature, initializeService, event, trace, selectionEmitter$));
 
@@ -647,6 +679,7 @@ export class DrawService {
 
             if (shapeToDraw == "sheet") {
               const bSheetAttributes = {
+                'class' : 'sheet',
                 'stroke' : d3.color(feature.color || 'white')!.darker(.5).formatHex(),
                 'stroke-width' : 2,
                 'fill' : feature.color || 'white',
@@ -658,6 +691,7 @@ export class DrawService {
             if (shapeToDraw == "coil") {
               const sw = Math.min(16, Math.max(3, (trace.options?.['content-size'] || settings['content-size']) / 8));
               const coilAttributes = {
+                'class' : 'coil',
                 'stroke' : feature.color || 'black',
                 'stroke-opacity' : feature.opacity || .5,
                 'stroke-width' : sw,
@@ -679,6 +713,8 @@ export class DrawService {
     const settings = this.initializeService.settings;
     const coilPoints = this.coilPoints;
     const charWidth = this.featureLabelCharWidth;
+
+    this.initializeService.hoverCircleMarker.attr('display', 'none')
 
     // Loop through each trace
     this['group.traces'].each(function (trace) {
@@ -872,6 +908,7 @@ export class DrawService {
               .data(xPositions)
               .join(
                 enter => enter.append('path')
+                  .attr("class", shapeToDraw)
                   .attr("d", shapePath)
                   .attr("stroke", d3.color(feature.color || 'white')!.darker(0.5).formatHex())
                   .attr("stroke-width", shapeToDraw == "helix" ? 0.1 : 0.7)
