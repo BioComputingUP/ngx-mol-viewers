@@ -133,11 +133,12 @@ export class NgxSequenceViewerComponent implements OnChanges {
   @Input()
   public sequence?: string;
 
-  public sequences!: string[];
+  @Input()
+  public sequences?: string[];
 
   public get first(): string {
     // Just return first sequence
-    return this.sequences[0];
+    return (this.sequences as string[])[0];
   }
 
   public get length(): number {
@@ -178,7 +179,7 @@ export class NgxSequenceViewerComponent implements OnChanges {
       const styles: Record<string, Array<{ 'background-color'?: string, 'border-color'?: string, 'color'?: string }>> = {};
       // Define sequences: index, consensus, input sequences
       const consensus = this.consensus.map(([aa]) => aa).join('');
-      const sequences = [consensus, ...this.sequences];
+      const sequences = [consensus, ...this.sequences || []];
       // Loop through each row (sequence)
       for (let i = 0; i < sequences.length; i++) {
         // Update index
@@ -328,8 +329,16 @@ export class NgxSequenceViewerComponent implements OnChanges {
    * If expectations are not met, then an error is thrown.
    */
   public setSequences(): void {
+    // Case sequences are provided
+    if (this.sequences && this.labels) {
+      // Check whether the size of sequences and labels match
+      if (this.sequences.length !== this.labels.length) {
+        // Otherwise, throw an error
+        throw new Error('Number of sequences does not match number of labels');
+      }
+    }
     // Case fasta file is provided
-    if (this.fasta) {
+    else if (this.fasta) {
       // Attempt to parse fasta file
       const parsed = FASTA.parse(this.fasta);
       // Set sequences and labels
@@ -401,14 +410,16 @@ export class NgxSequenceViewerComponent implements OnChanges {
   public setLogo(): void {
     // Initialize logo
     this.logo = [];
+    // define sequences
+    const sequences = this.sequences || [];
     // Define number of sequences
-    const count = this.sequences.length;
+    const count = sequences.length;
     // Loop through each position in the alignment
     for (let i = 0; i < this.length; i++) {
       // Define a position in the logo
       let position: { [aa: string]: number } = {};
       // Loop through each sequence in the alignment
-      for (const sequence of this.sequences) {
+      for (const sequence of sequences) {
         // Get amino acid in current position
         const aa = sequence[i];
         // Update count of amino acid in position
