@@ -1,17 +1,29 @@
-import { BehaviorSubject, Observable, ReplaySubject, Subscription, combineLatestWith, filter, from, map, shareReplay, switchMap, withLatestFrom } from 'rxjs';
 import { Injectable, OnDestroy } from '@angular/core';
+import { Structure } from 'molstar/lib/mol-model/structure';
+import {
+  BehaviorSubject,
+  combineLatestWith,
+  filter,
+  from,
+  map,
+  Observable,
+  ReplaySubject,
+  shareReplay,
+  Subscription,
+  switchMap,
+  withLatestFrom,
+} from 'rxjs';
 // Custom dependencies
 // import { Interaction, Interactor } from '../interfaces/interaction';
 import { Interaction } from '../interfaces/interaction';
-// import { CreateMeshProvider } from './interactions.provider';
-import { StructureService, StructureStateObject } from './structure.service';
-import { SettingsService } from './settings.service';
+import { Locus } from '../interfaces/locus';
+import { Source } from '../interfaces/source';
+import { BundleLayer } from '../molstar';
 import { MolstarService } from './molstar.service';
 import { PluginService } from './plugin.service';
-import { Source } from '../interfaces/source';
-import { Locus } from '../interfaces/locus';
-import { BundleLayer } from '../molstar';
-import { Structure } from 'molstar/lib/mol-model/structure';
+import { SettingsService } from './settings.service';
+// import { CreateMeshProvider } from './interactions.provider';
+import { StructureService, StructureStateObject } from './structure.service';
 
 @Injectable()
 export class RepresentationService implements OnDestroy {
@@ -51,7 +63,7 @@ export class RepresentationService implements OnDestroy {
       // Cache result
       shareReplay(1),
     );
-    
+
     // Apply settings to represenatation
     this.representation$ = component$.pipe(
       // Combine with settings emission
@@ -61,7 +73,7 @@ export class RepresentationService implements OnDestroy {
       // Define color / alpha layers to be applied to structure
       map(([[, settings], loci]) => {
         // Define locus for backbone color
-        const backboneLayer = this.locusToBundleLayer({ color: settings['backbone-color'] });
+        const backboneLayer = this.locusToBundleLayer({color : settings['backbone-color']});
         // Define layers for loci
         const lociLayers = loci.map((locus) => this.locusToBundleLayer(locus));
         // Return bundle layers
@@ -118,16 +130,22 @@ export class RepresentationService implements OnDestroy {
     // In case chain is defined
     if (locus?.chain !== undefined) {
       // Get chain start and end indices
-      [ locusNumericStart, locusNumericEnd ] = this.structureService.c2i.get(locus.chain) || [ locusNumericStart, locusNumericEnd];
+      [locusNumericStart, locusNumericEnd] = this.structureService.c2i.get(locus.chain) ?? [locusNumericStart, locusNumericEnd];
     }
     // Case both start and end indices are defined
     if (locus.chain && (locus?.start !== undefined && locus?.end !== undefined)) {
       // Define full locus start
       const locusFullStart = locus.chain + locus.start;
       const locusFullEnd = locus.chain + locus.end;
-      // Slice residues by start and end positions
-      locusNumericStart = Math.max(this.structureService.r2i.get(locusFullStart) || locusNumericStart);
-      locusNumericEnd = Math.min(this.structureService.r2i.get(locusFullEnd) || locusNumericEnd);
+
+      if (this.checkIndexes(locusFullStart, locusFullEnd)) {
+        // Slice residues by start and end positions
+        locusNumericStart = this.structureService.r2i.get(locusFullStart)!;
+        locusNumericEnd = this.structureService.r2i.get(locusFullEnd)!;
+      } else {
+        [locusNumericStart, locusNumericEnd] = [Number.NaN, Number.NaN];
+        console.error('Invalid locus start and end indices', locus);
+      }
     }
     // Get residue identifiers
     residueIds = residueIds.slice(locusNumericStart, locusNumericEnd + 1);
@@ -136,9 +154,13 @@ export class RepresentationService implements OnDestroy {
     // Define current Mol* bundle
     const bundleLayer = Molstar.getBundleFromLoci(representationLoci);  // StructureElement.Bundle.fromLoci(locus);
     // Cast HEX color to Mol* color
-    const [representationColor, represenatationAlpha] = Molstar.colorFromHexString(locus?.color || '#ffffffff');
+    const [representationColor, representationAlpha] = Molstar.colorFromHexString(locus?.color || '#ffffffff');
     // Return BundleLayer
-    return { bundle: bundleLayer, color: representationColor, alpha: represenatationAlpha, clear: false };
+    return {bundle : bundleLayer, color : representationColor, alpha : representationAlpha, clear : false};
+  }
+
+  private checkIndexes(locusFullStart: string, locusFullEnd: string) {
+    return this.structureService.r2i.has(locusFullStart) && this.structureService.r2i.has(locusFullEnd);
   }
 
   protected async createRepresentation(structure: StructureStateObject): Promise<void> {
@@ -147,19 +169,19 @@ export class RepresentationService implements OnDestroy {
     // Create component for the whole structure
     const component = await plugin.builders.structure.tryCreateComponentStatic(structure, 'protein');
     // Initialize representation
-    await plugin.builders.structure.representation.addRepresentation(component!, { type: 'cartoon', color: 'uniform' });
+    await plugin.builders.structure.representation.addRepresentation(component!, {type : 'cartoon', color : 'uniform'});
   }
 
   protected async colorRepresentation(structure: Structure, layers: BundleLayer[]): Promise<void> {
     // Get Mol* lazy loaded dependencies
     const Molstar = this.molstarService.molstar;
     // Define color layers
-    const colorLayers = layers.map(({ bundle, color, clear }) => ({ bundle, color, clear }));
-    const alphaLayers = layers.map(({ bundle, alpha }) => ({ bundle, value: alpha }));
+    const colorLayers = layers.map(({bundle, color, clear}) => ({bundle, color, clear}));
+    const alphaLayers = layers.map(({bundle, alpha}) => ({bundle, value : alpha}));
     // // Filter bundle of layers
     // const colorBundle = Molstar.getFilteredBundle(colorLayers, structure);
     // Define plugin instance
-    const { plugin } = this.pluginService;
+    const {plugin} = this.pluginService;
     // Initialize plugin update
     const update = plugin.state.data.build();
     // Loop through structures in plugin
@@ -172,18 +194,18 @@ export class RepresentationService implements OnDestroy {
           update.to(representationRef.cell.transform.ref).apply(
             Molstar.OverpaintStructureRepresentation3DFromBundle,
             // TODO Fix this 
-            { layers: colorLayers },
+            {layers : colorLayers},
           );
           // Apply transparency to current representation
           update.to(representationRef.cell.transform.ref).apply(
             Molstar.TransparencyStructureRepresentation3DFromBundle,
-            { layers: alphaLayers}
+            {layers : alphaLayers},
           );
         }
       }
     }
     // Apply update
-    await update.commit({ canUndo: false, doNotUpdateCurrent: false });
+    await update.commit({canUndo : false, doNotUpdateCurrent : false});
   }
 
   // protected async getLociRepresentation(structure: Structure, loci: Locus[]): Promise<void> {
