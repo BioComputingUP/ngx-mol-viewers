@@ -1,8 +1,7 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { Structure } from 'molstar/lib/mol-model/structure';
 import {
-  BehaviorSubject,
-  combineLatestWith,
+  BehaviorSubject, combineLatest, combineLatestWith, concatMap,
   filter,
   from,
   map,
@@ -10,8 +9,8 @@ import {
   ReplaySubject,
   shareReplay,
   Subscription,
-  switchMap,
-  withLatestFrom,
+  switchMap, tap,
+  withLatestFrom, zip,
 } from 'rxjs';
 // Custom dependencies
 // import { Interaction, Interactor } from '../interfaces/interaction';
@@ -60,16 +59,18 @@ export class RepresentationService implements OnDestroy {
       withLatestFrom(source$),
       // Generate structure
       switchMap(([structure]) => from(this.createRepresentation(structure))),
+      tap(() => console.log('Created representation')),
       // Cache result
       shareReplay(1),
     );
 
-    // Apply settings to represenatation
+    // Apply settings to representation
     this.representation$ = component$.pipe(
+      tap(() => console.log('component changed')),
       // Combine with settings emission
       combineLatestWith(this.settingsService.settings$),
       // Combine with loci emission
-      combineLatestWith(this.loci$),
+      withLatestFrom(this.loci$),
       // Define color / alpha layers to be applied to structure
       map(([[, settings], loci]) => {
         // Define locus for backbone color
@@ -82,7 +83,7 @@ export class RepresentationService implements OnDestroy {
       // Apply colors to representation
       switchMap((bundleLayers) => from(this.colorRepresentation(this.structureService.structure, bundleLayers))),
       // Cache results
-      shareReplay(1),
+      //shareReplay(1),
     );
 
 

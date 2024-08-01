@@ -1,7 +1,7 @@
 import { ThemeSelectorService } from '../theme-selector/theme-selector.service';
-import { Locus, Settings } from '@ngx-structure-viewer';
-import { Component } from '@angular/core';
-import { map, Observable, shareReplay } from 'rxjs';
+import { Locus, Settings, Source } from '@ngx-structure-viewer';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { BehaviorSubject, map, Observable, shareReplay } from 'rxjs';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
@@ -9,6 +9,7 @@ import { map, Observable, shareReplay } from 'rxjs';
   // Handle representation
   templateUrl: './page-structure-viewer.component.html',
   styleUrl: './page-structure-viewer.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PageStructureViewerComponent {
 
@@ -22,13 +23,23 @@ export class PageStructureViewerComponent {
     'backbone-color': '#dee2e680',
   };
 
+  // Define source
+  source$ = new BehaviorSubject<Source>({
+    link: 'https://files.rcsb.org/download/1UBQ.cif',
+    format: 'mmcif',
+    type: 'remote',
+    label: '3HHR',
+    binary: false
+  });
+
   // NOTE Used the IBM colorblind palette
-  readonly loci: Locus[] = [
+  loci: Locus[] = [
     // { chain: 'A',                           color: '#ff000080' },  // Color chain A (only chain available)
-    { start: '1',   end: '4',   chain: 'A', color: '#648FFF80' },  // Color first beta strand
-    { start: '32',  end: '35',  chain: 'A', color: '#785EF080' },  // Color second beta strand
-    { start: '23',  end: '30',  chain: 'A', color: '#DC267F80' },  // Color first alpha helix
-    { start: '7',   end: '19',  chain: 'A', color: '#FE610080' },  // Color second alpha helix
+    { start: '43',   end: '43',   chain: 'A', color: '#648fff' },  // Color first beta strand
+    { start: '43',   end: '43',   chain: 'B', color: '#ff048b' },  // Color first beta strand
+    // { start: '32',  end: '35',  chain: 'A', color: '#785EF080' },  // Color second beta strand
+    // { start: '23',  end: '30',  chain: 'A', color: '#DC267F80' },  // Color first alpha helix
+    // { start: '7',   end: '19',  chain: 'A', color: '#FE610080' },  // Color second alpha helix
   ];
 
   public settings$: Observable<Partial<Settings>>;
@@ -43,4 +54,25 @@ export class PageStructureViewerComponent {
     );
   }
 
+  changeSource() {
+    this.source$.next({
+      link: 'https://files.rcsb.org/download/3HHR.cif',
+      format: 'mmcif',
+      type: 'remote',
+      label: '3HHR',
+      binary: false
+    });  // Change source
+
+
+    const locis = [
+      { start: '1',   end: '10',   chain: 'A', color: '#2fe500' },  // Color first beta strand
+      { start: '10',   end: '20',   chain: 'A', color: '#5e46c7' },  // Color first beta strand
+      { start: '20',   end: '30',   chain: 'A', color: '#b71db0' },  // Color first beta strand
+    ]
+
+    const idx = Math.random() * locis.length | 0;
+
+    this.loci = [locis[idx]];
+    console.log("changing loci", this.loci)
+  }
 }

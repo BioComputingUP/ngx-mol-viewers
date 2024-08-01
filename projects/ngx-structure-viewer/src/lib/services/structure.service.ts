@@ -51,12 +51,11 @@ export class StructureService {
     this.structure$ = this.pluginService.plugin$.pipe(
       // Subscribe to source changes
       combineLatestWith(this.source$),
-      // TODO Remove this
-      tap(([plugin, source]) => console.log('plugin', plugin, 'source', source)),
+      // tap(([plugin, source]) => console.log('plugin', plugin, 'source', source)),
       // Join source and plugin
       switchMap(([, source]) => from(this.parseSource(source))),
       // Case data is defined
-      filter((data): data is DataStateObject => data ? true : false),
+      filter((data): data is DataStateObject => !!data),
       // Generate trajectory
       switchMap((data) => from(this.createStructure(data, this.source!))),
       // Store structure wrapper
@@ -179,6 +178,8 @@ export class StructureService {
         index++;
       }
     }));
+
+    console.log('Residues set')
   }
 
 }
