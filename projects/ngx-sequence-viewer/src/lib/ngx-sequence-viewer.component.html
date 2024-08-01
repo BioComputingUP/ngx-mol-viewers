@@ -9,7 +9,7 @@
     <!-- First label is empty (index) -->
     <div class="label">Index</div>
     <!-- Case there is more than one sequence -->
-    @if(sequences.length > 1) {
+    @if(sequences!.length > 1) {
       <!-- Then, show consensus -->
       <div class="label">Consensus</div>
     }
@@ -30,7 +30,7 @@
             <!-- Add index (and placeholder) -->
             <ng-container *ngTemplateOutlet="indexCellTemplate; context: { j: chunk.start + j }"></ng-container>
             <!-- Case there is more than one sequence -->
-            @if(sequences.length > 1) {
+            @if(sequences!.length > 1) {
               <!-- Then, show consensus -->
               <ng-container *ngTemplateOutlet="consensusCellTemplate; context: { j: chunk.start + j }"></ng-container>
             }
@@ -81,7 +81,7 @@
       [style.color]="style['color']"
       (mouseenter)="onMouseEnter($event, indexService.keys[j])"
       (mousedown)="onMouseDown($event, indexService.keys[j])">
-      {{ value ? value : sequences[i][j] }}
+      {{ value ? value : sequences![i][j] }}
     </div>
   }
 }

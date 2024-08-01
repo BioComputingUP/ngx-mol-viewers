@@ -20,15 +20,9 @@
       "@ngx-sequence-viewer": [
         "./projects/ngx-sequence-viewer/src/public-api"
       ],
-      // "ngx-sequence-viewer": [
-      //   "./dist/ngx-sequence-viewer"
-      // ],
-      // "ngx-features-viewer": [
-      //   "./dist/ngx-features-viewer",
-      // ],
-      // "ngx-structure-viewer": [
-      //   "./dist/ngx-structure-viewer"
-      // ]
+      "@utils": [
+        "./projects/utils/index"
+      ]
     },
     "sourceMap": true,
     "declaration": false,
