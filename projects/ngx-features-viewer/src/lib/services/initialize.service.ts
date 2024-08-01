@@ -101,11 +101,13 @@ export class InitializeService implements OnDestroy {
   private settingsSubscription: Subscription;
 
   // Define settings
-  public set settings(settings: Partial<Settings>) {
+  public set settings(_settings: Partial<Settings> | null) {
+    // Get overwritten settings
+    const settings = {...this.settings, ..._settings};
+    // Check settings
     checkContentSettings(settings);
-
     // Override settings
-    this.settings$.next({...this.settings, ...settings});
+    this.settings$.next(settings);
   }
 
   public get settings(): Settings {

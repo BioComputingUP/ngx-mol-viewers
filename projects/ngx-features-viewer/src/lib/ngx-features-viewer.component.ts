@@ -17,7 +17,6 @@ import {
   SimpleChanges,
   TemplateRef,
   ViewChild,
-  ViewEncapsulation,
 } from '@angular/core';
 import * as d3 from "d3";
 import { KeyboardEvent } from "react";
@@ -78,7 +77,7 @@ export class NgxFeaturesViewerTooltipDirective {
   templateUrl : './ngx-features-viewer.component.html',
   styleUrl : './ngx-features-viewer.component.scss',
   changeDetection : ChangeDetectionStrategy.OnPush,
-  encapsulation : ViewEncapsulation.None,
+  // encapsulation : ViewEncapsulation.None,
 })
 export class NgxFeaturesViewerComponent implements AfterViewInit, AfterContentInit, OnChanges, OnDestroy {
 
@@ -98,7 +97,7 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, AfterContentIn
   public tooltipElementRef!: ElementRef<HTMLDivElement>;  // NOTE this is the element ref to the tooltip container
 
   @Input()
-  public set settings(settings: Settings) {
+  public set settings(settings: Partial<Settings> | null) {
     // Update settings in initialization service
     this.initializeService.settings = settings;
   }
