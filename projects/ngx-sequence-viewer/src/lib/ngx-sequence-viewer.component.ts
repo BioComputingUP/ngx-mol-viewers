@@ -7,7 +7,7 @@ import { CommonModule } from '@angular/common';
 import { ColorMap, ZAPPO } from './colors';
 import { SelectionService } from './services/selection.service';
 import { IndexService } from './services/index.service';
-import { parseFasta } from './utils';
+import { FASTA } from './utils';
 
 // export interface Locus<T> {
 //   // Define start position (for both point and range loci)
@@ -331,7 +331,7 @@ export class NgxSequenceViewerComponent implements OnChanges {
     // Case fasta file is provided
     if (this.fasta) {
       // Attempt to parse fasta file
-      const parsed = parseFasta(this.fasta);
+      const parsed = FASTA.parse(this.fasta);
       // Set sequences and labels
       this.sequences = parsed.map((entry) => entry.sequence);
       this.labels = this.labels || parsed.map((entry) => entry.label);
