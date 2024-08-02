@@ -17,6 +17,7 @@ export type Trace = {
   // position?: 'overlap' | 'dodge';
   options?: Partial<TraceSettings>;
   nested?: Traces;
+  expanded?: boolean;
   // Add reference to data in the trace
   // NOTE type `any` is deprecated in TypeScript, so we use `unknown` instead.
   data?: unknown;
