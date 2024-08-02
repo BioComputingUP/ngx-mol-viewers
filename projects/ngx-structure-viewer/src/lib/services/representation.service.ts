@@ -1,7 +1,8 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { Structure } from 'molstar/lib/mol-model/structure';
 import {
-  BehaviorSubject, combineLatest, combineLatestWith, concatMap,
+  BehaviorSubject,
+  combineLatestWith,
   filter,
   from,
   map,
@@ -9,8 +10,9 @@ import {
   ReplaySubject,
   shareReplay,
   Subscription,
-  switchMap, tap,
-  withLatestFrom, zip,
+  switchMap,
+  tap,
+  withLatestFrom,
 } from 'rxjs';
 // Custom dependencies
 // import { Interaction, Interactor } from '../interfaces/interaction';
@@ -70,7 +72,9 @@ export class RepresentationService implements OnDestroy {
       // Combine with settings emission
       combineLatestWith(this.settingsService.settings$),
       // Combine with loci emission
-      withLatestFrom(this.loci$),
+      combineLatestWith(this.loci$),
+      // In the case we changed the structure, we need to wait for it to be loaded again
+      filter(() => this.structureService.isStructureLoaded),
       // Define color / alpha layers to be applied to structure
       map(([[, settings], loci]) => {
         // Define locus for backbone color

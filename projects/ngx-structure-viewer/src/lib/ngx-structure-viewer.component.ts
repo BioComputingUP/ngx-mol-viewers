@@ -120,7 +120,7 @@ export class NgxStructureViewerComponent implements AfterViewInit, OnChanges {
     // Handle source changes
     if (changes['source']) {
       // Emit source
-      this.structureService.source$.next(this.source);
+      this.structureService.source = this.source;
     }
     // Handle loci changes
     if (changes['loci']) {

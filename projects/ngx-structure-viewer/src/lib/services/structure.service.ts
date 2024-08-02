@@ -22,6 +22,11 @@ export class StructureService {
     return this.source$.value;
   }
 
+  public set source(source: Source | null) {
+    this.source$.next(source);
+    this.isStructureLoaded = false;
+  }
+
   public r2i!: Map<string, number>;
 
   public i2r!: Map<number, string>;
@@ -30,6 +35,7 @@ export class StructureService {
   public c2i!: Map<string, [number, number]>;
 
   // public residues!: Array<Residue>;
+  public isStructureLoaded = false;
 
   readonly structure$: Observable<Awaited<ReturnType<typeof this.createStructure>>>;
 
@@ -62,6 +68,8 @@ export class StructureService {
       tap((structure) => this._structure = structure),
       // Store mappings between residue and numeric index
       tap(() => this.setResidues(this.structure)),
+      // Set structure loaded flag, so we know that we can access structure
+      tap(() => this.isStructureLoaded = true),
       // Cache results
       shareReplay(1),
     );
