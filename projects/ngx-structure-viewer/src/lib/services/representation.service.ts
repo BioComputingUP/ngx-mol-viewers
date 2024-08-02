@@ -1,5 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { Structure } from 'molstar/lib/mol-model/structure';
+import { StaticStructureComponentType } from 'molstar/lib/mol-plugin-state/helpers/structure-component';
 import {
   BehaviorSubject,
   combineLatestWith,
@@ -11,7 +12,6 @@ import {
   shareReplay,
   Subscription,
   switchMap,
-  tap,
   withLatestFrom,
 } from 'rxjs';
 // Custom dependencies
@@ -61,14 +61,12 @@ export class RepresentationService implements OnDestroy {
       withLatestFrom(source$),
       // Generate structure
       switchMap(([structure]) => from(this.createRepresentation(structure))),
-      tap(() => console.log('Created representation')),
       // Cache result
       shareReplay(1),
     );
 
     // Apply settings to representation
     this.representation$ = component$.pipe(
-      tap(() => console.log('component changed')),
       // Combine with settings emission
       combineLatestWith(this.settingsService.settings$),
       // Combine with loci emission
@@ -172,9 +170,28 @@ export class RepresentationService implements OnDestroy {
     // Define plugin instance
     const plugin = this.pluginService.plugin;
     // Create component for the whole structure
-    const component = await plugin.builders.structure.tryCreateComponentStatic(structure, 'protein');
+    let component = await plugin.builders.structure.tryCreateComponentStatic(structure, 'all');
     // Initialize representation
     await plugin.builders.structure.representation.addRepresentation(component!, {type : 'cartoon', color : 'uniform'});
+
+    for (const componentType of ['ion', 'ligand', 'lipid']) {
+      component = await plugin.builders.structure.tryCreateComponentStatic(structure, <StaticStructureComponentType>componentType);
+      // Initialize representation
+      await plugin.builders.structure.representation.addRepresentation(component!, {
+        type : 'ball-and-stick',
+        color : 'uniform',
+      });
+    }
+
+    if (this.settingsService.settings['show-water']) {
+      component = await plugin.builders.structure.tryCreateComponentStatic(structure, 'water');
+      // Initialize representation
+      await plugin.builders.structure.representation.addRepresentation(component!, {
+        type : 'ball-and-stick',
+        color : 'uniform',
+      });
+    }
+
   }
 
   protected async colorRepresentation(structure: Structure, layers: BundleLayer[]): Promise<void> {

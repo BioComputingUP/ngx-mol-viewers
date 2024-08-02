@@ -56,10 +56,10 @@ export class PageStructureViewerComponent {
 
   changeSource() {
     this.source$.next({
-      link: 'https://files.rcsb.org/download/3HHR.cif',
+      link: 'https://files.rcsb.org/download/1TSR.cif',
       format: 'mmcif',
       type: 'remote',
-      label: '3HHR',
+      label: '1TSR',
       binary: false
     });  // Change source
 
@@ -73,6 +73,5 @@ export class PageStructureViewerComponent {
     const idx = Math.random() * locis.length | 0;
 
     this.loci = [locis[idx]];
-    console.log("changing loci", this.loci)
   }
 }

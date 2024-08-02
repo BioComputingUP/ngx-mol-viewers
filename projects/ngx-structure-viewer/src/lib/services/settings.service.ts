@@ -11,6 +11,7 @@ export class SettingsService {
     "background-color": "#FFFFFF",
     "interaction-color": "#FF0000",
     "interaction-size": .1,
+    "show-water": false
   }
 
   readonly settings$ = new BehaviorSubject<Settings>(this.DEFAULT);

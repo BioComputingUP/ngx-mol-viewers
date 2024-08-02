@@ -186,8 +186,6 @@ export class StructureService {
         index++;
       }
     }));
-
-    console.log('Residues set')
   }
 
 }

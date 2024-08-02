@@ -6,4 +6,6 @@ export interface Settings {
   // Define interactions color
   'interaction-color': string;
   'interaction-size': number;
+
+  'show-water': boolean;
 }
