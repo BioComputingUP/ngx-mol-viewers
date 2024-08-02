@@ -2,23 +2,22 @@
   <!-- Case template for left label exists -->
   @if (initializeService.labelLeft; as label) {
     <!-- Loop through each trace, generate custom tooltip -->
-    @for (trace of featuresService.tracesNoNesting; track trace.id) {
+    @for (trace of featuresService.tracesNoNesting$ | async; track trace.id) {
       <!-- Then, generate trace as specified in the given template -->
       <div [id]="'label-left-' + trace.id" tabindex=0 (click)="drawService.onLabelClick(trace)"
            (keyup)="drawService.onLabelClick(trace)" [style.display]="trace.show ? 'block' : 'none'">
-        <ng-container [ngTemplateOutlet]="label.templateRef"
-                      [ngTemplateOutletContext]="{ trace: trace }"></ng-container>
+        <ng-container [ngTemplateOutlet]="label.templateRef" [ngTemplateOutletContext]="{ trace: trace }"/>
       </div>
     }
   }
   <!-- Case template for right label exists -->
   @if (initializeService.labelRight; as label) {
     <!-- Loop through each trace, generate custom tooltip -->
-    @for (trace of featuresService.tracesNoNesting; track trace.id) {
+    @for (trace of featuresService.tracesNoNesting$ | async; track trace.id) {
       <!-- Then, generate trace as specified in the given template -->
       <div [id]="'label-right-' + trace.id" tabindex=0 [style.display]="trace.show ? 'block' : 'none'">
         <ng-container [ngTemplateOutlet]="label.templateRef"
-                      [ngTemplateOutletContext]="{ trace: trace }"></ng-container>
+                      [ngTemplateOutletContext]="{ trace: trace }"/>
       </div>
     }
   }

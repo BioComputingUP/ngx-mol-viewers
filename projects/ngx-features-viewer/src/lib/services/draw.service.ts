@@ -1058,7 +1058,7 @@ export class DrawService {
     }
 
     // Emit current traces
-    this.traces$.next(this.featuresService.tracesNoNesting.filter(trace => trace.show));
+    this.traces$.next(this.featuresService.tracesNoNesting$.value.filter(trace => trace.show));
   }
 }
 

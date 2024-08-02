@@ -20,7 +20,7 @@ import {
 } from '@angular/core';
 import * as d3 from "d3";
 import { KeyboardEvent } from "react";
-import { map, Observable, Subscription, switchMap, tap } from 'rxjs';
+import { map, Observable, of, Subscription, switchMap, tap } from 'rxjs';
 import { Sequence } from "./sequence";
 import { DrawService } from './services/draw.service';
 import { FeaturesService } from './services/features.service';

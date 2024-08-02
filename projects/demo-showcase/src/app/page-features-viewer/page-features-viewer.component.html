@@ -1,206 +1,207 @@
 <div class="container pt-3">
   <!-- Section: introduction -->
-  <div class="mb-3">
-    <h1>Feature viewer</h1>
-    <p>
-      The feature viewer allows you to represent features on a reference sequence. The viewer is interactive and
-      allows you to select features and display additional information about them in a tooltip.
-    </p>
+<!--  <div class="mb-3">-->
+<!--    <h1>Feature viewer</h1>-->
+<!--    <p>-->
+<!--      The feature viewer allows you to represent features on a reference sequence. The viewer is interactive and-->
+<!--      allows you to select features and display additional information about them in a tooltip.-->
+<!--    </p>-->
 
-    <p>
-      Multiple features can be grouped together in a trace. A trace can be nested in another trace, forming a tree
-      structure.
-    </p>
+<!--    <p>-->
+<!--      Multiple features can be grouped together in a trace. A trace can be nested in another trace, forming a tree-->
+<!--      structure.-->
+<!--    </p>-->
 
-    <p>
-      Labels (left and right) can be easily customized using templates. The tooltip can also be customized using a
-      template. When using the template, you can access the trace (for the labels) and the trace, feature, index, and
-      coordinates (for the tooltip).
-    </p>
-    <p>
-      Example for the right label template:
-    </p>
-    <code>
-<pre>
+<!--    <p>-->
+<!--      Labels (left and right) can be easily customized using templates. The tooltip can also be customized using a-->
+<!--      template. When using the template, you can access the trace (for the labels) and the trace, feature, index, and-->
+<!--      coordinates (for the tooltip).-->
+<!--    </p>-->
+<!--    <p>-->
+<!--      Example for the right label template:-->
+<!--    </p>-->
+<!--    <code>-->
+<!--<pre>-->
 
-&lt;ng-template let-trace=&quot;trace&quot; ngx-features-viewer-label where=&quot;right&quot;&gt;
-  &lt;div class=&quot;d-flex h-100 w-100 justify-content-center align-items-center font-monospace&quot;&gt;
-    &lt;button class=&quot;btn btn-sm btn-primary&quot; (click)=&quot;onTraceButtonClick(trace)&quot;&gt;Trace &#123; &#123; trace.id &#125; &#125; &lt;/button&gt;
-  &lt;/div&gt;
-&lt;/ng-template&gt;
+<!--&lt;ng-template let-trace=&quot;trace&quot; ngx-features-viewer-label where=&quot;right&quot;&gt;-->
+<!--  &lt;div class=&quot;d-flex h-100 w-100 justify-content-center align-items-center font-monospace&quot;&gt;-->
+<!--    &lt;button class=&quot;btn btn-sm btn-primary&quot; (click)=&quot;onTraceButtonClick(trace)&quot;&gt;Trace &#123; &#123; trace.id &#125; &#125; &lt;/button&gt;-->
+<!--  &lt;/div&gt;-->
+<!--&lt;/ng-template&gt;-->
 
-</pre>
-    </code>
+<!--</pre>-->
+<!--    </code>-->
 
-    <p>
-      It supports different types of representation for features:
-    </p>
-    <ul>
-      <li>
-        <b>Continuous</b> - a list of values associated 1-1 with the sequence. The curve can be represented in
-        different ways, using the following parameters
-        <code style="white-space: pre-wrap">
-<pre>
-  &#123;
-    type: 'continuous';
-    values: Array&#8249;number&#8250;;
-    min?: number;
-    max?: number;
-    "stroke-width"?: number;
-    "stroke-color"?: string;
-    curveType?: 'curveStep' | 'curveBasis' | 'curveLinear';
-    showArea?: boolean;
-  &#125;
-</pre>
-        </code>
-      </li>
+<!--    <p>-->
+<!--      It supports different types of representation for features:-->
+<!--    </p>-->
+<!--    <ul>-->
+<!--      <li>-->
+<!--        <b>Continuous</b> - a list of values associated 1-1 with the sequence. The curve can be represented in-->
+<!--        different ways, using the following parameters-->
+<!--        <code style="white-space: pre-wrap">-->
+<!--<pre>-->
+<!--  &#123;-->
+<!--    type: 'continuous';-->
+<!--    values: Array&#8249;number&#8250;;-->
+<!--    min?: number;-->
+<!--    max?: number;-->
+<!--    "stroke-width"?: number;-->
+<!--    "stroke-color"?: string;-->
+<!--    curveType?: 'curveStep' | 'curveBasis' | 'curveLinear';-->
+<!--    showArea?: boolean;-->
+<!--  &#125;-->
+<!--</pre>-->
+<!--        </code>-->
+<!--      </li>-->
 
-      <li>
-        <b>Locus</b> - a list of intervals associated with the sequence. The intervals can be represented in different
-        ways, using the following parameters
-        <code style="white-space: pre-wrap">
-<pre>
-  &#123;
-    type: 'locus';
-    start: number;
-    end: number;
-    height?: number;
-    'text-color'?: string;
-    'stroke-color'?: string;
-    'stroke-width'?: number;
-  &#125;
-</pre>
-        </code>
-      </li>
+<!--      <li>-->
+<!--        <b>Locus</b> - a list of intervals associated with the sequence. The intervals can be represented in different-->
+<!--        ways, using the following parameters-->
+<!--        <code style="white-space: pre-wrap">-->
+<!--<pre>-->
+<!--  &#123;-->
+<!--    type: 'locus';-->
+<!--    start: number;-->
+<!--    end: number;-->
+<!--    height?: number;-->
+<!--    'text-color'?: string;-->
+<!--    'stroke-color'?: string;-->
+<!--    'stroke-width'?: number;-->
+<!--  &#125;-->
+<!--</pre>-->
+<!--        </code>-->
+<!--      </li>-->
 
-      <li>
-        <b>Polygons</b> - a polygon that is placed in a specific position on the sequence. The polygon can be
-        represented in different ways, using the following parameters
-        <code style="white-space: pre-wrap">
-<pre>
-  &#123;
-    type: 'poly';
-    sides: number;
-    position: number;
-    adjustToWidth?: boolean;
-    radius?: number;  // radius of the circle where the polygon is inscribed
-    'stroke-color'?: string;
-    'stroke-width'?: number;
-  &#125;
-</pre>
-        </code>
-      </li>
+<!--      <li>-->
+<!--        <b>Polygons</b> - a polygon that is placed in a specific position on the sequence. The polygon can be-->
+<!--        represented in different ways, using the following parameters-->
+<!--        <code style="white-space: pre-wrap">-->
+<!--<pre>-->
+<!--  &#123;-->
+<!--    type: 'poly';-->
+<!--    sides: number;-->
+<!--    position: number;-->
+<!--    adjustToWidth?: boolean;-->
+<!--    radius?: number;  // radius of the circle where the polygon is inscribed-->
+<!--    'stroke-color'?: string;-->
+<!--    'stroke-width'?: number;-->
+<!--  &#125;-->
+<!--</pre>-->
+<!--        </code>-->
+<!--      </li>-->
 
-      <li>
-        <b>Pin</b> - a pin that is placed in a specific position on the sequence. It is a simple circle
-        that can be represented in different ways, using the following parameters
-        <code style="white-space: pre-wrap">
-<pre>
-  &#123;
-    type: 'pin';
-    position: number;
-    adjustToWidth?: boolean;
-    radius?: number;  // radius of the circle
-    'stroke-color'?: string;
-    'stroke-width'?: number;
-  &#125;
-</pre>
-        </code>
-      </li>
+<!--      <li>-->
+<!--        <b>Pin</b> - a pin that is placed in a specific position on the sequence. It is a simple circle-->
+<!--        that can be represented in different ways, using the following parameters-->
+<!--        <code style="white-space: pre-wrap">-->
+<!--<pre>-->
+<!--  &#123;-->
+<!--    type: 'pin';-->
+<!--    position: number;-->
+<!--    adjustToWidth?: boolean;-->
+<!--    radius?: number;  // radius of the circle-->
+<!--    'stroke-color'?: string;-->
+<!--    'stroke-width'?: number;-->
+<!--  &#125;-->
+<!--</pre>-->
+<!--        </code>-->
+<!--      </li>-->
 
-      <li>
-        <b>DSSP</b> - a representation of the secondary structure of a protein. The shape is different for each
-        secondary structure type. The representation can be customized using the following parameters
-        <code style="white-space: pre-wrap">
-<pre>
-  &#123;
-    type: 'dssp';
-    code: DSSPCode;  // one of 'H', 'E', 'C', 'T', ...
-    start: number;
-    end: number;
-  &#125;
-</pre>
-        </code>
-      </li>
-    </ul>
+<!--      <li>-->
+<!--        <b>DSSP</b> - a representation of the secondary structure of a protein. The shape is different for each-->
+<!--        secondary structure type. The representation can be customized using the following parameters-->
+<!--        <code style="white-space: pre-wrap">-->
+<!--<pre>-->
+<!--  &#123;-->
+<!--    type: 'dssp';-->
+<!--    code: DSSPCode;  // one of 'H', 'E', 'C', 'T', ...-->
+<!--    start: number;-->
+<!--    end: number;-->
+<!--  &#125;-->
+<!--</pre>-->
+<!--        </code>-->
+<!--      </li>-->
+<!--    </ul>-->
 
-    <h4>
-      Customize the viewer
-    </h4>
+<!--    <h4>-->
+<!--      Customize the viewer-->
+<!--    </h4>-->
 
-    <p>
-      The viewer can be customized with different settings, at different levels. The high level settings are:
-    </p>
+<!--    <p>-->
+<!--      The viewer can be customized with different settings, at different levels. The high level settings are:-->
+<!--    </p>-->
 
-    <code>
-<pre>
-&#123;
-  // Define the base size of each trace
-  'content-size': number;
-  'line-height': number;
+<!--    <code>-->
+<!--<pre>-->
+<!--&#123;-->
+<!--  // Define the base size of each trace-->
+<!--  'content-size': number;-->
+<!--  'line-height': number;-->
 
-  // Define margins
-  'margin-right': number;
-  'margin-left': number;
-  'margin-top': number;
-  'margin-bottom': number;
+<!--  // Define margins-->
+<!--  'margin-right': number;-->
+<!--  'margin-left': number;-->
+<!--  'margin-top': number;-->
+<!--  'margin-bottom': number;-->
 
-  'sequence-show'?: boolean;
-  'sequence-background-color'?: 'clustalx' | 'nucleotide';
-  'sequence-background-opacity'?: number;
-  'sequence-background-height'?: '100%' | 'content-size' | 'line-height';
+<!--  'sequence-show'?: boolean;-->
+<!--  'sequence-background-color'?: 'clustalx' | 'nucleotide';-->
+<!--  'sequence-background-opacity'?: number;-->
+<!--  'sequence-background-height'?: '100%' | 'content-size' | 'line-height';-->
 
-  'x-axis-show'?: boolean;
+<!--  'x-axis-show'?: boolean;-->
 
-  // Define colors
-  'background-color': string;
-  'plot-background-color': string;
-  'grid-line-color': string;
-  'text-color': string;
-&#125;
-</pre>
-    </code>
+<!--  // Define colors-->
+<!--  'background-color': string;-->
+<!--  'plot-background-color': string;-->
+<!--  'grid-line-color': string;-->
+<!--  'text-color': string;-->
+<!--&#125;-->
+<!--</pre>-->
+<!--    </code>-->
 
-    <p>
-      Then the some settings called <i>options</i> can be defined for each trace. The options are:
-    </p>
+<!--    <p>-->
+<!--      Then the some settings called <i>options</i> can be defined for each trace. The options are:-->
+<!--    </p>-->
 
-    <code>
-<pre>
-&#123;
-  // Define the base size of the trace
-  'content-size': number;
-  'line-height': number;
+<!--    <code>-->
+<!--<pre>-->
+<!--&#123;-->
+<!--  // Define the base size of the trace-->
+<!--  'content-size': number;-->
+<!--  'line-height': number;-->
 
-  'expanded': boolean; // Define if the trace is expanded or not (default is false), only works if the trace has nested traces
+<!--  'expanded': boolean; // Define if the trace is expanded or not (default is false), only works if the trace has nested traces-->
 
-  // Define margins between traces
-  'margin-top': number;
-  'margin-bottom': number;
+<!--  // Define margins between traces-->
+<!--  'margin-top': number;-->
+<!--  'margin-bottom': number;-->
 
-  // Settings for the grid line at the 0 position
-  'zero-line': boolean;
-  'zero-line-color': string;
-  'zero-line-width': number;
+<!--  // Settings for the grid line at the 0 position-->
+<!--  'zero-line': boolean;-->
+<!--  'zero-line-color': string;-->
+<!--  'zero-line-width': number;-->
 
-  // Settings for the grid lines
-  'grid': boolean;
-  'grid-line-color': string;
-  'grid-line-width': number;
-  'grid-y-values': number[];
-&#125;
-</pre>
-    </code>
-  </div>
+<!--  // Settings for the grid lines-->
+<!--  'grid': boolean;-->
+<!--  'grid-line-color': string;-->
+<!--  'grid-line-width': number;-->
+<!--  'grid-y-values': number[];-->
+<!--&#125;-->
+<!--</pre>-->
+<!--    </code>-->
+<!--  </div>-->
 
-  <h3>
-    Example showcase
-  </h3>
+<!--  <h3>-->
+<!--    Example showcase-->
+<!--  </h3>-->
 
-  <code>
-    Trace button clicked {{ traceButtonClicked | json }} <br>
-    Feature selected {{ featureSelected?.trace?.label | json }} {{ featureSelected?.feature?.label | json }} {{ featureSelected?.range | json }}
-  </code>
+<!--  <code>-->
+<!--    Trace button clicked {{ traceButtonClicked | json }} <br>-->
+<!--    Feature-->
+<!--    selected {{ featureSelected?.trace?.label | json }} {{ featureSelected?.feature?.label | json }} {{ featureSelected?.range | json }}-->
+<!--  </code>-->
 
 
   <div style="display: block; height: auto; overflow: hidden; width: 100%; margin-top: 2rem">
@@ -224,9 +225,17 @@
       </ng-template>
       <!-- Right label -->
       <ng-template let-trace="trace" ngx-features-viewer-label where="right">
-        <div class="d-flex h-100 w-100 justify-content-center align-items-center font-monospace">
-          <button class="btn btn-sm btn-primary" (click)="onTraceButtonClick(trace)">Trace {{ trace.id }}</button>
-        </div>
+        @if (x$ | async) {
+          @if (includes(trace)) {
+            <div class="d-flex h-100 w-100 justify-content-center align-items-center font-monospace">
+              <button class="btn btn-sm btn-primary" (click)="test(trace)">Trace {{ trace.id }}</button>
+            </div>
+          } @else {
+            <div class="d-flex h-100 w-100 justify-content-center align-items-center font-monospace">
+              <button class="btn btn-sm btn-secondary" (click)="test(trace)">Trace {{ trace.id }}</button>
+            </div>
+          }
+        }
       </ng-template>
       <!-- Tooltip template -->
       <ng-template let-trace="trace" let-feature="feature" let-index="index" let-coordinates="coordinates"

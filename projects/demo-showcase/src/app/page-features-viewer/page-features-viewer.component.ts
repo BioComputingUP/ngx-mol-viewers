@@ -9,7 +9,7 @@ import {
   Settings,
   Trace,
 } from '@ngx-features-viewer';
-import { map, Observable, shareReplay } from 'rxjs';
+import { delay, map, Observable, of, shareReplay } from 'rxjs';
 import { ThemeSelectorService } from '../theme-selector/theme-selector.service';
 
 // >sp|P04637|P53_HUMAN Cellular tumor antigen p53 OS=Homo sapiens OX=9606 GN=TP53 PE=1 SV=4
@@ -65,6 +65,8 @@ export class PageFeaturesViewerComponent {
   readonly curvePoints = Array.from({length : 240}, () => Math.floor(Math.random() * 100) + 30);
   public traceButtonClicked: string | null = null;
   public featureSelected: SelectionContext | null = null;
+
+  x$: Observable<boolean> = of(true).pipe(delay(3000));
 
   constructor(public themeSelectorService: ThemeSelectorService) {
     // Define theme retrieval pipeline
@@ -574,5 +576,13 @@ export class PageFeaturesViewerComponent {
 
   onTraceButtonClick(trace: Trace) {
     this.traceButtonClicked = trace.label || 'Label not defined';
+  }
+
+  test(trace: any) {
+    console.log(trace);
+  }
+
+  includes(trace: any) {
+    return trace.label.includes('Trace');
   }
 }

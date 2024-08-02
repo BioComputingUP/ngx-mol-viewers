@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 import { Feature } from "../features/feature";
 import { InternalTrace, InternalTraces, Trace, Traces } from "../trace";
 import { checkContentSettings } from './initialize.service';
@@ -7,7 +8,7 @@ import { checkContentSettings } from './initialize.service';
 @Injectable({providedIn : 'platform'})
 export class FeaturesService {
   protected traceMap = new Map<number, InternalTrace>();
-  public tracesNoNesting!: InternalTraces;
+  public tracesNoNesting$ = new BehaviorSubject<InternalTraces>([]);
 
   protected _parent = new Map<InternalTrace, number>();
   protected _children = new Map<InternalTrace, number[]>();
@@ -84,9 +85,9 @@ export class FeaturesService {
     // Set internal traces
     convert(traces, 0);
 
-    this.tracesNoNesting = Array.from(this.traceMap.values());
+    this.tracesNoNesting$.next(Array.from(this.traceMap.values()));
 
-    for (const trace of this.tracesNoNesting) {
+    for (const trace of this.tracesNoNesting$.value) {
       if (trace.expanded) {
         trace.show = true;
 
@@ -107,7 +108,7 @@ export class FeaturesService {
   }
 
   public get traces(): InternalTraces {
-    return this.tracesNoNesting.filter((trace) => trace.show);
+    return this.tracesNoNesting$.value.filter((trace) => trace.show);
   }
 
   /**
