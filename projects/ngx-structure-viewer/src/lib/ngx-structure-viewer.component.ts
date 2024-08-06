@@ -1,4 +1,13 @@
-import { AfterViewInit, Component, ElementRef, Input, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges,
+  ViewChild,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 // Custom dependencies
 // import { StructureService } from './services/structure.service';
@@ -14,7 +23,7 @@ import { StructureService } from './services/structure.service';
 import { SettingsService } from './services/settings.service';
 import { MolstarService } from './services/molstar.service';
 import { PluginService } from './services/plugin.service';
-import { combineLatestWith, map, shareReplay, startWith } from 'rxjs';
+import { BehaviorSubject, combineLatestWith, map, Observable, shareReplay, startWith, tap } from 'rxjs';
 // import { Interaction } from './interfaces/interaction';
 // import { Settings } from './interfaces/settings';
 // import { Source } from './interfaces/source';
@@ -84,6 +93,8 @@ export class NgxStructureViewerComponent implements AfterViewInit, OnChanges {
   @Input() source!: Source | null;
 
   @Input() loci!: Locus[] | null;
+
+  @Output() structureLoadFail$ = this.structureService.onStructureLoadFail$;
 
   // Allow acces to background color in background
   public background$ = this.settingsService.settings$.pipe(

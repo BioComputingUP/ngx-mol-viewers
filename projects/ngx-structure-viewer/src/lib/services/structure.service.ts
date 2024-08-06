@@ -1,12 +1,25 @@
-import { BehaviorSubject, Observable, combineLatestWith, filter, from, shareReplay, switchMap, tap } from 'rxjs';
+import { EventEmitter, Injectable } from '@angular/core';
 import { Structure, StructureProperties } from 'molstar/lib/mol-model/structure';
+import { StateObject, StateObjectSelector } from 'molstar/lib/mol-state';
+import { StateTransformer } from 'molstar/lib/mol-state/transformer';
 import { Asset } from 'molstar/lib/mol-util/assets';
-import { Injectable } from '@angular/core';
+import {
+  BehaviorSubject,
+  catchError,
+  combineLatestWith,
+  filter,
+  from,
+  Observable,
+  of,
+  shareReplay,
+  switchMap,
+  tap,
+} from 'rxjs';
+import { Source } from '../interfaces/source';
 // Custom services
 // import { SettingsService } from './settings.service';
 import { MolstarService } from './molstar.service';
 import { PluginService } from './plugin.service';
-import { Source } from '../interfaces/source';
 
 export type DataStateObject = Exclude<Awaited<ReturnType<StructureService['parseSource']>>, null>;
 
@@ -37,6 +50,8 @@ export class StructureService {
   // public residues!: Array<Residue>;
   public isStructureLoaded = false;
 
+  readonly onStructureLoadFail$ = new EventEmitter<void>();
+
   readonly structure$: Observable<Awaited<ReturnType<typeof this.createStructure>>>;
 
   // Inner structure wrapper
@@ -59,7 +74,14 @@ export class StructureService {
       combineLatestWith(this.source$),
       // tap(([plugin, source]) => console.log('plugin', plugin, 'source', source)),
       // Join source and plugin
-      switchMap(([, source]) => from(this.parseSource(source))),
+      switchMap(([, source]) => {
+        return from(this.parseSource(source)).pipe(
+          catchError(() => {
+            this.onStructureLoadFail$.emit();
+            return of(null);
+          }),
+        );
+      }),
       // Case data is defined
       filter((data): data is DataStateObject => !!data),
       // Generate trajectory
@@ -82,15 +104,19 @@ export class StructureService {
     await plugin.clear();
     // Case source is defined
     if (source) {
+      let data: StateObjectSelector<StateObject, StateTransformer> | null;
       // Case source is local
       if (source.type === 'local') {
         // Parse local source
-        const data = await this.parseLocalSource(source);
-        // Return data
-        return data;
+        data = await this.parseLocalSource(source);
+      } else {
+        // Otherwise, source is remote
+        data = await this.parseRemoteSource(source);
+
+        if (data === undefined) {
+          throw new Error('Failed to parse remote source');
+        }
       }
-      // Otherwise, source is remote
-      const data = await this.parseRemoteSource(source);
       // Return data
       return data;
     }
@@ -100,7 +126,7 @@ export class StructureService {
 
   protected async parseRemoteSource(source: Source & { type: 'remote' }) {
     // Import asset from MolStar
-    const { Asset } = this.molstarService.molstar;
+    const {Asset} = this.molstarService.molstar;
     // Define source properties
     const url = Asset.Url(source.link);
     const label = source.label;
@@ -108,12 +134,12 @@ export class StructureService {
     // Define plugin instance
     const plugin = this.pluginService.plugin;
     // Retrieve remote data
-    return plugin.builders.data.download({ url, label, isBinary: binary });
+    return plugin.builders.data.download({url, label, isBinary : binary});
   }
 
   protected async parseLocalSource(source: Source & { type: 'local' }) {
     // Import asset from MolStar
-    const { Asset } = this.molstarService.molstar;
+    const {Asset} = this.molstarService.molstar;
     // Define source label
     const binary = source.binary;
     const label = source.label;
@@ -122,7 +148,7 @@ export class StructureService {
     // Case source data is string, no need to read data as file
     if (typeof source.data === 'string') {
       // Read file from string
-      return plugin.builders.data.rawData({ data: source.data, label });
+      return plugin.builders.data.rawData({data : source.data, label});
     }
     // Wrap blob into file
     let file: Asset.File;
@@ -140,7 +166,7 @@ export class StructureService {
       file = Asset.File(new File([source.data], name));
     }
     // Return data read from file
-    const { data } = await plugin.builders.data.readFile({ file, label, isBinary: binary });
+    const {data} = await plugin.builders.data.readFile({file, label, isBinary : binary});
     // Return retrieved data
     return data;
   }
@@ -151,9 +177,9 @@ export class StructureService {
     // Parse data
     const parsed = await plugin.builders.structure.parseTrajectory(data, source.format);
     // Create model
-    const model = await plugin.builders.structure.createModel(parsed, { modelIndex: 0 });
+    const model = await plugin.builders.structure.createModel(parsed, {modelIndex : 0});
     // Create structure
-    return plugin.builders.structure.createStructure(model, { name: 'model', params: {} });
+    return plugin.builders.structure.createStructure(model, {name : 'model', params : {}});
   }
 
   protected setResidues(structure: Structure): void {
@@ -166,7 +192,7 @@ export class StructureService {
     const c2i = this.c2i = new Map();
     // Loop through each residue
     Structure.eachAtomicHierarchyElement(structure, ({
-      residue: (r) => {
+      residue : (r) => {
         // Define residue index
         const authSeqId = StructureProperties.residue.auth_seq_id(r);
         // Get insertion code
@@ -179,12 +205,12 @@ export class StructureService {
         r2i.set(identifier, index);
         i2r.set(index, identifier);
         // Get chain start, end indices
-        const [cs, ] = c2i.get(authAsymId) || [index, index];
+        const [cs] = c2i.get(authAsymId) || [index, index];
         // Update chain start, end indices
         this.c2i.set(authAsymId, [cs, index]);
         // Update index
         index++;
-      }
+      },
     }));
   }
 

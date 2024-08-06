@@ -14,14 +14,16 @@
       Change source
     </button>
     <!-- Sequence viewer -->
-    <div class="col-6">
+    <div class="col-6" [ngClass]="{'visually-hidden': hideStructureComponent$ | async}">
       <!-- Define squared container -->
       <div class="position-relative overflow-hidden squared rounded">
         <!-- Define placeholder -->
         <div class="position-absolute left-0 top-0 w-100 h-100 placeholder"></div>
         <!-- Define the viewer -->
-        <ngx-structure-viewer [loci]="loci" [settings]="settings$ | async"
-                              [source]="source$ | async"/>
+        <ngx-structure-viewer [loci]="loci"
+                              [settings]="settings$ | async"
+                              [source]="source$ | async"
+                              (structureLoadFail$)="structureLoadFailed()"/>
       </div>
       <!-- Change settings -->
       <div class="col-3">

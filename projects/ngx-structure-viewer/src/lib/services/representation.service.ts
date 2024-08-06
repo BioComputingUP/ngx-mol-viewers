@@ -11,7 +11,7 @@ import {
   ReplaySubject,
   shareReplay,
   Subscription,
-  switchMap,
+  switchMap, tap,
   withLatestFrom,
 } from 'rxjs';
 // Custom dependencies

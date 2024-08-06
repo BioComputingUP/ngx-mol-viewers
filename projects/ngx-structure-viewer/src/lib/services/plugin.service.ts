@@ -1,7 +1,8 @@
-import { combineLatest, from, Observable, ReplaySubject, shareReplay, switchMap } from 'rxjs';
+import { ElementRef, Injectable } from '@angular/core';
 import { PluginUIContext } from 'molstar/lib/mol-plugin-ui/context';
 import { PluginUISpec } from 'molstar/lib/mol-plugin-ui/spec';
-import { ElementRef, Injectable } from '@angular/core';
+import { PluginConfig } from 'molstar/lib/mol-plugin/config';
+import { combineLatest, from, Observable, ReplaySubject, shareReplay, switchMap } from 'rxjs';
 import { MolstarService } from './molstar.service';
 
 @Injectable()
@@ -9,10 +10,16 @@ export class PluginService {
 
   // Define default specs
   protected spec: Partial<PluginUISpec> = {
-    canvas3d: {
+    canvas3d : {
       // Make background transparent
-      transparentBackground: true,
+      transparentBackground : true,
     },
+    config : [
+      [PluginConfig.Viewport.ShowExpand, false],
+      [PluginConfig.Viewport.ShowControls, false],
+      [PluginConfig.Viewport.ShowSelectionMode, false],
+      [PluginConfig.Viewport.ShowAnimation, true],
+    ],
   }
 
   // Define 
@@ -28,11 +35,11 @@ export class PluginService {
   }
 
   constructor(
-    public molstarService: MolstarService
+    public molstarService: MolstarService,
   ) {
-    const { molstar$ } = this.molstarService;
+    const {molstar$} = this.molstarService;
     // Emit plugin after initialization
-    this.plugin$ = combineLatest([ this.container$, molstar$ ]).pipe(
+    this.plugin$ = combineLatest([this.container$, molstar$]).pipe(
       // Initialize plugin
       switchMap(([elementRef]) => from(this.initPlugin(elementRef))),
       // Cache result
@@ -42,15 +49,15 @@ export class PluginService {
 
   public async initPlugin(elementRef: ElementRef): Promise<PluginUIContext> {
     // Load MolStar asynchronously
-    const { createPluginUI, renderReact18, DefaultPluginUISpec } = this.molstarService.molstar;
+    const {createPluginUI, renderReact18, DefaultPluginUISpec} = this.molstarService.molstar;
     // Define plugin initial settings
-    const spec = { ...this.spec, ...DefaultPluginUISpec() };
+    const spec = {...this.spec, ...DefaultPluginUISpec()};
     // Create plugin instance
     return this._plugin = await createPluginUI({
       // Define container div
-      target: elementRef.nativeElement as HTMLDivElement,
+      target : elementRef.nativeElement as HTMLDivElement,
       // Define rendered 
-      render: renderReact18,
+      render : renderReact18,
       // Define plugin specs
       spec,
     });
