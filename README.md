@@ -1,4 +1,4 @@
-# NGX-BIOCOMP-UP
+# NGX-MOL-VIEWERS
 
 A library of Angular standalone components for the visualization and manipulation of biological data out-of-the box. 
 
@@ -10,7 +10,7 @@ At the [BioCompUP Laboratory](https://protein.bio.unipd.it/) of the University o
 We adopted and consolidated the Angular + TypeScript combo to develop the interfaces of our databases and web services, such as [MobiDB](https://mobidb.org/), 
 [RepeatsDB](https://repeatsdb.bio.unipd.it/), [RING](https://ring.biocomputingup.it/) and others. Despite having already published some widely used TypeScript 
 components in NPM, e.g. [ProSeqViewer](https://www.npmjs.com/package/proseqviewer), [FeatureViewerTypescript](https://www.npmjs.com/package/feature-viewer-typescript),
-we had to wrap those components in Angular components to make them work in our interfaces. Therefore, we created the **ngx-biocomp-up** library.
+we had to wrap those components in Angular components to make them work in our interfaces. Therefore, we created the **ngx-mol-viewers** library.
 
 ## Components
 
@@ -33,11 +33,11 @@ to reflect changes and develop the other components. It must be built in `produc
 Run `ng serve demo-showcase` for a development server. Navigate to `http://localhost:4200`. The application will automatically reload if you change any of the source files.
 
 ### Production build
-Run `ng build -c=production --output-path docs --base-href https://biocomputingup.github.io/ngx-biocomp-up/ demo-showcase` to build the `demo-showcase` application for it to be served from GitHub Pages.
+Run `ng build -c=production --output-path docs --base-href https://biocomputingup.github.io/ngx-mol-viewers/ demo-showcase` to build the `demo-showcase` application for it to be served from GitHub Pages.
 
 Then, one needs to copy the built `index.html` into the `404.html` file. To do so, just `cd` into the output `docs` folder and `cp index.html 404.html`.
 
-When pushing the results in the `main` branch, GitHub will automatically publish an updated version of the appl;ication at [https://biocomputingup.github.io/ngx-biocomp-up/].
+When pushing the results in the `main` branch, GitHub will automatically publish an updated version of the appl;ication at [https://biocomputingup.github.io/ngx-mol-viewers/].
 
 ### Publishing components
 Run `ng build -c=production ngx-structure-viewer` to build the Angular component `ngx-structure-viewer` in IVY mode. Hence, the built component will be compatible with almost all 
