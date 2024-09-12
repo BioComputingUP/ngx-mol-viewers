@@ -1,34 +1,64 @@
-<div class="row mb-3">
-  <!-- Source: local -->
+<!-- Inner scaffold  -->
+<div class="row">
+  <!-- Left column: structure viewer -->
   <div class="col-6">
-    <h2>Upload local structure</h2>
-    <div class="d-flex flex-row align-items-start gap-3 mb-3">
-      <div class="d-block flex-grow-1">
-        <div class="rounded squared bg-body-tertiary overflow-hidden">
-          @if (local$ | async; as local) {
-            <ngx-structure-viewer [settings]="settings" [source]="local"></ngx-structure-viewer>
-          }
-        </div>
-      </div>
-      <code class="d-block flex-shrink-0 bg-body-tertiary p-3">
-        <pre class="mb-0">{{ local | json }}</pre>
-      </code>
+    <div class="position-relative overflow-hidden squared rounded">
+      <div class="position-absolute left-0 top-0 w-100 h-100 placeholder"></div>
+      <ngx-structure-viewer 
+        [settings]="settings$ | async"
+        [source]="input$ | async"
+        [loci]="loci$ | async"
+      />
     </div>
   </div>
-  <!-- Source: remote -->
+  <!-- Right column: sources -->
   <div class="col-6">
-    <h2>Download remote structure</h2>
-    <div class="d-flex flex-row align-items-start gap-3 mb-3">
-      <div class="d-block flex-grow-1">
-        <div class="rounded squared bg-body-tertiary overflow-hidden">
-          @if (remote$ | async; as remote) {
-            <ngx-structure-viewer [settings]="settings" [source]="remote"></ngx-structure-viewer>
-          }
+    <!-- Define choice between local and remote source -->
+    <div class="d-flex flex-row gap-3 mb-3">
+      <!-- Title -->
+      <span>Source type:</span>
+      <!-- Get current source -->
+      @if (type$ | async; as type) {
+        <!-- Select local source -->
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="sourceType" id="local-source" value="local" (click)="onTypeChange('local')" [checked]="type==='local'">
+          <label class="form-check-label" for="local-source">Local</label>
         </div>
-      </div>
-      <code class="d-block flex-shrink-0 bg-body-tertiary p-3">
-        <pre class="mb-0">{{ remote | json }}</pre>
-      </code>
+        <!-- Select remote source -->
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="sourceType" id="remote-source" value="remote" (click)="onTypeChange('remote')" [checked]="type==='remote'">
+          <label class="form-check-label" for="remote-source">Remote</label>
+        </div>
+      }
+    </div>
+    <!-- Get selected source -->
+    @if(source$ | async; as source) {
+      <!-- Loop through each available source -->
+      @for(_ of SOURCES; track i; let i=$index) {
+        <!-- Outer scaffold -->
+        <div class="rounded cursor-pointer mb-3" [class.text-bg-primary]="SOURCES[i] === source" (click)="onSourceChange(SOURCES[i])" aria-hidden="true">
+          <!-- Show input JSON code -->
+          <pre class="p-3 m-0"><code>{{ SOURCES[i] | json }}</code></pre>
+        </div>
+      }
+    }
+  </div>
+  <!-- Bottom row: colored loci -->
+  <div class="col-12">
+    <!-- Add a button to shuffle colors -->
+    <button class="btn btn-block btn-primary w-100 mb-3" (click)="onLociShuffle()">Shuffle colors</button>
+    <!-- Show all the possible colors -->
+    <div class="d-flex flex-row flex-wrap gap-3">
+      <!-- Get current loci -->
+      @if(loci$ | async; as loci) {
+        <!-- Loop through all loci -->
+        @for(locus of LOCI; track i; let i=$index) {
+          <!-- Show each locus -->
+          <div class="rounded" [style]="{ 'background-color': loci.includes(locus) ? locus.color : '' }">
+            <pre class="p-3 m-0"><code>{{ locus | json }}</code></pre>
+          </div>
+        }
+      }
     </div>
   </div>
 </div>

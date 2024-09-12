@@ -1,9 +1,11 @@
-// $gradient: linear-gradient(45deg, #648FFF, #DC267F);
+$gradient-start : #648FFF;
+$gradient-end : #DC267F;
+$gradient: linear-gradient(45deg, $gradient-start, $gradient-end);
 
 .navbar {
-  background: linear-gradient(45deg, #648FFF, #DC267F);
+  background: $gradient;
 }
 
 .bg-primary {
-  background: linear-gradient(45deg, #648FFF, #DC267F);
+  background: $gradient;
 }

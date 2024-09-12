@@ -1,8 +1,9 @@
-@import '../styles/labels';
-@import '../styles/icons';
+
 
 // Add this to apply style only to elements within the `ngx-features-viewer`
-:host ::ng-deep {
+ngx-features-viewer {
+  // @import '../styles/labels';
+  // @import '../styles/icons';
 
   svg * {
     transform-box: fill-box;
