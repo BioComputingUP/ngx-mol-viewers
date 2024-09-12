@@ -40,6 +40,12 @@ export class SingleSequenceViewerComponent {
       return index;
     });
 
+    // Define loci
+    readonly loci = [
+      { start: '-1', end: '10E', 'background-color': '#648FFF', text: 'Region 1' },
+      { start: '-23', end: '36A', 'background-color': '#DC267F', text: 'Region 2' },
+    ];
+
     // Define the sequence viewer configuration
     public settings$: Observable<Partial<Settings>>;
   

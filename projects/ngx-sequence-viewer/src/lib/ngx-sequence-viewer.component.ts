@@ -239,6 +239,7 @@ export class NgxSequenceViewerComponent implements OnChanges {
       for (let j = 0; j < this.length; j++) {
         // Initialize background color
         let backgroundColor = this.settings['background-color'];
+        // Define text color
         const textColor = this.settings['text-color'];
         // Case residue is within locus
         if (j in loci) {
@@ -472,7 +473,7 @@ export class NgxSequenceViewerComponent implements OnChanges {
       // Loop through each position in locus
       for (let i = start; i <= end; i++) {
         // Get current index as string
-        const index = this.indexService.keys[i];
+        const index = this.indexService.values[i];
         // Update color map
         cmap[index] = locus;
       }
