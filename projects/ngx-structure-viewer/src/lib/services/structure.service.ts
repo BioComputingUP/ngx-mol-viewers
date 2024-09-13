@@ -20,6 +20,7 @@ import { Source } from '../interfaces/source';
 // import { SettingsService } from './settings.service';
 import { MolstarService } from './molstar.service';
 import { PluginService } from './plugin.service';
+import { SettingsService } from './settings.service';
 
 export type DataStateObject = Exclude<Awaited<ReturnType<StructureService['parseSource']>>, null>;
 
@@ -64,7 +65,7 @@ export class StructureService {
   }
 
   constructor(
-    // public settingsService: SettingsService,
+    public settingsService: SettingsService,
     public molstarService: MolstarService,
     public pluginService: PluginService,
   ) {
@@ -89,7 +90,7 @@ export class StructureService {
       // Store structure wrapper
       tap((structure) => this._structure = structure),
       // Store mappings between residue and numeric index
-      tap(() => this.setResidues(this.structure)),
+      tap(() => this.setResidues(this.structure, this.settingsService.settings.prefer_label_asym_id)),
       // Set structure loaded flag, so we know that we can access structure
       tap(() => this.isStructureLoaded = true),
       // Cache results
@@ -182,7 +183,7 @@ export class StructureService {
     return plugin.builders.structure.createStructure(model, {name : 'model', params : {}});
   }
 
-  protected setResidues(structure: Structure): void {
+  protected setResidues(structure: Structure, prefer_label_asym_id = false): void {
     // Initialize index
     let index = 0;
     // Initialize map between residue (sequence number, insertion code) to numeric index
@@ -198,7 +199,7 @@ export class StructureService {
         // Get insertion code
         const pdbInsCode = StructureProperties.residue.pdbx_PDB_ins_code(r);
         // Define residue name
-        const authAsymId = StructureProperties.chain.auth_asym_id(r);
+        const authAsymId = prefer_label_asym_id ? StructureProperties.chain.label_asym_id(r) : StructureProperties.chain.auth_asym_id(r);
         // Define residue unique identifier
         const identifier = (authAsymId + authSeqId + pdbInsCode).trim();
         // Map residue id to its index

@@ -11,7 +11,7 @@ import {
   ReplaySubject,
   shareReplay,
   Subscription,
-  switchMap, tap,
+  switchMap,
   withLatestFrom,
 } from 'rxjs';
 // Custom dependencies
@@ -153,7 +153,7 @@ export class RepresentationService implements OnDestroy {
     // Get residue identifiers
     residueIds = residueIds.slice(locusNumericStart, locusNumericEnd + 1);
     // Get Mol* locus
-    const representationLoci = Molstar.getLocusFromSet(residueIds, this.structureService.structure);
+    const representationLoci = Molstar.getLocusFromSet(residueIds, this.structureService.structure, this.settingsService.settings.prefer_label_asym_id);
     // Define current Mol* bundle
     const bundleLayer = Molstar.getBundleFromLoci(representationLoci);  // StructureElement.Bundle.fromLoci(locus);
     // Cast HEX color to Mol* color

@@ -66,8 +66,6 @@ export class PageFeaturesViewerComponent {
   public traceButtonClicked: string | null = null;
   public featureSelected: SelectionContext | null = null;
 
-  x$: Observable<boolean> = of(true).pipe(delay(3000));
-
   constructor(public themeSelectorService: ThemeSelectorService) {
     // Define theme retrieval pipeline
     const theme$ = this.themeSelectorService.theme$;

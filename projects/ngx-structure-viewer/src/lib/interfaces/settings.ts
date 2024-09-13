@@ -8,4 +8,6 @@ export interface Settings {
   'interaction-size': number;
 
   'show-water': boolean;
+
+  'prefer_label_asym_id': boolean;
 }

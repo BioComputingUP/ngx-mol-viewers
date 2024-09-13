@@ -11,14 +11,15 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 })
 export class SectionChainsComponent {
 
-  readonly settings$: Observable<Settings>;
+  readonly settings$: Observable<Partial<Settings>>;
 
   // Default settings
-  private readonly settings: Settings = {
+  private readonly settings: Partial<Settings> = {
     'background-color': '#2b3035ff',
     'backbone-color': '#6ea8fecc',
     'interaction-color': '#ff0000ff',
     'interaction-size': 1,
+    prefer_label_asym_id: true,
   };
 
   readonly source: Source;
@@ -47,20 +48,21 @@ export class SectionChainsComponent {
       format: 'mmcif' as const,
       label: '8VAP',
       binary: false,
-      link: 'assets/8vap.cif',
+      link: 'https://files.rcsb.org/download/3D0A.cif',
     };
 
     const chains = [
       { chain: 'A', color: '#6f42c1' },
       { chain: 'B', color: '#0d6efd' },
-      { chain: 'C', color: '#dc3545' },
+      { chain: 'C', start: '8', end: '8', color: '#dc3545' },
       { chain: 'D', color: '#ffc107' },
       { chain: 'E', color: '#28a745' },
       { chain: 'F', color: '#17a2b8' },
       { chain: 'G', color: '#fd7e14' },
+      { chain: 'H', color: '#de14fd' },
     ];
     // Define chains observable
-    this.chains$ = interval(3000).pipe(
+    this.chains$ = interval(123123123).pipe(
       // Get only colors
       map(() => chains.map(item => item.color)),
       // Shuffle colors

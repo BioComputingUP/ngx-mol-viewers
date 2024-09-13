@@ -1,8 +1,6 @@
-
-
 // Add this to apply style only to elements within the `ngx-features-viewer`
 ngx-features-viewer {
-  // @import '../styles/labels';
+   @import '../styles/labels';
   // @import '../styles/icons';
 
   svg * {

@@ -49,7 +49,8 @@ export function getLocusFromQuery(query: Expression, structure: Structure): Stru
   return StructureSelection.toLociWithSourceUnits(selection);
 }
 
-export function getLocusFromSet(set: string[], structure: Structure): StructureElement.Loci {
+export function getLocusFromSet(set: string[], structure: Structure, prefer_label_asym_id= false): StructureElement.Loci {
+  const asym_id = prefer_label_asym_id ? 'label_asym_id' : 'auth_asym_id';
   // Override query
   const query = MolScriptBuilder.struct.generator.atomGroups({
     // Select atoms between <begin> and <end> atom IDs
@@ -58,7 +59,7 @@ export function getLocusFromSet(set: string[], structure: Structure): StructureE
       MolScriptBuilder.set(...set),
       // Define set of residue identifiers (author sequence identifiers)
       MolScriptBuilder.core.str.concat([
-        MolScriptBuilder.ammp('auth_asym_id'),
+        MolScriptBuilder.ammp(asym_id),
         MolScriptBuilder.ammp('auth_seq_id'),
         MolScriptBuilder.ammp('pdbx_PDB_ins_code'),
       ]),
