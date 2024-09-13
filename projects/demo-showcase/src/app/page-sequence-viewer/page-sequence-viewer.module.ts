@@ -3,11 +3,8 @@ import { SingleSequenceViewerComponent } from './single-sequence-viewer.componen
 import { PageSequenceViewerComponent } from './page-sequence-viewer.component';
 import { NgxSequenceViewerComponent } from '@ngx-sequence-viewer';
 import { CommonModule } from '@angular/common';
-import { RouterModule, Routes } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
-
-// Define sub-routes
-const routes: Routes = [{ path: '', component: PageSequenceViewerComponent }];
 
 @NgModule({
   declarations: [
@@ -17,7 +14,9 @@ const routes: Routes = [{ path: '', component: PageSequenceViewerComponent }];
   ],
   imports: [
     NgxSequenceViewerComponent,
-    RouterModule.forChild(routes),
+    RouterModule.forChild([
+      { path: '', component: PageSequenceViewerComponent }
+    ]),
     CommonModule
   ]
 })

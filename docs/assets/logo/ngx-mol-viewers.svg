@@ -6,11 +6,15 @@
    id="Layer_1"
    x="0px"
    y="0px"
-   viewBox="0 0 250 250"
-   style="enable-background:new 0 0 250 250;"
+   viewBox="0 0 186.19922 200"
    xml:space="preserve"
-   sodipodi:docname="ngx-biocomp-up.svg"
+   sodipodi:docname="ngx-mol-viewers.svg"
    inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
+   width="186.19922"
+   height="200"
+   inkscape:export-filename="/home/damiclem/Projects/ngx-mol-viewers/projects/demo-showcase/src/assets/logo/ngx-mol-viewers.png"
+   inkscape:export-xdpi="264"
+   inkscape:export-ydpi="264"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -63,7 +67,8 @@
    y1="58.199219"
    x2="203.90039"
    y2="181.30078"
-   gradientUnits="userSpaceOnUse" /></defs><sodipodi:namedview
+   gradientUnits="userSpaceOnUse"
+   gradientTransform="translate(-31.900389,-24.999999)" /></defs><sodipodi:namedview
    id="namedview19"
    pagecolor="#505050"
    bordercolor="#eeeeee"
@@ -78,8 +83,8 @@
    inkscape:bbox-nodes="true"
    inkscape:snap-grids="false"
    inkscape:zoom="1.28"
-   inkscape:cx="-22.65625"
-   inkscape:cy="201.17187"
+   inkscape:cx="-87.890625"
+   inkscape:cy="176.17188"
    inkscape:window-width="1850"
    inkscape:window-height="1016"
    inkscape:window-x="0"
@@ -88,13 +93,17 @@
    inkscape:current-layer="Layer_1"
    inkscape:showpageshadow="2"
    inkscape:deskcolor="#d1d1d1"
-   inkscape:snap-global="false"><inkscape:grid
+   inkscape:snap-global="false"
+   fit-margin-top="0"
+   fit-margin-left="0"
+   fit-margin-right="0"
+   fit-margin-bottom="0"><inkscape:grid
      type="xygrid"
      id="grid23"
      snapvisiblegridlinesonly="false"
      enabled="true"
-     originx="0"
-     originy="0"
+     originx="-31.90039"
+     originy="-24.999999"
      spacingy="1"
      spacingx="1"
      units="px"
@@ -107,20 +116,20 @@
 </style>
 <path
    style="display:inline;opacity:1;fill:url(#linearGradient1012);fill-opacity:1;stroke:#000000;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-   d="M 125,25 31.90039,58.199219 46.099608,181.30078 125,225 203.90039,181.30078 218.09961,58.199219 125,25 V 225 L 203.90039,181.30078 218.09961,58.199219 125,25"
+   d="M 93.099611,7.0913907e-7 5.4224162e-7,33.19922 14.199219,156.30078 93.099611,200 172,156.30078 186.19922,33.19922 93.099611,7.0913907e-7 V 200 L 172,156.30078 186.19922,33.19922 93.099611,7.0913907e-7"
    id="path1005"
    inkscape:path-effect="#path-effect1007"
-   inkscape:original-d="m 125,25 c 0,0 -93.09961,33.199219 -93.09961,33.199219 0,0 14.199218,123.101561 14.199218,123.101561 C 46.099608,181.30078 125,225 125,225 c 0,0 78.90039,-43.69922 78.90039,-43.69922 0,0 14.19922,-123.101561 14.19922,-123.101561 C 218.09961,58.199219 125,25 125,25 c 0,0 0,200 0,200 0,0 78.90039,-43.69922 78.90039,-43.69922 0,0 14.19922,-123.101561 14.19922,-123.101561 C 218.09961,58.199219 125,25 125,25"
+   inkscape:original-d="M 93.099611,7.0913907e-7 C 93.099611,7.0913907e-7 5.4224162e-7,33.19922 5.4224162e-7,33.19922 c 0,0 14.19921845775838,123.10156 14.19921845775838,123.10156 0,0 78.900392,43.69922 78.900392,43.69922 0,0 78.900389,-43.69922 78.900389,-43.69922 0,0 14.19922,-123.10156 14.19922,-123.10156 0,0 -93.099609,-33.19921929086093 -93.099609,-33.19921929086093 0,0 0,199.99999929086092 0,199.99999929086092 0,0 78.900389,-43.69922 78.900389,-43.69922 0,0 14.19922,-123.10156 14.19922,-123.10156 0,0 -93.099609,-33.19921929086093 -93.099609,-33.19921929086093"
    inkscape:label="shield-left" /><path
    style="display:inline;fill:#000000;fill-opacity:0.1;stroke:#000000;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-   d="M 125,25 V 225 L 203.90039,181.30078 218.09961,58.199219 125,25"
+   d="M 93.099611,7.0913907e-7 V 200 L 172,156.30078 186.19922,33.19922 93.099611,7.0913907e-7"
    id="path1075"
    inkscape:label="shield-right"
-   inkscape:original-d="m 125,25 c 0.001,66.667667 0,200 0,200 0,0 78.90039,-43.69922 78.90039,-43.69922 0,0 14.19922,-123.101561 14.19922,-123.101561 C 218.09961,58.199219 125,25 125,25"
+   inkscape:original-d="M 93.099611,7.0913907e-7 C 93.100611,66.667668 93.099611,200 93.099611,200 93.099611,200 172,156.30078 172,156.30078 c 0,0 14.19922,-123.10156 14.19922,-123.10156 0,0 -93.099609,-33.19921929086093 -93.099609,-33.19921929086093"
    inkscape:path-effect="#path-effect1077" />
 <g
    id="g4037"
-   transform="matrix(0.4776542,0,0,0.4776542,55.181613,52.957964)"
+   transform="matrix(0.4776542,0,0,0.4776542,23.281224,27.957965)"
    style="stroke:#ffffff;stroke-width:3.95634;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">
 	<rect
    x="186.7"
@@ -145,7 +154,7 @@
    id="rect4013"
    style="stroke:#ffffff;stroke-width:6.28069;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
 	<polygon
-   points="266,142.1 247.1,116.1 245.2,117.5 264,143.5 264.4,144 264.7,144.4 245.9,170.3 247.8,171.7 266,146.7 266,146.6 267.1,145.1 267.7,144.4 267.1,143.7 266.5,142.8 "
+   points="245.2,117.5 264,143.5 264.4,144 264.7,144.4 245.9,170.3 247.8,171.7 266,146.7 266,146.6 267.1,145.1 267.7,144.4 267.1,143.7 266.5,142.8 266,142.1 247.1,116.1 "
    id="polygon4015"
    style="stroke:#ffffff;stroke-width:6.28069;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
    transform="translate(8.374259)" />
@@ -158,7 +167,7 @@
    id="rect4017"
    style="stroke:#ffffff;stroke-width:3.95635;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
 	<polygon
-   points="131.7,50.2 131.7,87.7 128.5,85.9 127.7,85.4 126.8,85.9 123.7,87.7 123.7,50.2 121.3,50.2 121.3,89.1 93.7,105.1 94.9,107.1 126.5,88.9 127.7,88.2 128.8,88.9 128.8,88.8 176.3,116.3 176.3,172.5 143.6,191.5 144.8,193.5 177.7,174.5 214.9,186.6 215.6,184.3 178.7,172.3 178.7,116.5 215.6,104.5 214.9,102.2 177.7,114.3 134,89.1 134,50.2 "
+   points="128.5,85.9 127.7,85.4 126.8,85.9 123.7,87.7 123.7,50.2 121.3,50.2 121.3,89.1 93.7,105.1 94.9,107.1 126.5,88.9 127.7,88.2 128.8,88.9 128.8,88.8 176.3,116.3 176.3,172.5 143.6,191.5 144.8,193.5 177.7,174.5 214.9,186.6 215.6,184.3 178.7,172.3 178.7,116.5 215.6,104.5 214.9,102.2 177.7,114.3 134,89.1 134,50.2 131.7,50.2 131.7,87.7 "
    id="polygon4019"
    style="stroke:#ffffff;stroke-width:6.28069;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
 	<rect
@@ -170,16 +179,16 @@
    id="rect4021"
    style="stroke:#ffffff;stroke-width:6.2807;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
 	<polygon
-   points="85.1,100.8 85.1,123.1 70.7,100.8 66.8,100.8 66.8,129.5 70.4,129.5 70.4,107.1 70.5,107.1 84.9,129.5 88.7,129.5 88.7,100.8 "
+   points="70.7,100.8 66.8,100.8 66.8,129.5 70.4,129.5 70.4,107.1 70.5,107.1 84.9,129.5 88.7,129.5 88.7,100.8 85.1,100.8 85.1,123.1 "
    id="polygon4023"
    style="fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:2.09356;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
    transform="translate(-4.1871295,-3.1403152)" />
 	<polygon
-   points="110.5,193.5 111.7,191.5 79,172.5 79,171.2 79,135.9 76.6,135.9 76.6,166.5 42.6,186.1 43.9,188.2 76.6,169.3 76.6,171.2 76.6,173.2 76.6,173.9 78.9,175.3 80.6,176.2 47.8,195.1 49,197.2 83,177.6 "
+   points="79,172.5 79,171.2 79,135.9 76.6,135.9 76.6,166.5 42.6,186.1 43.9,188.2 76.6,169.3 76.6,171.2 76.6,173.2 76.6,173.9 78.9,175.3 80.6,176.2 47.8,195.1 49,197.2 83,177.6 110.5,193.5 111.7,191.5 "
    id="polygon4025"
    style="stroke:#ffffff;stroke-width:6.28069;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
 	<polygon
-   points="134.7,215.9 138.6,215.9 138.6,187.2 135.1,187.2 135.1,209.5 135,209.5 120.6,187.2 116.7,187.2 116.7,215.9 120.3,215.9 120.3,193.5 "
+   points="138.6,187.2 135.1,187.2 135.1,209.5 135,209.5 120.6,187.2 116.7,187.2 116.7,215.9 120.3,215.9 120.3,193.5 134.7,215.9 138.6,215.9 "
    id="polygon4027"
    style="fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:2.09356;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
    transform="translate(0,7.7609099)" />
@@ -192,12 +201,12 @@
    id="path4031"
    style="fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:2.09356;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
 	<polygon
-   points="239.7,176.2 239.7,198.5 239.6,198.5 225.3,176.2 221.3,176.2 221.3,204.9 224.9,204.9 224.9,182.5 225,182.5 239.4,204.9 243.3,204.9 243.3,176.2 "
+   points="239.6,198.5 225.3,176.2 221.3,176.2 221.3,204.9 224.9,204.9 224.9,182.5 225,182.5 239.4,204.9 243.3,204.9 243.3,176.2 239.7,176.2 239.7,198.5 "
    id="polygon4033"
    style="fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:2.09356;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
    transform="translate(4.1871295)" />
 	<polygon
-   points="225,89.3 239.4,111.7 243.3,111.7 243.3,83 239.7,83 239.7,105.3 239.6,105.3 225.3,83 221.3,83 221.3,111.7 224.9,111.7 224.9,89.3 "
+   points="243.3,111.7 243.3,83 239.7,83 239.7,105.3 239.6,105.3 225.3,83 221.3,83 221.3,111.7 224.9,111.7 224.9,89.3 225,89.3 239.4,111.7 "
    id="polygon4035"
    style="fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:2.09356;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
    transform="translate(4.1871295)" />
