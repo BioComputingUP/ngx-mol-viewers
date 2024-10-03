@@ -14,11 +14,20 @@ export class PluginService {
       // Make background transparent
       transparentBackground : true,
     },
+    components : {
+      controls : {
+        top : 'none',
+        left : 'none',
+        right : 'none',
+        bottom : 'none',
+      },
+    },
     config : [
       [PluginConfig.Viewport.ShowExpand, false],
       [PluginConfig.Viewport.ShowControls, false],
       [PluginConfig.Viewport.ShowSelectionMode, false],
       [PluginConfig.Viewport.ShowAnimation, true],
+      [PluginConfig.Viewport.ShowSettings, false],
     ],
   }
 
