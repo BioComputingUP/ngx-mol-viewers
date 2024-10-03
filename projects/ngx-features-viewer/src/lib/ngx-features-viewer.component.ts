@@ -77,7 +77,7 @@ export class NgxFeaturesViewerTooltipDirective {
   templateUrl : './ngx-features-viewer.component.html',
   styleUrl : './ngx-features-viewer.component.scss',
   changeDetection : ChangeDetectionStrategy.OnPush,
-  encapsulation : ViewEncapsulation.None,
+  encapsulation : ViewEncapsulation.Emulated,
 })
 export class NgxFeaturesViewerComponent implements AfterViewInit, AfterContentInit, OnChanges, OnDestroy {
 
