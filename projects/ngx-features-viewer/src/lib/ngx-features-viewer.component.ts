@@ -113,12 +113,17 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, AfterContentIn
   @Input() public sequence!: Sequence;
 
 
-  @Input() public set zoomOnRegion(zoomRegion: [number, number] | undefined) {
+  @Input()
+  public set zoomOnRegion(zoomRegion: [number, number] | undefined) {
     // Check that the selected region is within the sequence
-    if (zoomRegion && zoomRegion[0] >= 1 && zoomRegion[1] <= this.sequence.length) {
-      const x = this.initializeService.scale.x;
-      zoomRegion = [zoomRegion[0] - .5, zoomRegion[1] + .5];
-      this.zoomService.brush$.next(zoomRegion.map(x) as [number, number]);
+    if (zoomRegion) {
+      if (zoomRegion[0] >= 1 && zoomRegion[1] <= this.sequence.length) {
+        const x = this.initializeService.scale.x;
+        zoomRegion = [zoomRegion[0] - .5, zoomRegion[1] + .5];
+        this.zoomService.brush$.next(zoomRegion.map(x) as [number, number]);
+      } else {
+        console.warn(`Selected region [${zoomRegion[0]}, ${zoomRegion[1]}] is out of bounds (1, ${this.sequence.length})`);
+      }
     }
   }
 

@@ -1,3 +1,6 @@
+import { Injectable, OnDestroy } from '@angular/core';
+// D3 library
+import * as d3 from 'd3';
 import {
   distinctUntilChanged,
   map,
@@ -8,16 +11,13 @@ import {
   Subscription,
   switchMap,
 } from 'rxjs';
-import { Injectable, OnDestroy } from '@angular/core';
 // Custom providers
 import { InitializeService, Scale } from './initialize.service';
-// D3 library
-import * as d3 from 'd3';
 
 type D3ZoomEvent = d3.D3ZoomEvent<SVGSVGElement, undefined>;
 
 @Injectable({
-  providedIn: 'platform'
+  providedIn : 'platform',
 })
 export class ZoomService implements OnDestroy {
   /** Zoom handler service
@@ -44,8 +44,8 @@ export class ZoomService implements OnDestroy {
     const initialized$: Observable<Scale> = this.initService.initialized$.pipe(
       // Store scale into service
       map(() => this._scale = {
-        x: this.initService.scale.x.copy(),
-        y: this.initService.scale.y.copy()
+        x : this.initService.scale.x.copy(),
+        y : this.initService.scale.y.copy(),
       }),
       // Cache results
       shareReplay(1),
@@ -61,8 +61,8 @@ export class ZoomService implements OnDestroy {
         return k && x && y;
       }),
       map((zoomEvent) => {
-        const {x: initial} = this._scale;
-        const {x: current} = this.initService.scale;
+        const {x : initial} = this._scale;
+        const {x : current} = this.initService.scale;
         // Modify the zoomEvent transform by applying the current scale
         const updated = zoomEvent.transform.rescaleX(initial);
         // Get start, end domain
@@ -80,8 +80,8 @@ export class ZoomService implements OnDestroy {
     this._brush = this.initService.initialized$.pipe(
       switchMap(() => this.brush$),
       map((selection) => {
-          const {x: initial} = this._scale;
-          const {x: current} = this.initService.scale;
+          const {x : initial} = this._scale;
+          const {x : current} = this.initService.scale;
 
           // Create a transition
           const t = d3.transition().duration(300).ease(d3.easeExpOut);
@@ -98,7 +98,7 @@ export class ZoomService implements OnDestroy {
             // From the selection coordinates get the start and end domain
             const [start, end] = selection.map(current.invert);
             // Calculate the transform to apply to the zoom
-            const k = (this.initService.sequence.length + 1) / (end - start);
+            const k = (this.initService.sequence.length) / (end - start);
             // Why the margin left is divided by k? Who knows, but without it the zoom is not centered
             const x = -initial(start) + this.initService.margin.left / k;
             // Create the transformation
@@ -106,8 +106,8 @@ export class ZoomService implements OnDestroy {
             // Apply the transform to the zoom with a transition, this will call the zoom event
             focusTransition.call(zoomTransform, transformation);
           }
-        }
-      )
+        },
+      ),
     ).subscribe();
 
     // Always subscribe to same scale
