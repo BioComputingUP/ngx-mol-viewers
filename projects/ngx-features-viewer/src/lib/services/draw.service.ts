@@ -896,9 +896,9 @@ export class DrawService {
           const bitOccupancy = bitWidth / widthPerResidue;
 
           // Calculate the position in reverse order
-          const xPositions = Array.from({length : numBits}, (_, i) => startPoint + i * bitOccupancy);
+          const xPositions = Array.from({length : numBits}, (_, i) => startPoint + i * bitOccupancy).filter(x => x >= startPoint && x <= endPoint);
 
-          if (xPositions.length < 2) {
+          if (xPositions.length < 2 && xPositions.length > 0) {
             xPositions.push(endPoint);
           }
 
@@ -950,6 +950,14 @@ export class DrawService {
           }
 
           if (shapeToDraw == "sheet") {
+            if (endPoint < startPoint) {
+              // Set the feature to be outside the view
+              d3.select<d3.BaseType, DSSP>(this)
+                .selectAll<d3.BaseType, number>('polygon')
+                .attr("points", "");
+              return;
+            }
+
             // In the case of the sheet, we just want to draw an arrow, where the body is a rectangle, and the head is a triangle
             const arrowWidth = cs / 2;
             const sheetWidth = totalFeatureWidth - arrowWidth;

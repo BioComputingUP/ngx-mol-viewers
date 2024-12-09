@@ -112,6 +112,16 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, AfterContentIn
 
   @Input() public sequence!: Sequence;
 
+
+  @Input() public set zoomOnRegion(zoomRegion: [number, number] | undefined) {
+    // Check that the selected region is within the sequence
+    if (zoomRegion && zoomRegion[0] >= 1 && zoomRegion[1] <= this.sequence.length) {
+      const x = this.initializeService.scale.x;
+      zoomRegion = [zoomRegion[0] - .5, zoomRegion[1] + .5];
+      this.zoomService.brush$.next(zoomRegion.map(x) as [number, number]);
+    }
+  }
+
   @Output() public selectedFeature: Observable<SelectionContext | undefined> = this.drawService.selectedFeature$.pipe(
     // Adjust for the .5 offset
     map((context) => context ? {
@@ -121,6 +131,13 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, AfterContentIn
         end : context.range!.end - .5,
       },
     } : undefined),
+  );
+
+  @Output() public zoomedAt: Observable<[number, number] | undefined> = this.zoomService.brush$.pipe(
+    map((range) => {
+      const x = this.initializeService.scale.x;
+      return range ? range.map(x.invert).map((v, i) => i == 0 ? v + 0.5 : v - 0.5).map(Math.round) as [number, number] : undefined;
+    }),
   );
 
   private readonly sequence$ = this.drawService.sequence$;
