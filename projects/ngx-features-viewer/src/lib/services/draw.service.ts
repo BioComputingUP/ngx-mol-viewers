@@ -269,7 +269,7 @@ export class DrawService {
     const residuesContainer = this['group.residues'];
     const dotsContainer = this['group.dots'];
 
-    const domainStart = x.domain()[0];
+    const domainStart = x.domain()[0] + 0.5;
     const domainEnd = x.domain()[1];
 
     if (charWidth + 0.5 > cellWidth) {
@@ -578,6 +578,9 @@ export class DrawService {
 
             if (feature.type == 'continuous') {
               const coordinates = initializeService.getCoordinates(event, trace.id);
+              if (coordinates[0] <= 0.5) {
+                return;
+              }
               // Add a small circle to the feature to indicate the position of the mouse
               circle
                 .attr('cx', scale.x(coordinates[0]))
@@ -802,7 +805,7 @@ export class DrawService {
           const xy: [number, number][] = values.map((v: number, i: number) => [i + 1, v]);
 
           // Add another value at the start and end that is the same as the first and last value
-          xy.unshift([0, xy[0][1]]);
+          xy.unshift([0.5, xy[0][1]]);
           xy.push([values.length + .5, xy[xy.length - 1][1]]);
 
           let line: d3.Line<[number, number]> | d3.Area<[number, number]>;
