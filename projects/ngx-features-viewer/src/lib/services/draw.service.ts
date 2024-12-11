@@ -653,7 +653,8 @@ export class DrawService {
               'fill-opacity' : feature.opacity || 1,
             };
 
-            appendElementWithAttributes(container, 'path', pathAttributes);
+            const line = appendElementWithAttributes(container, 'path', pathAttributes);
+            line.style('stroke-dasharray', feature["stroke-dasharray"] || '');
           }
 
           if (feature.type === 'pin') {

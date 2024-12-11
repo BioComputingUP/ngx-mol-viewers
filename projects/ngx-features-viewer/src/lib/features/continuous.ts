@@ -16,6 +16,7 @@ export interface Continuous extends BaseFeature {
   max?: number;
   "stroke-width"?: number;
   "stroke-color"?: string;
+  "stroke-dasharray"?: string;
   curveType?: 'curveStep' | 'curveBasis' | 'curveLinear';
   showArea?: boolean;
 }
