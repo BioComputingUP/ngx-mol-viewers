@@ -9,7 +9,7 @@ import {
   Settings,
   Trace,
 } from '@ngx-features-viewer';
-import { delay, map, Observable, of, shareReplay } from 'rxjs';
+import { map, Observable, shareReplay } from 'rxjs';
 import { ThemeSelectorService } from '../theme-selector/theme-selector.service';
 
 // >sp|P04637|P53_HUMAN Cellular tumor antigen p53 OS=Homo sapiens OX=9606 GN=TP53 PE=1 SV=4
