@@ -1,0 +1,1456 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>ngx-structure-viewer documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    </head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="../" class="navbar-brand">ngx-structure-viewer documentation</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content injectable">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Injectables</li>
+  <li class="breadcrumb-item" >RepresentationService</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a href="#info" 
+                class="nav-link"
+                class="nav-link active"
+                role="tab" id="info-tab" data-bs-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li class="nav-item">
+            <a href="#source" 
+                class="nav-link"
+                
+                role="tab" id="source-tab" data-bs-toggle="tab" data-link="source">Source</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="info">
+        <p class="comment">
+            <h3>File</h3>
+        </p>
+        <p class="comment">
+            <code>projects/ngx-structure-viewer/src/lib/services/representation.service.ts</code>
+        </p>
+
+
+
+
+
+            <section data-compodoc="block-index">
+    <h3 id="index">Index</h3>
+    <table class="table table-sm table-bordered index-table">
+        <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Properties</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                    <span class="modifier">Protected</span>
+                                <a href="#_representation" >_representation</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Readonly</span>
+                                <a href="#interactions$" >interactions$</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Readonly</span>
+                                <a href="#loci$" >loci$</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#molstarService" >molstarService</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#pluginService" >pluginService</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#representation$" >representation$</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#settingsService" >settingsService</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#structureService" >structureService</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Methods</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#checkIndexes" >checkIndexes</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Protected</span>
+                                    <span class="modifier">Async</span>
+                                <a href="#colorRepresentation" >colorRepresentation</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Protected</span>
+                                    <span class="modifier">Async</span>
+                                <a href="#createRepresentation" >createRepresentation</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Protected</span>
+                                <a href="#locusToBundleLayer" >locusToBundleLayer</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#ngOnDestroy" >ngOnDestroy</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+
+
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <h6><b>Accessors</b></h6>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <ul class="index-list">
+                                <li>
+                                    <a href="#interactions" >interactions</a>
+                                </li>
+                            </ul>
+                        </td>
+                    </tr>
+        </tbody>
+    </table>
+</section>
+
+            <section data-compodoc="block-constructor">
+    <h3 id="constructor">Constructor</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+<code>constructor(structureService: <a href="../injectables/StructureService.html" target="_self">StructureService</a>, settingsService: <a href="../injectables/SettingsService.html" target="_self">SettingsService</a>, molstarService: <a href="../injectables/MolstarService.html" target="_self">MolstarService</a>, pluginService: <a href="../injectables/PluginService.html" target="_self">PluginService</a>)</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="44" class="link-to-prism">projects/ngx-structure-viewer/src/lib/services/representation.service.ts:44</a></div>
+                            </td>
+                        </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                            <div>
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>structureService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/StructureService.html" target="_self" >StructureService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>settingsService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/SettingsService.html" target="_self" >SettingsService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>molstarService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/MolstarService.html" target="_self" >MolstarService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>pluginService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/PluginService.html" target="_self" >PluginService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+
+            <section data-compodoc="block-methods">
+    
+    <h3 id="methods">
+        Methods
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="checkIndexes"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>checkIndexes</b></span>
+                        <a href="#checkIndexes"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>checkIndexes(locusFullStart: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, locusFullEnd: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="165"
+                                    class="link-to-prism">projects/ngx-structure-viewer/src/lib/services/representation.service.ts:165</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>locusFullStart</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>locusFullEnd</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="colorRepresentation"></a>
+                    <span class="name">
+                            <span class="modifier">Protected</span>
+                            <span class="modifier">Async</span>
+                        <span ><b>colorRepresentation</b></span>
+                        <a href="#colorRepresentation"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>colorRepresentation(structure: Structure, layers: <a href="../undefineds/BundleLayer.html" target="_self">BundleLayer[]</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="197"
+                                    class="link-to-prism">projects/ngx-structure-viewer/src/lib/services/representation.service.ts:197</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>structure</td>
+                                            <td>
+                                                        <code>Structure</code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>layers</td>
+                                            <td>
+                                                            <code><a href="../miscellaneous/typealiases.html#BundleLayer" target="_self" >BundleLayer[]</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>    <code>Promise&lt;void&gt;</code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="createRepresentation"></a>
+                    <span class="name">
+                            <span class="modifier">Protected</span>
+                            <span class="modifier">Async</span>
+                        <span ><b>createRepresentation</b></span>
+                        <a href="#createRepresentation"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>createRepresentation(structure: <a href="../undefineds/StructureStateObject.html" target="_self">StructureStateObject</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="169"
+                                    class="link-to-prism">projects/ngx-structure-viewer/src/lib/services/representation.service.ts:169</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>structure</td>
+                                            <td>
+                                                            <code><a href="../miscellaneous/typealiases.html#StructureStateObject" target="_self" >StructureStateObject</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>    <code>Promise&lt;void&gt;</code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="locusToBundleLayer"></a>
+                    <span class="name">
+                            <span class="modifier">Protected</span>
+                        <span ><b>locusToBundleLayer</b></span>
+                        <a href="#locusToBundleLayer"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>locusToBundleLayer(locus: <a href="../interfaces/Locus.html" target="_self">Partial&lt;Locus&gt;</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="126"
+                                    class="link-to-prism">projects/ngx-structure-viewer/src/lib/services/representation.service.ts:126</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>locus</td>
+                                            <td>
+                                                            <code><a href="../interfaces/Locus.html" target="_self" >Partial&lt;Locus&gt;</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="../miscellaneous/typealiases.html#BundleLayer" target="_self" >BundleLayer</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="ngOnDestroy"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>ngOnDestroy</b></span>
+                        <a href="#ngOnDestroy"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>ngOnDestroy()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="121"
+                                    class="link-to-prism">projects/ngx-structure-viewer/src/lib/services/representation.service.ts:121</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+            <section data-compodoc="block-properties">
+    
+    <h3 id="inputs">
+        Properties
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="_representation"></a>
+                    <span class="name">
+                            <span class="modifier">Protected</span>
+                        <span ><b>_representation</b></span>
+                        <a href="#_representation"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>Subscription</code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="44" class="link-to-prism">projects/ngx-structure-viewer/src/lib/services/representation.service.ts:44</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="interactions$"></a>
+                    <span class="name">
+                            <span class="modifier">Readonly</span>
+                        <span ><b>interactions$</b></span>
+                        <a href="#interactions$"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>new ReplaySubject&lt;Interaction[]&gt;(1)</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="34" class="link-to-prism">projects/ngx-structure-viewer/src/lib/services/representation.service.ts:34</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="loci$"></a>
+                    <span class="name">
+                            <span class="modifier">Readonly</span>
+                        <span ><b>loci$</b></span>
+                        <a href="#loci$"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>new BehaviorSubject&lt;Locus[]&gt;([])</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="32" class="link-to-prism">projects/ngx-structure-viewer/src/lib/services/representation.service.ts:32</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="molstarService"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>molstarService</b></span>
+                        <a href="#molstarService"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../injectables/MolstarService.html" target="_self" >MolstarService</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="49" class="link-to-prism">projects/ngx-structure-viewer/src/lib/services/representation.service.ts:49</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="pluginService"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>pluginService</b></span>
+                        <a href="#pluginService"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../injectables/PluginService.html" target="_self" >PluginService</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="50" class="link-to-prism">projects/ngx-structure-viewer/src/lib/services/representation.service.ts:50</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="representation$"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>representation$</b></span>
+                        <a href="#representation$"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>Observable&lt;void&gt;</code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="42" class="link-to-prism">projects/ngx-structure-viewer/src/lib/services/representation.service.ts:42</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="settingsService"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>settingsService</b></span>
+                        <a href="#settingsService"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../injectables/SettingsService.html" target="_self" >SettingsService</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="48" class="link-to-prism">projects/ngx-structure-viewer/src/lib/services/representation.service.ts:48</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="structureService"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>structureService</b></span>
+                        <a href="#structureService"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../injectables/StructureService.html" target="_self" >StructureService</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="47" class="link-to-prism">projects/ngx-structure-viewer/src/lib/services/representation.service.ts:47</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+</section>
+
+            <section data-compodoc="block-accessors">
+    <h3 id="accessors">
+        Accessors
+    </h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="interactions"></a>
+                        <span class="name"><b>interactions</b><a href="#interactions"><span class="icon ion-ios-link"></span></a></span>
+                    </td>
+                </tr>
+
+
+                <tr>
+                    <td class="col-md-4">
+                        <span class="accessor"><b>set</b><code>interactions(interactions: <a href="../interfaces/Interaction.html" target="_self">Interaction[]</a>)</code></span>
+                    </td>
+                </tr>
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="36" class="link-to-prism">projects/ngx-structure-viewer/src/lib/services/representation.service.ts:36</a></div>
+                                </td>
+                            </tr>
+                    <tr>
+                        <td class="col-md-4">
+
+                                <div class="io-description">
+                                        <b>Parameters :</b>
+                                        <table class="params">
+                                            <thead>
+                                                <tr>
+                                                    <td>Name</td>
+                                                        <td>Type</td>
+                                                    <td>Optional</td>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                    <tr>
+                                                            <td>interactions</td>
+                                                    
+                                                            <td>
+                                                                            <code><a href="../interfaces/Interaction.html" target="_self" >Interaction[]</a></code>
+                                                            </td>
+                                                    
+                                                        <td>
+                                                                No
+                                                        </td>
+                                                        
+                                                    </tr>
+                                            </tbody>
+                                        </table>
+                                </div>
+                                <div>
+                                </div>
+                                <div class="io-description">
+                                    <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                                </div>
+                        </td>
+                    </tr>
+            </tbody>
+        </table>
+</section>
+    </div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Injectable, OnDestroy } from &#x27;@angular/core&#x27;;
+import { Structure } from &#x27;molstar/lib/mol-model/structure&#x27;;
+import { StaticStructureComponentType } from &#x27;molstar/lib/mol-plugin-state/helpers/structure-component&#x27;;
+import {
+  BehaviorSubject,
+  combineLatestWith,
+  filter,
+  from,
+  map,
+  Observable,
+  ReplaySubject,
+  shareReplay,
+  Subscription,
+  switchMap,
+  withLatestFrom,
+} from &#x27;rxjs&#x27;;
+// Custom dependencies
+// import { Interaction, Interactor } from &#x27;../interfaces/interaction&#x27;;
+import { Interaction } from &#x27;../interfaces/interaction&#x27;;
+import { Locus } from &#x27;../interfaces/locus&#x27;;
+import { Source } from &#x27;../interfaces/source&#x27;;
+import { BundleLayer } from &#x27;../molstar&#x27;;
+import { MolstarService } from &#x27;./molstar.service&#x27;;
+import { PluginService } from &#x27;./plugin.service&#x27;;
+import { SettingsService } from &#x27;./settings.service&#x27;;
+// import { CreateMeshProvider } from &#x27;./interactions.provider&#x27;;
+import { StructureService, StructureStateObject } from &#x27;./structure.service&#x27;;
+
+@Injectable()
+export class RepresentationService implements OnDestroy {
+
+  readonly loci$ &#x3D; new BehaviorSubject&lt;Locus[]&gt;([]);
+
+  readonly interactions$ &#x3D; new ReplaySubject&lt;Interaction[]&gt;(1);
+
+  public set interactions(interactions: Interaction[]) {
+    this.interactions$.next(interactions);
+  }
+
+  // readonly structure$: Observable&lt;Structure&gt;
+
+  public representation$: Observable&lt;void&gt;;
+
+  protected _representation: Subscription;
+
+  constructor(
+    public structureService: StructureService,
+    public settingsService: SettingsService,
+    public molstarService: MolstarService,
+    public pluginService: PluginService,
+  ) {
+    // Get source
+    const source$ &#x3D; this.structureService.source$.pipe(
+      // Filter out null values
+      filter((source): source is Source &#x3D;&gt; source !&#x3D; null),
+    );
+
+    // Build component for structure
+    const component$: Observable&lt;void&gt; &#x3D; this.structureService.structure$.pipe(
+      // Get latest source
+      withLatestFrom(source$),
+      // Generate structure
+      switchMap(([structure]) &#x3D;&gt; from(this.createRepresentation(structure))),
+      // Cache result
+      shareReplay(1),
+    );
+
+    // Apply settings to representation
+    this.representation$ &#x3D; component$.pipe(
+      // Combine with settings emission
+      combineLatestWith(this.settingsService.settings$),
+      // Combine with loci emission
+      combineLatestWith(this.loci$),
+      // In the case we changed the structure, we need to wait for it to be loaded again
+      filter(() &#x3D;&gt; this.structureService.isStructureLoaded),
+      // Define color / alpha layers to be applied to structure
+      map(([[, settings], loci]) &#x3D;&gt; {
+        // Define locus for backbone color
+        const backboneLayer &#x3D; this.locusToBundleLayer({color : settings[&#x27;backbone-color&#x27;]});
+        // Define layers for loci
+        const lociLayers &#x3D; loci.map((locus) &#x3D;&gt; this.locusToBundleLayer(locus));
+        // Return bundle layers
+        return [backboneLayer, ...lociLayers];
+      }),
+      // Apply colors to representation
+      switchMap((bundleLayers) &#x3D;&gt; from(this.colorRepresentation(this.structureService.structure, bundleLayers))),
+      // Cache results
+      //shareReplay(1),
+    );
+
+
+    // // Define loci representation pipeline
+    // const loci$ &#x3D; this.structure$.pipe(
+    //   // With loci emission
+    //   combineLatestWith(this.loci$),
+    //   // Apply loci representation
+    //   // switchMap(([structure, loci]) &#x3D;&gt; from(this.getLociRepresentation(structure, loci))),
+    //   // Cache result
+    //   shareReplay(1),
+    // );
+    // this.getLociRepresentation();
+    // // Define interactions representation pipeline
+    // const interactions$ &#x3D; this.getInteractionsRepresentation();
+
+    // // Combine structure emission
+    // this.representation$ &#x3D; this.structure$.pipe(
+    //   // // With loci representation pipeline
+    //   // combineLatestWith(loci$),
+    //   // // And interactions representation pipeline
+    //   // combineLatestWith(interactions$),
+    //   // Return void
+    //   map(() &#x3D;&gt; void 0),
+    //   // Cache result
+    //   shareReplay(1),
+    // );
+
+    // Subscribe to representation pipeline
+    this._representation &#x3D; this.representation$.subscribe();
+  }
+
+  public ngOnDestroy(): void {
+    // Remove subscription
+    this._representation.unsubscribe();
+  }
+
+  protected locusToBundleLayer(locus: Partial&lt;Locus&gt;): BundleLayer {
+    // Get Mol* lazy loaded dependencies
+    const Molstar &#x3D; this.molstarService.molstar;
+    // Define all residue identifiers
+    let residueIds &#x3D; Array.from(this.structureService.i2r.values());
+    // Initialize numeric start, end indices
+    let [locusNumericStart, locusNumericEnd] &#x3D; [0, residueIds.length];
+    // In case chain is defined
+    if (locus?.chain !&#x3D;&#x3D; undefined) {
+      // Get chain start and end indices
+      [locusNumericStart, locusNumericEnd] &#x3D; this.structureService.c2i.get(locus.chain) ?? [locusNumericStart, locusNumericEnd];
+    }
+    // Case both start and end indices are defined
+    if (locus.chain &amp;&amp; (locus?.start !&#x3D;&#x3D; undefined &amp;&amp; locus?.end !&#x3D;&#x3D; undefined)) {
+      // Define full locus start
+      const locusFullStart &#x3D; locus.chain + locus.start;
+      const locusFullEnd &#x3D; locus.chain + locus.end;
+
+      if (this.checkIndexes(locusFullStart, locusFullEnd)) {
+        // Slice residues by start and end positions
+        locusNumericStart &#x3D; this.structureService.r2i.get(locusFullStart)!;
+        locusNumericEnd &#x3D; this.structureService.r2i.get(locusFullEnd)!;
+      } else {
+        [locusNumericStart, locusNumericEnd] &#x3D; [Number.NaN, Number.NaN];
+        console.error(&#x27;Invalid locus start and end indices&#x27;, locus);
+      }
+    }
+    // Get residue identifiers
+    residueIds &#x3D; residueIds.slice(locusNumericStart, locusNumericEnd + 1);
+    // Get Mol* locus
+    const representationLoci &#x3D; Molstar.getLocusFromSet(residueIds, this.structureService.structure, this.settingsService.settings.prefer_label_asym_id);
+    // Define current Mol* bundle
+    const bundleLayer &#x3D; Molstar.getBundleFromLoci(representationLoci);  // StructureElement.Bundle.fromLoci(locus);
+    // Cast HEX color to Mol* color
+    const [representationColor, representationAlpha] &#x3D; Molstar.colorFromHexString(locus?.color || &#x27;#ffffffff&#x27;);
+    // Return BundleLayer
+    return {bundle : bundleLayer, color : representationColor, alpha : representationAlpha, clear : false};
+  }
+
+  private checkIndexes(locusFullStart: string, locusFullEnd: string) {
+    return this.structureService.r2i.has(locusFullStart) &amp;&amp; this.structureService.r2i.has(locusFullEnd);
+  }
+
+  protected async createRepresentation(structure: StructureStateObject): Promise&lt;void&gt; {
+    // Define plugin instance
+    const plugin &#x3D; this.pluginService.plugin;
+    // Create component for the whole structure
+    let component &#x3D; await plugin.builders.structure.tryCreateComponentStatic(structure, &#x27;all&#x27;);
+    // Initialize representation
+    await plugin.builders.structure.representation.addRepresentation(component!, {type : &#x27;cartoon&#x27;, color : &#x27;uniform&#x27;});
+
+    for (const componentType of [&#x27;ion&#x27;, &#x27;ligand&#x27;, &#x27;lipid&#x27;]) {
+      component &#x3D; await plugin.builders.structure.tryCreateComponentStatic(structure, &lt;StaticStructureComponentType&gt;componentType);
+      // Initialize representation
+      await plugin.builders.structure.representation.addRepresentation(component!, {
+        type : &#x27;ball-and-stick&#x27;,
+        color : &#x27;uniform&#x27;,
+      });
+    }
+
+    if (this.settingsService.settings[&#x27;show-water&#x27;]) {
+      component &#x3D; await plugin.builders.structure.tryCreateComponentStatic(structure, &#x27;water&#x27;);
+      // Initialize representation
+      await plugin.builders.structure.representation.addRepresentation(component!, {
+        type : &#x27;ball-and-stick&#x27;,
+        color : &#x27;uniform&#x27;,
+      });
+    }
+
+  }
+
+  protected async colorRepresentation(structure: Structure, layers: BundleLayer[]): Promise&lt;void&gt; {
+    // Get Mol* lazy loaded dependencies
+    const Molstar &#x3D; this.molstarService.molstar;
+    // Define color layers
+    const colorLayers &#x3D; layers.map(({bundle, color, clear}) &#x3D;&gt; ({bundle, color, clear}));
+    const alphaLayers &#x3D; layers.map(({bundle, alpha}) &#x3D;&gt; ({bundle, value : alpha}));
+    // // Filter bundle of layers
+    // const colorBundle &#x3D; Molstar.getFilteredBundle(colorLayers, structure);
+    // Define plugin instance
+    const {plugin} &#x3D; this.pluginService;
+    // Initialize plugin update
+    const update &#x3D; plugin.state.data.build();
+    // Loop through structures in plugin
+    for (const structureRef of plugin.managers.structure.hierarchy.current.structures) {
+      // Loop through components in current structure
+      for (const componentRef of structureRef.components) {
+        // Loop through each representation in current component
+        for (const representationRef of componentRef.representations) {
+          // Apply color to current representation
+          update.to(representationRef.cell.transform.ref).apply(
+            Molstar.OverpaintStructureRepresentation3DFromBundle,
+            // TODO Fix this 
+            {layers : colorLayers},
+          );
+          // Apply transparency to current representation
+          update.to(representationRef.cell.transform.ref).apply(
+            Molstar.TransparencyStructureRepresentation3DFromBundle,
+            {layers : alphaLayers},
+          );
+        }
+      }
+    }
+    // Apply update
+    await update.commit({canUndo : false, doNotUpdateCurrent : false});
+  }
+
+  // protected async getLociRepresentation(structure: Structure, loci: Locus[]): Promise&lt;void&gt; {
+  //   // // Cast each locus as list of indices, rather than just [start, end] boundaries
+  //   // const indices &#x3D; loci.map((locus) &#x3D;&gt; {
+  //   //   // Case start position is defined, then initialize end position
+  //   //   if (locus.start ) {
+  //   //     // Initialize end position
+  //   //     end &#x3D; end || start;
+  //   //     // Get numeric start index
+  //   //     const startIdx &#x3D; this.structureService.r2i.get(start)!;
+  //   //     const endIdx &#x3D; this.structureService.r2i.get(end)!;
+  //   //     // Return list of indices
+  //   //     return Array.from({ length: endIdx - startIdx + 1 }, (_, i) &#x3D;&gt; startIdx + i);
+  //   //   }
+  //   //   // Otherwise, filter residues by chain
+  //   //   else {
+  //   //     // Get list of identifiers whose value starts with given chain
+  //   //     return Array.from(this.structureService.i2r.values()).filter((id) &#x3D;&gt; id.startsWith(loci[0].chain));
+  //   //   }
+  //   // });
+  //   //   // Map numeric locis to set of residue identifiers
+  //   //   map(({ structure, loci: prev }) &#x3D;&gt; {
+  //   //     // Get residue identifiers
+  //   //     const ids &#x3D; [...this.structureService.i2r.values()];
+  //   //     // Initialize loci as list of residue ranges
+  //   //     const curr &#x3D; prev.map((p) &#x3D;&gt; {
+  //   //       // Case start psoition is defined, then initialize end position
+  //   //       if (p.start) {
+  //   //         // Initialize end position
+  //   //         p &#x3D; { ...p, end: p.end || p.start };
+  //   //         // Get numeric start index
+  //   //         const start &#x3D; this.structureService.r2i.get(p.chain + p.start)!;
+  //   //         const end &#x3D; this.structureService.r2i.get(p.chain + p.end)!;
+  //   //         // Add residue identifier to current locus
+  //   //         return { ...p, ids: ids.slice(start, end + 1) }
+  //   //       }
+  //   //       // Otherwise, filter residues by chain
+  //   //       else {
+  //   //         // Get list of identifiers whose value starts with given chain
+  //   //         return { ...p, ids: ids.filter((id) &#x3D;&gt; id.startsWith(p.chain)) };
+  //   //       }
+  //   //     });
+  //   //     // Return updated loci, as well as structure (data) and plugin
+  //   //     return { structure, loci: curr };
+  //   //   }),
+  //   //   // // Combine with settings emission
+  //   //   // combineLatestWith(this.settingsService.settings$),
+  //   //   // Apply colors
+  //   //   // switchMap(([{ structure, loci }, settings]) &#x3D;&gt; {
+  //   //   switchMap(({ structure, loci }) &#x3D;&gt; {
+  //   //     // Initialize color layers
+  //   //     const layers &#x3D; [] as Overpaint.BundleLayer[];
+  //   //     // Fill in map between color and residues
+  //   //     for (const { ids, color: hex } of loci) {
+  //   //       // Define current Mol* loci
+  //   //       // const locus &#x3D; getLociFromRange(start, end, structure);
+  //   //       const locus &#x3D; getLocusFromSet(ids, structure);
+  //   //       // Define current Mol* bundle
+  //   //       const bundle &#x3D; StructureElement.Bundle.fromLoci(locus);
+  //   //       // Compute color
+  //   //       // const [color] &#x3D; fromHexString(hex || settings[&#x27;backbone-color&#x27;]);
+  //   //       const [color] &#x3D; fromHexString(hex || &#x27;#000000&#x27;);
+  //   //       // Define and store current layer
+  //   //       layers.push({ bundle, color, clear: false });
+  //   //     }
+  //   //     // Define plugin instance
+  //   //     const plugin &#x3D; this.pluginService.plugin;
+  //   //     // Initialize plugin update
+  //   //     const update &#x3D; plugin.state.data.build();
+  //   //     // Filter bundle of layers
+  //   //     const bundle &#x3D; getFilteredBundle(layers, structure);
+  //   //     // Loop through structures in plugin
+  //   //     for (const structureRef of plugin.managers.structure.hierarchy.current.structures) {
+  //   //       // Loop through components in current structure
+  //   //       for (const componentRef of structureRef.components) {
+  //   //         // Loop through each representation in current component
+  //   //         for (const representationRef of componentRef.representations) {
+  //   //           // Apply update on current representation
+  //   //           update
+  //   //             .to(representationRef.cell.transform.ref)
+  //   //             .apply(
+  //   //               StateTransforms.Representation.OverpaintStructureRepresentation3DFromBundle,
+  //   //               Overpaint.toBundle(bundle as never)
+  //   //             );
+  //   //           // // TODO Define locus for all residues
+  //   //           // const _locus &#x3D; getLocusFromSet([...this.structureService.i2r.values()], structure);
+  //   //           // const _bundle &#x3D; StructureElement.Bundle.fromLoci(_locus);
+  //   //           // // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  //   //           // const [_color, alpha] &#x3D; fromHexString(this.settingsService.settings[&#x27;backbone-color&#x27;]);
+  //   //           // // TODO Apply transparency to representation
+  //   //           // update
+  //   //           //   .to(representationRef.cell.transform.ref)
+  //   //           //   .apply(
+  //   //           //     StateTransforms.Representation.TransparencyStructureRepresentation3DFromBundle,
+  //   //           //     { layers: [{ bundle: _bundle, value: alpha }] },
+  //   //           //   );
+  //   //         }
+  //   //       }
+  //   //     }
+  //   //     // Cast promise to observable
+  //   //     return from(update.commit({ doNotUpdateCurrent: true }));
+  //   //   }),
+  //   // );
+  // }
+
+  // protected getInteractionsRepresentation(): Observable&lt;unknown&gt; {
+  //   // Initialize state object selector
+  //   let stateObjectRef: string;
+  //   // Subscribe to structure emission
+  //   return this.structure$.pipe(
+  //     // Combine with interactions emission
+  //     combineLatestWith(this.interactions$),
+  //     // Wrap structure and interactions into an object
+  //     map(([structure, interactions]) &#x3D;&gt; ({ structure, interactions })),
+  //     // TODO When coodeinates are not available, extract them frim indices
+  //     map(({ structure, interactions }) &#x3D;&gt; {
+  //       // Define interactors
+  //       const interactors &#x3D; interactions.reduce((acc, { from, to }) &#x3D;&gt; [...acc, from, to], [] as Interactor[]);
+  //       // Loop through each atom in the structure
+  //       Structure.eachAtomicHierarchyElement(structure, ({
+  //         // Define function for each atom
+  //         atom: (a) &#x3D;&gt; {
+  //           // Define coordinates vector
+  //           const coordinates &#x3D; Vec3.create(SP.atom.x(a), SP.atom.y(a), SP.atom.z(a));
+  //           // Loop through each interactor
+  //           for (const interactor of interactors) {
+  //             // Do only if coordinates are not already set
+  //             if (!interactor.coordinates) {
+  //               // Case chain, residue and atom match
+  //               if (interactor[&#x27;atom.id&#x27;] &#x3D;&#x3D;&#x3D; SP.atom.id(a)) {
+  //                 // Update coordinates
+  //                 interactor.coordinates &#x3D; coordinates;
+  //               }
+  //               // Case residue matches
+  //               else if (interactor[&#x27;chain.id&#x27;] &#x3D;&#x3D;&#x3D; SP.chain.auth_asym_id(a)) {
+  //                 // Case residue identifier matches
+  //                 if (interactor[&#x27;residue.id&#x27;] &#x3D;&#x3D;&#x3D; SP.residue.auth_seq_id(a) + SP.residue.pdbx_PDB_ins_code(a)) {
+  //                   // Case atom name matches
+  //                   if (interactor[&#x27;atom.name&#x27;] &#x3D;&#x3D;&#x3D; SP.atom.auth_atom_id(a)) {
+  //                     // Update coordinates
+  //                     interactor.coordinates &#x3D; coordinates;
+  //                   }
+  //                 }
+  //               }
+  //             }
+  //           }
+  //         },
+  //       }));
+  //       // Filter out interactions whose interactors do not have coordinates
+  //       interactions &#x3D; interactions.filter(({ from, to }) &#x3D;&gt; from.coordinates &amp;&amp; to.coordinates);
+  //       // Return both structure and filtered interactions
+  //       return { structure, interactions };
+  //     }),
+  //     // Apply mesh representation
+  //     switchMap(({ interactions }) &#x3D;&gt; {
+  //       // Define plugin instance
+  //       const plugin &#x3D; this.pluginService.plugin;
+  //       // Initialize plugin update
+  //       const update &#x3D; plugin.state.data.build();
+  //       // Cast interactions to data
+  //       const data &#x3D; interactions.map(({ from, to, color, label, size }) &#x3D;&gt; ({
+  //         // Extract coordinates from interactors
+  //         from: from.coordinates,
+  //         to: to.coordinates,
+  //         // Cast string to Color
+  //         color: fromHexString(color || this.settingsService.settings[&#x27;interaction-color&#x27;]).at(0),
+  //         // Define size
+  //         size: size || this.settingsService.settings[&#x27;interaction-size&#x27;],
+  //         // Define label, if any
+  //         label,
+  //       }));
+  //       // Delete previous state object
+  //       if (stateObjectRef) update.delete(stateObjectRef);
+  //       // Apply representation
+  //       const updated &#x3D; update.toRoot()
+  //         .apply(CreateMeshProvider, { data })
+  //         .apply(StateTransforms.Representation.ShapeRepresentation3D);
+  //       // Store state object reference
+  //       stateObjectRef &#x3D; updated.ref;
+  //       // Cast promise to observable
+  //       return from(update.commit({ doNotUpdateCurrent: true }));
+  //     }),
+  //     // Cache result
+  //     shareReplay(1),
+  //   );
+  // }
+
+}
+</code></pre>
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'injectable';
+            var COMPODOC_CURRENT_PAGE_URL = 'RepresentationService.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+       <script nomodule src="../js/menu-wc_es5.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>

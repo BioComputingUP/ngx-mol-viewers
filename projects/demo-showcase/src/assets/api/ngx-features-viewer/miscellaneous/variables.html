@@ -1,0 +1,400 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>ngx-structure-viewer documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    </head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="../" class="navbar-brand">ngx-structure-viewer documentation</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content miscellaneous-variables">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Miscellaneous</li>
+  <li class="breadcrumb-item">Variables</li>
+</ol>
+
+<section data-compodoc="block-index">
+    <h3 id="index">Index</h3>
+    <table class="table table-sm table-bordered index-table">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <ul class="index-list">
+                        <li>
+                            <a href="#alreadyExitedFromView" title="projects/ngx-features-viewer/src/lib/services/draw.service.ts" ><b>alreadyExitedFromView</b>&nbsp;&nbsp;&nbsp;(projects/.../draw.service.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#DSSPPaths" title="projects/ngx-features-viewer/src/lib/features/dssp.ts" ><b>DSSPPaths</b>&nbsp;&nbsp;&nbsp;(projects/.../dssp.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#identity" title="projects/ngx-features-viewer/src/lib/services/draw.service.ts" ><b>identity</b>&nbsp;&nbsp;&nbsp;(projects/.../draw.service.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#index" title="projects/ngx-features-viewer/src/lib/services/draw.service.ts" ><b>index</b>&nbsp;&nbsp;&nbsp;(projects/.../draw.service.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#REM" title="projects/ngx-features-viewer/src/lib/services/draw.service.ts" ><b>REM</b>&nbsp;&nbsp;&nbsp;(projects/.../draw.service.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#sequenceColors" title="projects/ngx-features-viewer/src/lib/sequence.ts" ><b>sequenceColors</b>&nbsp;&nbsp;&nbsp;(projects/.../sequence.ts)</a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+    <h3>projects/ngx-features-viewer/src/lib/services/draw.service.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="alreadyExitedFromView"></a>
+                    <span class="name">
+                        <span ><b>alreadyExitedFromView</b></span>
+                        <a href="#alreadyExitedFromView"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>new Set&lt;Feature&gt;()</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="identity"></a>
+                    <span class="name">
+                        <span ><b>identity</b></span>
+                        <a href="#identity"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>(f: InternalTrace) &#x3D;&gt; {
+  return f.id;
+}</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="index"></a>
+                    <span class="name">
+                        <span ><b>index</b></span>
+                        <a href="#index"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>(f: InternalTraces) &#x3D;&gt; {
+  return f.map((t) &#x3D;&gt; t.id).join(&#x27;-&#x27;);
+}</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="REM"></a>
+                    <span class="name">
+                        <span ><b>REM</b></span>
+                        <a href="#REM"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>parseFloat(getComputedStyle(document.documentElement).fontSize)</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>projects/ngx-features-viewer/src/lib/features/dssp.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="DSSPPaths"></a>
+                    <span class="name">
+                        <span ><b>DSSPPaths</b></span>
+                        <a href="#DSSPPaths"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/object" target="_blank" >object</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>{
+  &#x27;helix&#x27;: &quot;M 1.2754258,8.4557039 C 1.6450449,8.4539683 2.0146596,6.4441581 2.3842743,4.23333 2.753889,2.0225118 3.123508,0.01270245 3.4931228,0.01096606 l 1.4784638,-3.35e-6 C 4.6019718,0.0126991 4.2323528,2.0225085 3.8627383,4.2333266 3.4931236,6.4441547 3.1235087,8.453965 2.7538898,8.4557004 Z&quot;,
+  &#x27;turn&#x27;: &quot;m 5 4 q 5 -4 4 -14 q 0 -7 7.9 -8.6 q 3.1 -0.4 7.2 0 q 6.9 1.6 6.9 8.6 q 0 10 3 14 c 2 2 -1 6 -4 3 q -4 -7 -4 -17 c 0 -5 -12 -5 -12 0 q 0 10 -5 17 c -3 3 -6 -1 -4 -3 z m 9 -9 c 2.2 -6 11.2 7 12 0 c -2.1 -6 -10.1 7 -12 0 z&quot;,
+  // The sheet path is calculated at runtime
+  &#x27;sheet&#x27;: &quot;&quot;,
+  // The coil path is calculated at runtime
+  &#x27;coil&#x27;: &quot;&quot;
+}</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <h3>projects/ngx-features-viewer/src/lib/sequence.ts</h3>
+    <section data-compodoc="block-properties">
+    <h3></h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="sequenceColors"></a>
+                    <span class="name">
+                        <span ><b>sequenceColors</b></span>
+                        <a href="#sequenceColors"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/object" target="_blank" >object</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>{
+  clustalx : {
+    A : &#x27;#7aa0ed&#x27;,
+    I : &#x27;#7aa0ed&#x27;,
+    L : &#x27;#7aa0ed&#x27;,
+    M : &#x27;#7aa0ed&#x27;,
+    F : &#x27;#7aa0ed&#x27;,
+    W : &#x27;#7aa0ed&#x27;,
+    V : &#x27;#7aa0ed&#x27;,
+    K : &#x27;#fa161d&#x27;,
+    R : &#x27;#fa161d&#x27;,
+    E : &#x27;#c649bd&#x27;,
+    D : &#x27;#c649bd&#x27;,
+    N : &#x27;#00c02e&#x27;,
+    Q : &#x27;#00c02e&#x27;,
+    S : &#x27;#00c02e&#x27;,
+    T : &#x27;#00c02e&#x27;,
+    C : &#x27;#f88082&#x27;,
+    G : &#x27;#f89051&#x27;,
+    P : &#x27;#c1c02d&#x27;,
+    H : &#x27;#00a4a3&#x27;,
+    Y : &#x27;#00a4a3&#x27;,
+    B : &#x27;#fff&#x27;, // Unknown
+    X : &#x27;#fff&#x27;, // Unknown
+    Z : &#x27;#fff&#x27;, // Unknown
+    &#x27;-&#x27; : &#x27;#fff&#x27;, // Special characters
+  },
+
+  nucleotide : {
+    A : &#x27;#45f752&#x27;,
+    C : &#x27;#ffb34f&#x27;,
+    G : &#x27;#f54142&#x27;,
+    T : &#x27;#2188ea&#x27;,
+    U : &#x27;#2188ea&#x27;,
+    X : &#x27;#fff&#x27;, // Unknown
+  },
+}</code>
+                    </td>
+                </tr>
+
+
+        </tbody>
+    </table>
+</section>
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'miscellaneous-variables';
+            var COMPODOC_CURRENT_PAGE_URL = 'variables.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+       <script nomodule src="../js/menu-wc_es5.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>

@@ -1,0 +1,36 @@
+<!-- Outer scaffold -->
+<div class="container-fluid ">
+    <div class="row">
+        <div class="col-12 pt-3">
+            <ngx-sequence-viewer [sequence]="sequence" [settings]="settings$ | async"></ngx-sequence-viewer>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-6 pt-3">
+
+        </div>
+        <div class="col-6 pt-3">
+            <ngx-features-viewer [sequence]="sequence" [traces]="traces" [settings]="tmp">
+                <!-- Left label -->
+                <ng-template let-trace="trace" ngx-features-viewer-label>
+                    <div class="d-flex flex-row align-items-center w-100 h-100 ps-3 pe-3">
+                        <!-- Handle padding according to level -->
+                        @for (i of [].constructor(trace.level); track i) {
+                            <span class="ps-3"></span>
+                        }
+                        <!-- Handle caret according to expanded flag -->
+                        @if (trace.expanded) {
+                            <i class="bi bi-caret-down-fill"></i>
+                        } @else {
+                            <i class="bi bi-caret-right"></i>
+                        }
+                        <!-- Show label -->
+                        <small class="ps-3">{{ trace.label }}</small>
+
+                    </div>
+                </ng-template>
+            </ngx-features-viewer>
+        </div>
+    </div>
+</div>
+

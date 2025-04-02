@@ -1,0 +1,1018 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>ngx-structure-viewer documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    </head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="../" class="navbar-brand">ngx-structure-viewer documentation</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content interface">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Interfaces</li>
+  <li class="breadcrumb-item"
+  >
+  Settings</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a href="#info" 
+                class="nav-link"
+                class="nav-link active"
+                role="tab" id="info-tab" data-bs-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li class="nav-item">
+            <a href="#source" 
+                class="nav-link"
+                
+                role="tab" id="source-tab" data-bs-toggle="tab" data-link="source">Source</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="info">
+        <p class="comment">
+            <h3>File</h3>
+        </p>
+        <p class="comment">
+            <code>projects/ngx-sequence-viewer/src/lib/ngx-sequence-viewer.component.ts</code>
+        </p>
+
+
+            <p class="comment">
+                <h3>Description</h3>
+            </p>
+            <p class="comment">
+                <p>Define settings for sequence viewer</p>
+
+            </p>
+
+
+        <section data-compodoc="block-index">
+            <h3 id="index">Index</h3>
+            <table class="table table-sm table-bordered index-table">
+                <tbody>
+                    <tr>
+                        <td class="col-md-4">
+                            <h6><b>Properties</b></h6>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <ul class="index-list">
+                                <li>
+                                        <a href="#background-color" 
+>
+                                            background-color
+                                        </a>
+                                </li>
+                                <li>
+                                        <a href="#chunk-size" 
+>
+                                            chunk-size
+                                        </a>
+                                </li>
+                                <li>
+                                        <a href="#color-map" 
+>
+                                            color-map
+                                        </a>
+                                </li>
+                                <li>
+                                        <a href="#rotate-index" 
+>
+                                            rotate-index
+                                        </a>
+                                </li>
+                                <li>
+                                        <a href="#selection-color" 
+>
+                                            selection-color
+                                        </a>
+                                </li>
+                                <li>
+                                        <a href="#split-chunks" 
+>
+                                            split-chunks
+                                        </a>
+                                </li>
+                                <li>
+                                        <a href="#text-color" 
+>
+                                            text-color
+                                        </a>
+                                </li>
+                            </ul>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+
+
+            <section data-compodoc="block-properties">
+                <h3 id="inputs">Properties</h3>
+                    <table class="table table-sm table-bordered">
+                        <tbody>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <a name="background-color"></a>
+                                        <span class="name "><b>background-color</b>
+                                            <a href="#background-color">
+                                                <span class="icon ion-ios-link"></span>
+                                            </a>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <code>background-color:         <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+</code>
+                                    </td>
+                                </tr>
+
+
+                                    <tr>
+                                        <td class="col-md-4">
+                                            <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                                        </td>
+                                    </tr>
+
+
+
+
+
+                        </tbody>
+                    </table>
+                    <table class="table table-sm table-bordered">
+                        <tbody>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <a name="chunk-size"></a>
+                                        <span class="name "><b>chunk-size</b>
+                                            <a href="#chunk-size">
+                                                <span class="icon ion-ios-link"></span>
+                                            </a>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <code>chunk-size:         <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+</code>
+                                    </td>
+                                </tr>
+
+
+                                    <tr>
+                                        <td class="col-md-4">
+                                            <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                                        </td>
+                                    </tr>
+
+
+
+
+
+                        </tbody>
+                    </table>
+                    <table class="table table-sm table-bordered">
+                        <tbody>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <a name="color-map"></a>
+                                        <span class="name "><b>color-map</b>
+                                            <a href="#color-map">
+                                                <span class="icon ion-ios-link"></span>
+                                            </a>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <code>color-map:         <code><a href="../interfaces/ColorMap.html" target="_self" >ColorMap</a></code>
+</code>
+                                    </td>
+                                </tr>
+
+
+                                    <tr>
+                                        <td class="col-md-4">
+                                            <i>Type : </i>        <code><a href="../interfaces/ColorMap.html" target="_self" >ColorMap</a></code>
+
+                                        </td>
+                                    </tr>
+
+
+
+
+
+                        </tbody>
+                    </table>
+                    <table class="table table-sm table-bordered">
+                        <tbody>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <a name="rotate-index"></a>
+                                        <span class="name "><b>rotate-index</b>
+                                            <a href="#rotate-index">
+                                                <span class="icon ion-ios-link"></span>
+                                            </a>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <code>rotate-index:         <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+</code>
+                                    </td>
+                                </tr>
+
+
+                                    <tr>
+                                        <td class="col-md-4">
+                                            <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                                        </td>
+                                    </tr>
+
+
+
+
+
+                        </tbody>
+                    </table>
+                    <table class="table table-sm table-bordered">
+                        <tbody>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <a name="selection-color"></a>
+                                        <span class="name "><b>selection-color</b>
+                                            <a href="#selection-color">
+                                                <span class="icon ion-ios-link"></span>
+                                            </a>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <code>selection-color:         <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+</code>
+                                    </td>
+                                </tr>
+
+
+                                    <tr>
+                                        <td class="col-md-4">
+                                            <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                                        </td>
+                                    </tr>
+
+
+
+
+
+                        </tbody>
+                    </table>
+                    <table class="table table-sm table-bordered">
+                        <tbody>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <a name="split-chunks"></a>
+                                        <span class="name "><b>split-chunks</b>
+                                            <a href="#split-chunks">
+                                                <span class="icon ion-ios-link"></span>
+                                            </a>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <code>split-chunks:         <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+</code>
+                                    </td>
+                                </tr>
+
+
+                                    <tr>
+                                        <td class="col-md-4">
+                                            <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                                        </td>
+                                    </tr>
+
+
+
+
+
+                        </tbody>
+                    </table>
+                    <table class="table table-sm table-bordered">
+                        <tbody>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <a name="text-color"></a>
+                                        <span class="name "><b>text-color</b>
+                                            <a href="#text-color">
+                                                <span class="icon ion-ios-link"></span>
+                                            </a>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <code>text-color:         <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+</code>
+                                    </td>
+                                </tr>
+
+
+                                    <tr>
+                                        <td class="col-md-4">
+                                            <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                                        </td>
+                                    </tr>
+
+
+
+
+
+                        </tbody>
+                    </table>
+            </section>
+    </div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { ChangeDetectionStrategy, Component, HostListener, Input, OnChanges, Output, SimpleChanges } from &#x27;@angular/core&#x27;;
+// import { combineLatestWith, map, shareReplay, startWith } from &#x27;rxjs&#x27;;
+// import { SelectionService } from &#x27;./services/selection.service&#x27;;
+// import { PositionsService } from &#x27;./services/positions.service&#x27;;
+import { BehaviorSubject, combineLatestWith, map, shareReplay } from &#x27;rxjs&#x27;;
+import { CommonModule } from &#x27;@angular/common&#x27;;
+import { ColorMap, ZAPPO } from &#x27;./colors&#x27;;
+import { SelectionService } from &#x27;./services/selection.service&#x27;;
+import { IndexService } from &#x27;./services/index.service&#x27;;
+import { FASTA } from &#x27;./utils&#x27;;
+
+// export interface Locus&lt;T&gt; {
+//   // Define start position (for both point and range loci)
+//   start: T;
+//   // Define end position (for range loci)
+//   end?: T;
+//   // Define type of locus
+//   type: &#x27;range&#x27;;
+//   // Background and text color, if defined
+//   background?: string;
+//   color?: string;
+// }
+
+// export type Loci&lt;T&gt; &#x3D; Locus&lt;T&gt;[];
+
+/**
+ * @group NgxSequenceViewer
+ * @alias NgxStructureViewer.Locus
+ * @name NgxSequenceViewer.Locus
+ * @description Defines a Locus interface for the NgxStructureViewer component.
+ */
+export interface Locus&lt;T&#x3D;unknown&gt; {
+  // These are the boundaries of the locus
+  start: T;
+  end: T;
+}
+
+export type Colored&lt;L extends Locus&gt; &#x3D; L &amp; Partial&lt;ColorMap[string]&gt;;
+
+/** Defines logo of aligned sequences
+ * 
+ * Logo stores the probability of each character in each position of the alignment.
+ * The Logo array stores one value for each position of the alingnment.
+ * Each value is a dictionary, mapping key to probability.
+ * NOTE It includes gap &#x60;-&#x60; character. Hence, the sum of all probabilities in each position is 1.
+ */
+export type Logo &#x3D; { [aa: string]: number }[];
+
+/** Define consensus of aligned sequences
+ * 
+ * This is just the highest probability in each position of the alignment.
+ * NOTE In this case the gap &#x60;-&#x60; character is not considered.
+ */
+export type Consensus &#x3D; [string, number][];
+
+/** Define settings for sequence viewer
+ * 
+ */
+export interface Settings {
+  // Define chunk size, might be negative for single residue chunks
+  &#x27;chunk-size&#x27;: number;
+  // Define background color, fallback to this color if residue is not locus, nor selected
+  &#x27;background-color&#x27;: string;
+  // Define selection color, use this color if residue is selected
+  &#x27;selection-color&#x27;: string;
+  // Define text color, fallback to this color if residue is not locus, nor selected
+  &#x27;text-color&#x27;: string;
+  // Whether to rotate index, default to false
+  &#x27;rotate-index&#x27;: boolean;
+  // Thether to add space between chunks, default to false
+  &#x27;split-chunks&#x27;: boolean;
+  // Define color map for residues
+  &#x27;color-map&#x27;: ColorMap;
+}
+
+@Component({
+  // eslint-disable-next-line @angular-eslint/component-selector
+  selector: &#x27;ngx-sequence-viewer&#x27;,
+  templateUrl: &#x27;./ngx-sequence-viewer.component.html&#x27;,
+  styleUrls: [&#x27;./ngx-sequence-viewer.component.scss&#x27;],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [SelectionService, IndexService],
+  imports: [CommonModule],
+  standalone: true,
+})
+export class NgxSequenceViewerComponent implements OnChanges {
+
+  protected _settings: Settings &#x3D; {
+    &#x27;chunk-size&#x27;: 5,
+    &#x27;background-color&#x27;: &#x27;transparent&#x27;,
+    &#x27;selection-color&#x27;: &#x27;greenyellow&#x27;,
+    &#x27;text-color&#x27;: &#x27;black&#x27;,
+    &#x27;rotate-index&#x27;: false,
+    &#x27;split-chunks&#x27;: false,
+    &#x27;color-map&#x27;: ZAPPO,
+  };
+
+  @Input()
+  set settings(settings: Partial&lt;Settings&gt; | null) {
+    // Initialize settings
+    this._settings &#x3D; { ...this.settings, ...(settings || {}) };
+    // Get chunk size, rotate index
+    const { &#x27;chunk-size&#x27;: chunkSize, &#x27;rotate-index&#x27;: rotateIndex } &#x3D; this.settings;
+    // Update index rotation according to chunk size
+    this._settings[&#x27;rotate-index&#x27;] &#x3D; chunkSize &lt; 0 ? true : rotateIndex;
+    // Update chunk split according to chunk size
+    this._settings[&#x27;split-chunks&#x27;] &#x3D; chunkSize &lt; 0 ? false : true;
+  }
+
+  get settings(): Settings {
+    return this._settings;
+  }
+
+  /** Define split of alignment
+   * 
+   * For values from 0 and greater, the index above is positioned horizontally and
+   * gap is set between each chunk.
+   * For values less than 0 (tipically -1), the index above is positioned vertically 
+   * (rotated 90 degrees), no gap is set between each chunk. Each chunk will contain
+   * exactly one position, hence an index is defined for each residue.
+   */
+  get split(): number {
+    return this.settings[&#x27;chunk-size&#x27;];
+  }
+
+  get cmap(): ColorMap {
+    return this.settings[&#x27;color-map&#x27;];
+  }
+
+  @Input()
+  public label?: string;
+
+  @Input()
+  public labels?: string[];
+
+  @Input()
+  public fasta?: string;
+
+  @Input()
+  public sequence?: string;
+
+  @Input()
+  public sequences?: string[];
+
+  public get first(): string {
+    // Just return first sequence
+    return (this.sequences as string[])[0];
+  }
+
+  public get length(): number {
+    // Just return length of first sequence
+    return this.first.length;
+  }
+
+  @Input()
+  public index? : unknown[];
+
+  public chunks!: Locus&lt;number&gt;[];
+
+  public logo!: Logo;
+
+  public consensus!: Consensus;
+
+  public loci$ &#x3D; new BehaviorSubject&lt;Record&lt;string, Colored&lt;Locus&gt;&gt;&gt;({});
+
+  @Input()
+  public loci: Colored&lt;Locus&gt;[] &#x3D; [];
+
+  @Input()
+  public set select(locus: Locus | null) {
+    // Just emit locus or null
+    this.selectionService.select &#x3D; locus;
+  }
+
+  @Output()
+  public selected$ &#x3D; this.selectionService.selected$;
+
+  // Merge loci with selection in a single styles emitter
+  readonly styles$ &#x3D; this.loci$.pipe(
+    // Combine with latest loci emission
+    combineLatestWith(this.selected$),
+    // Define a matrix for styles, according to row and column
+    map(([loci, selection]) &#x3D;&gt; {
+      // Initialize styles matrix
+      const styles: Record&lt;string, Array&lt;{ &#x27;background-color&#x27;?: string, &#x27;border-color&#x27;?: string, &#x27;color&#x27;?: string }&gt;&gt; &#x3D; {};
+      // Define sequences: index, consensus, input sequences
+      const consensus &#x3D; this.consensus.map(([aa]) &#x3D;&gt; aa).join(&#x27;&#x27;);
+      const sequences &#x3D; [consensus, ...this.sequences || []];
+      // Loop through each row (sequence)
+      for (let i &#x3D; 0; i &lt; sequences.length; i++) {
+        // Update index
+        const k &#x3D; (i &lt; 1) ? &#x27;consensus&#x27; : (i - 1);
+        // Initialize row
+        styles[k] &#x3D; [];
+        // Loop through each column (position)
+        for (let j &#x3D; 0; j &lt; this.length; j++) {
+          // Define residue name
+          const residue &#x3D; sequences[i][j];
+          // Initialize background color
+          let backgroundColor &#x3D; this.settings[&#x27;background-color&#x27;];
+          let borderColor &#x3D; this.settings[&#x27;background-color&#x27;];
+          let textColor &#x3D; this.settings[&#x27;text-color&#x27;];
+          // Case residue is defined in color map
+          if (residue in this.settings[&#x27;color-map&#x27;]) {
+            // Define border color here, as it will be overwritten later
+            borderColor &#x3D; this.settings[&#x27;color-map&#x27;][residue][&#x27;background-color&#x27;];
+          }
+          // Case residue is within locus
+          if (j in loci) {
+            // Get current locus
+            const locus &#x3D; loci[j];
+            // Update background color
+            backgroundColor &#x3D; locus[&#x27;background-color&#x27;] || backgroundColor;
+            borderColor &#x3D; locus[&#x27;background-color&#x27;] || borderColor;
+            textColor &#x3D; locus[&#x27;text-color&#x27;] || textColor;
+          }
+          // Case residue is among the selected ones
+          if (selection) {
+            // Get numeric start, end
+            const { start, end } &#x3D; this.indexService.map(selection);
+            // Case residue is within selection
+            if (start &lt;&#x3D; j &amp;&amp; j &lt;&#x3D; end) {
+              // Define selection color
+              const selectionColor &#x3D; this.settings[&#x27;selection-color&#x27;];
+              // Update background color
+              backgroundColor &#x3D; selectionColor;
+              borderColor &#x3D; selectionColor;
+            }
+          }
+          // Case residue is defined in color map
+          if (residue in this.settings[&#x27;color-map&#x27;]) {
+            // Initialize background color
+            backgroundColor &#x3D; this.settings[&#x27;color-map&#x27;][residue][&#x27;background-color&#x27;];
+            textColor &#x3D; this.settings[&#x27;color-map&#x27;][residue][&#x27;text-color&#x27;];
+          }
+          // Define CSS colpiant styles
+          const style &#x3D; { &#x27;background-color&#x27;: backgroundColor, &#x27;border-color&#x27;: borderColor, &#x27;color&#x27;: textColor };
+          // Store style for current position
+          styles[k][j] &#x3D; style;
+        }
+      }
+      // Add style for index
+      styles[&#x27;index&#x27;] &#x3D; [];
+      // Loop through each position
+      for (let j &#x3D; 0; j &lt; this.length; j++) {
+        // Initialize background color
+        let backgroundColor &#x3D; this.settings[&#x27;background-color&#x27;];
+        // Define text color
+        const textColor &#x3D; this.settings[&#x27;text-color&#x27;];
+        // Case residue is within locus
+        if (j in loci) {
+          // Get current locus
+          const locus &#x3D; loci[j];
+          // Update background color
+          backgroundColor &#x3D; locus[&#x27;background-color&#x27;] || backgroundColor;
+        }
+        // Case locus is selected
+        if (selection) {
+          // Get numeric start, end
+          const { start, end } &#x3D; this.indexService.map(selection);
+          // Case residue is within selection
+          if (start &lt;&#x3D; j &amp;&amp; j &lt;&#x3D; end) {
+            // Define selection color
+            const selectionColor &#x3D; this.settings[&#x27;selection-color&#x27;];
+            // Update background color
+            backgroundColor &#x3D; selectionColor;
+          }
+        }
+        // Initialize CSS style for current index position
+        styles[&#x27;index&#x27;][j] &#x3D; { &#x27;background-color&#x27;: backgroundColor, &#x27;border-color&#x27;: backgroundColor, &#x27;color&#x27;: textColor };
+      }
+      // Return styles matrix
+      return styles;
+    }),
+    // Cache results
+    shareReplay(1),
+  );
+
+  // Dependency injection
+  constructor(
+    public selectionService: SelectionService,
+    public indexService: IndexService,
+  ) {}
+
+  @HostListener(&#x27;window:mouseup&#x27;, [&#x27;$event&#x27;])
+  public onMouseUp(event: MouseEvent) {
+    this.selectionService.onMouseUp(event);
+  }
+
+  public onMouseDown(event:MouseEvent, index: string) {
+    // Set selection
+    this.selectionService.onMouseDown(event, index);
+    // Prevent default behavior
+    event.preventDefault();
+    // Prevent bubbling
+    event.stopPropagation();
+  }
+
+  @HostListener(&#x27;window:mousedown&#x27;)
+  public onMouseDownOut() {
+    // Reset selection
+    this.selectionService.select$.next(null);
+  }
+
+  public onMouseEnter(event: MouseEvent, index: string) {
+    this.selectionService.onMouseEnter(event, index);
+  }
+
+  public ngOnChanges(changes: SimpleChanges): void {
+    // Check for input change
+    if (changes) {
+      // Handle input sequences
+      this.setSequences();
+      // Cacluclate chunks
+      this.setChunks();
+      // Calculate logo
+      this.setLogo();
+      // Calculate consensus
+      this.setConsensus();
+      // Handle input index
+      this.setIndex();
+      // Update loci
+      this.setLoci();
+    }
+  }
+
+  /** Handle input, set sequences
+   * 
+   * In case &#x60;fasta&#x60; input is provided, then attempts to parse it.
+   * In case &#x60;sequence&#x60; input is provided, then sets it as the only sequence in sequences list.
+   * In both cases, input string can be in fasta format. Hence, the sequence label is extracted from it.
+   * However, if &#x60;labels&#x60; input is provided, then it is used as the sequence label, rather than 
+   * extracting it from the input string.
+   * &#x60;labels&#x60; input is expected to be an array of strings, with the same length as &#x60;sequences&#x60;.
+   * Each string in &#x60;sequences&#x60; is expected to have the same length.
+   * If expectations are not met, then an error is thrown.
+   */
+  public setSequences(): void {
+    // Case sequences are provided
+    if (this.sequences &amp;&amp; this.labels) {
+      // Check whether the size of sequences and labels match
+      if (this.sequences.length !&#x3D;&#x3D; this.labels.length) {
+        // Otherwise, throw an error
+        throw new Error(&#x27;Number of sequences does not match number of labels&#x27;);
+      }
+    }
+    // Case fasta file is provided
+    else if (this.fasta) {
+      // Attempt to parse fasta file
+      const parsed &#x3D; FASTA.parse(this.fasta);
+      // Set sequences and labels
+      this.sequences &#x3D; parsed.map((entry) &#x3D;&gt; entry.sequence);
+      this.labels &#x3D; this.labels || parsed.map((entry) &#x3D;&gt; entry.label);
+    }
+    // Case sequence is provided
+    else if (this.sequence) {
+      // Set sequence as the only sequence in sequences list
+      this.labels &#x3D; [this.label || &#x27;&#x27;]; 
+      this.sequences &#x3D; [this.sequence];
+    }
+    // Otherwise, throw an error
+    else throw new Error(&#x27;No single sequence, nor fasta were provided&#x27;);
+    // Check if labels are defined
+    if (this.labels) {
+      // Get number of sequences
+      const count &#x3D; this.sequences.length;
+      // Get length of first sequence
+      const length &#x3D; this.sequences[0].length;
+      // Check if number of sequences is greater than 0
+      if (count &lt; 1) {
+        // Otherwise, throw an error
+        throw new Error(&#x27;No sequences were provided&#x27;);
+      }
+      // Check if number of labels is the same as number of sequences
+      if (this.labels.length !&#x3D;&#x3D; count) {
+        // Otherwise, throw an error
+        throw new Error(&#x27;Number of labels does not match number of sequences&#x27;);
+      }
+      // Check if all sequences have the same length
+      if (this.sequences.some((sequence) &#x3D;&gt; sequence.length !&#x3D;&#x3D; length)) {
+        // Otherwise, throw an error
+        throw new Error(&#x27;All sequences must have the same length&#x27;);
+      }
+    }
+    // Otherwise, throw an error
+    else throw new Error(&#x27;No labels were provided&#x27;);
+  }
+
+  /** Define chunks
+   * 
+   * Chunks are defined as ranges of positions in the alignment.
+   * Each chunk is a locus, defined by its start and end position.
+   */
+  public setChunks(): void {
+    // Initialize chunks
+    this.chunks &#x3D; [];
+    // Get maximum chunk size, length of any (first) seqeunce
+    const length &#x3D; this.length;
+    const split &#x3D; this.split &gt;&#x3D; 0 ? this.split : 1;
+    // Loop until sequence ends
+    for (let start &#x3D; 0; start &lt; length; start &#x3D; start + split) {
+      // Define start of chunk
+      const end &#x3D; Math.min(length, start + split);
+      // Return chunk
+      this.chunks.push({ start, end });
+    }
+  }
+
+  /** Compute alignment logo
+   * 
+   * In a multiple sequence alignment, a logo is an association between amino acids in a position and their probability.
+   * Here, a logo is a map between amino acids and their probability in each position of the alignment.
+   * If an amino acid is not present in a position, then it is not included in the logo.
+   * Therefore, gaps &#x60;-&#x60; are also included in the logo.
+   * The sum of all probabilities in each position is 1.
+   */
+  public setLogo(): void {
+    // Initialize logo
+    this.logo &#x3D; [];
+    // define sequences
+    const sequences &#x3D; this.sequences || [];
+    // Define number of sequences
+    const count &#x3D; sequences.length;
+    // Loop through each position in the alignment
+    for (let i &#x3D; 0; i &lt; this.length; i++) {
+      // Define a position in the logo
+      let position: { [aa: string]: number } &#x3D; {};
+      // Loop through each sequence in the alignment
+      for (const sequence of sequences) {
+        // Get amino acid in current position
+        const aa &#x3D; sequence[i];
+        // Update count of amino acid in position
+        aa in position ? position[aa]++ : position[aa] &#x3D; 1;
+      }
+      // Loop through each amino acid in the position
+      for (const aa in position) {
+        // Normalize count to probability
+        position[aa] /&#x3D; count;
+      }
+      // Sort amino acids by probability
+      position &#x3D; Object.fromEntries(Object.entries(position).sort((a, b) &#x3D;&gt; {
+        return b[1] - a[1];
+      }));
+      // Store logo of current position
+      this.logo.push(position);
+    }
+  }
+
+  /** Compute alignment consensus */
+  public setConsensus(): void {
+    // Re-initialize consensus
+    this.consensus &#x3D; [];
+    // Consensus is just the highest probability in each position of the alignment
+    for (let i &#x3D; 0; i &lt; this.length; i++) {
+      // Get currrent position in the logo
+      const positions &#x3D; Object.entries(this.logo[i]);
+      // Retrieve first entry (as they are already sorted by probability)
+      this.consensus.push(positions[0]);
+    }
+  }
+
+  public setIndex(): void {
+    // Get initial index
+    let index &#x3D; this.index; 
+    // Case input index is not defined
+    if (!index) {
+      // Then define index as a range from 0 to length of alignment
+      index &#x3D; Array.from({ length: this.length }, (_, i) &#x3D;&gt; i + 1);
+    }
+    // Define index
+    this.indexService.index &#x3D; index;
+  }
+
+  public setLoci(): void {
+    // Define residue (index) to color map
+    const colors &#x3D; this.loci.reduce((cmap: Record&lt;string, Colored&lt;Locus&gt;&gt;, locus: Colored&lt;Locus&gt;) &#x3D;&gt; {
+      // Cast start, end position to number
+      const { start, end } &#x3D; this.indexService.map(locus);
+      // Loop through each position in locus
+      for (let i &#x3D; start; i &lt;&#x3D; end; i++) {
+        // Get current index as string
+        const index &#x3D; this.indexService.values[i];
+        // Update color map
+        cmap[index] &#x3D; locus;
+      }
+      // Return updated color map
+      return cmap;
+    }, {});
+    // Just emit loci
+    this.loci$.next(colors);
+  }
+
+  public asOpacity(opacity: number): string {
+    // Just return opacity string, which is CSS compatible
+    return &#x60;${ Math.round(opacity * 100) }%&#x60;;
+  }
+
+}
+</code></pre>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'interface';
+            var COMPODOC_CURRENT_PAGE_URL = 'Settings.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+       <script nomodule src="../js/menu-wc_es5.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>

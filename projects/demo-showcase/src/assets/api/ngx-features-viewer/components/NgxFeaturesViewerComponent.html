@@ -1,0 +1,2229 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>ngx-structure-viewer documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    </head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="../" class="navbar-brand">ngx-structure-viewer documentation</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content component">
+                   <div class="content-data">
+
+
+
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Components</li>
+  <li class="breadcrumb-item"
+  >
+  NgxFeaturesViewerComponent</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a href="#info" class="nav-link active"
+                role="tab" id="info-tab" data-bs-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li class="nav-item">
+            <a href="#source" class="nav-link"
+                role="tab" id="source-tab" data-bs-toggle="tab" data-link="source">Source</a>
+        </li>
+        <li class="nav-item">
+            <a href="#templateData" class="nav-link"
+                role="tab" id="templateData-tab" data-bs-toggle="tab" data-link="template">Template</a>
+        </li>
+        <li class="nav-item">
+            <a href="#tree" class="nav-link"
+                role="tab" id="tree-tab" data-bs-toggle="tab" data-link="dom-tree">DOM Tree</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="info"><p class="comment">
+    <h3>File</h3>
+</p>
+<p class="comment">
+    <code>projects/ngx-features-viewer/src/lib/ngx-features-viewer.component.ts</code>
+</p>
+
+
+
+
+    <p class="comment">
+        <h3>Implements</h3>
+    </p>
+    <p class="comment">
+                <code>AfterViewInit</code>
+                <code>AfterContentInit</code>
+                <code>OnChanges</code>
+                <code>OnDestroy</code>
+    </p>
+
+
+<section data-compodoc="block-metadata">
+    <h3>Metadata</h3>
+    <table class="table table-sm table-hover metadata">
+        <tbody>
+
+            <tr>
+                <td class="col-md-3">changeDetection</td>
+                <td class="col-md-9"><code>ChangeDetectionStrategy.OnPush</code></td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">encapsulation</td>
+                <td class="col-md-9"><code>ViewEncapsulation.Emulated</code></td>
+            </tr>
+
+
+
+
+
+
+
+
+            <tr>
+                <td class="col-md-3">providers</td>
+                <td class="col-md-9">
+                                <code><a href="../injectables/InitializeService.html" target="_self" >InitializeService</a></code>
+                                <code><a href="../injectables/FeaturesService.html" target="_self" >FeaturesService</a></code>
+                                <code><a href="../injectables/TooltipService.html" target="_self" >TooltipService</a></code>
+                                <code><a href="../injectables/ResizeService.html" target="_self" >ResizeService</a></code>
+                                <code><a href="../injectables/DrawService.html" target="_self" >DrawService</a></code>
+                                <code><a href="../injectables/ZoomService.html" target="_self" >ZoomService</a></code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-3">selector</td>
+                <td class="col-md-9"><code>ngx-features-viewer</code></td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">standalone</td>
+                <td class="col-md-9"><code>true</code></td>
+            </tr>
+
+            <tr>
+                <td class="col-md-3">imports</td>
+                <td class="col-md-9">
+                                <code><a href="../directives/NgxFeaturesViewerTooltipDirective.html" target="_self" >NgxFeaturesViewerTooltipDirective</a></code>
+                                <code><a href="../directives/NgxFeaturesViewerLabelDirective.html" target="_self" >NgxFeaturesViewerLabelDirective</a></code>
+                            <code>CommonModule</code>
+                </td>
+            </tr>
+
+
+
+
+            <tr>
+                <td class="col-md-3">templateUrl</td>
+                <td class="col-md-9"><code>./ngx-features-viewer.component.html</code></td>
+            </tr>
+
+
+
+            <tr>
+                <td class="col-md-3">styleUrl</td>
+                <td class="col-md-9"><code>./ngx-features-viewer.component.scss</code></td>
+            </tr>
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+    <section data-compodoc="block-index">
+    <h3 id="index">Index</h3>
+    <table class="table table-sm table-bordered index-table">
+        <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Properties</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                    <span class="modifier"></span>
+                                    <span class="modifier">Public</span>
+                                <a href="#_root" >_root</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#_update" >_update</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#drawService" >drawService</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#featuresService" >featuresService</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#initializeService" >initializeService</a>
+                            </li>
+                            <li>
+                                    <span class="modifier"></span>
+                                    <span class="modifier">Public</span>
+                                    <span class="modifier">Optional</span>
+                                <a href="#labels" >labels</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#resizeService" >resizeService</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                    <span class="modifier">Readonly</span>
+                                <a href="#sequence$" >sequence$</a>
+                            </li>
+                            <li>
+                                    <span class="modifier"></span>
+                                    <span class="modifier">Public</span>
+                                    <span class="modifier">Optional</span>
+                                <a href="#tooltipCustomDirective" >tooltipCustomDirective</a>
+                            </li>
+                            <li>
+                                    <span class="modifier"></span>
+                                    <span class="modifier">Public</span>
+                                <a href="#tooltipDefaultDirective" >tooltipDefaultDirective</a>
+                            </li>
+                            <li>
+                                    <span class="modifier"></span>
+                                    <span class="modifier">Public</span>
+                                <a href="#tooltipElementRef" >tooltipElementRef</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#tooltipService" >tooltipService</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#update$" >update$</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#zoomService" >zoomService</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Methods</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#adjustBrushToCells" >adjustBrushToCells</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#brushRegion" >brushRegion</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#ngAfterContentInit" >ngAfterContentInit</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#ngAfterViewInit" >ngAfterViewInit</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#ngOnChanges" >ngOnChanges</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#ngOnDestroy" >ngOnDestroy</a>
+                            </li>
+                            <li>
+                                    <span class="modifier"></span>
+                                <a href="#onResize" >onResize</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Inputs</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#sequence" >sequence</a>
+                            </li>
+                            <li>
+                                <a href="#settings" >settings</a>
+                            </li>
+                            <li>
+                                <a href="#traces" >traces</a>
+                            </li>
+                            <li>
+                                <a href="#zoomOnRegion" >zoomOnRegion</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Outputs</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#selectedFeature" >selectedFeature</a>
+                            </li>
+                            <li>
+                                <a href="#zoomedAt" >zoomedAt</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>HostListeners</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#window:resize" >window:resize</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+                    <tr>
+                        <td class="col-md-4">
+                            <h6><b>Accessors</b></h6>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <ul class="index-list">
+                                <li>
+                                    <a href="#settings" >settings</a>
+                                </li>
+                                <li>
+                                    <a href="#traces" >traces</a>
+                                </li>
+                                <li>
+                                    <a href="#zoomOnRegion" >zoomOnRegion</a>
+                                </li>
+                            </ul>
+                        </td>
+                    </tr>
+        </tbody>
+    </table>
+</section>
+
+    <section data-compodoc="block-constructor">
+    <h3 id="constructor">Constructor</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+<code>constructor(initializeService: <a href="../injectables/InitializeService.html" target="_self">InitializeService</a>, featuresService: <a href="../injectables/FeaturesService.html" target="_self">FeaturesService</a>, tooltipService: <a href="../injectables/TooltipService.html" target="_self">TooltipService</a>, resizeService: <a href="../injectables/ResizeService.html" target="_self">ResizeService</a>, zoomService: <a href="../injectables/ZoomService.html" target="_self">ZoomService</a>, drawService: <a href="../injectables/DrawService.html" target="_self">DrawService</a>)</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="152" class="link-to-prism">projects/ngx-features-viewer/src/lib/ngx-features-viewer.component.ts:152</a></div>
+                            </td>
+                        </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                            <div>
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>initializeService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/InitializeService.html" target="_self" >InitializeService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>featuresService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/FeaturesService.html" target="_self" >FeaturesService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>tooltipService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/TooltipService.html" target="_self" >TooltipService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>resizeService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/ResizeService.html" target="_self" >ResizeService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>zoomService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/ZoomService.html" target="_self" >ZoomService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>drawService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/DrawService.html" target="_self" >DrawService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+
+    <section data-compodoc="block-inputs">
+    <h3 id="inputs">Inputs</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="sequence"></a>
+                        <b>sequence</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../miscellaneous/typealiases.html#Sequence" target="_self" >Sequence</a></code>
+
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-2" colspan="2">
+                                    <div class="io-line">Defined in <a href="" data-line="113" class="link-to-prism">projects/ngx-features-viewer/src/lib/ngx-features-viewer.component.ts:113</a></div>
+                            </td>
+                        </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="settings"></a>
+                        <b>settings</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>Partial | null</code>
+
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-2" colspan="2">
+                                    <div class="io-line">Defined in <a href="" data-line="100" class="link-to-prism">projects/ngx-features-viewer/src/lib/ngx-features-viewer.component.ts:100</a></div>
+                            </td>
+                        </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="traces"></a>
+                        <b>traces</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../miscellaneous/typealiases.html#Traces" target="_self" >Traces</a></code>
+
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-2" colspan="2">
+                                    <div class="io-line">Defined in <a href="" data-line="106" class="link-to-prism">projects/ngx-features-viewer/src/lib/ngx-features-viewer.component.ts:106</a></div>
+                            </td>
+                        </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="zoomOnRegion"></a>
+                        <b>zoomOnRegion</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code> | undefined</code>
+
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-2" colspan="2">
+                                    <div class="io-line">Defined in <a href="" data-line="117" class="link-to-prism">projects/ngx-features-viewer/src/lib/ngx-features-viewer.component.ts:117</a></div>
+                            </td>
+                        </tr>
+            </tbody>
+        </table>
+</section>
+    <section data-compodoc="block-outputs">
+    <h3 id="outputs">Outputs</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="selectedFeature"></a>
+                        <b>selectedFeature</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>Observable&lt;SelectionContext | undefined&gt;</code>
+
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-2" colspan="2">
+                                    <div class="io-line">Defined in <a href="" data-line="130" class="link-to-prism">projects/ngx-features-viewer/src/lib/ngx-features-viewer.component.ts:130</a></div>
+                            </td>
+                        </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="zoomedAt"></a>
+                        <b>zoomedAt</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>Observable&lt; | undefined&gt;</code>
+
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-2" colspan="2">
+                                    <div class="io-line">Defined in <a href="" data-line="141" class="link-to-prism">projects/ngx-features-viewer/src/lib/ngx-features-viewer.component.ts:141</a></div>
+                            </td>
+                        </tr>
+            </tbody>
+        </table>
+</section>
+
+    <section data-compodoc="block-methods">
+    <h3>HostListeners</h3>    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="window:resize"></a>
+                    <span class="name">
+                        <span ><b>window:resize</b></span>
+                        <a href="#window:resize"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <i>Arguments : </i><code>'$event' </code>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>window:resize(event: Event)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="276"
+                                    class="link-to-prism">projects/ngx-features-viewer/src/lib/ngx-features-viewer.component.ts:276</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+</section>
+    <section data-compodoc="block-methods">
+    
+    <h3 id="methods">
+        Methods
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="adjustBrushToCells"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>adjustBrushToCells</b></span>
+                        <a href="#adjustBrushToCells"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>adjustBrushToCells(event: d3.D3BrushEvent<>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="281"
+                                    class="link-to-prism">projects/ngx-features-viewer/src/lib/ngx-features-viewer.component.ts:281</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>event</td>
+                                            <td>
+                                                        <code>d3.D3BrushEvent&lt;&gt;</code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="brushRegion"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>brushRegion</b></span>
+                        <a href="#brushRegion"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>brushRegion(event: d3.D3BrushEvent<>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="298"
+                                    class="link-to-prism">projects/ngx-features-viewer/src/lib/ngx-features-viewer.component.ts:298</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>event</td>
+                                            <td>
+                                                        <code>d3.D3BrushEvent&lt;&gt;</code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="ngAfterContentInit"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>ngAfterContentInit</b></span>
+                        <a href="#ngAfterContentInit"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>ngAfterContentInit()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="236"
+                                    class="link-to-prism">projects/ngx-features-viewer/src/lib/ngx-features-viewer.component.ts:236</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="ngAfterViewInit"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>ngAfterViewInit</b></span>
+                        <a href="#ngAfterViewInit"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>ngAfterViewInit()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="257"
+                                    class="link-to-prism">projects/ngx-features-viewer/src/lib/ngx-features-viewer.component.ts:257</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="ngOnChanges"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>ngOnChanges</b></span>
+                        <a href="#ngOnChanges"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>ngOnChanges(changes: SimpleChanges)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="226"
+                                    class="link-to-prism">projects/ngx-features-viewer/src/lib/ngx-features-viewer.component.ts:226</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>changes</td>
+                                            <td>
+                                                        <code>SimpleChanges</code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="ngOnDestroy"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>ngOnDestroy</b></span>
+                        <a href="#ngOnDestroy"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>ngOnDestroy()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="270"
+                                    class="link-to-prism">projects/ngx-features-viewer/src/lib/ngx-features-viewer.component.ts:270</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="onResize"></a>
+                    <span class="name">
+                            <span class="modifier"></span>
+                        <span ><b>onResize</b></span>
+                        <a href="#onResize"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>onResize(event: Event)</code>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-4">
+                    <b>Decorators : </b>
+                    <br />
+                    <code>@HostListener(&#x27;window:resize&#x27;, [&#x27;$event&#x27;])<br /></code>
+                </td>
+            </tr>
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="276"
+                                    class="link-to-prism">projects/ngx-features-viewer/src/lib/ngx-features-viewer.component.ts:276</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>event</td>
+                                            <td>
+                                                        <code>Event</code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+    <section data-compodoc="block-properties">
+    
+    <h3 id="inputs">
+        Properties
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="_root"></a>
+                    <span class="name">
+                            <span class="modifier"></span>
+                            <span class="modifier">Public</span>
+                        <span ><b>_root</b></span>
+                        <a href="#_root"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>ElementRef</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <b>Decorators : </b>
+                        <br />
+                        <code>
+                            @ViewChild(&#x27;root&#x27;)<br />
+                        </code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="85" class="link-to-prism">projects/ngx-features-viewer/src/lib/ngx-features-viewer.component.ts:85</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="_update"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>_update</b></span>
+                        <a href="#_update"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>Subscription</code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="152" class="link-to-prism">projects/ngx-features-viewer/src/lib/ngx-features-viewer.component.ts:152</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="drawService"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>drawService</b></span>
+                        <a href="#drawService"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../injectables/DrawService.html" target="_self" >DrawService</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="161" class="link-to-prism">projects/ngx-features-viewer/src/lib/ngx-features-viewer.component.ts:161</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="featuresService"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>featuresService</b></span>
+                        <a href="#featuresService"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../injectables/FeaturesService.html" target="_self" >FeaturesService</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="157" class="link-to-prism">projects/ngx-features-viewer/src/lib/ngx-features-viewer.component.ts:157</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="initializeService"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>initializeService</b></span>
+                        <a href="#initializeService"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../injectables/InitializeService.html" target="_self" >InitializeService</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="156" class="link-to-prism">projects/ngx-features-viewer/src/lib/ngx-features-viewer.component.ts:156</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="labels"></a>
+                    <span class="name">
+                            <span class="modifier"></span>
+                            <span class="modifier">Public</span>
+                            <span class="modifier">Optional</span>
+                        <span ><b>labels</b></span>
+                        <a href="#labels"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../directives/NgxFeaturesViewerLabelDirective.html" target="_self" >QueryList&lt;NgxFeaturesViewerLabelDirective&gt;</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <b>Decorators : </b>
+                        <br />
+                        <code>
+                            @ContentChildren(NgxFeaturesViewerLabelDirective)<br />
+                        </code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="88" class="link-to-prism">projects/ngx-features-viewer/src/lib/ngx-features-viewer.component.ts:88</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="resizeService"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>resizeService</b></span>
+                        <a href="#resizeService"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../injectables/ResizeService.html" target="_self" >ResizeService</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="159" class="link-to-prism">projects/ngx-features-viewer/src/lib/ngx-features-viewer.component.ts:159</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="sequence$"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                            <span class="modifier">Readonly</span>
+                        <span ><b>sequence$</b></span>
+                        <a href="#sequence$"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>this.drawService.sequence$</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="148" class="link-to-prism">projects/ngx-features-viewer/src/lib/ngx-features-viewer.component.ts:148</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="tooltipCustomDirective"></a>
+                    <span class="name">
+                            <span class="modifier"></span>
+                            <span class="modifier">Public</span>
+                            <span class="modifier">Optional</span>
+                        <span ><b>tooltipCustomDirective</b></span>
+                        <a href="#tooltipCustomDirective"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../directives/NgxFeaturesViewerTooltipDirective.html" target="_self" >NgxFeaturesViewerTooltipDirective</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <b>Decorators : </b>
+                        <br />
+                        <code>
+                            @ContentChild(NgxFeaturesViewerTooltipDirective)<br />
+                        </code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="91" class="link-to-prism">projects/ngx-features-viewer/src/lib/ngx-features-viewer.component.ts:91</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="tooltipDefaultDirective"></a>
+                    <span class="name">
+                            <span class="modifier"></span>
+                            <span class="modifier">Public</span>
+                        <span ><b>tooltipDefaultDirective</b></span>
+                        <a href="#tooltipDefaultDirective"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../directives/NgxFeaturesViewerTooltipDirective.html" target="_self" >NgxFeaturesViewerTooltipDirective</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <b>Decorators : </b>
+                        <br />
+                        <code>
+                            @ViewChild(NgxFeaturesViewerTooltipDirective)<br />
+                        </code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="94" class="link-to-prism">projects/ngx-features-viewer/src/lib/ngx-features-viewer.component.ts:94</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="tooltipElementRef"></a>
+                    <span class="name">
+                            <span class="modifier"></span>
+                            <span class="modifier">Public</span>
+                        <span ><b>tooltipElementRef</b></span>
+                        <a href="#tooltipElementRef"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>ElementRef&lt;HTMLDivElement&gt;</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <b>Decorators : </b>
+                        <br />
+                        <code>
+                            @ViewChild(&#x27;tooltip&#x27;)<br />
+                        </code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="97" class="link-to-prism">projects/ngx-features-viewer/src/lib/ngx-features-viewer.component.ts:97</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="tooltipService"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>tooltipService</b></span>
+                        <a href="#tooltipService"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../injectables/TooltipService.html" target="_self" >TooltipService</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="158" class="link-to-prism">projects/ngx-features-viewer/src/lib/ngx-features-viewer.component.ts:158</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="update$"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>update$</b></span>
+                        <a href="#update$"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>Observable&lt;&gt;</code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="150" class="link-to-prism">projects/ngx-features-viewer/src/lib/ngx-features-viewer.component.ts:150</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="zoomService"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>zoomService</b></span>
+                        <a href="#zoomService"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../injectables/ZoomService.html" target="_self" >ZoomService</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="160" class="link-to-prism">projects/ngx-features-viewer/src/lib/ngx-features-viewer.component.ts:160</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+</section>
+
+    <section data-compodoc="block-accessors">
+    <h3 id="accessors">
+        Accessors
+    </h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="settings"></a>
+                        <span class="name"><b>settings</b><a href="#settings"><span class="icon ion-ios-link"></span></a></span>
+                    </td>
+                </tr>
+
+
+                <tr>
+                    <td class="col-md-4">
+                        <span class="accessor"><b>set</b><code>settings(settings: <a href="../interfaces/Settings.html" target="_self">Partial&lt;Settings&gt; | null</a>)</code></span>
+                    </td>
+                </tr>
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="100" class="link-to-prism">projects/ngx-features-viewer/src/lib/ngx-features-viewer.component.ts:100</a></div>
+                                </td>
+                            </tr>
+                    <tr>
+                        <td class="col-md-4">
+
+                                <div class="io-description">
+                                        <b>Parameters :</b>
+                                        <table class="params">
+                                            <thead>
+                                                <tr>
+                                                    <td>Name</td>
+                                                        <td>Type</td>
+                                                    <td>Optional</td>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                    <tr>
+                                                            <td>settings</td>
+                                                    
+                                                            <td>
+                                                                            <code><a href="../interfaces/Settings.html" target="_self" >Partial&lt;Settings&gt; | null</a></code>
+                                                            </td>
+                                                    
+                                                        <td>
+                                                                No
+                                                        </td>
+                                                        
+                                                    </tr>
+                                            </tbody>
+                                        </table>
+                                </div>
+                                <div>
+                                </div>
+                                <div class="io-description">
+                                    <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                                </div>
+                        </td>
+                    </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="traces"></a>
+                        <span class="name"><b>traces</b><a href="#traces"><span class="icon ion-ios-link"></span></a></span>
+                    </td>
+                </tr>
+
+
+                <tr>
+                    <td class="col-md-4">
+                        <span class="accessor"><b>set</b><code>traces(traces: <a href="../undefineds/Traces.html" target="_self">Traces</a>)</code></span>
+                    </td>
+                </tr>
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="106" class="link-to-prism">projects/ngx-features-viewer/src/lib/ngx-features-viewer.component.ts:106</a></div>
+                                </td>
+                            </tr>
+                    <tr>
+                        <td class="col-md-4">
+
+                                <div class="io-description">
+                                        <b>Parameters :</b>
+                                        <table class="params">
+                                            <thead>
+                                                <tr>
+                                                    <td>Name</td>
+                                                        <td>Type</td>
+                                                    <td>Optional</td>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                    <tr>
+                                                            <td>traces</td>
+                                                    
+                                                            <td>
+                                                                            <code><a href="../miscellaneous/typealiases.html#Traces" target="_self" >Traces</a></code>
+                                                            </td>
+                                                    
+                                                        <td>
+                                                                No
+                                                        </td>
+                                                        
+                                                    </tr>
+                                            </tbody>
+                                        </table>
+                                </div>
+                                <div>
+                                </div>
+                                <div class="io-description">
+                                    <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                                </div>
+                        </td>
+                    </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="zoomOnRegion"></a>
+                        <span class="name"><b>zoomOnRegion</b><a href="#zoomOnRegion"><span class="icon ion-ios-link"></span></a></span>
+                    </td>
+                </tr>
+
+
+                <tr>
+                    <td class="col-md-4">
+                        <span class="accessor"><b>set</b><code>zoomOnRegion(zoomRegion:  | undefined)</code></span>
+                    </td>
+                </tr>
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="117" class="link-to-prism">projects/ngx-features-viewer/src/lib/ngx-features-viewer.component.ts:117</a></div>
+                                </td>
+                            </tr>
+                    <tr>
+                        <td class="col-md-4">
+
+                                <div class="io-description">
+                                        <b>Parameters :</b>
+                                        <table class="params">
+                                            <thead>
+                                                <tr>
+                                                    <td>Name</td>
+                                                        <td>Type</td>
+                                                    <td>Optional</td>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                    <tr>
+                                                            <td>zoomRegion</td>
+                                                    
+                                                            <td>
+                                                                        <code> | undefined</code>
+                                                            </td>
+                                                    
+                                                        <td>
+                                                                No
+                                                        </td>
+                                                        
+                                                    </tr>
+                                            </tbody>
+                                        </table>
+                                </div>
+                                <div>
+                                </div>
+                                <div class="io-description">
+                                    <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                                </div>
+                        </td>
+                    </tr>
+            </tbody>
+        </table>
+</section>
+</div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { CommonModule } from &#x27;@angular/common&#x27;;
+import {
+  AfterContentInit,
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  Component,
+  ContentChild,
+  ContentChildren,
+  Directive,
+  ElementRef,
+  HostListener,
+  Input,
+  OnChanges,
+  OnDestroy,
+  Output,
+  QueryList,
+  SimpleChanges,
+  TemplateRef,
+  ViewChild,
+  ViewEncapsulation,
+} from &#x27;@angular/core&#x27;;
+import * as d3 from &quot;d3&quot;;
+import { map, Observable, Subscription, switchMap, tap } from &#x27;rxjs&#x27;;
+import { Sequence } from &quot;./sequence&quot;;
+import { DrawService } from &#x27;./services/draw.service&#x27;;
+import { FeaturesService } from &#x27;./services/features.service&#x27;;
+// Custom components
+import { InitializeService, SelectionContext } from &#x27;./services/initialize.service&#x27;;
+import { ResizeService } from &#x27;./services/resize.service&#x27;;
+import { TooltipService } from &quot;./services/tooltip.service&quot;;
+import { ZoomService } from &#x27;./services/zoom.service&#x27;;
+// Custom data types
+import { Settings } from &#x27;./settings&#x27;;
+import { Traces } from &quot;./trace&quot;;
+
+
+@Directive({
+  // eslint-disable-next-line @angular-eslint/directive-selector
+  selector : &#x27;[ngx-features-viewer-label]&#x27;,
+  standalone : true,
+})
+export class NgxFeaturesViewerLabelDirective {
+
+  @Input() where: &#x27;left&#x27; | &#x27;right&#x27; &#x3D; &#x27;left&#x27;;
+
+  constructor(public templateRef: TemplateRef&lt;unknown&gt;) {
+  }
+}
+
+@Directive({
+  // eslint-disable-next-line @angular-eslint/directive-selector
+  selector : &#x27;[ngx-features-viewer-tooltip]&#x27;,
+  standalone : true,
+})
+export class NgxFeaturesViewerTooltipDirective {
+  constructor(public templateRef: TemplateRef&lt;unknown&gt;) {
+  }
+}
+
+@Component({
+  // eslint-disable-next-line @angular-eslint/component-selector
+  selector : &#x27;ngx-features-viewer&#x27;,
+  standalone : true,
+  imports : [
+    NgxFeaturesViewerTooltipDirective,
+    NgxFeaturesViewerLabelDirective,
+    CommonModule,
+  ],
+  providers : [
+    InitializeService,
+    FeaturesService,
+    TooltipService,
+    ResizeService,
+    DrawService,
+    ZoomService,
+  ],
+  templateUrl : &#x27;./ngx-features-viewer.component.html&#x27;,
+  styleUrl : &#x27;./ngx-features-viewer.component.scss&#x27;,
+  changeDetection : ChangeDetectionStrategy.OnPush,
+  encapsulation : ViewEncapsulation.Emulated,
+})
+export class NgxFeaturesViewerComponent implements AfterViewInit, AfterContentInit, OnChanges, OnDestroy {
+
+  @ViewChild(&#x27;root&#x27;)
+  public _root!: ElementRef;
+
+  @ContentChildren(NgxFeaturesViewerLabelDirective)
+  public labels?: QueryList&lt;NgxFeaturesViewerLabelDirective&gt;;
+
+  @ContentChild(NgxFeaturesViewerTooltipDirective)
+  public tooltipCustomDirective?: NgxFeaturesViewerTooltipDirective;
+
+  @ViewChild(NgxFeaturesViewerTooltipDirective)
+  public tooltipDefaultDirective!: NgxFeaturesViewerTooltipDirective;
+
+  @ViewChild(&#x27;tooltip&#x27;)
+  public tooltipElementRef!: ElementRef&lt;HTMLDivElement&gt;;  // NOTE this is the element ref to the tooltip container
+
+  @Input()
+  public set settings(settings: Partial&lt;Settings&gt; | null) {
+    // Update settings in initialization service
+    this.initializeService.settings &#x3D; settings;
+  }
+
+  @Input()
+  public set traces(traces: Traces) {
+    // Set the initial traces
+    this.featuresService.traces &#x3D; traces;
+    // Draw the traces on the canvas
+    this.drawService.traces$.next(this.featuresService.traces);
+  }
+
+  @Input() public sequence!: Sequence;
+
+
+  @Input()
+  public set zoomOnRegion(zoomRegion: [number, number] | undefined) {
+    // Check that the selected region is within the sequence
+    if (zoomRegion) {
+      if (zoomRegion[0] &gt;&#x3D; 1 &amp;&amp; zoomRegion[1] &lt;&#x3D; this.sequence.length) {
+        const x &#x3D; this.initializeService.scale.x;
+        zoomRegion &#x3D; [zoomRegion[0] - .5, zoomRegion[1] + .5];
+        this.zoomService.brush$.next(zoomRegion.map(x) as [number, number]);
+      } else {
+        console.warn(&#x60;Selected region [${zoomRegion[0]}, ${zoomRegion[1]}] is out of bounds (1, ${this.sequence.length})&#x60;);
+      }
+    }
+  }
+
+  @Output() public selectedFeature: Observable&lt;SelectionContext | undefined&gt; &#x3D; this.drawService.selectedFeature$.pipe(
+    // Adjust for the .5 offset
+    map((context) &#x3D;&gt; context ? {
+      ...context!,
+      range : {
+        start : context.range!.start + .5,
+        end : context.range!.end - .5,
+      },
+    } : undefined),
+  );
+
+  @Output() public zoomedAt: Observable&lt;[number, number] | undefined&gt; &#x3D; this.zoomService.brush$.pipe(
+    map((range) &#x3D;&gt; {
+      const x &#x3D; this.initializeService.scale.x;
+      return range ? range.map(x.invert).map((v, i) &#x3D;&gt; i &#x3D;&#x3D; 0 ? v + 0.5 : v - 0.5).map(Math.round) as [number, number] : undefined;
+    }),
+  );
+
+  private readonly sequence$ &#x3D; this.drawService.sequence$;
+
+  private update$: Observable&lt;unknown&gt;;
+
+  private _update: Subscription;
+
+  constructor(
+    // Dependency injection
+    public initializeService: InitializeService,
+    public featuresService: FeaturesService,
+    public tooltipService: TooltipService,
+    public resizeService: ResizeService,
+    public zoomService: ZoomService,
+    public drawService: DrawService,
+  ) {
+    // Update SVG according to inputs
+    this.update$ &#x3D; this.initializeService.initialized$.pipe(
+      // Initialize drawings
+      switchMap(() &#x3D;&gt; this.drawService.draw$),
+      // Subscribe to resize event (set width, height)
+      switchMap(() &#x3D;&gt; this.resizeService.resized$),
+      // Initialize zoom scale
+      tap(() &#x3D;&gt; {
+        // const { width, height } &#x3D; this.resizeService;
+        const {top : mt, left : ms, right : me, bottom : mb} &#x3D; this.resizeService.margin;
+        const h &#x3D; this.resizeService.height;
+        const w &#x3D; this.resizeService.width;
+        // Define number of residues in sequence
+        const n &#x3D; this.sequence.length + 1;
+        // Apply scale limit to 5 residues
+        this.initializeService.zoom
+          .translateExtent([[ms, 0], [w - me, h - mb]])
+          .scaleExtent([1, n / 5])
+          .extent([[ms, 0], [w - me, h - mb]])
+          .on(&#x27;zoom&#x27;, (event) &#x3D;&gt; {
+            this.zoomService.zoom$.next(event);
+          });
+
+        this.initializeService.brush
+          .extent([[ms, mt], [w - me, h - mb]])
+          .on(&#x27;brush&#x27;, (event) &#x3D;&gt; this.adjustBrushToCells(event))
+          .on(&#x27;end&#x27;, (event) &#x3D;&gt; this.brushRegion(event));
+
+        // Initialize brush on the brush region
+        this.initializeService.brushRegion.call(this.initializeService.brush);
+
+        const focus &#x3D; this.initializeService.focus;
+        const brushRegion &#x3D; this.initializeService.brushRegion;
+        const focusMousedown &#x3D; this.initializeService.focusMousedown.bind(this.initializeService.focus.node()!)
+
+        // Function to handle key events
+        function handleKeyEvent(event: KeyboardEvent) {
+          const isShiftOrCmd &#x3D; event.metaKey || event.shiftKey;
+          const isKeyDown &#x3D; event.type &#x3D;&#x3D;&#x3D; &#x27;keydown&#x27; &amp;&amp; isShiftOrCmd
+
+          // Set cursor and mousedown event based on key press/release
+          focus
+            .style(&#x27;cursor&#x27;, isKeyDown ? &#x27;grabbing&#x27; : &#x27;auto&#x27;)
+            .on(&#x27;mousedown.zoom&#x27;, isKeyDown ? focusMousedown : () &#x3D;&gt; null)
+
+          // Toggle pointer events on the brush region
+          brushRegion
+            .select(&#x27;.overlay&#x27;)
+            .style(&#x27;pointer-events&#x27;, isKeyDown ? &#x27;none&#x27; : &#x27;all&#x27;);
+        }
+
+        // Bind the key event handler to both keydown and keyup events
+        d3.select(&#x27;body&#x27;).on(&#x27;keydown keyup&#x27;, handleKeyEvent.bind(this));
+      }),
+      // Subscribe to zoom event
+      switchMap(() &#x3D;&gt; this.zoomService.zoomed$),
+      // Finally, update representation
+      switchMap(() &#x3D;&gt; this.drawService.drawn$),
+    );
+    // Subscribe to update emission
+    this._update &#x3D; this.update$.subscribe();
+  }
+
+  public ngOnChanges(changes: SimpleChanges): void {
+    // Case input sequence changes
+    if (changes &amp;&amp; changes[&#x27;sequence&#x27;]) {
+      // Store reference to sequence
+      this.initializeService.sequence &#x3D; this.sequence;
+      // Emit sequence
+      this.sequence$.next(this.initializeService.sequence);
+    }
+  }
+
+  public ngAfterContentInit(): void {
+    // Case label templates are defined
+    if (this.labels) {
+      // Loop through each label template
+      this.labels.forEach((label) &#x3D;&gt; {
+        // Case both labels are defined, then throw error
+        if (this.initializeService.labelLeft &amp;&amp; this.initializeService.labelRight) {
+          throw new Error(&#x27;Only one label can be defined&#x27;);
+        }
+        // Case label is left
+        if (label.where &#x3D;&#x3D;&#x3D; &#x27;left&#x27;) {
+          this.initializeService.labelLeft &#x3D; label;
+        }
+        // Case label is right
+        if (label.where &#x3D;&#x3D;&#x3D; &#x27;right&#x27;) {
+          this.initializeService.labelRight &#x3D; label;
+        }
+      });
+    }
+  }
+
+  public ngAfterViewInit(): void {
+    // Get tooltip directive, fallback to default in case custom is not defined
+    const tooltipDirective &#x3D; this.tooltipCustomDirective || this.tooltipDefaultDirective;
+    // Store tooltip template in init service
+    this.initializeService.tooltip &#x3D; tooltipDirective;
+    // Store template reference
+    this.tooltipService.templateRef &#x3D; tooltipDirective.templateRef;
+    // Get tooltip element
+    this.tooltipService.tooltip &#x3D; this.tooltipElementRef.nativeElement;
+    // Emit root element
+    this.initializeService.initialize$.next(this._root);
+  }
+
+  public ngOnDestroy(): void {
+    // Unsubscribe from update emission
+    this._update.unsubscribe();
+  }
+
+  @HostListener(&#x27;window:resize&#x27;, [&#x27;$event&#x27;])
+  onResize(event: Event) {
+    // Just emit width of container element
+    this.resizeService.resize$.next(event);
+  }
+
+  private adjustBrushToCells(event: d3.D3BrushEvent&lt;unknown&gt;) {
+    if (!event.sourceEvent) return;
+
+    if ((event.sourceEvent as MouseEvent).shiftKey) {
+      // Do a pan
+      this.initializeService.brushRegion.select(&#x27;.overlay&#x27;).style(&#x27;cursor&#x27;, &#x27;grabbing&#x27;);
+    }
+
+    const x &#x3D; this.initializeService.scale.x;
+    let [x0, x1] &#x3D; (event.selection as [number, number]).map(x.invert);
+    x0 &#x3D; Math.max(1, Math.round(x0));
+    x1 &#x3D; Math.min(this.sequence.length, Math.round(x1));
+    const d1 &#x3D; [x0 - 0.5, x1 + 0.5] as [number, number];
+    this.initializeService.brushRegion.call(this.initializeService.brush.move, d1.map(x) as [number, number]);
+  }
+
+
+  private brushRegion(event: d3.D3BrushEvent&lt;unknown&gt;) {
+    if (!event.sourceEvent) return;
+    if (!event.selection &amp;&amp; event.sourceEvent.detail &#x3D;&#x3D;&#x3D; 1) {
+      // if selection is empty it means that we clicked on the canvas, so we should deselect the feature if any is selected
+      this.drawService.selectedFeatureEmit$.next(undefined);
+      return;
+    }
+
+    // Ensure that if a selection is made, at least 5 residues are selected
+    if (event.selection) {
+      let selection: [number, number] | undefined;
+
+      const x &#x3D; this.initializeService.scale.x;
+      let [x0, x1] &#x3D; (event.selection as [number, number]).map(x.invert);
+      let cont &#x3D; Math.round(x1 - x0);
+      let toSx &#x3D; false;
+
+      // If the number of residues is less than 5, add residues to the left and right evenly and respecting the limits
+      while (cont &lt; 5) {
+        // Add a position to sx if possible
+        if (x0 &gt; 1 &amp;&amp; toSx) {
+          x0 -&#x3D; 1;
+          cont +&#x3D; 1;
+        }
+        // Add a position to dx if possible
+        if (x1 &lt;&#x3D; this.sequence.length &amp;&amp; !toSx) {
+          x1 +&#x3D; 1;
+          cont +&#x3D; 1;
+        }
+        toSx &#x3D; !toSx;
+      }
+      selection &#x3D; [x0, x1];
+      selection &#x3D; selection!.map(x) as [number, number];
+      this.zoomService.brush$.next(selection);
+    }
+  }
+}
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="templateData">
+        <pre class="line-numbers"><code class="language-html">&lt;div style&#x3D;&quot;position: relative; display: block; width: 100%; height: 100%;&quot; #root&gt;
+  &lt;!-- Case template for left label exists --&gt;
+  @if (initializeService.labelLeft; as label) {
+    &lt;!-- Loop through each trace, generate custom tooltip --&gt;
+    @for (trace of featuresService.tracesNoNesting$ | async; track trace.id) {
+      &lt;!-- Then, generate trace as specified in the given template --&gt;
+      &lt;div [id]&#x3D;&quot;&#x27;label-left-&#x27; + trace.id&quot; tabindex&#x3D;0 (click)&#x3D;&quot;drawService.onLabelClick(trace)&quot;
+           (keyup)&#x3D;&quot;drawService.onLabelClick(trace)&quot; [style.display]&#x3D;&quot;trace.show ? &#x27;block&#x27; : &#x27;none&#x27;&quot;&gt;
+        &lt;ng-container [ngTemplateOutlet]&#x3D;&quot;label.templateRef&quot; [ngTemplateOutletContext]&#x3D;&quot;{ trace: trace }&quot;/&gt;
+      &lt;/div&gt;
+    }
+  }
+  &lt;!-- Case template for right label exists --&gt;
+  @if (initializeService.labelRight; as label) {
+    &lt;!-- Loop through each trace, generate custom tooltip --&gt;
+    @for (trace of featuresService.tracesNoNesting$ | async; track trace.id) {
+      &lt;!-- Then, generate trace as specified in the given template --&gt;
+      &lt;div [id]&#x3D;&quot;&#x27;label-right-&#x27; + trace.id&quot; tabindex&#x3D;0 [style.display]&#x3D;&quot;trace.show ? &#x27;block&#x27; : &#x27;none&#x27;&quot;&gt;
+        &lt;ng-container [ngTemplateOutlet]&#x3D;&quot;label.templateRef&quot;
+                      [ngTemplateOutletContext]&#x3D;&quot;{ trace: trace }&quot;/&gt;
+      &lt;/div&gt;
+    }
+  }
+
+&lt;/div&gt;
+
+&lt;!-- Initialize tooltip --&gt;
+&lt;div class&#x3D;&quot;tooltip&quot; #tooltip&gt;
+  &lt;!-- Define tooltip inner scaffold --&gt;
+  &lt;div style&#x3D;&quot;position: relative; display: block&quot;&gt;
+    &lt;!-- Subscribe to template emission --&gt;
+    @if (tooltipService.tooltip$ | async; as context) {
+      &lt;!-- Show template --&gt;
+      &lt;ng-container [ngTemplateOutlet]&#x3D;&quot;tooltipService.templateRef&quot;
+                    [ngTemplateOutletContext]&#x3D;&quot;context&quot;&gt;&lt;/ng-container&gt;
+    }
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;ng-template let-trace&#x3D;&quot;trace&quot; let-feature&#x3D;&quot;feature&quot; let-index&#x3D;&quot;index&quot; let-coordinates&#x3D;&quot;coordinates&quot;
+             ngx-features-viewer-tooltip&gt;
+  Trace: {{ trace.id }}&lt;br&gt;
+  Feature: {{ feature.type }}&lt;br&gt;
+  Index: {{ index }}&lt;br&gt;
+  Coordinates: ({{ coordinates[0] }}, {{ coordinates[1] }})&lt;br&gt;
+&lt;/ng-template&gt;
+
+&lt;ng-container *ngIf&#x3D;&quot;drawService.selectedFeature$ | async&quot;&gt;&lt;/ng-container&gt;
+</code></pre>
+    </div>
+
+
+    <div class="tab-pane fade " id="tree">
+        <div id="tree-container"></div>
+        <div class="tree-legend">
+            <div class="title">
+                <b>Legend</b>
+            </div>
+            <div>
+                <div class="color htmlelement"></div><span>Html element</span>
+            </div>
+            <div>
+                <div class="color component"></div><span>Component</span>
+            </div>
+            <div>
+                <div class="color directive"></div><span>Html element with directive</span>
+            </div>
+        </div>
+    </div>
+
+    
+</div>
+
+<script src="../js/libs/vis.min.js"></script>
+<script src="../js/libs/htmlparser.js"></script>
+<script src="../js/libs/deep-iterator.js"></script>
+<script>
+        var COMPONENT_TEMPLATE = '<div><div style="position: relative; display: block; width: 100%; height: 100%;" #root>  <!-- Case template for left label exists -->  @if (initializeService.labelLeft; as label) {    <!-- Loop through each trace, generate custom tooltip -->    @for (trace of featuresService.tracesNoNesting$ | async; track trace.id) {      <!-- Then, generate trace as specified in the given template -->      <div [id]="\'label-left-\' + trace.id" tabindex=0 (click)="drawService.onLabelClick(trace)"           (keyup)="drawService.onLabelClick(trace)" [style.display]="trace.show ? \'block\' : \'none\'">        <ng-container [ngTemplateOutlet]="label.templateRef" [ngTemplateOutletContext]="{ trace: trace }"/>      </div>    }  }  <!-- Case template for right label exists -->  @if (initializeService.labelRight; as label) {    <!-- Loop through each trace, generate custom tooltip -->    @for (trace of featuresService.tracesNoNesting$ | async; track trace.id) {      <!-- Then, generate trace as specified in the given template -->      <div [id]="\'label-right-\' + trace.id" tabindex=0 [style.display]="trace.show ? \'block\' : \'none\'">        <ng-container [ngTemplateOutlet]="label.templateRef"                      [ngTemplateOutletContext]="{ trace: trace }"/>      </div>    }  }</div><!-- Initialize tooltip --><div class="tooltip" #tooltip>  <!-- Define tooltip inner scaffold -->  <div style="position: relative; display: block">    <!-- Subscribe to template emission -->    @if (tooltipService.tooltip$ | async; as context) {      <!-- Show template -->      <ng-container [ngTemplateOutlet]="tooltipService.templateRef"                    [ngTemplateOutletContext]="context"></ng-container>    }  </div></div><ng-template let-trace="trace" let-feature="feature" let-index="index" let-coordinates="coordinates"             ngx-features-viewer-tooltip>  Trace: {{ trace.id }}<br>  Feature: {{ feature.type }}<br>  Index: {{ index }}<br>  Coordinates: ({{ coordinates[0] }}, {{ coordinates[1] }})<br></ng-template><ng-container *ngIf="drawService.selectedFeature$ | async"></ng-container></div>'
+    var COMPONENTS = [{'name': 'NgxFeaturesViewerComponent', 'selector': 'ngx-features-viewer'}];
+    var DIRECTIVES = [{'name': 'NgxFeaturesViewerLabelDirective', 'selector': '[ngx-features-viewer-label]'},{'name': 'NgxFeaturesViewerTooltipDirective', 'selector': '[ngx-features-viewer-tooltip]'}];
+    var ACTUAL_COMPONENT = {'name': 'NgxFeaturesViewerComponent'};
+</script>
+<script src="../js/tree.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'component';
+            var COMPODOC_CURRENT_PAGE_URL = 'NgxFeaturesViewerComponent.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+       <script nomodule src="../js/menu-wc_es5.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>

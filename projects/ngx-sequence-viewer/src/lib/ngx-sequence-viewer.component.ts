@@ -23,6 +23,12 @@ import { FASTA } from './utils';
 
 // export type Loci<T> = Locus<T>[];
 
+/**
+ * @group NgxSequenceViewer
+ * @alias NgxStructureViewer.Locus
+ * @name NgxSequenceViewer.Locus
+ * @description Defines a Locus interface for the NgxStructureViewer component.
+ */
 export interface Locus<T=unknown> {
   // These are the boundaries of the locus
   start: T;

@@ -1,0 +1,1401 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>ngx-structure-viewer documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    </head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="../" class="navbar-brand">ngx-structure-viewer documentation</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content injectable">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Injectables</li>
+  <li class="breadcrumb-item" >StructureService</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a href="#info" 
+                class="nav-link"
+                class="nav-link active"
+                role="tab" id="info-tab" data-bs-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li class="nav-item">
+            <a href="#source" 
+                class="nav-link"
+                
+                role="tab" id="source-tab" data-bs-toggle="tab" data-link="source">Source</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="info">
+        <p class="comment">
+            <h3>File</h3>
+        </p>
+        <p class="comment">
+            <code>projects/ngx-structure-viewer/src/lib/services/structure.service.ts</code>
+        </p>
+
+
+
+
+
+            <section data-compodoc="block-index">
+    <h3 id="index">Index</h3>
+    <table class="table table-sm table-bordered index-table">
+        <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Properties</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                    <span class="modifier">Protected</span>
+                                <a href="#_structure" >_structure</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#c2i" >c2i</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#i2r" >i2r</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#isStructureLoaded" >isStructureLoaded</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#molstarService" >molstarService</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Readonly</span>
+                                <a href="#onStructureLoadFail$" >onStructureLoadFail$</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#pluginService" >pluginService</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#r2i" >r2i</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#settingsService" >settingsService</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Readonly</span>
+                                <a href="#source$" >source$</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Readonly</span>
+                                <a href="#structure$" >structure$</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Methods</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                    <span class="modifier">Protected</span>
+                                    <span class="modifier">Async</span>
+                                <a href="#createStructure" >createStructure</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Protected</span>
+                                    <span class="modifier">Async</span>
+                                <a href="#parseLocalSource" >parseLocalSource</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Protected</span>
+                                    <span class="modifier">Async</span>
+                                <a href="#parseRemoteSource" >parseRemoteSource</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Protected</span>
+                                    <span class="modifier">Async</span>
+                                <a href="#parseSource" >parseSource</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Protected</span>
+                                <a href="#setResidues" >setResidues</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+
+
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <h6><b>Accessors</b></h6>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <ul class="index-list">
+                                <li>
+                                    <a href="#source" >source</a>
+                                </li>
+                                <li>
+                                    <a href="#structure" >structure</a>
+                                </li>
+                            </ul>
+                        </td>
+                    </tr>
+        </tbody>
+    </table>
+</section>
+
+            <section data-compodoc="block-constructor">
+    <h3 id="constructor">Constructor</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+<code>constructor(settingsService: <a href="../injectables/SettingsService.html" target="_self">SettingsService</a>, molstarService: <a href="../injectables/MolstarService.html" target="_self">MolstarService</a>, pluginService: <a href="../injectables/PluginService.html" target="_self">PluginService</a>)</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="65" class="link-to-prism">projects/ngx-structure-viewer/src/lib/services/structure.service.ts:65</a></div>
+                            </td>
+                        </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                            <div>
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>settingsService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/SettingsService.html" target="_self" >SettingsService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>molstarService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/MolstarService.html" target="_self" >MolstarService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>pluginService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/PluginService.html" target="_self" >PluginService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+
+            <section data-compodoc="block-methods">
+    
+    <h3 id="methods">
+        Methods
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="createStructure"></a>
+                    <span class="name">
+                            <span class="modifier">Protected</span>
+                            <span class="modifier">Async</span>
+                        <span ><b>createStructure</b></span>
+                        <a href="#createStructure"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>createStructure(data: <a href="../undefineds/DataStateObject.html" target="_self">DataStateObject</a>, source: <a href="../undefineds/Source.html" target="_self">Source</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="175"
+                                    class="link-to-prism">projects/ngx-structure-viewer/src/lib/services/structure.service.ts:175</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>data</td>
+                                            <td>
+                                                            <code><a href="../miscellaneous/typealiases.html#DataStateObject" target="_self" >DataStateObject</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>source</td>
+                                            <td>
+                                                            <code><a href="../miscellaneous/typealiases.html#Source" target="_self" >Source</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>    <code>unknown</code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="parseLocalSource"></a>
+                    <span class="name">
+                            <span class="modifier">Protected</span>
+                            <span class="modifier">Async</span>
+                        <span ><b>parseLocalSource</b></span>
+                        <a href="#parseLocalSource"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>parseLocalSource(source)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="141"
+                                    class="link-to-prism">projects/ngx-structure-viewer/src/lib/services/structure.service.ts:141</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>source</td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>    <code>unknown</code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="parseRemoteSource"></a>
+                    <span class="name">
+                            <span class="modifier">Protected</span>
+                            <span class="modifier">Async</span>
+                        <span ><b>parseRemoteSource</b></span>
+                        <a href="#parseRemoteSource"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>parseRemoteSource(source)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="128"
+                                    class="link-to-prism">projects/ngx-structure-viewer/src/lib/services/structure.service.ts:128</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>source</td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>    <code>unknown</code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="parseSource"></a>
+                    <span class="name">
+                            <span class="modifier">Protected</span>
+                            <span class="modifier">Async</span>
+                        <span ><b>parseSource</b></span>
+                        <a href="#parseSource"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>parseSource(source: <a href="../undefineds/Source.html" target="_self">Source | null</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="101"
+                                    class="link-to-prism">projects/ngx-structure-viewer/src/lib/services/structure.service.ts:101</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>source</td>
+                                            <td>
+                                                            <code><a href="../miscellaneous/typealiases.html#Source" target="_self" >Source | null</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>    <code>unknown</code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="setResidues"></a>
+                    <span class="name">
+                            <span class="modifier">Protected</span>
+                        <span ><b>setResidues</b></span>
+                        <a href="#setResidues"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>setResidues(structure: Structure, prefer_label_asym_id)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="186"
+                                    class="link-to-prism">projects/ngx-structure-viewer/src/lib/services/structure.service.ts:186</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                                <td>Default value</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>structure</td>
+                                            <td>
+                                                        <code>Structure</code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+                                            <td>
+                                            </td>
+
+                                        </tr>
+                                        <tr>
+                                                <td>prefer_label_asym_id</td>
+                                            <td>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+                                            <td>
+                                                    <code>false</code>
+                                            </td>
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+            <section data-compodoc="block-properties">
+    
+    <h3 id="inputs">
+        Properties
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="_structure"></a>
+                    <span class="name">
+                            <span class="modifier">Protected</span>
+                        <span ><b>_structure</b></span>
+                        <a href="#_structure"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>Awaited&lt;ReturnType&lt;&gt;&gt;</code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="59" class="link-to-prism">projects/ngx-structure-viewer/src/lib/services/structure.service.ts:59</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="c2i"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>c2i</b></span>
+                        <a href="#c2i"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>Map&lt;string | &gt;</code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="49" class="link-to-prism">projects/ngx-structure-viewer/src/lib/services/structure.service.ts:49</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="i2r"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>i2r</b></span>
+                        <a href="#i2r"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>Map&lt;number | string&gt;</code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="46" class="link-to-prism">projects/ngx-structure-viewer/src/lib/services/structure.service.ts:46</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="isStructureLoaded"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>isStructureLoaded</b></span>
+                        <a href="#isStructureLoaded"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>false</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="52" class="link-to-prism">projects/ngx-structure-viewer/src/lib/services/structure.service.ts:52</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="molstarService"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>molstarService</b></span>
+                        <a href="#molstarService"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../injectables/MolstarService.html" target="_self" >MolstarService</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="69" class="link-to-prism">projects/ngx-structure-viewer/src/lib/services/structure.service.ts:69</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="onStructureLoadFail$"></a>
+                    <span class="name">
+                            <span class="modifier">Readonly</span>
+                        <span ><b>onStructureLoadFail$</b></span>
+                        <a href="#onStructureLoadFail$"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>new EventEmitter&lt;void&gt;()</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="54" class="link-to-prism">projects/ngx-structure-viewer/src/lib/services/structure.service.ts:54</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="pluginService"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>pluginService</b></span>
+                        <a href="#pluginService"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../injectables/PluginService.html" target="_self" >PluginService</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="70" class="link-to-prism">projects/ngx-structure-viewer/src/lib/services/structure.service.ts:70</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="r2i"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>r2i</b></span>
+                        <a href="#r2i"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>Map&lt;string | number&gt;</code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="44" class="link-to-prism">projects/ngx-structure-viewer/src/lib/services/structure.service.ts:44</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="settingsService"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>settingsService</b></span>
+                        <a href="#settingsService"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../injectables/SettingsService.html" target="_self" >SettingsService</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="68" class="link-to-prism">projects/ngx-structure-viewer/src/lib/services/structure.service.ts:68</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="source$"></a>
+                    <span class="name">
+                            <span class="modifier">Readonly</span>
+                        <span ><b>source$</b></span>
+                        <a href="#source$"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>new BehaviorSubject&lt;Source | null&gt;(null)</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="32" class="link-to-prism">projects/ngx-structure-viewer/src/lib/services/structure.service.ts:32</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="structure$"></a>
+                    <span class="name">
+                            <span class="modifier">Readonly</span>
+                        <span ><b>structure$</b></span>
+                        <a href="#structure$"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>Observable&lt;Awaited&lt;ReturnType&lt;&gt;&gt;&gt;</code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="56" class="link-to-prism">projects/ngx-structure-viewer/src/lib/services/structure.service.ts:56</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+</section>
+
+            <section data-compodoc="block-accessors">
+    <h3 id="accessors">
+        Accessors
+    </h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="source"></a>
+                        <span class="name"><b>source</b><a href="#source"><span class="icon ion-ios-link"></span></a></span>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <span class="accessor"><b>get</b><code>source()</code></span>
+                    </td>
+                </tr>
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="35" class="link-to-prism">projects/ngx-structure-viewer/src/lib/services/structure.service.ts:35</a></div>
+                                </td>
+                            </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <span class="accessor"><b>set</b><code>source(source: <a href="../undefineds/Source.html" target="_self">Source | null</a>)</code></span>
+                    </td>
+                </tr>
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="39" class="link-to-prism">projects/ngx-structure-viewer/src/lib/services/structure.service.ts:39</a></div>
+                                </td>
+                            </tr>
+                    <tr>
+                        <td class="col-md-4">
+
+                                <div class="io-description">
+                                        <b>Parameters :</b>
+                                        <table class="params">
+                                            <thead>
+                                                <tr>
+                                                    <td>Name</td>
+                                                        <td>Type</td>
+                                                    <td>Optional</td>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                    <tr>
+                                                            <td>source</td>
+                                                    
+                                                            <td>
+                                                                            <code><a href="../miscellaneous/typealiases.html#Source" target="_self" >Source | null</a></code>
+                                                            </td>
+                                                    
+                                                        <td>
+                                                                No
+                                                        </td>
+                                                        
+                                                    </tr>
+                                            </tbody>
+                                        </table>
+                                </div>
+                                <div>
+                                </div>
+                                <div class="io-description">
+                                    <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                                </div>
+                        </td>
+                    </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="structure"></a>
+                        <span class="name"><b>structure</b><a href="#structure"><span class="icon ion-ios-link"></span></a></span>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <span class="accessor"><b>get</b><code>structure()</code></span>
+                    </td>
+                </tr>
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="62" class="link-to-prism">projects/ngx-structure-viewer/src/lib/services/structure.service.ts:62</a></div>
+                                </td>
+                            </tr>
+
+            </tbody>
+        </table>
+</section>
+    </div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { EventEmitter, Injectable } from &#x27;@angular/core&#x27;;
+import { Structure, StructureProperties } from &#x27;molstar/lib/mol-model/structure&#x27;;
+import { StateObject, StateObjectSelector } from &#x27;molstar/lib/mol-state&#x27;;
+import { StateTransformer } from &#x27;molstar/lib/mol-state/transformer&#x27;;
+import { Asset } from &#x27;molstar/lib/mol-util/assets&#x27;;
+import {
+  BehaviorSubject,
+  catchError,
+  combineLatestWith,
+  filter,
+  from,
+  Observable,
+  of,
+  shareReplay,
+  switchMap,
+  tap,
+} from &#x27;rxjs&#x27;;
+import { Source } from &#x27;../interfaces/source&#x27;;
+// Custom services
+// import { SettingsService } from &#x27;./settings.service&#x27;;
+import { MolstarService } from &#x27;./molstar.service&#x27;;
+import { PluginService } from &#x27;./plugin.service&#x27;;
+import { SettingsService } from &#x27;./settings.service&#x27;;
+
+export type DataStateObject &#x3D; Exclude&lt;Awaited&lt;ReturnType&lt;StructureService[&#x27;parseSource&#x27;]&gt;&gt;, null&gt;;
+
+export type StructureStateObject &#x3D; Awaited&lt;ReturnType&lt;StructureService[&#x27;createStructure&#x27;]&gt;&gt;;
+
+@Injectable()
+export class StructureService {
+
+  readonly source$ &#x3D; new BehaviorSubject&lt;Source | null&gt;(null);
+
+  // Get current source
+  public get source(): Source | null {
+    return this.source$.value;
+  }
+
+  public set source(source: Source | null) {
+    this.source$.next(source);
+    this.isStructureLoaded &#x3D; false;
+  }
+
+  public r2i!: Map&lt;string, number&gt;;
+
+  public i2r!: Map&lt;number, string&gt;;
+
+  // Define start, end indices for each chain
+  public c2i!: Map&lt;string, [number, number]&gt;;
+
+  // public residues!: Array&lt;Residue&gt;;
+  public isStructureLoaded &#x3D; false;
+
+  readonly onStructureLoadFail$ &#x3D; new EventEmitter&lt;void&gt;();
+
+  readonly structure$: Observable&lt;Awaited&lt;ReturnType&lt;typeof this.createStructure&gt;&gt;&gt;;
+
+  // Inner structure wrapper
+  protected _structure!: Awaited&lt;ReturnType&lt;typeof this.createStructure&gt;&gt;;
+
+  // Return structure content
+  public get structure(): Structure {
+    // Return structure object
+    return this._structure.cell?.obj?.data as Structure;
+  }
+
+  constructor(
+    public settingsService: SettingsService,
+    public molstarService: MolstarService,
+    public pluginService: PluginService,
+  ) {
+    // Combine all observables into a single one
+    this.structure$ &#x3D; this.pluginService.plugin$.pipe(
+      // Subscribe to source changes
+      combineLatestWith(this.source$),
+      // tap(([plugin, source]) &#x3D;&gt; console.log(&#x27;plugin&#x27;, plugin, &#x27;source&#x27;, source)),
+      // Join source and plugin
+      switchMap(([, source]) &#x3D;&gt; {
+        return from(this.parseSource(source)).pipe(
+          catchError(() &#x3D;&gt; {
+            this.onStructureLoadFail$.emit();
+            return of(null);
+          }),
+        );
+      }),
+      // Case data is defined
+      filter((data): data is DataStateObject &#x3D;&gt; !!data),
+      // Generate trajectory
+      switchMap((data) &#x3D;&gt; from(this.createStructure(data, this.source!))),
+      // Store structure wrapper
+      tap((structure) &#x3D;&gt; this._structure &#x3D; structure),
+      // Store mappings between residue and numeric index
+      tap(() &#x3D;&gt; this.setResidues(this.structure, this.settingsService.settings.prefer_label_asym_id)),
+      // Set structure loaded flag, so we know that we can access structure
+      tap(() &#x3D;&gt; this.isStructureLoaded &#x3D; true),
+      // Cache results
+      shareReplay(1),
+    );
+  }
+
+  protected async parseSource(source: Source | null) {
+    // Get plugin instance
+    const plugin &#x3D; this.pluginService.plugin;
+    // Clear plugin state
+    await plugin.clear();
+    // Case source is defined
+    if (source) {
+      let data: StateObjectSelector&lt;StateObject, StateTransformer&gt; | null;
+      // Case source is local
+      if (source.type &#x3D;&#x3D;&#x3D; &#x27;local&#x27;) {
+        // Parse local source
+        data &#x3D; await this.parseLocalSource(source);
+      } else {
+        // Otherwise, source is remote
+        data &#x3D; await this.parseRemoteSource(source);
+
+        if (data &#x3D;&#x3D;&#x3D; undefined) {
+          throw new Error(&#x27;Failed to parse remote source&#x27;);
+        }
+      }
+      // Return data
+      return data;
+    }
+    // Otherwise, return null
+    return null;
+  }
+
+  protected async parseRemoteSource(source: Source &amp; { type: &#x27;remote&#x27; }) {
+    // Import asset from MolStar
+    const {Asset} &#x3D; this.molstarService.molstar;
+    // Define source properties
+    const url &#x3D; Asset.Url(source.link);
+    const label &#x3D; source.label;
+    const binary &#x3D; source.binary;
+    // Define plugin instance
+    const plugin &#x3D; this.pluginService.plugin;
+    // Retrieve remote data
+    return plugin.builders.data.download({url, label, isBinary : binary});
+  }
+
+  protected async parseLocalSource(source: Source &amp; { type: &#x27;local&#x27; }) {
+    // Import asset from MolStar
+    const {Asset} &#x3D; this.molstarService.molstar;
+    // Define source label
+    const binary &#x3D; source.binary;
+    const label &#x3D; source.label;
+    // Define plugin instance
+    const plugin &#x3D; this.pluginService.plugin;
+    // Case source data is string, no need to read data as file
+    if (typeof source.data &#x3D;&#x3D;&#x3D; &#x27;string&#x27;) {
+      // Read file from string
+      return plugin.builders.data.rawData({data : source.data, label});
+    }
+    // Wrap blob into file
+    let file: Asset.File;
+    // Case source data is file
+    if (source.data instanceof File) {
+      // File is already available
+      file &#x3D; Asset.File(source.data);
+    }
+    // Othwerwise, data must be read as file
+    else {
+      // Get file name
+      const ext &#x3D; source.format &#x3D;&#x3D;&#x3D; &#x27;mmcif&#x27; ? &#x27;cif&#x27; : &#x27;ent&#x27;;
+      const name &#x3D; &#x60;${label}.${ext}&#x60;;
+      // Generate file
+      file &#x3D; Asset.File(new File([source.data], name));
+    }
+    // Return data read from file
+    const {data} &#x3D; await plugin.builders.data.readFile({file, label, isBinary : binary});
+    // Return retrieved data
+    return data;
+  }
+
+  protected async createStructure(data: DataStateObject, source: Source) {
+    // Define plugin instance
+    const plugin &#x3D; this.pluginService.plugin;
+    // Parse data
+    const parsed &#x3D; await plugin.builders.structure.parseTrajectory(data, source.format);
+    // Create model
+    const model &#x3D; await plugin.builders.structure.createModel(parsed, {modelIndex : 0});
+    // Create structure
+    return plugin.builders.structure.createStructure(model, {name : &#x27;model&#x27;, params : {}});
+  }
+
+  protected setResidues(structure: Structure, prefer_label_asym_id &#x3D; false): void {
+    // Initialize index
+    let index &#x3D; 0;
+    // Initialize map between residue (sequence number, insertion code) to numeric index
+    const r2i &#x3D; this.r2i &#x3D; new Map();
+    const i2r &#x3D; this.i2r &#x3D; new Map();
+    // Initialize map between chain identifier to start, end indices
+    const c2i &#x3D; this.c2i &#x3D; new Map();
+    // Loop through each residue
+    Structure.eachAtomicHierarchyElement(structure, ({
+      residue : (r) &#x3D;&gt; {
+        // Define residue index
+        const authSeqId &#x3D; StructureProperties.residue.auth_seq_id(r);
+        // Get insertion code
+        const pdbInsCode &#x3D; StructureProperties.residue.pdbx_PDB_ins_code(r);
+        // Define residue name
+        const authAsymId &#x3D; prefer_label_asym_id ? StructureProperties.chain.label_asym_id(r) : StructureProperties.chain.auth_asym_id(r);
+        // Define residue unique identifier
+        const identifier &#x3D; (authAsymId + authSeqId + pdbInsCode).trim();
+        // Map residue id to its index
+        r2i.set(identifier, index);
+        i2r.set(index, identifier);
+        // Get chain start, end indices
+        const [cs] &#x3D; c2i.get(authAsymId) || [index, index];
+        // Update chain start, end indices
+        this.c2i.set(authAsymId, [cs, index]);
+        // Update index
+        index++;
+      },
+    }));
+  }
+
+}
+</code></pre>
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'injectable';
+            var COMPODOC_CURRENT_PAGE_URL = 'StructureService.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+       <script nomodule src="../js/menu-wc_es5.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>

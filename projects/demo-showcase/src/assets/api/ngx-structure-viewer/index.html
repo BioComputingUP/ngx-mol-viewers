@@ -1,0 +1,219 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>ngx-structure-viewer documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="./images/favicon.ico">
+	   <link rel="stylesheet" href="./styles/style.css">
+        <link rel="stylesheet" href="./styles/dark.css">
+    </head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="./" class="navbar-brand">ngx-structure-viewer documentation</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content getting-started">
+                   <div class="content-data">
+
+<h1>ngx-mol-viewers</h1>
+<h2>Introduction</h2>
+<p>The ngx-mol-viewers is an Angular library consisting in a collection components for the visualization and manipulation of biological data.
+Each component has been developed as an <a href="https://v17.angular.io/guide/standalone-components">Angular standalone component</a>. This means, it can be easily installed and imported in the most widespread
+versions of the framework.</p>
+<p>The library was initially developed to share some core components between the applications developed at the <a href="https://protein.bio.unipd.it/">BioCompUP Laboratory</a>, at the University of Padua. 
+Among those, there are <a href="https://mobidb.org/">MobiDB</a>, <a href="https://repeatsdb.bio.unipd.it/">RepeatsDB</a> and <a href="https://ring.biocomputingup.it/">RING</a>. Some of the components in the library were inspired by others already developed within the same laboratory, like the <a href="https://www.npmjs.com/package/proseqviewer">ProSeqViewer</a> and the<a href="https://www.npmjs.com/package/feature-viewer-typescript">FeatureViewerTypescript</a>. 
+Some others are based on well-known components already used in bioinformatics, like <a href="https://molstar.org/">Molstar</a>. </p>
+<p>In both cases, the library makes the components compliant with Angular lifecycle, by satisfying the Angular standalone components specifications. 
+This, removes the burden of handling the Angular lifecycle within every Angular application.</p>
+<p>Each component has its own NPM repository and can be installed without the others, as they just share the same data structures and requirements.</p>
+<h2>Components</h2>
+<h3>ngx-structure-viewer</h3>
+<p>The <em>ngx-structure-viewer</em> allows to visualize and manipulate three-dimensional protein structures. It wraps a Molstar instance within and Angular standalone component.</p>
+<p>Go to component&#39;s <a href="https://www.npmjs.com/package/ngx-structure-viewer">NPM repository</a></p>
+<p>Go to component&#39;s <a href="">README</a></p>
+<h3>ngx-sequence-viewer</h3>
+<p>The <em>ngx-sequence-viewer</em> provides visualization and manipulation for single sequences and multiple sequence alignments.
+It deliberately takes inspiration on the ProSeqViewer.</p>
+<p>Go to component&#39;s <a href="https://www.npmjs.com/package/ngx-sequence-viewer">NPM repository</a></p>
+<p>Go to component&#39;s <a href="">README</a></p>
+<h3>ngx-features-viewer</h3>
+<p>The <em>ngx-features-viewer</em> extends the features provided by the fate FeatureViewerTypeScript. It has been completely re-engineered and optimized
+to provide the best adaptability and performance.</p>
+<p>Go to component&#39;s <a href="https://www.npmjs.com/package/ngx-features-viewer">NPM repository</a></p>
+<p>Go to component&#39;s <a href="">README</a></p>
+<h2>Developer notes</h2>
+<p>The project contains an Angular application, complete with routes, to present the project and showcase each component. The appluiication is named <code>demo-showcase</code>.</p>
+<p>While the other components listed above require to be imported in an Angular application, the <code>demo-showcase</code> can be served instead. It is used in <code>development</code> mode
+to reflect changes and develop the other components.</p>
+<p>The application must be built in <code>production</code> mode in order to be served in GitHub Pages.</p>
+<h3>Development server</h3>
+<p>Run <code>ng serve demo-showcase</code> for a development server. Navigate to <code>http://localhost:4200</code>. The application will automatically reload if you change any of the source files.</p>
+<h3>Production build</h3>
+<p>Run <code>ng build -c=production --output-path docs --base-href https://biocomputingup.github.io/ngx-mol-viewers/ demo-showcase</code> to build the <code>demo-showcase</code> application for it to be served from GitHub Pages.</p>
+<p>Then, one needs to copy the built <code>index.html</code> into the <code>404.html</code> file. To do so, just <code>cd</code> into the output <code>docs</code> folder and <code>cp index.html 404.html</code>.</p>
+<p>When pushing the results in the <code>main</code> branch, GitHub will automatically publish an updated version of the appl;ication at [<a href="https://biocomputingup.github.io/ngx-mol-viewers/%5D">https://biocomputingup.github.io/ngx-mol-viewers/]</a>.</p>
+<h3>Publishing components</h3>
+<p>Run <code>ng build -c=production ngx-structure-viewer</code> to build the Angular component <code>ngx-structure-viewer</code> in IVY mode.</p>
+<p>Built component will be compatible with almost all Angular applications, independently of its version. More on this at <code>https://angular.io/guide/creating-libraries</code>.</p>
+<p>In order to public the previously build <code>ngx-structure-viewer</code> in its NPM repository, execute the following:</p>
+<b>Example :</b><div><pre class="line-numbers"><code class="language-shell">cd dist/ngx-structure-viewer
+npm publish</code></pre></div><p><strong>NOTE</strong> before building, ensure that the version number increased, otherwise NPM will prevent publication.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 0;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'getting-started';
+            var COMPODOC_CURRENT_PAGE_URL = 'index.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="./js/libs/custom-elements.min.js"></script>
+       <script src="./js/libs/lit-html.js"></script>
+
+       <script src="./js/menu-wc.js" defer></script>
+       <script nomodule src="./js/menu-wc_es5.js" defer></script>
+
+       <script src="./js/libs/bootstrap-native.js"></script>
+
+       <script src="./js/libs/es6-shim.min.js"></script>
+       <script src="./js/libs/EventDispatcher.js"></script>
+       <script src="./js/libs/promise.min.js"></script>
+
+       <script src="./js/compodoc.js"></script>
+
+       <script src="./js/tabs.js"></script>
+       <script src="./js/menu.js"></script>
+       <script src="./js/libs/clipboard.min.js"></script>
+       <script src="./js/libs/prism.js"></script>
+       <script src="./js/sourceCode.js"></script>
+          <script src="./js/search/search.js"></script>
+          <script src="./js/search/lunr.min.js"></script>
+          <script src="./js/search/search-lunr.js"></script>
+          <script src="./js/search/search_index.js"></script>
+       <script src="./js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>

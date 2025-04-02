@@ -5,6 +5,7 @@ export const routes: Routes = [
     { path: 'structure', loadChildren: () => import('./page-structure-viewer/page-structure-viewer.module').then(m => m.PageStructureViewerModule) },
     { path: 'features', loadChildren: () => import('./page-features-viewer/page-features-viewer.module').then(m => m.PageFeaturesViewerModule) },
     { path: 'sequence', loadChildren: () => import('./page-sequence-viewer/page-sequence-viewer.module').then(m => m.PageSequenceViewerModule) },
+    { path: 'example', loadChildren: () => import('./page-example/page-example.module').then(m => m.PageExampleModule) },
     { path: '', component: PageHomeComponent },
     { path: '**', redirectTo: '' }
 ];

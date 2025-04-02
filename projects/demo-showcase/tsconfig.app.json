@@ -3,7 +3,10 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "../../out-tsc/app",
-    "types": ["node"]
+    "types": ["node"],
+    // NOTE This allows to import JSON files
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
   },
   "files": [
     "src/main.ts"

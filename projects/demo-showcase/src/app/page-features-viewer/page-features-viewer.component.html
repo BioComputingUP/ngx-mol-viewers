@@ -19,7 +19,7 @@
     </p>
   </div>
   <!-- Show example -->
-  <div class="mb-3"style="display: block; height: auto; overflow: hidden; width: 100%; margin-top: 2rem">
+  <div class="mb-3" style="display: block; height: auto; overflow: hidden; width: 100%; margin-top: 2rem">
       <ngx-features-viewer [sequence]="sequence" [traces]="traces" [settings]="(settings$ | async)!" (selectedFeature)="onFeatureSelected($event)">
         <!-- Left label -->
         <ng-template let-trace="trace" ngx-features-viewer-label>
