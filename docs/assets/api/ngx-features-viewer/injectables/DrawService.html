@@ -1,0 +1,2901 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>ngx-features-viewer documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    </head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="../" class="navbar-brand">ngx-features-viewer documentation</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content injectable">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Injectables</li>
+  <li class="breadcrumb-item" >DrawService</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a href="#info" 
+                class="nav-link"
+                class="nav-link active"
+                role="tab" id="info-tab" data-bs-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li class="nav-item">
+            <a href="#source" 
+                class="nav-link"
+                
+                role="tab" id="source-tab" data-bs-toggle="tab" data-link="source">Source</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="info">
+        <p class="comment">
+            <h3>File</h3>
+        </p>
+        <p class="comment">
+            <code>src/lib/services/draw.service.ts</code>
+        </p>
+
+
+
+
+
+            <section data-compodoc="block-index">
+    <h3 id="index">Index</h3>
+    <table class="table table-sm table-bordered index-table">
+        <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Properties</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#coilPoints" >coilPoints</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                    <span class="modifier">Readonly</span>
+                                <a href="#draw$" >draw$</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                    <span class="modifier">Readonly</span>
+                                <a href="#drawn$" >drawn$</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#featureLabelCharWidth" >featureLabelCharWidth</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#group.dots" >group.dots</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#group.grid" >group.grid</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#group.labels" >group.labels</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#group.residues" >group.residues</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#group.traces" >group.traces</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                    <span class="modifier">Readonly</span>
+                                <a href="#selectedFeature$" >selectedFeature$</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                    <span class="modifier">Readonly</span>
+                                <a href="#selectedFeatureEmit$" >selectedFeatureEmit$</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                    <span class="modifier">Readonly</span>
+                                <a href="#sequence$" >sequence$</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#sequenceCharWidth" >sequenceCharWidth</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#tooltip" >tooltip</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                    <span class="modifier">Readonly</span>
+                                <a href="#traces$" >traces$</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Methods</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#calculateCharWidth" >calculateCharWidth</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#createBrush" >createBrush</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#createGrid" >createGrid</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#createSequence" >createSequence</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#createTooltip" >createTooltip</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#createTraces" >createTraces</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#hideLabels" >hideLabels</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#onLabelClick" >onLabelClick</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#removeSelectionShadow" >removeSelectionShadow</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#setLabelsPosition" >setLabelsPosition</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#setSelectionShadow" >setSelectionShadow</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#updateGrid" >updateGrid</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#updateScale" >updateScale</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#updateSequence" >updateSequence</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#updateShadowPosition" >updateShadowPosition</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#updateTraces" >updateTraces</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+            <section data-compodoc="block-constructor">
+    <h3 id="constructor">Constructor</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+<code>constructor(initializeService: <a href="../injectables/InitializeService.html" target="_self">InitializeService</a>, featuresService: <a href="../injectables/FeaturesService.html" target="_self">FeaturesService</a>, tooltipService: <a href="../injectables/TooltipService.html" target="_self">TooltipService</a>)</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="86" class="link-to-prism">src/lib/services/draw.service.ts:86</a></div>
+                            </td>
+                        </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                            <div>
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>initializeService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/InitializeService.html" target="_self" >InitializeService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>featuresService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/FeaturesService.html" target="_self" >FeaturesService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>tooltipService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/TooltipService.html" target="_self" >TooltipService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+
+            <section data-compodoc="block-methods">
+    
+    <h3 id="methods">
+        Methods
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="calculateCharWidth"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>calculateCharWidth</b></span>
+                        <a href="#calculateCharWidth"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>calculateCharWidth()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="152"
+                                    class="link-to-prism">src/lib/services/draw.service.ts:152</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="createBrush"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>createBrush</b></span>
+                        <a href="#createBrush"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>createBrush()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="364"
+                                    class="link-to-prism">src/lib/services/draw.service.ts:364</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="createGrid"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>createGrid</b></span>
+                        <a href="#createGrid"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>createGrid(traces: <a href="../undefineds/InternalTraces.html" target="_self">InternalTraces</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="430"
+                                    class="link-to-prism">src/lib/services/draw.service.ts:430</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>traces</td>
+                                            <td>
+                                                            <code><a href="../miscellaneous/typealiases.html#InternalTraces" target="_self" >InternalTraces</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="createSequence"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>createSequence</b></span>
+                        <a href="#createSequence"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>createSequence(sequence: <a href="../undefineds/Sequence.html" target="_self">Sequence</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="227"
+                                    class="link-to-prism">src/lib/services/draw.service.ts:227</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>sequence</td>
+                                            <td>
+                                                            <code><a href="../miscellaneous/typealiases.html#Sequence" target="_self" >Sequence</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="createTooltip"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>createTooltip</b></span>
+                        <a href="#createTooltip"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>createTooltip()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="223"
+                                    class="link-to-prism">src/lib/services/draw.service.ts:223</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="createTraces"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>createTraces</b></span>
+                        <a href="#createTraces"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>createTraces(traces: <a href="../undefineds/InternalTraces.html" target="_self">InternalTraces</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="522"
+                                    class="link-to-prism">src/lib/services/draw.service.ts:522</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>traces</td>
+                                            <td>
+                                                            <code><a href="../miscellaneous/typealiases.html#InternalTraces" target="_self" >InternalTraces</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="hideLabels"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>hideLabels</b></span>
+                        <a href="#hideLabels"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>hideLabels(trace: <a href="../interfaces/InternalTrace.html" target="_self">InternalTrace</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="416"
+                                    class="link-to-prism">src/lib/services/draw.service.ts:416</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>trace</td>
+                                            <td>
+                                                            <code><a href="../interfaces/InternalTrace.html" target="_self" >InternalTrace</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="onLabelClick"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>onLabelClick</b></span>
+                        <a href="#onLabelClick"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>onLabelClick(trace: <a href="../interfaces/InternalTrace.html" target="_self">InternalTrace</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="1055"
+                                    class="link-to-prism">src/lib/services/draw.service.ts:1055</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>trace</td>
+                                            <td>
+                                                            <code><a href="../interfaces/InternalTrace.html" target="_self" >InternalTrace</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="removeSelectionShadow"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>removeSelectionShadow</b></span>
+                        <a href="#removeSelectionShadow"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>removeSelectionShadow()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="378"
+                                    class="link-to-prism">src/lib/services/draw.service.ts:378</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="setLabelsPosition"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>setLabelsPosition</b></span>
+                        <a href="#setLabelsPosition"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>setLabelsPosition(traces: <a href="../undefineds/InternalTraces.html" target="_self">InternalTraces</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="385"
+                                    class="link-to-prism">src/lib/services/draw.service.ts:385</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>traces</td>
+                                            <td>
+                                                            <code><a href="../miscellaneous/typealiases.html#InternalTraces" target="_self" >InternalTraces</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="setSelectionShadow"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>setSelectionShadow</b></span>
+                        <a href="#setSelectionShadow"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>setSelectionShadow(selectionContext: <a href="../interfaces/SelectionContext.html" target="_self">SelectionContext</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="368"
+                                    class="link-to-prism">src/lib/services/draw.service.ts:368</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>selectionContext</td>
+                                            <td>
+                                                            <code><a href="../interfaces/SelectionContext.html" target="_self" >SelectionContext</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="updateGrid"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>updateGrid</b></span>
+                        <a href="#updateGrid"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>updateGrid()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="473"
+                                    class="link-to-prism">src/lib/services/draw.service.ts:473</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="updateScale"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>updateScale</b></span>
+                        <a href="#updateScale"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>updateScale(traces: <a href="../undefineds/InternalTraces.html" target="_self">InternalTraces</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="180"
+                                    class="link-to-prism">src/lib/services/draw.service.ts:180</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>traces</td>
+                                            <td>
+                                                            <code><a href="../miscellaneous/typealiases.html#InternalTraces" target="_self" >InternalTraces</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="updateSequence"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>updateSequence</b></span>
+                        <a href="#updateSequence"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>updateSequence()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="248"
+                                    class="link-to-prism">src/lib/services/draw.service.ts:248</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="updateShadowPosition"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>updateShadowPosition</b></span>
+                        <a href="#updateShadowPosition"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>updateShadowPosition()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="1039"
+                                    class="link-to-prism">src/lib/services/draw.service.ts:1039</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="updateTraces"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>updateTraces</b></span>
+                        <a href="#updateTraces"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>updateTraces()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="715"
+                                    class="link-to-prism">src/lib/services/draw.service.ts:715</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+            <section data-compodoc="block-properties">
+    
+    <h3 id="inputs">
+        Properties
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="coilPoints"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>coilPoints</b></span>
+                        <a href="#coilPoints"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>new Map&lt;string, number[]&gt;()</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="86" class="link-to-prism">src/lib/services/draw.service.ts:86</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="draw$"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                            <span class="modifier">Readonly</span>
+                        <span ><b>draw$</b></span>
+                        <a href="#draw$"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>Observable&lt;&gt;</code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="76" class="link-to-prism">src/lib/services/draw.service.ts:76</a></div>
+                        </td>
+                    </tr>
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Draw features</p>
+<p>This pipeline initialize features within the drawable aread
+of the main SVG container, defined by the <code>draw</code> property.</p>
+</div>
+                </td>
+            </tr>
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="drawn$"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                            <span class="modifier">Readonly</span>
+                        <span ><b>drawn$</b></span>
+                        <a href="#drawn$"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>Observable&lt;&gt;</code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="84" class="link-to-prism">src/lib/services/draw.service.ts:84</a></div>
+                        </td>
+                    </tr>
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Update features</p>
+<p>This pipeline moves previously initialized features within the
+drawable area, according to given scale (the one produced
+after the zoom event took place)</p>
+</div>
+                </td>
+            </tr>
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="featureLabelCharWidth"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>featureLabelCharWidth</b></span>
+                        <a href="#featureLabelCharWidth"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>0.0</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="67" class="link-to-prism">src/lib/services/draw.service.ts:67</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="group.dots"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>group.dots</b></span>
+                        <a href="#group.dots"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../miscellaneous/typealiases.html#SequenceContainer" target="_self" >SequenceContainer</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="58" class="link-to-prism">src/lib/services/draw.service.ts:58</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="group.grid"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>group.grid</b></span>
+                        <a href="#group.grid"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../miscellaneous/typealiases.html#GridLines" target="_self" >GridLines</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="64" class="link-to-prism">src/lib/services/draw.service.ts:64</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="group.labels"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>group.labels</b></span>
+                        <a href="#group.labels"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../miscellaneous/typealiases.html#LabelGroup" target="_self" >LabelGroup</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="60" class="link-to-prism">src/lib/services/draw.service.ts:60</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="group.residues"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>group.residues</b></span>
+                        <a href="#group.residues"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../miscellaneous/typealiases.html#SequenceContainer" target="_self" >SequenceContainer</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="56" class="link-to-prism">src/lib/services/draw.service.ts:56</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="group.traces"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>group.traces</b></span>
+                        <a href="#group.traces"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../miscellaneous/typealiases.html#TraceGroup" target="_self" >TraceGroup</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="62" class="link-to-prism">src/lib/services/draw.service.ts:62</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="selectedFeature$"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                            <span class="modifier">Readonly</span>
+                        <span ><b>selectedFeature$</b></span>
+                        <a href="#selectedFeature$"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>Observable&lt;SelectionContext | undefined&gt;</code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="54" class="link-to-prism">src/lib/services/draw.service.ts:54</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="selectedFeatureEmit$"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                            <span class="modifier">Readonly</span>
+                        <span ><b>selectedFeatureEmit$</b></span>
+                        <a href="#selectedFeatureEmit$"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>new EventEmitter&lt;SelectionContext | undefined&gt;()</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="52" class="link-to-prism">src/lib/services/draw.service.ts:52</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="sequence$"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                            <span class="modifier">Readonly</span>
+                        <span ><b>sequence$</b></span>
+                        <a href="#sequence$"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>new ReplaySubject&lt;Sequence&gt;(1)</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="50" class="link-to-prism">src/lib/services/draw.service.ts:50</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="sequenceCharWidth"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>sequenceCharWidth</b></span>
+                        <a href="#sequenceCharWidth"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>0.0</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="66" class="link-to-prism">src/lib/services/draw.service.ts:66</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="tooltip"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>tooltip</b></span>
+                        <a href="#tooltip"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>d3.Selection&lt;HTMLDivElement |  |  | &gt;</code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="69" class="link-to-prism">src/lib/services/draw.service.ts:69</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="traces$"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                            <span class="modifier">Readonly</span>
+                        <span ><b>traces$</b></span>
+                        <a href="#traces$"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>new ReplaySubject&lt;InternalTraces&gt;(1)</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="48" class="link-to-prism">src/lib/services/draw.service.ts:48</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+</section>
+
+    </div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { EventEmitter, Injectable } from &#x27;@angular/core&#x27;;
+import * as d3 from &#x27;d3&#x27;;
+import { BaseType } from &#x27;d3&#x27;;
+import { combineLatest, map, Observable, ReplaySubject, shareReplay, switchMap, tap, throttleTime } from &#x27;rxjs&#x27;;
+import { Continuous } from &#x27;../features/continuous&#x27;;
+import { DSSP, DSSPPaths, dsspShape } from &quot;../features/dssp&quot;;
+import { Feature } from &#x27;../features/feature&#x27;;
+import { Locus } from &#x27;../features/locus&#x27;
+import { Pin } from &quot;../features/pin&quot;;
+import { Sequence, sequenceColors } from &quot;../sequence&quot;;
+// Data types
+import { InternalTrace, InternalTraces } from &#x27;../trace&#x27;;
+import { FeaturesService } from &#x27;./features.service&#x27;;
+// Services
+import { InitializeService, SelectionContext } from &#x27;./initialize.service&#x27;;
+import { TooltipService } from &#x27;./tooltip.service&#x27;;
+
+type SequenceContainer &#x3D; d3.Selection&lt;SVGGElement, Sequence, SVGGElement, undefined&gt;;
+
+type LabelGroup &#x3D; d3.Selection&lt;SVGGElement | d3.BaseType, InternalTrace, SVGGElement | d3.BaseType, InternalTraces&gt;;
+
+type TraceGroup &#x3D; d3.Selection&lt;SVGGElement | d3.BaseType, InternalTrace, SVGGElement, undefined&gt;;
+
+type GridLines &#x3D; d3.Selection&lt;SVGGElement | d3.BaseType, InternalTrace, SVGGElement | d3.BaseType, InternalTraces&gt;;
+
+
+// Get size of 1rem in pixel
+// https://stackoverflow.com/questions/36532307/rem-px-in-javascript
+export const REM &#x3D; parseFloat(getComputedStyle(document.documentElement).fontSize);
+
+// Define function for extracting identifier out of unknown object
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const identity &#x3D; (f: InternalTrace) &#x3D;&gt; {
+  return f.id;
+};
+
+// Define function for extracting index out of unknown object
+export const index &#x3D; (f: InternalTraces) &#x3D;&gt; {
+  return f.map((t) &#x3D;&gt; t.id).join(&#x27;-&#x27;);
+};
+
+const alreadyExitedFromView &#x3D; new Set&lt;Feature&gt;();
+
+@Injectable({providedIn : &#x27;platform&#x27;})
+export class DrawService {
+
+  public readonly traces$ &#x3D; new ReplaySubject&lt;InternalTraces&gt;(1);
+
+  public readonly sequence$ &#x3D; new ReplaySubject&lt;Sequence&gt;(1);
+
+  public readonly selectedFeatureEmit$ &#x3D; new EventEmitter&lt;SelectionContext | undefined&gt;();
+
+  public readonly selectedFeature$: Observable&lt;SelectionContext | undefined&gt;;
+
+  public &#x27;group.residues&#x27;!: SequenceContainer;
+
+  public &#x27;group.dots&#x27;!: SequenceContainer;
+
+  public &#x27;group.labels&#x27;!: LabelGroup;
+
+  public &#x27;group.traces&#x27;!: TraceGroup;
+
+  public &#x27;group.grid&#x27;!: GridLines;
+
+  public sequenceCharWidth &#x3D; 0.0;
+  public featureLabelCharWidth &#x3D; 0.0;
+
+  public tooltip!: d3.Selection&lt;HTMLDivElement, unknown, null, unknown&gt;;
+
+  /** Draw features
+   *
+   * This pipeline initialize features within the drawable aread
+   * of the main SVG container, defined by the &#x60;draw&#x60; property.
+   */
+  public readonly draw$: Observable&lt;unknown&gt;;
+
+  /** Update features
+   *
+   * This pipeline moves previously initialized features within the
+   * drawable area, according to given scale (the one produced
+   * after the zoom event took place)
+   */
+  public readonly drawn$: Observable&lt;unknown&gt;;
+
+  private coilPoints &#x3D; new Map&lt;string, number[]&gt;();
+
+  constructor(
+    private initializeService: InitializeService,
+    private featuresService: FeaturesService,
+    private tooltipService: TooltipService,
+  ) {
+    // Define draw initialization
+    this.draw$ &#x3D; combineLatest([this.initializeService.initialized$, this.sequence$]).pipe(
+      // Update horizontal scale domain
+      tap(([, sequence]) &#x3D;&gt; {
+        // Get horizontal scale
+        const x &#x3D; this.initializeService.scale.x;
+        // Generate horizontal domain for sequence
+        const domain &#x3D; [0, sequence.length + 1];
+        // Update horizontal scale
+        x.domain(domain);
+      }),
+      tap(() &#x3D;&gt; this.calculateCharWidth()),
+      // Draw sequence
+      map(([, sequence]) &#x3D;&gt; this.createSequence(sequence)),
+      // Initialize brush region
+      tap(() &#x3D;&gt; this.createBrush()),
+      // Initialize tooltip
+      tap(() &#x3D;&gt; this.createTooltip()),
+      // Cache result
+      shareReplay(1),
+      // Switch to traces emission
+      switchMap(() &#x3D;&gt; this.traces$),
+      // Update vertical scale
+      tap((traces: InternalTraces) &#x3D;&gt; this.updateScale(traces)),
+      // Draw labels, without setting position but saving references
+      tap((traces: InternalTraces) &#x3D;&gt; this.setLabelsPosition(traces)),
+      // Draw grid, without setting position but saving references
+      tap((traces: InternalTraces) &#x3D;&gt; this.createGrid(traces)),
+      // Draw features, without setting position but saving references
+      tap((traces: InternalTraces) &#x3D;&gt; this.createTraces(traces)),
+      // NOTE This is required to avoid re-drawing everything on each resize/zoom event
+      shareReplay(1),
+    );
+    // Define draw update
+    this.drawn$ &#x3D; combineLatest([this.draw$, this.initializeService.settings$]).pipe(
+      // Move sequence residues in correct position
+      tap(() &#x3D;&gt; this.updateSequence()),
+      // Move grid in correct position
+      tap(() &#x3D;&gt; this.updateGrid()),
+      // Move traces in correct position
+      map(() &#x3D;&gt; this.updateTraces()),
+      // Move the selection shadow in correct position
+      map(() &#x3D;&gt; this.updateShadowPosition()),
+    );
+
+    this.selectedFeature$ &#x3D; this.selectedFeatureEmit$.pipe(
+      // Debounce the event to avoid multiple updates in a short time
+      throttleTime(300),
+      tap((selectionContext) &#x3D;&gt; {
+        if (selectionContext) {
+          this.setSelectionShadow(selectionContext);
+        } else {
+          this.removeSelectionShadow();
+        }
+      }),
+      shareReplay(1),
+    );
+  }
+
+  private calculateCharWidth() {
+    const settings &#x3D; this.initializeService.settings;
+    // Get the width of the character &#x27;A&#x27; in the sequence
+    const text &#x3D; this.initializeService.draw.append(&#x27;text&#x27;).attr(&#x27;class&#x27;, &#x27;sequence&#x27;).text(&#x27;A&#x27;);
+    const bbox &#x3D; text.node()!.getBBox();
+    this.sequenceCharWidth &#x3D; bbox.width;
+    text.remove();
+
+    // Get the width of the character &#x27;A&#x27; in the feature label
+    const text2 &#x3D; this.initializeService.draw.append(&#x27;text&#x27;).attr(&#x27;class&#x27;, &#x27;feature&#x27;).text(&#x27;A&#x27;);
+    const bbox2 &#x3D; text2.node()!.getBBox();
+    this.featureLabelCharWidth &#x3D; bbox2.width;
+    text2.remove();
+
+    // Get the width of the character &#x27;A&#x27; in the x-axis
+    const text3 &#x3D; this.initializeService.draw.append(&#x27;text&#x27;).attr(&#x27;class&#x27;, &#x27;tick&#x27;).text(&#x27;A&#x27;);
+    const bbox3 &#x3D; text3.node()!.getBBox();
+    const xAxisXCharHeight &#x3D; bbox3.height;
+    text3.remove();
+
+    // Update the margin bottom to accommodate at least the height of the character of the x-axis
+    if (settings[&#x27;x-axis-show&#x27;] !&#x3D;&#x3D; false) {
+      const settings &#x3D; this.initializeService.settings;
+      settings[&#x27;margin-bottom&#x27;] &#x3D; Math.max(settings[&#x27;margin-bottom&#x27;], xAxisXCharHeight + 6);
+    }
+  }
+
+  // Update vertical scale
+  private updateScale(traces: InternalTraces): void {
+    const axis &#x3D; this.initializeService.axes;
+    const scale &#x3D; this.initializeService.scale;
+    const sequence &#x3D; this.initializeService.sequence;
+    const settings &#x3D; this.initializeService.settings;
+    // Update domain
+    const domain &#x3D; [&#x27;sequence&#x27;, ...traces.map(({id}) &#x3D;&gt; id + &#x27;&#x27;)];
+    // Initialize range
+    const range &#x3D; [settings[&#x27;margin-top&#x27;]];
+    // Set sequence line height
+    if ((Array.isArray(sequence) || (typeof sequence &#x3D;&#x3D;&#x3D; &#x27;string&#x27;)) &amp;&amp; settings[&#x27;sequence-show&#x27;] !&#x3D; false) {
+      range.push(settings[&#x27;margin-top&#x27;] + settings[&#x27;line-height&#x27;])
+    } else {
+      range.push(settings[&#x27;margin-top&#x27;]);
+    }
+
+    // take the first trace and add its margin-top if defined
+    const firstTrace &#x3D; traces[0];
+    const firstTraceMt &#x3D; firstTrace.options?.[&#x27;margin-top&#x27;] || 0;
+    range[1] +&#x3D; firstTraceMt;
+
+    // Calculate range adding the margin-bottom of the previous trace, the line-height of the current trace and the margin-top of the next trace
+    for (let i &#x3D; 1 ; i &lt; domain.length ; i++) {
+      const trace &#x3D; this.featuresService.getTrace(+domain[i]);
+      const nextTrace &#x3D; this.featuresService.getTrace(+domain[i + 1]);
+
+      const prevSpace &#x3D; range[range.length - 1];
+      const traceMb &#x3D; trace?.options?.[&#x27;margin-bottom&#x27;] || 0;
+      const lh &#x3D; trace?.options?.[&#x27;line-height&#x27;] || settings[&#x27;line-height&#x27;];
+      const nextTraceMt &#x3D; nextTrace?.options?.[&#x27;margin-top&#x27;] || 0;
+
+      range.push(prevSpace + traceMb + nextTraceMt + lh);
+    }
+
+    // Apply updates
+    scale.y.domain(domain).range(range);
+    // Translate x axis position
+    axis.x.attr(&#x27;transform&#x27;, &#x60;translate(0, ${range[range.length - 1]})&#x60;);
+    if (settings[&#x27;x-axis-show&#x27;] &#x3D;&#x3D;&#x3D; false) {
+      axis.x.style(&#x27;display&#x27;, &#x27;none&#x27;);
+    }
+  }
+
+  private createTooltip() {
+    this.tooltip &#x3D; this.tooltipService._tooltip;
+  }
+
+  private createSequence(sequence: Sequence) {
+    // Initialize residues group
+    const group &#x3D; this.initializeService.draw
+      // Select previous residues group
+      .selectAll(&#x27;g.sequence&#x27;)
+      // Bind residues group to sequence
+      .data&lt;Sequence&gt;([sequence])
+      // Create current residues group
+      .join(&#x27;g&#x27;)
+      .attr(&#x27;class&#x27;, &#x27;sequence&#x27;);
+
+    // Create residues container inside the sequence group
+    this[&#x27;group.residues&#x27;] &#x3D; group
+      .append(&#x27;g&#x27;)
+      .attr(&#x27;class&#x27;, &#x27;residues&#x27;);
+
+    this[&#x27;group.dots&#x27;] &#x3D; group
+      .append(&#x27;g&#x27;)
+      .attr(&#x27;class&#x27;, &#x27;dots&#x27;);
+  }
+
+  private updateSequence() {
+    // Get the sequence and from the sequence the residues
+    const sequence &#x3D; this.initializeService.sequence;
+    const settings &#x3D; this.initializeService.settings;
+    const residues &#x3D; parseSequence(sequence);
+
+    // The list of residues can be empty in the case the sequence is a length only
+    if (residues.length &#x3D;&#x3D;&#x3D; 0 || (settings[&#x27;sequence-show&#x27;] &#x3D;&#x3D;&#x3D; false)) {
+      return;
+    }
+
+    // Get scale (x, y axis)
+    const {x, y} &#x3D; this.initializeService.scale;
+    // Get line height
+    const lh &#x3D; this.initializeService.settings[&quot;line-height&quot;];
+    const cs &#x3D; this.initializeService.settings[&quot;content-size&quot;];
+    // Define container/cell width and (maximum) text width
+    const cellWidth &#x3D; x(1) - x(0);
+    // Get maximum character width
+    const charWidth &#x3D; this.sequenceCharWidth;
+    // Define residues group
+    const residuesContainer &#x3D; this[&#x27;group.residues&#x27;];
+    const dotsContainer &#x3D; this[&#x27;group.dots&#x27;];
+
+    const domainStart &#x3D; x.domain()[0] + 0.5;
+    const domainEnd &#x3D; x.domain()[1];
+
+    if (charWidth + 0.5 &gt; cellWidth) {
+      // Remove residues if dots are to be shown
+      residuesContainer.selectAll(&#x27;*&#x27;).remove();
+
+      // Calculate number of dots needed
+      const domainLength &#x3D; domainEnd - domainStart;
+
+      // Calculate how many cells are needed for each dot
+      const spacing &#x3D; 2;
+      const bits &#x3D; domainLength * cellWidth / charWidth / spacing;
+      const bitSize &#x3D; domainLength / bits + 1;
+
+      const xPositions &#x3D; d3.range(domainStart, domainEnd, bitSize).map((i) &#x3D;&gt; x(i + bitSize / 2));
+
+      // Create or update dots
+      dotsContainer
+        .selectAll(&#x27;text.dot&#x27;)
+        .data(xPositions)
+        .join(&#x27;text&#x27;)
+        .attr(&#x27;class&#x27;, &#x27;dot&#x27;)
+        .text(&#x27;.&#x27;)
+        .attr(&#x27;x&#x27;, d &#x3D;&gt; d)
+        .attr(&#x27;y&#x27;, y(&#x27;sequence&#x27;) + lh / 2)
+        .attr(&#x27;width&#x27;, charWidth)
+        .attr(&#x27;height&#x27;, lh)
+        .attr(&#x27;dominant-baseline&#x27;, &#x27;central&#x27;)
+        .style(&#x27;text-anchor&#x27;, &#x27;middle&#x27;);
+    } else {
+      // Ensure dots are removed if residues are to be shown
+      this[&#x27;group.dots&#x27;].selectAll(&#x27;*&#x27;).remove();
+
+      const domainStartFloor &#x3D; Math.floor(domainStart + .5);
+      const domainEndCeil &#x3D; Math.min(Math.ceil(domainEnd), residues.length);
+
+      const visibleResidues &#x3D; residues.slice(Math.max(0, domainStartFloor - 1), domainEndCeil);
+
+      // Create the visible residues inside the residues container as rect with the color of the residue
+      if (settings[&quot;sequence-background-color&quot;]) {
+        const color &#x3D; (d: string) &#x3D;&gt; sequenceColors[settings[&quot;sequence-background-color&quot;]!][d as never] || sequenceColors[settings[&quot;sequence-background-color&quot;]!].X;
+        let height;
+        let yValue: number &#x3D; y(&#x27;sequence&#x27;);
+
+        switch (settings[&quot;sequence-background-height&quot;]) {
+          case &#x27;100%&#x27;:
+            height &#x3D; &#x27;100%&#x27;;
+            break;
+          case &#x27;content-size&#x27;:
+            height &#x3D; cs;
+            yValue +&#x3D; (lh - cs) / 2;
+            break;
+          case &#x27;line-height&#x27;:
+            height &#x3D; lh;
+            break;
+          default:
+            height &#x3D; cs;
+        }
+
+        residuesContainer
+          .selectAll(&#x27;rect.residue&#x27;)
+          .data(visibleResidues)
+          .join(&#x27;rect&#x27;)
+          .attr(&#x27;class&#x27;, &#x27;residue&#x27;)
+          .attr(&#x27;x&#x27;, (d, i) &#x3D;&gt; x(i + domainStartFloor - .5))
+          .attr(&#x27;y&#x27;, yValue)
+          .attr(&#x27;width&#x27;, cellWidth)
+          .attr(&#x27;height&#x27;, height)
+          .attr(&#x27;fill&#x27;, color)
+          .attr(&#x27;fill-opacity&#x27;, settings[&quot;sequence-background-opacity&quot;] || 0.5);
+      }
+
+      // Create the visible residues inside the residues container as text elements
+      residuesContainer
+        .selectAll(&#x27;text.residue&#x27;)
+        .data(visibleResidues)
+        .join(&#x27;text&#x27;)
+        .attr(&#x27;class&#x27;, &#x27;residue&#x27;)
+        .text((d) &#x3D;&gt; &#x27;&#x27; + d)
+        .attr(&#x27;x&#x27;, (d, i) &#x3D;&gt; x(i + domainStartFloor))
+        .attr(&#x27;y&#x27;, y(&#x27;sequence&#x27;) + lh / 2)
+        .attr(&#x27;dominant-baseline&#x27;, &#x27;central&#x27;)
+        .style(&#x27;text-anchor&#x27;, &#x27;middle&#x27;);
+    }
+
+    const textColor &#x3D; settings[&#x27;text-color&#x27;];
+    // Update the residue and dots color always
+    residuesContainer.selectAll(&#x27;text.residue&#x27;).attr(&#x27;fill&#x27;, textColor);
+    dotsContainer.selectAll(&#x27;text.dot&#x27;).attr(&#x27;fill&#x27;, textColor);
+  }
+
+  private createBrush() {
+    this.initializeService.brushRegion &#x3D; this.initializeService.draw.append(&#x27;g&#x27;).attr(&#x27;class&#x27;, &#x27;brush&#x27;);
+  }
+
+  private setSelectionShadow(selectionContext: SelectionContext) {
+    const scale &#x3D; this.initializeService.scale;
+    const [start, end] &#x3D; [selectionContext.range!.start, selectionContext.range!.end];
+
+    this.initializeService.shadow
+      .data([selectionContext])
+      .attr(&#x27;x&#x27;, scale.x(start))
+      .attr(&#x27;width&#x27;, scale.x(end) - scale.x(start))
+  }
+
+  private removeSelectionShadow() {
+    this.initializeService.shadow
+      .data([{trace : undefined, feature : undefined, range : undefined} as SelectionContext])
+      .attr(&#x27;x&#x27;, 0)
+      .attr(&#x27;width&#x27;, 0);
+  }
+
+  private setLabelsPosition(traces: InternalTraces) {
+    const y &#x3D; this.initializeService.scale.y;
+    const {left : ml, right : mr} &#x3D; this.initializeService.margin;
+    const settings &#x3D; this.initializeService.settings;
+
+    for (const trace of traces) {
+      // Get identifier trace
+      const identifier &#x3D; &#x27;&#x27; + trace.id;
+      for (const place of [&#x27;left&#x27;, &#x27;right&#x27;]) {
+        // Get associated trace
+        const label &#x3D; this.initializeService.div.querySelector&lt;HTMLDivElement&gt;(&#x60;div#label-${place}-&#x60; + identifier);
+        // If label exists, update its positioning
+        if (label) {
+          label.classList.add(&#x27;label&#x27;);
+          if (place &#x3D;&#x3D;&#x3D; &#x27;left&#x27;) {
+            // Position the label to the left
+            label.style.left &#x3D; &#x27;0px&#x27;;
+            label.style.width &#x3D; &#x60;${ml}px&#x60;;
+          } else {
+            // Position the label to the right, ad add a &quot;margin&quot; left of 8 px to space the label from the traces
+            label.style.right &#x3D; &#x27;0px&#x27;;
+            label.style.width &#x3D; &#x60;${mr}px&#x60;;
+          }
+          label.style.top &#x3D; y(identifier) + &#x27;px&#x27;;
+          label.style.display &#x3D; &#x27;block&#x27;;
+          label.style.height &#x3D; (trace.options?.[&#x27;line-height&#x27;] || settings[&#x27;line-height&#x27;]) + &#x27;px&#x27;;
+        }
+      }
+    }
+  }
+
+  private hideLabels(trace: InternalTrace) {
+    // Get identifier trace
+    const identifier &#x3D; trace.id;
+    for (const place of [&#x27;left&#x27;, &#x27;right&#x27;]) {
+      // Get associated trace
+      const label &#x3D; this.initializeService.div.querySelector&lt;HTMLDivElement&gt;(&#x60;div#label-${place}-&#x60; + identifier);
+      // If label exists, update its positioning
+      if (label) {
+        // Hide label
+        label.style.display &#x3D; &#x27;none&#x27;;
+      }
+    }
+  }
+
+  private createGrid(traces: InternalTraces): void {
+    const group &#x3D; this.initializeService.focus
+      // Create parent grid element
+      .selectAll&lt;SVGGElement, InternalTraces&gt;(&#x27;g.grid&#x27;)
+      .data&lt;InternalTraces&gt;([traces], index)
+      .join(&#x27;g&#x27;)
+      .attr(&#x27;class&#x27;, &#x27;grid&#x27;)
+      .lower();
+
+    this[&#x27;group.grid&#x27;] &#x3D; group
+      .selectAll&lt;SVGGElement | BaseType, InternalTrace&gt;(&#x27;g.grid-line-group&#x27;)
+      .data&lt;InternalTrace&gt;(traces, identity)
+      .join(&#x27;g&#x27;)
+      .attr(&#x27;id&#x27;, (d) &#x3D;&gt; &#x27;grid-&#x27; + d.id)
+      .attr(&#x27;class&#x27;, &#x27;grid-line-group&#x27;)
+      .join(&#x27;line&#x27;);
+
+    this[&#x27;group.grid&#x27;].each((trace) &#x3D;&gt; {
+      if (trace.options?.[&#x27;grid&#x27;]) {
+        // In each group of grid lines, create the lines
+        this[&#x27;group.grid&#x27;].selectAll(&#x27;line.grid-line&#x27;)
+          .data(trace.options?.[&#x27;grid-y-values&#x27;] || [])
+          .enter()
+          .append(&#x27;line&#x27;)
+          .attr(&#x27;class&#x27;, &#x27;grid-line&#x27;)
+          .style(&#x27;shape-rendering&#x27;, &#x27;crispedges&#x27;)
+          .attr(&#x27;id&#x27;, (d, index) &#x3D;&gt; &#x27;grid-line-&#x27; + index);
+      }
+
+      // Create initial zero-line if defined
+      if (trace.options?.[&#x27;zero-line&#x27;]) {
+        // Create zero line
+        this[&#x27;group.grid&#x27;].selectAll(&#x27;line.zero-line&#x27;)
+          .data([true])
+          .enter()
+          .append(&#x27;line&#x27;)
+          .attr(&#x27;class&#x27;, &#x27;zero-line&#x27;)
+          .style(&#x27;shape-rendering&#x27;, &#x27;crispedges&#x27;)
+          .attr(&#x27;id&#x27;, &#x27;zero-line&#x27;);
+      }
+    });
+  }
+
+  private updateGrid(): void {
+    const group: GridLines &#x3D; this[&#x27;group.grid&#x27;];
+
+    const y &#x3D; this.initializeService.scale.y;
+    const settings &#x3D; this.initializeService.settings;
+    const x1 &#x3D; this.initializeService.x1;
+    const x2 &#x3D; this.initializeService.x2;
+
+    group.each(function (trace: InternalTrace) {
+      const traceGroup &#x3D; d3.select(this);
+
+      // Get all the necessary values to compute the position of the grid lines
+      const mt &#x3D; y(&#x27;&#x27; + trace.id);
+      const lh &#x3D; trace.options?.[&#x27;line-height&#x27;] || settings[&#x27;line-height&#x27;];
+      const cs &#x3D; trace.options?.[&#x27;content-size&#x27;] || settings[&#x27;content-size&#x27;];
+
+      // top is calculated as the distance to the top, plus the lh/2 to get the mid-point of the line, plus the cs/2 to get the bottom of the line
+      const bottom &#x3D; mt + lh / 2 + cs / 2;
+      const top &#x3D; mt + lh / 2 - cs / 2;
+
+      function rescaleY(yValue: number): number {
+        // top and bottom are actually switched, as the y-axis is inverted
+        return bottom + (yValue - trace.domain.min) / (trace.domain.max - trace.domain.min) * (top - bottom);
+      }
+
+      // Update grid lines
+      traceGroup
+        .selectAll(&#x27;line.grid-line&#x27;)
+        .data(trace.options?.grid ? trace.options?.[&#x27;grid-y-values&#x27;] || [] : [])
+        .attr(&#x27;x1&#x27;, x1)
+        .attr(&#x27;x2&#x27;, x2)
+        .attr(&#x27;y1&#x27;, d &#x3D;&gt; rescaleY(d))
+        .attr(&#x27;y2&#x27;, d &#x3D;&gt; rescaleY(d))
+        .attr(&#x27;stroke&#x27;, trace.options?.[&quot;grid-line-color&quot;] || settings[&quot;grid-line-color&quot;])
+        .attr(&#x27;stroke-width&#x27;, trace.options?.[&quot;grid-line-width&quot;] || 1);
+
+      // Update zero-line if defined
+      traceGroup
+        .selectAll(&#x27;line.zero-line&#x27;)
+        .data(trace.options?.[&#x27;zero-line&#x27;] ? [true] : [])
+        .attr(&#x27;x1&#x27;, x1)
+        .attr(&#x27;x2&#x27;, x2)
+        .attr(&#x27;y1&#x27;, rescaleY(0))
+        .attr(&#x27;y2&#x27;, rescaleY(0))
+        .attr(&#x27;stroke&#x27;, trace.options?.[&quot;zero-line-color&quot;] || &#x27;black&#x27;)
+        .attr(&#x27;stroke-width&#x27;, trace.options?.[&quot;zero-line-width&quot;] || 1);
+    });
+  }
+
+  private createTraces(traces: InternalTraces): void {
+    // Get references to local variables as &#x60;this&#x60; might be lost
+    const settings &#x3D; this.initializeService.settings;
+    const tooltipService &#x3D; this.tooltipService;
+    const initializeService &#x3D; this.initializeService;
+    const selectionEmitter$ &#x3D; this.selectedFeatureEmit$;
+    const scale &#x3D; this.initializeService.scale;
+    const circle &#x3D; this.initializeService.hoverCircleMarker;
+
+    // Generate and store traces groups
+    this[&#x27;group.traces&#x27;] &#x3D; this.initializeService.draw
+      .selectAll&lt;SVGGElement | BaseType, InternalTrace&gt;(&#x27;g.trace&#x27;)
+      .data&lt;InternalTrace&gt;(traces, identity)
+      .join(&#x27;g&#x27;)
+      .attr(&#x27;id&#x27;, (trace) &#x3D;&gt; &#x27;trace-&#x27; + trace.id)
+      .attr(&#x27;class&#x27;, &#x27;trace&#x27;);
+    // .raise();
+    // Iterate over each trace
+
+    this[&#x27;group.traces&#x27;].each(function (trace) {
+      // Define trace group
+      const traceGroup &#x3D; d3.select(this);
+      // Define feature groups
+      const featureGroup &#x3D; traceGroup
+        .selectAll&lt;d3.BaseType, Feature&gt;(&#x27;g.feature&#x27;)
+        .data(trace.features);
+      // On: feature group enter
+      featureGroup.enter().append(&#x27;g&#x27;)
+        .attr(&#x27;class&#x27;, (d) &#x3D;&gt; &#x27;feature &#x27; + d.type)
+        .attr(&#x27;id&#x27;, (_, i) &#x3D;&gt; &#x60;trace-${trace.id}-feature-${i}&#x60;)
+        .each(function (feature, index) {
+          // Define current selection
+          const selection &#x3D; d3.select(this);
+          // Bind data to selection
+          selection.data([feature]);
+          // On mouse enter / over
+          selection.on(&#x27;mouseenter&#x27;, (event: MouseEvent) &#x3D;&gt; {
+            tooltipService.onMouseEnter(event, trace, feature, index)
+          });
+          // On mouse move
+          selection.on(&#x27;mousemove&#x27;, (event: MouseEvent) &#x3D;&gt; {
+            tooltipService.onMouseMove(event, trace, feature, index);
+
+            // Get all the necessary values to compute the position of the grid lines
+            const mt &#x3D; scale.y(&#x27;&#x27; + trace.id);
+            const lh &#x3D; trace.options?.[&#x27;line-height&#x27;] || settings[&#x27;line-height&#x27;];
+            const cs &#x3D; trace.options?.[&#x27;content-size&#x27;] || settings[&#x27;content-size&#x27;];
+
+            // top is calculated as the distance to the top, plus the lh/2 to get the mid-point of the line, plus the cs/2 to get the bottom of the line
+            const bottom &#x3D; mt + lh / 2 + cs / 2;
+            const top &#x3D; mt + lh / 2 - cs / 2;
+
+            function rescaleY(yValue: number): number {
+              // top and bottom are actually switched, as the y-axis is inverted
+              return bottom + (yValue - trace.domain.min) / (trace.domain.max - trace.domain.min) * (top - bottom);
+            }
+
+            if (feature.type &#x3D;&#x3D; &#x27;continuous&#x27;) {
+              const coordinates &#x3D; initializeService.getCoordinates(event, trace.id);
+              if (coordinates[0] &lt;&#x3D; 0.5) {
+                return;
+              }
+              // Add a small circle to the feature to indicate the position of the mouse
+              circle
+                .attr(&#x27;cx&#x27;, scale.x(coordinates[0]))
+                .attr(&#x27;cy&#x27;, rescaleY(feature.values[coordinates[0] - 1]))
+                .attr(&#x27;display&#x27;, &#x27;block&#x27;)
+            }
+          });
+          // On mouse leave
+          selection.on(&#x27;mouseleave&#x27;, () &#x3D;&gt; {
+            tooltipService.onMouseLeave();
+            circle.attr(&#x27;display&#x27;, &#x27;none&#x27;);
+          });
+          // On feature click
+          selection.on(&#x27;click&#x27;, (event: MouseEvent) &#x3D;&gt; selectFeature(feature, initializeService, event, trace, selectionEmitter$));
+
+          const appendElementWithAttributes &#x3D; (
+            parent: d3.Selection&lt;SVGGElement, unknown, null, undefined&gt;,
+            element: string,
+            attributes: { [key: string]: number | string },
+          ): d3.Selection&lt;d3.BaseType, unknown, null, undefined&gt; &#x3D;&gt; {
+            const el &#x3D; parent.append(element);
+            Object.entries(attributes).forEach(([key, value]) &#x3D;&gt; {
+              el.attr(key, value);
+            });
+            return el;
+          };
+
+          const container &#x3D; d3.select(this);
+
+          if (feature.type &#x3D;&#x3D;&#x3D; &#x27;locus&#x27;) {
+            const rectAttributes &#x3D; {
+              &#x27;stroke&#x27; : feature[&quot;stroke-color&quot;] || &#x27;none&#x27;,
+              &#x27;stroke-opacity&#x27; : 1.0,
+              &#x27;stroke-width&#x27; : feature[&quot;stroke-width&quot;] || 0,
+              &#x27;fill&#x27; : feature.color || &#x27;white&#x27;,
+              &#x27;fill-opacity&#x27; : feature.opacity || 1,
+              &#x27;rx&#x27; : 4,
+              &#x27;ry&#x27; : 4,
+            };
+
+            appendElementWithAttributes(container, &#x27;rect&#x27;, rectAttributes);
+
+            // addMouseEvents(rect, tooltip, trace, feature);
+            if (feature.label) {
+              // Based on the color of the feature, determine if the fill of the text should be white or black
+              let textColor &#x3D; feature[&quot;text-color&quot;] || settings[&quot;text-color&quot;];
+
+              if (!textColor) {
+                const featureColor &#x3D; d3.hsl(d3.color(feature.color || &#x27;black&#x27;)!);
+                textColor &#x3D; (Number.isNaN(featureColor.l) || featureColor.l &gt; 0.5) ? &quot;black&quot; : &quot;white&quot;;
+              }
+
+              const labelAttributes &#x3D; {
+                &quot;dominant-baseline&quot; : &quot;central&quot;,
+              }
+
+              const text &#x3D; appendElementWithAttributes(container, &#x27;text&#x27;, labelAttributes);
+              text.text(feature.label)
+              text.style(&quot;text-anchor&quot;, &quot;left&quot;)
+              // text.style(&quot;pinter-events&quot;, &quot;none&quot;)
+            }
+          }
+
+          if (feature.type &#x3D;&#x3D;&#x3D; &#x27;continuous&#x27;) {
+            const pathAttributes &#x3D; {
+              &#x27;stroke&#x27; : feature[&quot;stroke-color&quot;] || feature.color || &#x27;black&#x27;,
+              &#x27;stroke-opacity&#x27; : feature.opacity || 1,
+              &#x27;stroke-width&#x27; : feature[&quot;stroke-width&quot;] || 1,
+              &#x27;fill&#x27; : feature.showArea ? feature.color || &#x27;black&#x27; : &#x27;none&#x27;,
+              &#x27;fill-opacity&#x27; : feature.opacity || 1,
+            };
+
+            const line &#x3D; appendElementWithAttributes(container, &#x27;path&#x27;, pathAttributes);
+            line.style(&#x27;stroke-dasharray&#x27;, feature[&quot;stroke-dasharray&quot;] || &#x27;&#x27;);
+          }
+
+          if (feature.type &#x3D;&#x3D;&#x3D; &#x27;pin&#x27;) {
+            const circleAttributes &#x3D; {
+              &#x27;stroke&#x27; : feature[&quot;stroke-color&quot;] || &#x27;none&#x27;,
+              &#x27;stroke-width&#x27; : feature[&quot;stroke-width&quot;] || 0,
+              &#x27;fill&#x27; : feature.color || &#x27;black&#x27;,
+              &#x27;fill-opacity&#x27; : feature.opacity || 1,
+            };
+            appendElementWithAttributes(container, &#x27;circle&#x27;, circleAttributes);
+          }
+
+          if (feature.type &#x3D;&#x3D;&#x3D; &#x27;poly&#x27;) {
+            const polyAttributes &#x3D; {
+              &#x27;stroke&#x27; : feature[&quot;stroke-color&quot;] || &#x27;black&#x27;,
+              &#x27;stroke-opacity&#x27; : feature.opacity || 1,
+              &#x27;stroke-width&#x27; : feature[&quot;stroke-width&quot;] || 1,
+              &#x27;fill&#x27; : feature.color || &#x27;black&#x27;,
+              &#x27;fill-opacity&#x27; : feature.opacity || 1,
+            };
+            appendElementWithAttributes(container, &#x27;polygon&#x27;, polyAttributes);
+          }
+
+          if (feature.type &#x3D;&#x3D;&#x3D; &#x27;dssp&#x27;) {
+            const shapeToDraw &#x3D; dsspShape(feature.code);
+
+            if (shapeToDraw &#x3D;&#x3D; &quot;sheet&quot;) {
+              const bSheetAttributes &#x3D; {
+                &#x27;class&#x27; : &#x27;sheet&#x27;,
+                &#x27;stroke&#x27; : d3.color(feature.color || &#x27;white&#x27;)!.darker(.5).formatHex(),
+                &#x27;stroke-width&#x27; : 2,
+                &#x27;fill&#x27; : feature.color || &#x27;white&#x27;,
+                &#x27;fill-opacity&#x27; : feature.opacity || 0.5,
+              };
+              appendElementWithAttributes(container, &#x27;polygon&#x27;, bSheetAttributes);
+            }
+
+            if (shapeToDraw &#x3D;&#x3D; &quot;coil&quot;) {
+              const sw &#x3D; Math.min(16, Math.max(3, (trace.options?.[&#x27;content-size&#x27;] || settings[&#x27;content-size&#x27;]) / 8));
+              const coilAttributes &#x3D; {
+                &#x27;class&#x27; : &#x27;coil&#x27;,
+                &#x27;stroke&#x27; : feature.color || &#x27;black&#x27;,
+                &#x27;stroke-opacity&#x27; : feature.opacity || .5,
+                &#x27;stroke-width&#x27; : sw,
+                &#x27;stroke-linecap&#x27; : &#x27;square&#x27;,
+                &#x27;stroke-dasharray&#x27; : &#x60;${sw}, ${sw * 1.5}&#x60;,
+                &#x27;fill&#x27; : &#x27;none&#x27;,
+              };
+              appendElementWithAttributes(container, &#x27;path&#x27;, coilAttributes);
+            }
+          }
+        })
+      // On: feature group removal
+      featureGroup.exit().remove();
+    });
+  }
+
+  private updateTraces(): void {
+    const scale &#x3D; this.initializeService.scale;
+    const settings &#x3D; this.initializeService.settings;
+    const coilPoints &#x3D; this.coilPoints;
+    const charWidth &#x3D; this.featureLabelCharWidth;
+
+    this.initializeService.hoverCircleMarker.attr(&#x27;display&#x27;, &#x27;none&#x27;)
+
+    // Loop through each trace
+    this[&#x27;group.traces&#x27;].each(function (trace) {
+      // Select all trace groups
+      const traceGroups &#x3D; d3.select&lt;d3.BaseType, InternalTraces&gt;(this);
+      // Select all feature groups
+      const featureGroups &#x3D; traceGroups.selectAll&lt;d3.BaseType, Feature&gt;(&#x27;g.feature&#x27;);
+      // Loop through each feature group
+      featureGroups.each(function (feature, featureIdx: number) {
+        const {featureStart, featureEnd} &#x3D; getStartEndPositions(feature);
+
+        const currentDomainStart &#x3D; scale.x.domain()[0];
+        const currentDomainEnd &#x3D; scale.x.domain()[1];
+
+        // Calculate the starting point relative to the current domain (the shown part of the sequence)
+        const startPoint &#x3D; Math.max(featureStart, currentDomainStart);
+        const endPoint &#x3D; Math.min(featureEnd, currentDomainEnd);
+        // If end is less than start, then the feature is not visible, so we skip it
+        if (endPoint &lt; startPoint) {
+          if (alreadyExitedFromView.has(feature)) {
+            // The feature was already not visible before and its position has already been updated outside the view
+            return;
+          } else {
+            // The feature is not visible anymore, but we need to update its position to be outside the view
+            alreadyExitedFromView.add(feature);
+          }
+        }
+        // The feature is now visible, so we remove it from the set of features that are outside the view
+        alreadyExitedFromView.delete(feature);
+
+        // Get line height, content size
+        const mt &#x3D; scale.y(&#x27;&#x27; + trace.id);
+        const lh &#x3D; trace.options?.[&#x27;line-height&#x27;] || settings[&#x27;line-height&#x27;];
+        const cs &#x3D; trace.options?.[&#x27;content-size&#x27;] || settings[&#x27;content-size&#x27;];
+        const center &#x3D; mt + lh / 2;
+        const bottom &#x3D; center + cs / 2;
+        let top &#x3D; center - cs / 2;
+
+        function rescaleY(yValue: number): number {
+          // top and bottom are actually switched, as the y-axis is inverted
+          return bottom + (yValue - trace.domain.min) / (trace.domain.max - trace.domain.min) * (top - bottom);
+        }
+
+        function randomBetween(min: number, max: number): number {
+          return Math.random() * (max - min) + min;
+        }
+
+        if (feature.type &#x3D;&#x3D;&#x3D; &#x27;locus&#x27;) {
+          // Define cell width
+          const cw &#x3D; scale.x(1) - scale.x(0);
+          const featureWidth &#x3D; scale.x(feature.end + .5) - scale.x(feature.start);
+
+          if (feature.height) {
+            top &#x3D; top + (cs - feature.height) / 2;
+          }
+          // Select all rectangles (and bound data)
+          d3.select&lt;d3.BaseType, Locus&gt;(this)
+            .selectAll&lt;d3.BaseType, Locus&gt;(&#x27;rect&#x27;)
+            // Set position
+            .attr(&#x27;x&#x27;, (locus) &#x3D;&gt; scale.x(locus.start - 0.5))
+            .attr(&#x27;y&#x27;, top)
+            // Set size
+            .attr(&#x27;height&#x27;, feature.height !&#x3D;&#x3D; undefined ? feature.height : cs)
+            .attr(&#x27;width&#x27;, (locus) &#x3D;&gt; {
+              // Compute width
+              return cw * (locus.end - locus.start + 1);
+            })
+
+          // If the feature is wide enough we can add the label of the feature as text inside of it
+          if (feature.label) {
+            const labelWidth &#x3D; charWidth * feature.label.length;
+            d3.select&lt;d3.BaseType, Locus&gt;(this)
+              .selectAll&lt;d3.BaseType, Locus&gt;(&#x27;text&#x27;)
+              .attr(&quot;x&quot;, scale.x(feature.start - 0.5) + 4)
+              .attr(&#x27;y&#x27;, center)
+              .attr(&quot;opacity&quot;, labelWidth + 8 &lt; featureWidth ? 1 : 0)
+              .attr(&#x27;fill&#x27;, feature[&quot;text-color&quot;] || settings[&quot;text-color&quot;])
+          }
+        }
+
+        if (feature.type &#x3D;&#x3D;&#x3D; &#x27;continuous&#x27;) {
+          // Get values for feature
+          const values &#x3D; feature.values;
+          // Initialize horizontal, vertical values
+          const xy: [number, number][] &#x3D; values.map((v: number, i: number) &#x3D;&gt; [i + 1, v]);
+
+          // Add another value at the start and end that is the same as the first and last value
+          xy.unshift([0.5, xy[0][1]]);
+          xy.push([values.length + .5, xy[xy.length - 1][1]]);
+
+          let line: d3.Line&lt;[number, number]&gt; | d3.Area&lt;[number, number]&gt;;
+
+          let curveType: d3.CurveFactory &#x3D; d3.curveStep;
+
+          // If curveType is defined, then use it
+          if (feature.curveType) {
+            curveType &#x3D; d3[feature.curveType];
+          }
+
+          // If showArea is true, then the line should be an area
+          if (feature.showArea) {
+            line &#x3D; d3.area&lt;[number, number]&gt;().curve(curveType)
+              .x(([x]) &#x3D;&gt; scale.x(x))
+              .y1(([, y]) &#x3D;&gt; rescaleY(y))
+              .y0(bottom);
+          } else {
+            line &#x3D; d3.line&lt;[number, number]&gt;().curve(curveType)
+              .x(([x]) &#x3D;&gt; scale.x(x))
+              .y(([, y]) &#x3D;&gt; rescaleY(y));
+          }
+
+          // Update path line
+          d3.select&lt;d3.BaseType, Continuous&gt;(this)
+            .select(&#x27;path&#x27;)
+            .attr(&#x27;d&#x27;, line(xy));
+        }
+
+        if (feature.type &#x3D;&#x3D;&#x3D; &#x27;pin&#x27;) {
+          let radius;
+          if (feature.adjustToWidth) {
+            radius &#x3D; Math.min(trace.options?.[&quot;content-size&quot;] || settings[&quot;content-size&quot;], (scale.x(1) - scale.x(0))) / 2;
+          } else {
+            radius &#x3D; feature.radius || 8;
+          }
+          // Select all circles (and bound data)
+          d3.select&lt;d3.BaseType, Pin&gt;(this)
+            .selectAll&lt;d3.BaseType, Pin&gt;(&#x27;circle&#x27;)
+            // Set position
+            .attr(&#x27;cx&#x27;, (pin) &#x3D;&gt; scale.x(pin.position))
+            .attr(&#x27;cy&#x27;, center)
+            .attr(&#x27;r&#x27;, radius);
+        }
+
+        if (feature.type &#x3D;&#x3D;&#x3D; &#x27;poly&#x27;) {
+          // Given the position of the feature and the radius, we can calculate the points of the polygon
+          // that will be drawn inscribed in a circle with center at the position of the feature and radius equal to the radius of the feature
+          const sides &#x3D; feature.sides || 3;
+          let radius;
+          if (feature.adjustToWidth) {
+            radius &#x3D; Math.min(trace.options?.[&quot;content-size&quot;] || settings[&quot;content-size&quot;], (scale.x(1) - scale.x(0))) / 2;
+          } else {
+            radius &#x3D; feature.radius || 8;
+          }
+
+          const angle &#x3D; 2 * Math.PI / sides;
+          const rotationAdjustment &#x3D; Math.PI / 2 - Math.PI / sides;
+          // Calculate the points remembering that the polygon should not be stretched in the x-y axis, but it is always of size radius*2
+          const points &#x3D; Array.from({length : sides}, (_, i) &#x3D;&gt; {
+            const x &#x3D; radius * Math.cos(i * angle + rotationAdjustment);
+            const y &#x3D; radius * Math.sin(i * angle + rotationAdjustment);
+            return [x + scale.x(feature.position), y + center];
+          });
+          d3.select&lt;d3.BaseType, Pin&gt;(this)
+            .selectAll&lt;d3.BaseType, Pin&gt;(&#x27;polygon&#x27;)
+            .attr(&#x27;points&#x27;, points.map(point &#x3D;&gt; point.join(&#x27;,&#x27;)).join(&#x27; &#x27;));
+        }
+
+        if (feature.type &#x3D;&#x3D;&#x3D; &#x27;dssp&#x27;) {
+          const magicNumbers &#x3D; {
+            &quot;helix&quot; : {&quot;bitWidth&quot; : 0.25, &quot;xScale&quot; : 0.5, &quot;yScale&quot; : 0.119, &quot;center&quot; : -4},
+            &quot;turn&quot; : {&quot;bitWidth&quot; : 0.8, &quot;xScale&quot; : 0.033, &quot;yScale&quot; : 0.035, &quot;center&quot; : +5.8},
+            // Sheet is a special case as it is computed as a rectangle with a triangle on top at runtime
+            &quot;sheet&quot; : {&quot;bitWidth&quot; : 4, &quot;xScale&quot; : 0, &quot;yScale&quot; : 0, &quot;center&quot; : 0},
+            &quot;coil&quot; : {&quot;bitWidth&quot; : 0.3, &quot;xScale&quot; : 0, &quot;yScale&quot; : 0, &quot;center&quot; : 0},
+          }
+
+          const shapeToDraw &#x3D; dsspShape(feature.code);
+          const shapePath &#x3D; DSSPPaths[shapeToDraw];
+
+          const totalFeatureWidth &#x3D; scale.x(endPoint) - scale.x(startPoint);
+          const widthPerResidue &#x3D; totalFeatureWidth / (endPoint - startPoint);
+
+          // One helix every 100 points of width
+          const bitWidth &#x3D; cs * magicNumbers[shapeToDraw][&quot;bitWidth&quot;];
+          const numBits &#x3D; Math.floor(totalFeatureWidth / bitWidth + 1);
+          const bitOccupancy &#x3D; bitWidth / widthPerResidue;
+
+          // Calculate the position in reverse order
+          const xPositions &#x3D; Array.from({length : numBits}, (_, i) &#x3D;&gt; startPoint + i * bitOccupancy).filter(x &#x3D;&gt; x &gt;&#x3D; startPoint &amp;&amp; x &lt;&#x3D; endPoint);
+
+          if (xPositions.length &lt; 2 &amp;&amp; xPositions.length &gt; 0) {
+            xPositions.push(endPoint);
+          }
+
+          const xScale &#x3D; bitWidth * magicNumbers[shapeToDraw][&quot;xScale&quot;];
+          const yScale &#x3D; cs * magicNumbers[shapeToDraw][&quot;yScale&quot;];
+
+          if (shapeToDraw &#x3D;&#x3D; &quot;helix&quot; || shapeToDraw &#x3D;&#x3D; &quot;turn&quot;) {
+            d3.select&lt;d3.BaseType, DSSP&gt;(this)
+              .selectAll&lt;d3.BaseType, number&gt;(&#x27;path&#x27;)
+              .data(xPositions)
+              .join(
+                enter &#x3D;&gt; enter.append(&#x27;path&#x27;)
+                  .attr(&quot;class&quot;, shapeToDraw)
+                  .attr(&quot;d&quot;, shapePath)
+                  .attr(&quot;stroke&quot;, d3.color(feature.color || &#x27;white&#x27;)!.darker(0.5).formatHex())
+                  .attr(&quot;stroke-width&quot;, shapeToDraw &#x3D;&#x3D; &quot;helix&quot; ? 0.1 : 0.7)
+                  .attr(&quot;fill&quot;, feature.color || &#x27;black&#x27;)
+                  .attr(&quot;transform-origin&quot;, &quot;center center&quot;),
+                update &#x3D;&gt; update,
+                exit &#x3D;&gt; exit.remove(),
+              )
+              .attr(&quot;fill-opacity&quot;, (_, i) &#x3D;&gt; feature.opacity !&#x3D;&#x3D; undefined ? (i % 2 &#x3D;&#x3D; 0 ? feature.opacity - 0.2 : feature.opacity) : (i % 2 &#x3D;&#x3D; 0 ? 0.5 : 0.7))
+              .attr(&quot;transform&quot;, (xPosition, i) &#x3D;&gt; {
+                const flippedXScale &#x3D; i % 2 &#x3D;&#x3D; 0 ? xScale : -1 * xScale;
+                return &#x60;translate(${scale.x(xPosition)}, ${center + magicNumbers[shapeToDraw][&quot;center&quot;]}) scale(${flippedXScale}, ${yScale})&#x60;
+              });
+
+            // Create a clip-path for each feature so to remove parts outside the range of the feature
+            d3.select&lt;d3.BaseType, DSSP&gt;(this)
+              .attr(&#x27;clip-path&#x27;, &#x60;url(#clip-path-${trace.id}-feature-${featureIdx})&#x60;)
+              .selectAll(&#x60;#clip-path-${trace.id}-feature-${featureIdx}&#x60;)
+              .data([feature])
+              .join(
+                enter &#x3D;&gt; enter.append(&#x27;defs&#x27;)
+                  .append(&#x27;clipPath&#x27;)
+                  .attr(&#x27;id&#x27;, &#x60;clip-path-${trace.id}-feature-${featureIdx}&#x60;)
+                  .append(&#x27;rect&#x27;)
+                  .attr(&#x27;width&#x27;, totalFeatureWidth)
+                  .attr(&#x27;height&#x27;, cs)
+                  .attr(&#x27;x&#x27;, scale.x(startPoint))
+                  .attr(&#x27;y&#x27;, top),
+                update &#x3D;&gt; update.select(&#x27;rect&#x27;)
+                  .attr(&#x27;width&#x27;, totalFeatureWidth &gt; 0 ? totalFeatureWidth : 0)
+                  .attr(&#x27;height&#x27;, cs)
+                  .attr(&#x27;x&#x27;, scale.x(startPoint))
+                  .attr(&#x27;y&#x27;, top),
+                exit &#x3D;&gt; exit.remove(),
+              );
+          }
+
+          if (shapeToDraw &#x3D;&#x3D; &quot;sheet&quot;) {
+            if (endPoint &lt; startPoint) {
+              // Set the feature to be outside the view
+              d3.select&lt;d3.BaseType, DSSP&gt;(this)
+                .selectAll&lt;d3.BaseType, number&gt;(&#x27;polygon&#x27;)
+                .attr(&quot;points&quot;, &quot;&quot;);
+              return;
+            }
+
+            // In the case of the sheet, we just want to draw an arrow, where the body is a rectangle, and the head is a triangle
+            const arrowWidth &#x3D; cs / 2;
+            const sheetWidth &#x3D; totalFeatureWidth - arrowWidth;
+            const sheetHeight &#x3D; cs / 2;
+            const sheetX &#x3D; scale.x(startPoint);
+            const sheetY &#x3D; center - sheetHeight / 2;
+
+            const arrowHeight &#x3D; cs;
+            const arrowX &#x3D; scale.x(endPoint) - arrowWidth;
+            const arrowY &#x3D; center - arrowHeight / 2;
+
+            // Define points for the polygon representing the arrow
+            const points &#x3D; [
+              [sheetX, sheetY], // Top-left corner of the rectangle
+              [sheetX + sheetWidth, sheetY], // Top-right corner of the rectangle
+              [sheetX + sheetWidth, arrowY], // Transition from rectangle to arrowhead
+              [arrowX + arrowWidth, arrowY + arrowHeight / 2], // Tip of the arrowhead
+              [sheetX + sheetWidth, arrowY + arrowHeight], // Bottom of the arrowhead
+              [sheetX + sheetWidth, sheetY + sheetHeight], // Bottom-right corner of the rectangle
+              [sheetX, sheetY + sheetHeight], // Bottom-left corner of the rectangle
+            ];
+
+            // Join points into a string for the &#x60;points&#x60; attribute
+            const pointsString &#x3D; points.map(point &#x3D;&gt; point.join(&quot;,&quot;)).join(&quot; &quot;);
+
+            d3.select&lt;d3.BaseType, DSSP&gt;(this)
+              .selectAll&lt;d3.BaseType, number&gt;(&#x27;polygon&#x27;)
+              .attr(&quot;points&quot;, pointsString);
+          }
+
+          if (shapeToDraw &#x3D;&#x3D; &quot;coil&quot;) {
+            const featureKey &#x3D; &#x60;${trace.id}-feature-${featureIdx}&#x60;;
+
+            if (!coilPoints.has(featureKey)) {
+              coilPoints.set(featureKey, []);
+            }
+
+            const line &#x3D; d3.line&lt;[number, number]&gt;().curve(d3.curveBasis)
+              .x(([x]) &#x3D;&gt; scale.x(x))
+              .y(([, y]) &#x3D;&gt; rescaleY(y));
+
+            d3.select&lt;d3.BaseType, DSSP&gt;(this)
+              .selectAll&lt;d3.BaseType, [number, number][]&gt;(&#x27;path&#x27;)
+              .attr(&quot;d&quot;, () &#x3D;&gt; {
+                const yValues &#x3D; coilPoints.get(featureKey)!;
+                const totalXPoints &#x3D; xPositions.length + 1
+                // If the number of points is less than the number of x positions, add random values at the end
+                for (let i &#x3D; yValues.length ; i &lt; totalXPoints ; i++) {
+                  const y &#x3D; randomBetween(trace.domain.min, trace.domain.max);
+                  // Put the value in the second to last position
+                  yValues.splice(yValues.length - 1, 0, y);
+                }
+                // If the number of points is greater than the number of x positions, remove the last values
+                for (let i &#x3D; yValues.length - 1 ; i &gt;&#x3D; totalXPoints ; i--) {
+                  // Remove the value in the second to last position
+                  yValues.splice(i, 1);
+                }
+                // The first and last points should be in the middle of the domain
+                yValues[0] &#x3D; (trace.domain.max + trace.domain.min) / 2;
+                yValues[yValues.length - 1] &#x3D; (trace.domain.max + trace.domain.min) / 2;
+
+                // Update the current yValues to reuse them in the next iteration
+                coilPoints.set(featureKey, yValues);
+
+                // Create the xyPoints array
+                const xyPoints: [number, number][] &#x3D; xPositions.map((x, i) &#x3D;&gt; [x, yValues[i]]);
+                // Add last point to make it touch the middle of the domain
+                xyPoints.push([endPoint, yValues[yValues.length - 1]]);
+
+                return line(xyPoints)
+              });
+          }
+        }
+      });
+    });
+  }
+
+  private updateShadowPosition() {
+    const shadow &#x3D; this.initializeService.shadow;
+    const scale &#x3D; this.initializeService.scale;
+
+    const selectionContext &#x3D; shadow.datum();
+
+    if (selectionContext.range) {
+      // Get the feature associated with the shadow
+      const selectionContext &#x3D; shadow.datum();
+      // Update the position of the shadow
+      shadow
+        .attr(&#x27;x&#x27;, scale.x(selectionContext.range!.start))
+        .attr(&#x27;width&#x27;, scale.x(selectionContext.range!.end) - scale.x(selectionContext.range!.start));
+    }
+  }
+
+  public onLabelClick(trace: InternalTrace): void {
+    // Update flag for current trace
+    trace.expanded &#x3D; !trace.expanded;
+    const descendantsTracesIds &#x3D; this.featuresService.getBranch(trace).slice(1);
+
+    for (const descendant of descendantsTracesIds) {
+      // If the trace is expanded, then only the next level of traces should be shown
+      if (trace.expanded) {
+        if (descendant.level &#x3D;&#x3D;&#x3D; trace.level + 1) {
+          descendant.show &#x3D; true;
+        }
+      } else {
+        descendant.show &#x3D; false;
+      }
+      descendant.expanded &#x3D; false;
+    }
+
+    // Emit current traces
+    this.traces$.next(this.featuresService.tracesNoNesting$.value.filter(trace &#x3D;&gt; trace.show));
+  }
+}
+
+function parseSequence(sequence: Sequence): string[] {
+  const residues: string[] &#x3D; [];
+  // Case sequence is an array
+  if (Array.isArray(sequence)) {
+    // Update residues list
+    residues.push(...sequence);
+  }
+  // Case sequence is a string
+  else if (typeof sequence &#x3D;&#x3D;&#x3D; &#x27;string&#x27;) {
+    // Update residues list
+    residues.push(...sequence.split(&#x27;&#x27;));
+  }
+  return residues;
+}
+
+function getStartEndPositions(feature: Feature) {
+  let featureStart, featureEnd;
+  switch (feature.type) {
+    case &#x27;locus&#x27;:
+      featureStart &#x3D; feature.start - 0.5;
+      featureEnd &#x3D; feature.end + 0.5;
+      break;
+    case &#x27;dssp&#x27;:
+      featureStart &#x3D; feature.start - 0.5;
+      featureEnd &#x3D; feature.end + 0.5;
+      break;
+    case &#x27;continuous&#x27;:
+      featureStart &#x3D; 0.5;
+      featureEnd &#x3D; feature.values.length + 0.5;
+      break;
+    case &#x27;pin&#x27;:
+      featureStart &#x3D; feature.position - 0.5;
+      featureEnd &#x3D; feature.position + 0.5;
+      break;
+    case &#x27;poly&#x27;:
+      featureStart &#x3D; feature.position - 0.5;
+      featureEnd &#x3D; feature.position + 0.5;
+      break;
+    default:
+      featureStart &#x3D; 0;
+      featureEnd &#x3D; 10;
+  }
+  return {featureStart, featureEnd};
+}
+
+function selectFeature(feature: Feature, initializeService: InitializeService, event: MouseEvent, trace: InternalTrace, selectionEmitter$: EventEmitter&lt;SelectionContext | undefined&gt;) {
+  let {featureStart, featureEnd} &#x3D; getStartEndPositions(feature);
+
+  const coordinates &#x3D; initializeService.getCoordinates(event, trace.id);
+  if (feature.type &#x3D;&#x3D;&#x3D; &#x27;continuous&#x27;) {
+    featureStart &#x3D; coordinates[0] - 0.5;
+    featureEnd &#x3D; coordinates[0] + 0.5;
+  }
+  const selectionContext: SelectionContext &#x3D; {
+    trace,
+    feature,
+    range : {start : featureStart, end : featureEnd},
+  }
+  selectionEmitter$.next(selectionContext);
+}
+</code></pre>
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'injectable';
+            var COMPODOC_CURRENT_PAGE_URL = 'DrawService.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+       <script nomodule src="../js/menu-wc_es5.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>
