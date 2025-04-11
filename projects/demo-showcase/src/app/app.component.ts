@@ -1,6 +1,6 @@
 // Core dependencies
 import { RouterModule, RouterOutlet } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { CommonModule, HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { Component } from '@angular/core';
 // Custom dependencies
 import { ThemeSelectorComponent } from './theme-selector/theme-selector.component';
@@ -25,6 +25,9 @@ import { PageHomeModule } from './page-home/page-home.module';
     RouterOutlet,
   ],
   providers: [
+    // Activate hash routing
+    { provide: LocationStrategy, useClass: HashLocationStrategy },
+    // Import theme selector
     ThemeSelectorService
   ],
   templateUrl: './app.component.html',
