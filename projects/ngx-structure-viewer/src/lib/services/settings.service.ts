@@ -12,10 +12,11 @@ export class SettingsService {
     "interaction-color": "#FF0000",
     "interaction-size": .1,
     "show-water": false,
-    "prefer_label_asym_id": false
+    "prefer_label_asym_id": false,
+    "representation-type": "cartoon"
   }
 
-  readonly settings$ = new BehaviorSubject<Settings>(this.DEFAULT);
+  readonly settings$ = new BehaviorSubject<Settings>(<Settings>this.DEFAULT);
 
   public get settings(): Settings {
     // Return internal settings

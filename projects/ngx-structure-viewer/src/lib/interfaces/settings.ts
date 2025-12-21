@@ -10,4 +10,6 @@ export interface Settings {
   'show-water': boolean;
 
   'prefer_label_asym_id': boolean;
+
+  'representation-type': 'cartoon' | 'ball-and-stick' | 'spacefill' | 'surface';
 }

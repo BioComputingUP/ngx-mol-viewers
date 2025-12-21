@@ -78,7 +78,7 @@ export class NgxStructureViewerComponent implements AfterViewInit, OnChanges {
       // Initialize settings
       const settings = this.settings || {};
       // Emit settings
-      this.settingsService.settings$.next({...DEFAULT, ...settings});
+      this.settingsService.settings$.next({...<Settings>DEFAULT, ...settings});
     }
     // Handle source changes
     if (changes['source']) {

@@ -88,12 +88,14 @@ export class SectionSourcesComponent {
   readonly LIGHT: Partial<Settings> = {
     'background-color' : '#dee2e6',
     'backbone-color' : '#ffffff',
+    'representation-type' : 'cartoon',
   };
 
   // Define dark settings
   readonly DARK: Partial<Settings> = {
     'background-color' : '#1a1d20',
     'backbone-color' : '#ffffff',
+    'representation-type' : 'spacefill',
   };
 
   // Define fixed settings
