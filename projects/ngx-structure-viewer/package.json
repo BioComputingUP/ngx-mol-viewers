@@ -1,11 +1,17 @@
 {
-  "name": "ngx-structure-viewer",
+  "name": "@biocomputingup/ngx-structure-viewer",
   "version": "0.0.24",
   "license": "MIT",
   "author": {
     "name": "Damiano Clementel",
     "email": "damiano.clementel@gmail.com"
   },
+  "contributors": [
+    {
+      "name": "Kamel Eddine Adel",
+      "email": "adelbouhraoua23@gmail.com"
+    }
+  ],
   "peerDependencies": {
     "@angular/common": "^17.0.0",
     "@angular/core": "^17.0.0",
