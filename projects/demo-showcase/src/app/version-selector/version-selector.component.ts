@@ -14,7 +14,6 @@ type LibVersionInfo = {
   url: string;
 };
 @Component({
-  standalone: true,
   selector: 'version-selector',
   imports: [CommonModule],
   templateUrl: './version-selector.component.html',

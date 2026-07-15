@@ -3,13 +3,12 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-theme-selector',
-  // Define dependencies
-  imports: [CommonModule],
-  standalone: true,
-  // Define styles
-  templateUrl: './theme-selector.component.html',
-  styleUrl: './theme-selector.component.scss',
+    selector: 'app-theme-selector',
+    // Define dependencies
+    imports: [CommonModule],
+    // Define styles
+    templateUrl: './theme-selector.component.html',
+    styleUrl: './theme-selector.component.scss'
 })
 export class ThemeSelectorComponent {
 

@@ -16,21 +16,20 @@ import { ThemeSelectorService } from '../theme-selector/theme-selector.service';
 const P04637 = 'MEEPQSDPSVEPPLSQETFSMEEPQSDPSVEPPLSQETFSMEEPQSDPSVEPPLSQETFSMEEPQSDPSVEPPLSQETFSMEEPQSDPSVEPPLSQETFSMEEPQSDPSVEPPLSQETFSMEEPQSDPSVEPPLSQETFSMEEPQSDPSVEPPLSQETFSMEEPQSDPSVEPPLSQETFSMEEPQSDPSVEPPLSQETFSMEEPQSDPSVEPPLSQE';
 
 @Component({
-  // eslint-disable-next-line @angular-eslint/component-selector
-  selector : 'page-features-viewer',
-  // Handle dependencies
-  imports : [
-    NgxFeaturesViewerTooltipDirective,
-    NgxFeaturesViewerLabelDirective,
-    NgxFeaturesViewerComponent,
-    CommonModule,
-  ],
-  standalone : true,
-  // Handle representation
-  templateUrl : './page-features-viewer.component.html',
-  styleUrl : './page-features-viewer.component.scss',
-  // Handle changes
-  changeDetection : ChangeDetectionStrategy.OnPush,
+    // eslint-disable-next-line @angular-eslint/component-selector
+    selector: 'page-features-viewer',
+    // Handle dependencies
+    imports: [
+        NgxFeaturesViewerTooltipDirective,
+        NgxFeaturesViewerLabelDirective,
+        NgxFeaturesViewerComponent,
+        CommonModule,
+    ],
+    // Handle representation
+    templateUrl: './page-features-viewer.component.html',
+    styleUrl: './page-features-viewer.component.scss',
+    // Handle changes
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PageFeaturesViewerComponent {
 

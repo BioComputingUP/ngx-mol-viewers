@@ -5,10 +5,11 @@ import { ReplaySubject } from 'rxjs';
 type Highlights = Locus | undefined;
 
 @Component({
-  selector: 'app-section-highlights',
-  templateUrl: './section-highlights.component.html',
-  styleUrl: './section-highlights.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-section-highlights',
+    templateUrl: './section-highlights.component.html',
+    styleUrl: './section-highlights.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class SectionHighlightsComponent {
 

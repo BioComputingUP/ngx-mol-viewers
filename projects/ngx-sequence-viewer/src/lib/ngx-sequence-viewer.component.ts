@@ -68,14 +68,13 @@ export interface Settings {
 }
 
 @Component({
-  // eslint-disable-next-line @angular-eslint/component-selector
-  selector: 'ngx-sequence-viewer',
-  templateUrl: './ngx-sequence-viewer.component.html',
-  styleUrls: ['./ngx-sequence-viewer.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [SelectionService, IndexService],
-  imports: [CommonModule],
-  standalone: true,
+    // eslint-disable-next-line @angular-eslint/component-selector
+    selector: 'ngx-sequence-viewer',
+    templateUrl: './ngx-sequence-viewer.component.html',
+    styleUrls: ['./ngx-sequence-viewer.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    providers: [SelectionService, IndexService],
+    imports: [CommonModule]
 })
 export class NgxSequenceViewerComponent implements OnChanges {
 

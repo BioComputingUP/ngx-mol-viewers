@@ -5,9 +5,10 @@ import { Location } from '@angular/common';
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-section-interactions',
-  templateUrl: './section-interactions.component.html',
-  styleUrl: './section-interactions.component.scss'
+    selector: 'app-section-interactions',
+    templateUrl: './section-interactions.component.html',
+    styleUrl: './section-interactions.component.scss',
+    standalone: false
 })
 export class SectionInteractionsComponent {
 

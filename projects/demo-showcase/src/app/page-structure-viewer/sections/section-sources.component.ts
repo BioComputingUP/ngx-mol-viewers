@@ -5,10 +5,11 @@ import { Locus, Settings, Source } from '@ngx-structure-viewer';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './section-sources.component.html',
-  styleUrl: './section-sources.component.scss',
-  selector: 'app-section-sources',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    templateUrl: './section-sources.component.html',
+    styleUrl: './section-sources.component.scss',
+    selector: 'app-section-sources',
+    standalone: false
 })
 export class SectionSourcesComponent {
 
