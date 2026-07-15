@@ -6,6 +6,7 @@ import { Component } from '@angular/core';
 import { ThemeSelectorComponent } from './theme-selector/theme-selector.component';
 import { ThemeSelectorService } from './theme-selector/theme-selector.service';
 import { PageHomeModule } from './page-home/page-home.module';
+import { VersionSelector } from './version-selector/version-selector.component';
 
 
 @Component({
@@ -15,13 +16,14 @@ import { PageHomeModule } from './page-home/page-home.module';
     // Custom components
     ThemeSelectorComponent,
     PageHomeModule,
+    VersionSelector,
     // // TODO Import pages
     // PageStructureViewerModule,
     // PageFeaturesViewerModule,
     // PageSequenceViewerModule,
     // Core modules
-    CommonModule, 
-    RouterModule, 
+    CommonModule,
+    RouterModule,
     RouterOutlet,
   ],
   providers: [

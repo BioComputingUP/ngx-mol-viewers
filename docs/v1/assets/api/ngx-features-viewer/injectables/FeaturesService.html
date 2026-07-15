@@ -1,0 +1,1279 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>ngx-features-viewer documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    </head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="../" class="navbar-brand">ngx-features-viewer documentation</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content injectable">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Injectables</li>
+  <li class="breadcrumb-item" >FeaturesService</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a href="#info" 
+                class="nav-link"
+                class="nav-link active"
+                role="tab" id="info-tab" data-bs-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li class="nav-item">
+            <a href="#source" 
+                class="nav-link"
+                
+                role="tab" id="source-tab" data-bs-toggle="tab" data-link="source">Source</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="info">
+        <p class="comment">
+            <h3>File</h3>
+        </p>
+        <p class="comment">
+            <code>src/lib/services/features.service.ts</code>
+        </p>
+
+
+
+
+
+            <section data-compodoc="block-index">
+    <h3 id="index">Index</h3>
+    <table class="table table-sm table-bordered index-table">
+        <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Properties</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                    <span class="modifier">Protected</span>
+                                <a href="#_children" >_children</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Protected</span>
+                                <a href="#_parent" >_parent</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Protected</span>
+                                <a href="#traceMap" >traceMap</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#tracesNoNesting$" >tracesNoNesting$</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Methods</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#checkValues" >checkValues</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#getBranch" >getBranch</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#getBranchParents" >getBranchParents</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#getChildren" >getChildren</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#getParentTrace" >getParentTrace</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#getTrace" >getTrace</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#globalMinMax" >globalMinMax</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+
+
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <h6><b>Accessors</b></h6>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <ul class="index-list">
+                                <li>
+                                    <a href="#traces" >traces</a>
+                                </li>
+                                <li>
+                                    <a href="#features" >features</a>
+                                </li>
+                            </ul>
+                        </td>
+                    </tr>
+        </tbody>
+    </table>
+</section>
+
+
+            <section data-compodoc="block-methods">
+    
+    <h3 id="methods">
+        Methods
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="checkValues"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>checkValues</b></span>
+                        <a href="#checkValues"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>checkValues(tmpTrace: <a href="../undefineds/Trace.html" target="_self">Trace</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="206"
+                                    class="link-to-prism">src/lib/services/features.service.ts:206</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>tmpTrace</td>
+                                            <td>
+                                                            <code><a href="../miscellaneous/typealiases.html#Trace" target="_self" >Trace</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getBranch"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>getBranch</b></span>
+                        <a href="#getBranch"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>getBranch(trace: <a href="../interfaces/InternalTrace.html" target="_self">InternalTrace</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="155"
+                                    class="link-to-prism">src/lib/services/features.service.ts:155</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Return the ids of all the traces that are children of the given trace</p>
+</div>
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                                <td>Description</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>trace</td>
+                                            <td>
+                                                            <code><a href="../interfaces/InternalTrace.html" target="_self" >InternalTrace</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                            <td>
+                                                    <ul>
+<li>The trace for which to get the children</li>
+</ul>
+
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="../miscellaneous/typealiases.html#InternalTraces" target="_self" >InternalTraces</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                <p>(Traces) - The ids of the children traces</p>
+
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getBranchParents"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>getBranchParents</b></span>
+                        <a href="#getBranchParents"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>getBranchParents(trace: <a href="../interfaces/InternalTrace.html" target="_self">InternalTrace</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="173"
+                                    class="link-to-prism">src/lib/services/features.service.ts:173</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>trace</td>
+                                            <td>
+                                                            <code><a href="../interfaces/InternalTrace.html" target="_self" >InternalTrace</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="../miscellaneous/typealiases.html#InternalTraces" target="_self" >InternalTraces</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getChildren"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>getChildren</b></span>
+                        <a href="#getChildren"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>getChildren(trace: <a href="../interfaces/InternalTrace.html" target="_self">InternalTrace</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="199"
+                                    class="link-to-prism">src/lib/services/features.service.ts:199</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Get the children traces of the given trace</p>
+</div>
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                                <td>Description</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>trace</td>
+                                            <td>
+                                                            <code><a href="../interfaces/InternalTrace.html" target="_self" >InternalTrace</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                            <td>
+                                                    <ul>
+<li>The trace for which to get the children</li>
+</ul>
+
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="../miscellaneous/typealiases.html#InternalTraces" target="_self" >InternalTraces</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                <p>(InternalTraces) - The children traces, can be empty if the trace has no children</p>
+
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getParentTrace"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>getParentTrace</b></span>
+                        <a href="#getParentTrace"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>getParentTrace(trace: <a href="../interfaces/InternalTrace.html" target="_self">InternalTrace</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="144"
+                                    class="link-to-prism">src/lib/services/features.service.ts:144</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Get the parent trace of the given trace, if any</p>
+</div>
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                                <td>Description</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>trace</td>
+                                            <td>
+                                                            <code><a href="../interfaces/InternalTrace.html" target="_self" >InternalTrace</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                            <td>
+                                                    <ul>
+<li>The trace for which to get the parent</li>
+</ul>
+
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                <p>(InternalTrace | undefined) - The parent trace or undefined if the trace has no parent</p>
+
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getTrace"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>getTrace</b></span>
+                        <a href="#getTrace"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>getTrace(id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="135"
+                                    class="link-to-prism">src/lib/services/features.service.ts:135</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>id</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="../interfaces/InternalTrace.html" target="_self" >InternalTrace | undefined</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="globalMinMax"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>globalMinMax</b></span>
+                        <a href="#globalMinMax"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>globalMinMax(trace: <a href="../undefineds/Trace.html" target="_self">Trace</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="16"
+                                    class="link-to-prism">src/lib/services/features.service.ts:16</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>trace</td>
+                                            <td>
+                                                            <code><a href="../miscellaneous/typealiases.html#Trace" target="_self" >Trace</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>    <code>{ min: any; max: any; }</code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+            <section data-compodoc="block-properties">
+    
+    <h3 id="inputs">
+        Properties
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="_children"></a>
+                    <span class="name">
+                            <span class="modifier">Protected</span>
+                        <span ><b>_children</b></span>
+                        <a href="#_children"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>new Map&lt;InternalTrace, number[]&gt;()</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="14" class="link-to-prism">src/lib/services/features.service.ts:14</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="_parent"></a>
+                    <span class="name">
+                            <span class="modifier">Protected</span>
+                        <span ><b>_parent</b></span>
+                        <a href="#_parent"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>new Map&lt;InternalTrace, number&gt;()</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="13" class="link-to-prism">src/lib/services/features.service.ts:13</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="traceMap"></a>
+                    <span class="name">
+                            <span class="modifier">Protected</span>
+                        <span ><b>traceMap</b></span>
+                        <a href="#traceMap"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>new Map&lt;number, InternalTrace&gt;()</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="10" class="link-to-prism">src/lib/services/features.service.ts:10</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="tracesNoNesting$"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>tracesNoNesting$</b></span>
+                        <a href="#tracesNoNesting$"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>new BehaviorSubject&lt;InternalTraces&gt;([])</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="11" class="link-to-prism">src/lib/services/features.service.ts:11</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+</section>
+
+            <section data-compodoc="block-accessors">
+    <h3 id="accessors">
+        Accessors
+    </h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="traces"></a>
+                        <span class="name"><b>traces</b><a href="#traces"><span class="icon ion-ios-link"></span></a></span>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <span class="accessor"><b>get</b><code>traces()</code></span>
+                    </td>
+                </tr>
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="110" class="link-to-prism">src/lib/services/features.service.ts:110</a></div>
+                                </td>
+                            </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <span class="accessor"><b>set</b><code>traces(traces: <a href="../undefineds/Traces.html" target="_self">Traces</a>)</code></span>
+                    </td>
+                </tr>
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="44" class="link-to-prism">src/lib/services/features.service.ts:44</a></div>
+                                </td>
+                            </tr>
+                    <tr>
+                        <td class="col-md-4">
+
+                                <div class="io-description">
+                                        <b>Parameters :</b>
+                                        <table class="params">
+                                            <thead>
+                                                <tr>
+                                                    <td>Name</td>
+                                                        <td>Type</td>
+                                                    <td>Optional</td>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                    <tr>
+                                                            <td>traces</td>
+                                                    
+                                                            <td>
+                                                                            <code><a href="../miscellaneous/typealiases.html#Traces" target="_self" >Traces</a></code>
+                                                            </td>
+                                                    
+                                                        <td>
+                                                                No
+                                                        </td>
+                                                        
+                                                    </tr>
+                                            </tbody>
+                                        </table>
+                                </div>
+                                <div>
+                                </div>
+                                <div class="io-description">
+                                    <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                                </div>
+                        </td>
+                    </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="features"></a>
+                        <span class="name"><b>features</b><a href="#features"><span class="icon ion-ios-link"></span></a></span>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <span class="accessor"><b>get</b><code>features()</code></span>
+                    </td>
+                </tr>
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="118" class="link-to-prism">src/lib/services/features.service.ts:118</a></div>
+                                </td>
+                            </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-description"><p>Get all the features in the traces, setting the key as <code>trace-${trace.id}-feature-${index}</code></p>
+</div>
+
+                                <div>
+                                </div>
+                        </td>
+                    </tr>
+
+            </tbody>
+        </table>
+</section>
+    </div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Injectable } from &#x27;@angular/core&#x27;;
+import { BehaviorSubject } from &#x27;rxjs&#x27;;
+import { Feature } from &quot;../features/feature&quot;;
+import { InternalTrace, InternalTraces, Trace, Traces } from &quot;../trace&quot;;
+import { checkContentSettings } from &#x27;./initialize.service&#x27;;
+
+
+@Injectable({providedIn : &#x27;platform&#x27;})
+export class FeaturesService {
+  protected traceMap &#x3D; new Map&lt;number, InternalTrace&gt;();
+  public tracesNoNesting$ &#x3D; new BehaviorSubject&lt;InternalTraces&gt;([]);
+
+  protected _parent &#x3D; new Map&lt;InternalTrace, number&gt;();
+  protected _children &#x3D; new Map&lt;InternalTrace, number[]&gt;();
+
+  private globalMinMax(trace: Trace) {
+    let min &#x3D; Number.MAX_SAFE_INTEGER;
+    let max &#x3D; Number.MIN_SAFE_INTEGER;
+    for (const feature of trace.features) {
+      if (feature.type &#x3D;&#x3D;&#x3D; &#x27;continuous&#x27;) {
+        min &#x3D; Math.min(min, feature.min !&#x3D;&#x3D; undefined ? feature.min : Math.min(...feature.values));
+        max &#x3D; Math.max(max, feature.max !&#x3D;&#x3D; undefined ? feature.max : Math.max(...feature.values));
+      }
+      if (trace.options?.[&#x27;zero-line&#x27;]) {
+        min &#x3D; Math.min(min, 0);
+        max &#x3D; Math.max(max, 0);
+      }
+      if (trace.options?.[&#x27;grid&#x27;] &amp;&amp; trace.options[&#x27;grid-y-values&#x27;]) {
+        for (const value of trace.options[&#x27;grid-y-values&#x27;]) {
+          min &#x3D; Math.min(min, value);
+          max &#x3D; Math.max(max, value);
+        }
+      }
+    }
+    // If min and max equal 0 set min to -1 and max to 1
+    if (min &#x3D;&#x3D;&#x3D; 0 &amp;&amp; max &#x3D;&#x3D;&#x3D; 0) {
+      min &#x3D; -1;
+      max &#x3D; 1;
+    }
+
+    return {min, max};
+  }
+
+  public set traces(traces: Traces) {
+    // Initialize the index used as id for an InternalTrace
+    let idx &#x3D; 0;
+    // Recursively convert traces to internal traces, setting level as the nesting level in the hierarchy
+    const convert &#x3D; (traces: Traces, level: number): InternalTraces &#x3D;&gt; {
+      return traces.map((trace) &#x3D;&gt; {
+        // Remove nested from the trace, as it will be processed recursively
+        const {nested, ...tmpTrace} &#x3D; trace;
+        // Check and modify options if necessary
+        checkContentSettings(tmpTrace.options);
+        // Check and modify values if necessary
+        this.checkValues(tmpTrace);
+        const domain &#x3D; this.globalMinMax(tmpTrace);
+        // Initialize internal trace
+        const internalTrace: InternalTrace &#x3D; {
+          ...tmpTrace,
+          id : idx++,
+          expanded : (trace.expanded || false) &amp;&amp; (trace.nested?.length || 0) &gt; 0,
+          show : level &#x3D;&#x3D;&#x3D; 0,
+          domain : domain,
+          level,
+        };
+
+        this.traceMap.set(internalTrace.id, internalTrace);
+        // Recursively convert nested traces
+        internalTrace.nested &#x3D; convert(nested || [], level + 1);
+        // Sort the features by type, so to have the continuous features first, but keep the order of the other types
+        internalTrace.features &#x3D; internalTrace.features.sort((a, b) &#x3D;&gt; {
+          if (a.type &#x3D;&#x3D;&#x3D; &#x27;continuous&#x27; &amp;&amp; b.type !&#x3D;&#x3D; &#x27;continuous&#x27;) return 1;
+          if (a.type !&#x3D;&#x3D; &#x27;continuous&#x27; &amp;&amp; b.type &#x3D;&#x3D;&#x3D; &#x27;continuous&#x27;) return -1;
+          return 0;
+        });
+        // Set the parent / children relationship
+        internalTrace.nested.forEach((child) &#x3D;&gt; {
+          this._parent.set(child, internalTrace.id);
+          this._children.set(internalTrace, [...(this._children.get(internalTrace) || []), child.id]);
+        });
+        // Return internal trace
+        return internalTrace;
+      });
+    }
+    // Set internal traces
+    convert(traces, 0);
+
+    this.tracesNoNesting$.next(Array.from(this.traceMap.values()));
+
+    for (const trace of this.tracesNoNesting$.value) {
+      if (trace.expanded) {
+        trace.show &#x3D; true;
+
+        // Open the parents and make them visible
+        const parents &#x3D; this.getBranchParents(trace);
+        for (const parent of parents) {
+          parent.show &#x3D; true;
+          parent.expanded &#x3D; true;
+        }
+
+        // Open the children and make them visible
+        const children &#x3D; this.getChildren(trace);
+        for (const child of children) {
+          child.show &#x3D; true;
+        }
+      }
+    }
+  }
+
+  public get traces(): InternalTraces {
+    return this.tracesNoNesting$.value.filter((trace) &#x3D;&gt; trace.show);
+  }
+
+  /**
+   * Get all the features in the traces, setting the key as &#x60;trace-${trace.id}-feature-${index}&#x60;
+   * @returns (Map&lt;string, Feature&gt;) - The features map
+   */
+  public get features() {
+    // Get traces
+    const traces &#x3D; this.traces;
+    // Initialize features
+    const features &#x3D; new Map&lt;string, Feature&gt;();
+    // Loop through each trace
+    for (const trace of traces.values()) {
+      // Loop through each feature
+      for (const [i, feature] of Object.entries(trace.features)) {
+        // Store feature
+        features.set(&#x60;trace-${trace.id}-feature-${i}&#x60;, feature);
+      }
+    }
+    // Return features map
+    return features;
+  }
+
+  public getTrace(id: number): InternalTrace | undefined {
+    return this.traceMap.get(id);
+  }
+
+  /**
+   * Get the parent trace of the given trace, if any
+   * @param trace - The trace for which to get the parent
+   * @returns (InternalTrace | undefined) - The parent trace or undefined if the trace has no parent
+   */
+  public getParentTrace(trace: InternalTrace) {
+    const parentIdx &#x3D; this._parent.get(trace);
+    // Return parent trace
+    return parentIdx !&#x3D;&#x3D; undefined ? this.getTrace(parentIdx) : undefined;
+  }
+
+  /**
+   * Return the ids of all the traces that are children of the given trace
+   * @param trace - The trace for which to get the children
+   * @returns (Traces) - The ids of the children traces
+   */
+  public getBranch(trace: InternalTrace): InternalTraces {
+    // Initialize branch
+    const branch: InternalTraces &#x3D; [];
+    // Initialize stack
+    const stack &#x3D; [trace];
+    // Loop through stack
+    while (stack.length &gt; 0) {
+      // Get current trace
+      const current &#x3D; stack.pop()!;
+      // Push current trace to branch
+      branch.push(current);
+      // Push children to stack
+      stack.push(...this.getChildren(current));
+    }
+    // Return branch
+    return branch;
+  }
+
+  public getBranchParents(trace: InternalTrace): InternalTraces {
+    // Initialize branch
+    const branch: InternalTraces &#x3D; [];
+    // Initialize stack
+    const stack &#x3D; [trace];
+    // Loop through stack
+    while (stack.length &gt; 0) {
+      // Get current trace
+      const current &#x3D; stack.pop()!;
+      // Push current trace to branch
+      branch.push(current);
+      // Push parent to stack
+      const parent &#x3D; this.getParentTrace(current);
+      if (parent) {
+        stack.push(parent);
+      }
+    }
+    branch.shift();
+    return branch;
+  }
+
+  /**
+   * Get the children traces of the given trace
+   * @param trace - The trace for which to get the children
+   * @returns (InternalTraces) - The children traces, can be empty if the trace has no children
+   */
+  public getChildren(trace: InternalTrace): InternalTraces {
+    // Get indices of child traces
+    const indices &#x3D; this._children.get(trace) || [];
+    // Return child traces
+    return indices.map((index) &#x3D;&gt; this.getTrace(index)!);
+  }
+
+  private checkValues(tmpTrace: Trace) {
+    for (const feature of tmpTrace.features) {
+      if (feature.type &#x3D;&#x3D;&#x3D; &#x27;locus&#x27;) {
+        if (feature.start &lt; 0) {
+          console.warn(&quot;Locus start cannot be negative, setting to 0&quot;);
+          feature.start &#x3D; 0;
+        }
+        if (feature.end &lt; 0) {
+          console.warn(&quot;Locus end cannot be negative, setting to 0&quot;);
+          feature.end &#x3D; 0;
+        }
+        if (feature.height) {
+          if (feature.height &lt; 0) {
+            console.warn(&quot;Locus height cannot be negative, setting to 1&quot;);
+            feature.height &#x3D; 1;
+          }
+          if (tmpTrace.options?.[&quot;content-size&quot;] &amp;&amp; feature.height &gt; tmpTrace.options[&quot;content-size&quot;]) {
+            console.warn(&quot;Locus height cannot be bigger than content size, setting to content size&quot;);
+            feature.height &#x3D; tmpTrace.options[&quot;content-size&quot;];
+          }
+        }
+      }
+    }
+  }
+}
+</code></pre>
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'injectable';
+            var COMPODOC_CURRENT_PAGE_URL = 'FeaturesService.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+       <script nomodule src="../js/menu-wc_es5.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>

@@ -1,16 +1,19 @@
 {
   "name": "ngx-structure-viewer",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "start:demo": "ng serve demo-showcase",
-    "build:demo": "",
+    "build:demo": "./bin/build-demo.js",
     "build:libs": "ng build -c=production ngx-structure-viewer && ng build -c=production ngx-sequence-viewer && ng build -c=production ngx-features-viewer",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint"
+  },
+  "bin": {
+    "bd": "bin/build-demo.js"
   },
   "private": true,
   "dependencies": {

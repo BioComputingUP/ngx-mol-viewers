@@ -15,6 +15,13 @@ This, removes the burden of handling the Angular lifecycle within every Angular 
 
 Each component has its own NPM repository and can be installed without the others, as they just share the same data structures and requirements.
 
+## Version compatibility
+
+| Angular Version | @biocomputingup/ngx-*-viewer |
+| --------------- | ---------------------------- |
+| ^18.0.0         | ^1.0.0                       |
+
+
 ## Components
 
 ### ngx-structure-viewer

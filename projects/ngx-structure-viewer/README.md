@@ -29,6 +29,13 @@ To install the latest version of the features viewer into an Angular project, ru
 npm install ngx-structure-viewer
 ```
 
+## Version compatibility
+
+| Angular Version | @biocomputingup/ngx-structure-viewer |
+| --------------- | ------------------------------------ |
+| ^18.0.0         | ^1.0.0                               |
+
+
 ## Usage
 
 First, import the component and other directives in the TypeScript file:
