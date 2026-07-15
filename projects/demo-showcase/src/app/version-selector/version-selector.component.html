@@ -12,7 +12,7 @@
         </li>
         <div class="dropdown-divider"></div>
         <li *ngFor="let version of versionList; index as i; first as isFirst">
-          <a class="dropdown-item" [class.fw-bold]="version == latest" type="button" [href]="'/'+version+ '/'">
+          <a class="dropdown-item" [class.fw-bold]="version == latest" type="button" [href]="location.prepareExternalUrl(version)">
                  {{ version }}  <i class="bi bi-box-arrow-up-right"></i>
             </a>
         </li>

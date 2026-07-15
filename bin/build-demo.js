@@ -12,7 +12,7 @@ const { exit } = require("process");
 function buildCommand(version) {
   const wrapped = !version || version.length == 0 ? "" : `/${version}/`;
   const suffixed = !version || version.length == 0 ? "" : `${version}/`;
-  return `ng build -c=production --output-path docs${wrapped} --base-href https://biocomputingup.github.io/ngx-mol-viewers/${suffixed} demo-showcase`;
+  return `ng build -c=production --output-path docs${wrapped} --base-href /ngx-mol-viewers/${suffixed} demo-showcase`;
 }
 /**
  *
@@ -29,7 +29,7 @@ function runCommand(command) {
   }
 }
 
-async function main() {
+function main() {
   const latest = versions.latest;
   const buildDefaultCommand = buildCommand();
   runCommand(buildDefaultCommand);

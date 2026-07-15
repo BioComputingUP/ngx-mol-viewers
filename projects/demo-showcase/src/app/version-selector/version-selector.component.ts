@@ -23,7 +23,7 @@ type VersionsJson = {
 })
 export class VersionSelector implements OnInit {
   private http = inject(HttpClient);
-  private location = inject(Location);
+  location = inject(Location);
   versions$!: Observable<string[]>;
   latestVersion$!: Observable<string>;
   async ngOnInit() {
@@ -32,10 +32,5 @@ export class VersionSelector implements OnInit {
       .pipe(shareReplay());
     this.versions$ = versionsJson$.pipe(map(({ versions }) => versions));
     this.latestVersion$ = versionsJson$.pipe(map(({ latest }) => latest));
-    console.log({ baseHref: this.location.prepareExternalUrl('versions.json') });
-  }
-
-  selectVersion(version: string) {
-    console.log(version);
   }
 }
