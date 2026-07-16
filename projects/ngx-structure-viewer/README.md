@@ -34,7 +34,7 @@ npm install ngx-structure-viewer
 | Angular Version | @biocomputingup/ngx-structure-viewer |
 | --------------- | ------------------------------------ |
 | ^18.0.0         | ^1.0.0                               |
-
+| ^19.0.0         | ^2.0.0                               |
 
 ## Usage
 

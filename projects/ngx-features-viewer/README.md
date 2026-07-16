@@ -27,7 +27,7 @@ npm install ngx-features-viewer
 | Angular Version | @biocomputingup/ngx-features-viewer |
 | --------------- | ----------------------------------- |
 | ^18.0.0         | ^1.0.0                              |
-
+| ^19.0.0         | ^2.0.0                              |
 ## Usage
 
 First, import the component and other directives in the TypeScript file:
