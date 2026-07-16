@@ -1,36 +1,42 @@
-import {
-  APP_BASE_HREF,
-  AsyncPipe,
-  JsonPipe,
-  Location,
-  NgForOf,
-  NgIf,
-  PlatformLocation,
-} from '@angular/common';
-import { HttpClient, provideHttpClient } from '@angular/common/http';
+import { CommonModule, Location } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { Component, inject, type OnInit } from '@angular/core';
-import { map, shareReplay, tap, type Observable } from 'rxjs';
+import { from, map, shareReplay, switchMap, type Observable } from 'rxjs';
 
 type VersionsJson = {
   latest: string;
-  versions: string[];
+  versions: LibVersionInfo[];
+  current: string;
+};
+
+type LibVersionInfo = {
+  name: string;
+  url: string;
 };
 @Component({
   standalone: true,
   selector: 'version-selector',
-  imports: [AsyncPipe, JsonPipe, NgIf, NgForOf],
+  imports: [CommonModule],
   templateUrl: './version-selector.component.html',
 })
 export class VersionSelector implements OnInit {
-  private http = inject(HttpClient);
-  location = inject(Location);
-  versions$!: Observable<string[]>;
-  latestVersion$!: Observable<string>;
+  private location: Location = inject(Location);
+  versionList!: LibVersionInfo[];
+  latest!: LibVersionInfo;
   async ngOnInit() {
-    const versionsJson$: Observable<VersionsJson> = this.http
-      .get<VersionsJson>('versions.json')
-      .pipe(shareReplay());
-    this.versions$ = versionsJson$.pipe(map(({ versions }) => versions));
-    this.latestVersion$ = versionsJson$.pipe(map(({ latest }) => latest));
+    const versionsResponse = await fetch(
+      this.location.prepareExternalUrl('/versions.json'),
+    );
+    const versionsData: VersionsJson = await versionsResponse.json();
+    this.versionList = versionsData.versions;
+    const foundLatest = this.versionList.find(
+      (x) => x.name == versionsData.latest,
+    );
+    if (!foundLatest) {
+      throw new Error(
+        `Cannot find latest version ${versionsData.latest} in the versions array \n ${JSON.stringify(this.versionList, null, 2)}`,
+      );
+    }
+    this.latest = foundLatest;
   }
 }

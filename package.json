@@ -1,5 +1,5 @@
 {
-  "name": "ngx-structure-viewer",
+  "name": "ngx-mol-viewers",
   "version": "1.0.0",
   "scripts": {
     "ng": "ng",
@@ -7,6 +7,8 @@
     "start:demo": "ng serve demo-showcase",
     "build:demo": "./bin/build-demo.js",
     "build:libs": "ng build -c=production ngx-structure-viewer && ng build -c=production ngx-sequence-viewer && ng build -c=production ngx-features-viewer",
+    "serve:docs": "live-server --mount='/ngx-mol-viewers/:./docs' --no-browser ./docs",
+    "changesets": "npx @changesets/cli",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
@@ -15,6 +17,9 @@
   "bin": {
     "bd": "bin/build-demo.js"
   },
+  "workspaces": [
+    "projects/*"
+  ],
   "private": true,
   "dependencies": {
     "@angular/animations": "^18.2.14",
@@ -44,6 +49,7 @@
     "@angular-eslint/template-parser": "18.4.3",
     "@angular/cli": "^18.2.21",
     "@angular/compiler-cli": "^18.2.14",
+    "@changesets/cli": "^2.31.1",
     "@types/jasmine": "~5.1.4",
     "@types/node": "^20.14.13",
     "@types/react-dom": "^18.3.0",
@@ -63,5 +69,8 @@
     "typedoc": "^0.25.13",
     "typescript": "~5.4.5",
     "webpack-dev-server": "^5.0.4"
+  },
+  "overrides": {
+    "human-id": "1.0.2"
   }
 }
