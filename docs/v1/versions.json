@@ -2,6 +2,10 @@
   "latest": "v1",
   "versions": [
     {
+      "name": "v0",
+      "url": "/ngx-mol-viewers/v0/"
+    },
+    {
       "name":"v1",
       "url":"/ngx-mol-viewers/v1/"
     }
