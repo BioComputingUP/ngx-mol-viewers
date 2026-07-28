@@ -42,6 +42,9 @@ export class FeaturesService {
   }
 
   public set traces(traces: Traces) {
+    this.traceMap.clear();
+    this._parent.clear();
+    this._children.clear();
     // Initialize the index used as id for an InternalTrace
     let idx = 0;
     // Recursively convert traces to internal traces, setting level as the nesting level in the hierarchy

@@ -20,7 +20,7 @@
   </div>
   <!-- Show example -->
   <div class="mb-3"style="display: block; height: auto; overflow: hidden; width: 100%; margin-top: 2rem">
-      <ngx-features-viewer [sequence]="sequence" [traces]="traces" [settings]="(settings$ | async)!" (selectedFeature)="onFeatureSelected($event)">
+      <ngx-features-viewer [sequence]="sequence" [traces]="traces$ | async" [settings]="(settings$ | async)!" (selectedFeature)="onFeatureSelected($event)">
         <!-- Left label -->
         <ng-template let-trace="trace" ngx-features-viewer-label>
           <div class="d-flex h-100 w-100 justify-content-start pe-0 ps-1 align-items-center font-monospace">
