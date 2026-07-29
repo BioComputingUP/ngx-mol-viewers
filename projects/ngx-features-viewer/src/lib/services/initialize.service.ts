@@ -1,13 +1,25 @@
 import { ElementRef, Injectable, OnDestroy } from '@angular/core';
 import * as d3 from 'd3';
-import { BehaviorSubject, combineLatest, map, Observable, ReplaySubject, shareReplay, Subscription, tap } from 'rxjs';
+import {
+  BehaviorSubject,
+  combineLatest,
+  map,
+  Observable,
+  ReplaySubject,
+  shareReplay,
+  Subscription,
+  tap,
+} from 'rxjs';
 import { v4 as UUID } from 'uuid';
-import { Feature } from "../features/feature";
-import { Range } from "../features/locus";
-import { NgxFeaturesViewerLabelDirective, NgxFeaturesViewerTooltipDirective } from "../ngx-features-viewer.component";
+import { Feature } from '../features/feature';
+import { Range } from '../features/locus';
+import {
+  NgxFeaturesViewerLabelDirective,
+  NgxFeaturesViewerTooltipDirective,
+} from '../ngx-features-viewer.component';
 import { Sequence } from '../sequence';
 import { ContentSettings, Settings } from '../settings';
-import { Trace } from "../trace";
+import { Trace } from '../trace';
 
 export interface SelectionContext {
   // Trace is available in both trace and feature context
@@ -26,11 +38,16 @@ type Circle = d3.Selection<SVGCircleElement, undefined, null, undefined>;
 
 type Rect = d3.Selection<SVGRectElement, undefined, null, undefined>;
 
-type RectShadow = d3.Selection<SVGRectElement, SelectionContext, null, undefined>;
+type RectShadow = d3.Selection<
+  SVGRectElement,
+  SelectionContext,
+  null,
+  undefined
+>;
 
 export interface Scale {
-  x: d3.ScaleLinear<number, number>,
-  y: d3.ScaleOrdinal<string, number>
+  x: d3.ScaleLinear<number, number>;
+  y: d3.ScaleOrdinal<string, number>;
 }
 
 export interface Axes {
@@ -38,9 +55,8 @@ export interface Axes {
   x: Group;
 }
 
-@Injectable({providedIn : 'platform'})
+@Injectable({ providedIn: 'platform' })
 export class InitializeService implements OnDestroy {
-
   // Define emitter for root element
   public readonly initialize$ = new ReplaySubject<ElementRef>(1);
 
@@ -51,7 +67,11 @@ export class InitializeService implements OnDestroy {
   // NOTE This avoids retrieving sequence from ReplaySubject
   public sequence!: Sequence;
 
-  public focusMousedown!: ((this: SVGGElement, event: unknown, d: undefined) => void);
+  public focusMousedown!: (
+    this: SVGGElement,
+    event: unknown,
+    d: undefined,
+  ) => void;
 
   // Get referenced HTML div
   public get div() {
@@ -84,18 +104,18 @@ export class InitializeService implements OnDestroy {
   // Define default settings
   public settings$ = new BehaviorSubject<Settings>({
     // Define margins
-    'margin-top' : 0,
-    'margin-right' : 0,
-    'margin-bottom' : 30,
-    'margin-left' : 0,
+    'margin-top': 0,
+    'margin-right': 0,
+    'margin-bottom': 30,
+    'margin-left': 0,
     // Define colors
-    'background-color' : 'transparent',
-    'plot-background-color' : 'transparent',
-    'grid-line-color' : 'dimgray',
-    'text-color' : 'black',
+    'background-color': 'transparent',
+    'plot-background-color': 'transparent',
+    'grid-line-color': 'dimgray',
+    'text-color': 'black',
     // Define content size (height), line height
-    'content-size' : 0,
-    'line-height' : 0,
+    'content-size': 0,
+    'line-height': 0,
   });
 
   private settingsSubscription: Subscription;
@@ -103,7 +123,7 @@ export class InitializeService implements OnDestroy {
   // Define settings
   public set settings(_settings: Partial<Settings> | null) {
     // Get overwritten settings
-    const settings = {...this.settings, ..._settings};
+    const settings = { ...this.settings, ..._settings };
     // Check settings
     checkContentSettings(settings);
     // Override settings
@@ -116,9 +136,14 @@ export class InitializeService implements OnDestroy {
 
   public get margin() {
     // Unpack settings
-    const {'margin-top' : top, 'margin-right' : right, 'margin-bottom' : bottom, 'margin-left' : left} = this.settings;
+    const {
+      'margin-top': top,
+      'margin-right': right,
+      'margin-bottom': bottom,
+      'margin-left': left,
+    } = this.settings;
     // Return margins
-    return {top, right, bottom, left};
+    return { top, right, bottom, left };
   }
 
   public tooltip!: NgxFeaturesViewerTooltipDirective;
@@ -158,11 +183,16 @@ export class InitializeService implements OnDestroy {
   public hoverCircleMarker!: Circle;
 
   // Declare initialization pipeline
-  public readonly initialized$: Observable<d3.Selection<SVGSVGElement, undefined, null, undefined>>;
+  public readonly initialized$: Observable<
+    d3.Selection<SVGSVGElement, undefined, null, undefined>
+  >;
 
-  public getCoordinates(mouseEvent: MouseEvent, traceId: unknown): [number, number] {
+  public getCoordinates(
+    mouseEvent: MouseEvent,
+    traceId: unknown,
+  ): [number, number] {
     // Define coordinates
-    const x = Math.floor(this.scale.x.invert(mouseEvent.offsetX) + .5);
+    const x = Math.floor(this.scale.x.invert(mouseEvent.offsetX) + 0.5);
     const y = Math.round(this.scale.y('' + traceId));
     // Return coordinates
     return [x, y];
@@ -172,7 +202,8 @@ export class InitializeService implements OnDestroy {
     // Define initialization pipeline
     this.initialized$ = this.initialize$.pipe(
       // Store root element reference
-      tap((root) => this.root = root),
+      tap(() => console.log('initialized !')),
+      tap((root) => (this.root = root)),
       // Generate SVG
       map(() => {
         // Define SVG element
@@ -187,7 +218,7 @@ export class InitializeService implements OnDestroy {
         return svg;
       }),
       // Store SVG element
-      tap((svg) => this.svg = svg),
+      tap((svg) => (this.svg = svg)),
       // Generate SVG container (draw)
       tap((svg) => {
         // Define unique identifier
@@ -197,35 +228,37 @@ export class InitializeService implements OnDestroy {
         const defs = svg.append('defs');
 
         // Define clip path: everything out of this area won't be drawn
-        this.clip = defs.append('clipPath')
+        this.clip = defs
+          .append('clipPath')
           // Set clip identifier, required in <defs>
           .attr('id', uuidClip)
           // Add inner rectangle
-          .append('rect')
+          .append('rect');
 
         // Define the mask element to create a hole where the plot will be
         defs
-          .append("mask")
-          .attr("id", uuidMask)
-          .append("rect")
-          .attr("width", "100%")
-          .attr("height", "100%")
-          .attr("fill", "white");
+          .append('mask')
+          .attr('id', uuidMask)
+          .append('rect')
+          .attr('width', '100%')
+          .attr('height', '100%')
+          .attr('fill', 'white');
 
         // Create the rectangle which position and dimension will be set in the resize, to adapt to the plot dimensions
-        this.mask = svg.select("mask")
-          .append("rect");
+        this.mask = svg.select('mask').append('rect');
 
         // Create the outer rectangle and apply the mask, applying the background color set by the user
-        svg.append("rect")
-          .attr("id", 'background')
+        svg
+          .append('rect')
+          .attr('id', 'background')
           .attr('class', 'background')
-          .attr("width", '100%')
-          .attr("height", '100%')
-          .attr("mask", `url(#${uuidMask})`);
+          .attr('width', '100%')
+          .attr('height', '100%')
+          .attr('mask', `url(#${uuidMask})`);
 
         // Add a background rectangle to the SVG to show the background color for only the plot
-        svg.append('rect')
+        svg
+          .append('rect')
           .attr('id', 'plot-background')
           .attr('width', '100%')
           .attr('height', '100%')
@@ -233,11 +266,11 @@ export class InitializeService implements OnDestroy {
 
         // NOTE Add middle layer, in order to allow both zoom and mouse events to be captured
         // https://stackoverflow.com/questions/58125180/d3-zoom-and-mouseover-tooltip
-        this.focus = svg.append('g')
-          .attr('class', 'focus');
+        this.focus = svg.append('g').attr('class', 'focus');
 
         // Define features group
-        this.draw = this.focus.append('g')
+        this.draw = this.focus
+          .append('g')
           // Bind features group to clip path
           .attr('class', 'features')
           .attr('clip-path', `url(${'#' + uuidClip})`);
@@ -245,15 +278,17 @@ export class InitializeService implements OnDestroy {
         this.zoom = d3.zoom<SVGGElement, undefined>();
         // Add an invisible rectangle on top of the chart.
         // This, can recover pointer events: it is necessary to understand when the user zoom.
-        this.events = this.focus.append('rect')
+        this.events = this.focus
+          .append('rect')
           // Set style to appear invisible, but catch events
           .attr('class', 'zoom')
           .style('fill', 'none')
           .style('pointer-events', 'all')
           .lower();
         // Set zoom behavior
-        this.focus.call(this.zoom)
-          .on('dblclick.zoom', () => this.zoom.scaleTo(this.focus, 1))
+        this.focus
+          .call(this.zoom)
+          .on('dblclick.zoom', () => this.zoom.scaleTo(this.focus, 1));
 
         // Save the mousedown.zoom event listener
         this.focusMousedown = this.focus.on('mousedown.zoom')!;
@@ -270,9 +305,16 @@ export class InitializeService implements OnDestroy {
           .attr('fill', 'black')
           .attr('fill-opacity', 0.15)
           .attr('height', '100%')
-          .data([{trace : undefined, feature : undefined, range : undefined} as SelectionContext])
+          .data([
+            {
+              trace: undefined,
+              feature: undefined,
+              range: undefined,
+            } as SelectionContext,
+          ]);
 
-        this.hoverCircleMarker = this.svg.append('circle')
+        this.hoverCircleMarker = this.svg
+          .append('circle')
           .attr('class', 'hover-circle-marker')
           .attr('r', 4)
           .attr('fill', 'none')
@@ -287,23 +329,32 @@ export class InitializeService implements OnDestroy {
         //   `translate(0, ${this.height - this.margin.bottom})`
         // );
         // Define vertical axis
-        const y = svg.append('g').attr('class', 'y axis')
+        const y = svg.append('g').attr('class', 'y axis');
         // .attr('transform', `translate(${this.margin.left}, 0)`);
         // Initialize axis
-        this.axes = {x, y};
+        this.axes = { x, y };
       }),
       // Initialize horizontal, vertical scale
-      tap(() => this.scale = {x : d3.scaleLinear(), y : d3.scaleOrdinal()}),
+      tap(() => (this.scale = { x: d3.scaleLinear(), y: d3.scaleOrdinal() })),
       // Avoid re-drawing the graph each time another observable subscribes
       shareReplay(1),
     );
 
-    this.settingsSubscription = combineLatest([this.initialized$, this.settings$]).pipe(
-      tap(([, settings]) => {
-        this.svg.select('#background').attr('fill', settings['background-color']);
-        this.svg.select('#plot-background').attr('fill', settings['plot-background-color']);
-      }),
-    ).subscribe();
+    this.settingsSubscription = combineLatest([
+      this.initialized$,
+      this.settings$,
+    ])
+      .pipe(
+        tap(([, settings]) => {
+          this.svg
+            .select('#background')
+            .attr('fill', settings['background-color']);
+          this.svg
+            .select('#plot-background')
+            .attr('fill', settings['plot-background-color']);
+        }),
+      )
+      .subscribe();
   }
 
   ngOnDestroy(): void {
@@ -311,28 +362,42 @@ export class InitializeService implements OnDestroy {
   }
 }
 
-export function checkContentSettings(contentSettings: Partial<ContentSettings> | undefined) {
+export function checkContentSettings(
+  contentSettings: Partial<ContentSettings> | undefined,
+) {
   if (contentSettings) {
-    if (contentSettings["line-height"] && contentSettings["line-height"] < 0) {
-      console.warn("Line height cannot be negative, setting to 32");
-      contentSettings["line-height"] = 32;
+    if (contentSettings['line-height'] && contentSettings['line-height'] < 0) {
+      console.warn('Line height cannot be negative, setting to 32');
+      contentSettings['line-height'] = 32;
     }
-    if (contentSettings["content-size"] && contentSettings["content-size"] < 0) {
-      console.warn("Content size cannot be negative, setting to 16");
-      contentSettings["content-size"] = 16;
+    if (
+      contentSettings['content-size'] &&
+      contentSettings['content-size'] < 0
+    ) {
+      console.warn('Content size cannot be negative, setting to 16');
+      contentSettings['content-size'] = 16;
     }
     // If content size is bigger than line height, set it to line height
-    if (contentSettings["content-size"] && contentSettings["line-height"] && contentSettings["content-size"] > contentSettings["line-height"]) {
-      console.warn("Content size cannot be bigger than line height, setting to line height");
-      contentSettings["content-size"] = contentSettings["line-height"];
+    if (
+      contentSettings['content-size'] &&
+      contentSettings['line-height'] &&
+      contentSettings['content-size'] > contentSettings['line-height']
+    ) {
+      console.warn(
+        'Content size cannot be bigger than line height, setting to line height',
+      );
+      contentSettings['content-size'] = contentSettings['line-height'];
     }
-    if (contentSettings["margin-top"] && contentSettings["margin-top"] < 0) {
-      console.warn("Margin top cannot be negative, setting to 0");
-      contentSettings["margin-top"] = 0;
+    if (contentSettings['margin-top'] && contentSettings['margin-top'] < 0) {
+      console.warn('Margin top cannot be negative, setting to 0');
+      contentSettings['margin-top'] = 0;
     }
-    if (contentSettings["margin-bottom"] && contentSettings["margin-bottom"] < 0) {
-      console.warn("Margin bottom cannot be negative, setting to 0");
-      contentSettings["margin-bottom"] = 0;
+    if (
+      contentSettings['margin-bottom'] &&
+      contentSettings['margin-bottom'] < 0
+    ) {
+      console.warn('Margin bottom cannot be negative, setting to 0');
+      contentSettings['margin-bottom'] = 0;
     }
   }
 }
