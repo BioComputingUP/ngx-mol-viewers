@@ -262,7 +262,6 @@ export class NgxFeaturesViewerComponent
 
     // Track when traces change (from input changes or expand/collapse clicks)
     this._tracesSubscription = this.drawService.traces$.subscribe(() => {
-      console.log('Traces set! ');
       this.labelsNeedRepositioning = true;
     });
   }
