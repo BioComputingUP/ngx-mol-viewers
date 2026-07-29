@@ -1,43 +1,57 @@
 {
-  "name": "ngx-structure-viewer",
-  "version": "0.0.0",
+  "name": "ngx-mol-viewers",
+  "version": "2.0.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "start:demo": "ng serve demo-showcase",
+    "build:demo": "./bin/build-demo.js",
+    "start:demo:prod": "npx live-server --mount='/ngx-mol-viewers/:./docs' --open=/ngx-mol-viewers/",
+    "build:libs": "ng build -c=production ngx-structure-viewer && ng build -c=production ngx-sequence-viewer && ng build -c=production ngx-features-viewer",
+    "serve:docs": "live-server --mount='/ngx-mol-viewers/:./docs' --no-browser ./docs",
+    "changesets": "npx @changesets/cli",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint"
   },
+  "bin": {
+    "bd": "bin/build-demo.js"
+  },
+  "workspaces": [
+    "projects/*"
+  ],
   "private": true,
   "dependencies": {
-    "@angular/animations": "^17.3.11",
-    "@angular/common": "^17.3.11",
-    "@angular/compiler": "^17.3.11",
-    "@angular/core": "^17.3.11",
-    "@angular/forms": "^17.3.11",
-    "@angular/platform-browser": "^17.3.11",
-    "@angular/platform-browser-dynamic": "^17.3.11",
-    "@angular/router": "^17.3.11",
+    "@angular/animations": "^19.2.25",
+    "@angular/common": "^19.2.25",
+    "@angular/compiler": "^19.2.25",
+    "@angular/core": "^19.2.25",
+    "@angular/forms": "^19.2.25",
+    "@angular/platform-browser": "^19.2.25",
+    "@angular/platform-browser-dynamic": "^19.2.25",
+    "@angular/router": "^19.2.25",
     "@types/d3": "^7.4.3",
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
     "d3": "^7.9.0",
+    "live-server": "^1.2.2",
     "molstar": "^4.3.0",
     "rxjs": "~7.8.1",
     "tslib": "^2.6.3",
     "uuid": "^10.0.0",
-    "zone.js": "~0.14.7"
+    "zone.js": "~0.15.1"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^17.3.8",
-    "@angular-eslint/builder": "17.5.2",
-    "@angular-eslint/eslint-plugin": "17.5.2",
-    "@angular-eslint/eslint-plugin-template": "17.5.2",
-    "@angular-eslint/schematics": "17.5.2",
-    "@angular-eslint/template-parser": "17.5.2",
-    "@angular/cli": "^17.3.8",
-    "@angular/compiler-cli": "^17.3.11",
+    "@angular-devkit/build-angular": "^19.2.27",
+    "@angular-eslint/builder": "18.4.3",
+    "@angular-eslint/eslint-plugin": "18.4.3",
+    "@angular-eslint/eslint-plugin-template": "18.4.3",
+    "@angular-eslint/schematics": "18.4.3",
+    "@angular-eslint/template-parser": "18.4.3",
+    "@angular/cli": "^19.2.27",
+    "@angular/compiler-cli": "^19.2.25",
+    "@changesets/cli": "^2.31.1",
     "@types/jasmine": "~5.1.4",
     "@types/node": "^20.14.13",
     "@types/react-dom": "^18.3.0",
@@ -52,10 +66,13 @@
     "karma-coverage": "~2.2.1",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
-    "ng-packagr": "^17.3.0",
+    "ng-packagr": "^19.2.2",
     "socket.io-adapter": "^2.5.5",
-    "typedoc": "^0.25.13",
-    "typescript": "~5.4.5",
+    "typedoc": "^0.27.9",
+    "typescript": "~5.8.3",
     "webpack-dev-server": "^5.0.4"
+  },
+  "overrides": {
+    "human-id": "1.0.2"
   }
 }

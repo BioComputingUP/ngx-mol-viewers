@@ -4,9 +4,10 @@ import { Settings } from '@ngx-sequence-viewer';
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-single-sequence-viewer',
-  templateUrl: './single-sequence-viewer.component.html',
-  styleUrl: './single-sequence-viewer.component.scss'
+    selector: 'app-single-sequence-viewer',
+    templateUrl: './single-sequence-viewer.component.html',
+    styleUrl: './single-sequence-viewer.component.scss',
+    standalone: false
 })
 export class SingleSequenceViewerComponent {
 

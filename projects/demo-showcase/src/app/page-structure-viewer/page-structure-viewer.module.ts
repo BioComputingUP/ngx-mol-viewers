@@ -3,8 +3,11 @@ import { SectionChainsComponent } from './sections/section-chains.component';
 import { SectionSourcesComponent } from './sections/section-sources.component';
 // import { SectionChainsComponent } from './sections/section-chains.component';
 import { PageStructureViewerComponent } from './page-structure-viewer.component';
-import { NgxStructureViewerComponent } from "@ngx-structure-viewer";
-import { HttpClientModule } from '@angular/common/http';
+import { NgxStructureViewerComponent } from '@ngx-structure-viewer';
+import {
+  provideHttpClient,
+  withInterceptorsFromDi,
+} from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
@@ -20,10 +23,10 @@ import { NgModule } from '@angular/core';
   imports: [
     NgxStructureViewerComponent,
     RouterModule.forChild([
-      { path: '', component: PageStructureViewerComponent }
+      { path: '', component: PageStructureViewerComponent },
     ]),
-    HttpClientModule,
     CommonModule,
-  ]
+  ],
+  providers: [provideHttpClient(withInterceptorsFromDi())],
 })
-export class PageStructureViewerModule { }
+export class PageStructureViewerModule {}

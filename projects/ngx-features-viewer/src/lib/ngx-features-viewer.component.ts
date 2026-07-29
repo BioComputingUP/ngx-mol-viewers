@@ -58,26 +58,25 @@ export class NgxFeaturesViewerTooltipDirective {
 }
 
 @Component({
-  // eslint-disable-next-line @angular-eslint/component-selector
-  selector: 'ngx-features-viewer',
-  standalone: true,
-  imports: [
-    NgxFeaturesViewerTooltipDirective,
-    NgxFeaturesViewerLabelDirective,
-    CommonModule,
-  ],
-  providers: [
-    InitializeService,
-    FeaturesService,
-    TooltipService,
-    ResizeService,
-    DrawService,
-    ZoomService,
-  ],
-  templateUrl: './ngx-features-viewer.component.html',
-  styleUrl: './ngx-features-viewer.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  encapsulation: ViewEncapsulation.Emulated,
+    // eslint-disable-next-line @angular-eslint/component-selector
+    selector: 'ngx-features-viewer',
+    imports: [
+        NgxFeaturesViewerTooltipDirective,
+        NgxFeaturesViewerLabelDirective,
+        CommonModule,
+    ],
+    providers: [
+        InitializeService,
+        FeaturesService,
+        TooltipService,
+        ResizeService,
+        DrawService,
+        ZoomService,
+    ],
+    templateUrl: './ngx-features-viewer.component.html',
+    styleUrl: './ngx-features-viewer.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    encapsulation: ViewEncapsulation.Emulated
 })
 export class NgxFeaturesViewerComponent
   implements

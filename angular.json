@@ -15,23 +15,22 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser-esbuild",
+          "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "docs",
+            "outputPath": {
+              "base": "docs"
+            },
+            "deleteOutputPath": false,
             "index": "projects/demo-showcase/src/index.html",
-            "main": "projects/demo-showcase/src/main.ts",
-            "polyfills": [
-              "zone.js"
-            ],
+            "polyfills": ["zone.js"],
             "tsConfig": "projects/demo-showcase/tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
               "projects/demo-showcase/src/favicon.ico",
-              "projects/demo-showcase/src/assets"
+              "projects/demo-showcase/src/assets",
+              "projects/demo-showcase/src/versions.json"
             ],
-            "styles": [
-              "projects/demo-showcase/src/styles.scss"
-            ],
+            "styles": ["projects/demo-showcase/src/styles.scss"],
             "scripts": [
               "node_modules/@popperjs/core/dist/umd/popper.min.js",
               "node_modules/bootstrap/dist/js/bootstrap.min.js"
@@ -39,7 +38,8 @@
             "allowedCommonJsDependencies": [
               "inline-style-parser",
               "extend"
-            ]
+            ],
+            "browser": "projects/demo-showcase/src/main.ts"
           },
           "configurations": {
             "production": {
@@ -90,19 +90,14 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "polyfills": [
-              "zone.js",
-              "zone.js/testing"
-            ],
+            "polyfills": ["zone.js", "zone.js/testing"],
             "tsConfig": "projects/demo-showcase/tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
             "assets": [
               "projects/demo-showcase/src/favicon.ico",
               "projects/demo-showcase/src/assets"
             ],
-            "styles": [
-              "projects/demo-showcase/src/styles.scss"
-            ],
+            "styles": ["projects/demo-showcase/src/styles.scss"],
             "scripts": []
           }
         },
@@ -142,13 +137,8 @@
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
             "tsConfig": "projects/ngx-structure-viewer/tsconfig.spec.json",
-            "polyfills": [
-              "zone.js",
-              "zone.js/testing"
-            ],
-            "assets": [
-              "projects/ngx-structure-viewer/src/assets"
-            ]
+            "polyfills": ["zone.js", "zone.js/testing"],
+            "assets": ["projects/ngx-structure-viewer/src/assets"]
           }
         },
         "lint": {
@@ -187,10 +177,7 @@
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
             "tsConfig": "projects/ngx-features-viewer/tsconfig.spec.json",
-            "polyfills": [
-              "zone.js",
-              "zone.js/testing"
-            ]
+            "polyfills": ["zone.js", "zone.js/testing"]
           }
         },
         "lint": {
@@ -229,10 +216,7 @@
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
             "tsConfig": "projects/ngx-sequence-viewer/tsconfig.spec.json",
-            "polyfills": [
-              "zone.js",
-              "zone.js/testing"
-            ]
+            "polyfills": ["zone.js", "zone.js/testing"]
           }
         },
         "lint": {
@@ -253,9 +237,7 @@
     }
   },
   "cli": {
-    "schematicCollections": [
-      "@angular-eslint/schematics"
-    ],
+    "schematicCollections": ["@angular-eslint/schematics"],
     "analytics": false
   }
 }

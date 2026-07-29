@@ -1,0 +1,29 @@
+{
+   "languages": {
+      "TypeScript": {
+         "language_servers": ["vtsls"],
+      },
+   },
+   "lsp": {
+      "vtsls": {
+         "initialization_options": {
+            "vtsls": {
+               "enableMoveToFileCodeAction": true,
+               "autoUseWorkspaceTsdk": true,
+               "experimental": {
+                  "workspace": {
+                     "enable": true,
+                  },
+               },
+            },
+         },
+         "settings": {
+            "typescript": {
+               "preferences": {
+                  "preferTypeOnlyAutoImports": true,
+               },
+            },
+         },
+      },
+   },
+}

@@ -31,9 +31,10 @@ GENYVFWGGREGYETLLNTDMEFE------LDNFARF------LHMAVDYAKEIG-----
 VKD-----`;
 
 @Component({
-  selector: 'app-multiple-sequence-alignment',
-  templateUrl: './multiple-sequence-alignment.component.html',
-  styleUrl: './multiple-sequence-alignment.component.scss'
+    selector: 'app-multiple-sequence-alignment',
+    templateUrl: './multiple-sequence-alignment.component.html',
+    styleUrl: './multiple-sequence-alignment.component.scss',
+    standalone: false
 })
 export class MultipleSequenceAlignmentComponent {
 

@@ -1,0 +1,42 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Versions Manifest",
+  "description": "Schema for the documentation versions configuration",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "Path to the JSON schema for validation"
+    },
+    "latest": {
+      "type": "string",
+      "description": "The name of the latest stable version"
+    },
+    "current": {
+      "type": "string",
+      "description": "The version currently being viewed or built"
+    },
+    "versions": {
+      "type": "array",
+      "description": "List of all available versions",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The display name of the version (e.g., 'v1', 'v2')"
+          },
+          "url": {
+            "type": "string",
+            "description": "The relative or absolute URL path to the documentation for this version"
+          }
+        },
+        "required": ["name", "url"],
+        "additionalProperties": false
+      },
+      "minItems": 1
+    }
+  },
+  "required": ["latest", "versions", "current"],
+  "additionalProperties": false
+}

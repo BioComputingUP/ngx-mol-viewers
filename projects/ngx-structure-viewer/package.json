@@ -1,14 +1,21 @@
 {
-  "name": "ngx-structure-viewer",
-  "version": "0.0.24",
+  "name": "@biocomputingup/ngx-structure-viewer",
+  "version": "2.0.0",
   "license": "MIT",
+  "private": false,
   "author": {
     "name": "Damiano Clementel",
     "email": "damiano.clementel@gmail.com"
   },
+  "contributors": [
+    {
+      "name": "Kamel Eddine Adel",
+      "email": "adelbouhraoua23@gmail.com"
+    }
+  ],
   "peerDependencies": {
-    "@angular/common": "^17.0.0",
-    "@angular/core": "^17.0.0",
+    "@angular/common": "^19.0.0",
+    "@angular/core": "^19.0.0",
     "molstar": "^4.0.0",
     "rxjs": "~7.8.1"
   },
