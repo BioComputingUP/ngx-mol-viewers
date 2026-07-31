@@ -22,12 +22,14 @@ type LibVersionInfo = {
 export class VersionSelector implements OnInit {
   private location: Location = inject(Location);
   versionList!: LibVersionInfo[];
+  current!: string;
   latest!: LibVersionInfo;
   async ngOnInit() {
     const versionsResponse = await fetch(
       this.location.prepareExternalUrl('/versions.json'),
     );
     const versionsData: VersionsJson = await versionsResponse.json();
+    this.current = versionsData.current;
     this.versionList = versionsData.versions;
     const foundLatest = this.versionList.find(
       (x) => x.name == versionsData.latest,

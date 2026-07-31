@@ -1,12 +1,12 @@
 {
   "name": "ngx-mol-viewers",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "start:demo": "ng serve demo-showcase",
     "build:demo": "./bin/build-demo.js",
-    "build:libs": "ng build -c=production ngx-structure-viewer && ng build -c=production ngx-sequence-viewer && ng build -c=production ngx-features-viewer",
+    "build:libs": "ng build -c=production ngx-structure-viewer & ng build -c=production ngx-sequence-viewer & ng build -c=production ngx-features-viewer",
     "serve:docs": "live-server --mount='/ngx-mol-viewers/:./docs' --no-browser ./docs",
     "changesets": "npx @changesets/cli",
     "build": "ng build",

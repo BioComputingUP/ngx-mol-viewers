@@ -1,5 +1,11 @@
 # @biocomputingup/ngx-features-viewer
 
+## 1.0.3
+
+### Patch Changes
+
+- Refactoring reactivity fixing rendering pipeline and label snapping issue on feature viewer
+
 ## 1.0.2
 
 ### Patch Changes
