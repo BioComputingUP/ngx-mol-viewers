@@ -13,6 +13,7 @@ import {
   Input,
   OnChanges,
   OnDestroy,
+  OnInit,
   Output,
   QueryList,
   SimpleChanges,
@@ -81,12 +82,13 @@ export class NgxFeaturesViewerTooltipDirective {
 })
 export class NgxFeaturesViewerComponent
   implements
+    OnInit,
     AfterViewInit,
     AfterContentInit,
     OnChanges,
     OnDestroy
 {
-  @ViewChild('root')
+  @ViewChild('root', { static: true })
   public _root!: ElementRef;
 
   @ContentChildren(NgxFeaturesViewerLabelDirective)
@@ -257,7 +259,10 @@ export class NgxFeaturesViewerComponent
     this._update = this.update$.subscribe();
   }
 
-
+  public ngOnInit(): void {
+    // Emit root element for SVG initialization synchronously
+    this.initializeService.initSVG(this._root);
+  }
 
   public ngOnChanges(changes: SimpleChanges): void {
     // Case input sequence changes
@@ -303,8 +308,6 @@ export class NgxFeaturesViewerComponent
     this.tooltipService.templateRef = tooltipDirective.templateRef;
     // Get tooltip element
     this.tooltipService.tooltip = this.tooltipElementRef.nativeElement;
-    // Emit root element
-    this.initializeService.initSVG(this._root);
   }
 
   public ngOnDestroy(): void {

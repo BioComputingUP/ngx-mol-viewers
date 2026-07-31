@@ -99,4 +99,28 @@ describe('NgxFeaturesViewerComponent Race Conditions & Temporal Dependencies', (
       done();
     }, 100);
   });
+
+  it('should resolve layoutTraces$ synchronously during initial change detection, proving lock-step startup', () => {
+    let layoutEmittedSynchronously = false;
+
+    // Provide initial inputs required for rendering
+    component.sequence = 'ACDEFGHIKLMNPQRSTVWY' as unknown as Sequence;
+    component.traces = [{ features: [] }];
+    component.ngOnChanges({
+      sequence: new SimpleChange(null, component.sequence, true)
+    });
+
+    const sub = component.drawService.layoutTraces$.subscribe(() => {
+      layoutEmittedSynchronously = true;
+    });
+
+    // Triggers ngOnInit which synchronously triggers initSVG, draw$, drawn$, and layoutTraces$
+    fixture.detectChanges(); 
+
+    // If this is true immediately after detectChanges(), it proves the SVG and labels 
+    // are resolved in the exact same synchronous change detection frame.
+    expect(layoutEmittedSynchronously).withContext('layoutTraces$ should emit synchronously').toBeTrue();
+    
+    sub.unsubscribe();
+  });
 });
