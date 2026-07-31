@@ -18,6 +18,7 @@
           "builder": "@angular-devkit/build-angular:browser-esbuild",
           "options": {
             "outputPath": "docs",
+            "deleteOutputPath": false,
             "index": "projects/demo-showcase/src/index.html",
             "main": "projects/demo-showcase/src/main.ts",
             "polyfills": ["zone.js"],
@@ -25,7 +26,8 @@
             "inlineStyleLanguage": "scss",
             "assets": [
               "projects/demo-showcase/src/favicon.ico",
-              "projects/demo-showcase/src/assets"
+              "projects/demo-showcase/src/assets",
+              "projects/demo-showcase/src/versions.json"
             ],
             "styles": ["projects/demo-showcase/src/styles.scss"],
             "scripts": [

@@ -22,6 +22,11 @@ To install the latest version of the features viewer into an Angular project, ru
 ```shell
 npm install ngx-features-viewer
 ```
+## Version compatibility
+
+| Angular Version | @biocomputingup/ngx-features-viewer |
+| --------------- | ----------------------------------- |
+| ^18.0.0         | ^1.0.0                              |
 
 ## Usage
 

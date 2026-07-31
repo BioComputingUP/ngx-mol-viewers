@@ -1,7 +1,8 @@
 {
   "name": "@biocomputingup/ngx-features-viewer",
-  "version": "0.0.25",
+  "version": "1.0.1",
   "license": "MIT",
+  "private": false,
   "author": {
     "name": "Damiano Clementel",
     "email": "damiano.clementel@gmail.com"
@@ -28,11 +29,15 @@
     {
       "name": "Alessio Del Conte",
       "email": "ale.delconte96@gmail.com"
+    },
+    {
+      "name": "Kamel Eddine Adel Bouhraoua",
+      "email": "adelbouhraoua23@gmail.com"
     }
   ],
   "peerDependencies": {
-    "@angular/common": "^17.0.0",
-    "@angular/core": "^17.0.0",
+    "@angular/common": "^18.0.0",
+    "@angular/core": "^18.0.0",
     "rxjs": "~7.8.1",
     "d3": "^7.9.0"
   },

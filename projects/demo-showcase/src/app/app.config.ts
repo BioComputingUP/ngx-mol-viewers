@@ -1,8 +1,16 @@
 import { ApplicationConfig } from '@angular/core';
-import { PreloadAllModules, provideRouter, withPreloading } from '@angular/router';
+import {
+  PreloadAllModules,
+  provideRouter,
+  withPreloading,
+} from '@angular/router';
 import { routes } from './app.routes';
+import { provideHttpClient } from '@angular/common/http';
 
 export const appConfig: ApplicationConfig = {
-  // Implement lazyu loading 
-  providers: [provideRouter(routes, withPreloading(PreloadAllModules))],
+  // Implement lazyu loading
+  providers: [
+    provideRouter(routes, withPreloading(PreloadAllModules)),
+    provideHttpClient(),
+  ],
 };

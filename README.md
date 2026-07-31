@@ -15,13 +15,20 @@ This, removes the burden of handling the Angular lifecycle within every Angular 
 
 Each component has its own NPM repository and can be installed without the others, as they just share the same data structures and requirements.
 
+## Version compatibility
+
+| Angular Version | @biocomputingup/ngx-*-viewer |
+| --------------- | ---------------------------- |
+| ^18.0.0         | ^1.0.0                       |
+
+
 ## Components
 
 ### ngx-structure-viewer
 
 The *ngx-structure-viewer* allows to visualize and manipulate three-dimensional protein structures. It wraps a Molstar instance within and Angular standalone component.
 
-Go to component's [NPM repository](https://www.npmjs.com/package/ngx-structure-viewer)
+Go to component's [NPM repository](https://www.npmjs.com/package/@biocomputingup/ngx-structure-viewer)
 
 Go to component's [README]()
 
@@ -30,7 +37,7 @@ Go to component's [README]()
 The *ngx-sequence-viewer* provides visualization and manipulation for single sequences and multiple sequence alignments.
 It deliberately takes inspiration on the ProSeqViewer.
 
-Go to component's [NPM repository](https://www.npmjs.com/package/ngx-sequence-viewer)
+Go to component's [NPM repository](https://www.npmjs.com/package/@biocomputingup/ngx-sequence-viewer)
 
 Go to component's [README]()
 
@@ -39,7 +46,7 @@ Go to component's [README]()
 The *ngx-features-viewer* extends the features provided by the fate FeatureViewerTypeScript. It has been completely re-engineered and optimized
 to provide the best adaptability and performance.
 
-Go to component's [NPM repository](https://www.npmjs.com/package/ngx-features-viewer)
+Go to component's [NPM repository](https://www.npmjs.com/package/@biocomputingup/ngx-features-viewer)
 
 Go to component's [README]()
 

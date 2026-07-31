@@ -11,8 +11,8 @@
     "noFallthroughCasesInSwitch": true,
     "esModuleInterop": true,
     "paths": {
-      "@ngx-structure-viewer": [ 
-        "./projects/ngx-structure-viewer/src/public-api" 
+      "@ngx-structure-viewer": [
+        "./projects/ngx-structure-viewer/src/public-api"
       ],
       "@ngx-features-viewer": [
         "./projects/ngx-features-viewer/src/public-api"
