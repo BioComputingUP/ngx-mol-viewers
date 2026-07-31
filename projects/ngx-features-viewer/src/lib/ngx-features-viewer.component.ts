@@ -217,8 +217,8 @@ export class NgxFeaturesViewerComponent
             [ms, mt],
             [w - me, h - mb],
           ])
-          .on('brush', (event) => this.adjustBrushToCells(event))
-          .on('end', (event) => this.brushRegion(event));
+          .on('brush', (event) => this.zoomService.adjustBrushToCells(event))
+          .on('end', (event) => this.zoomService.brushRegion(event));
 
         // Initialize brush on the brush region
         this.initializeService.brushRegion.call(this.initializeService.brush);
@@ -312,82 +312,9 @@ export class NgxFeaturesViewerComponent
     this._update.unsubscribe();
   }
 
-  public getLabelTop(traceId: string | number): number {
-    if (!this.initializeService.scale || !this.initializeService.scale.y) return 0;
-    return this.initializeService.scale.y('' + traceId) || 0;
-  }
-
-  public getLabelWidth(place: 'left' | 'right'): number {
-    const margin = this.initializeService.margin;
-    return place === 'left' ? margin.left : margin.right;
-  }
-
-  public getLabelHeight(trace: any): number {
-    const settings = this.initializeService.settings;
-    return trace.options?.['line-height'] || settings['line-height'] || 0;
-  }
-
   @HostListener('window:resize', ['$event'])
   onResize(event: Event) {
     // Just emit width of container element
     this.resizeService.resize$.next(event);
-  }
-
-  private adjustBrushToCells(event: d3.D3BrushEvent<unknown>) {
-    if (!event.sourceEvent) return;
-
-    if ((event.sourceEvent as MouseEvent).shiftKey) {
-      // Do a pan
-      this.initializeService.brushRegion
-        .select('.overlay')
-        .style('cursor', 'grabbing');
-    }
-
-    const x = this.initializeService.scale.x;
-    let [x0, x1] = (event.selection as [number, number]).map(x.invert);
-    x0 = Math.max(1, Math.round(x0));
-    x1 = Math.min(this.sequence.length, Math.round(x1));
-    const d1 = [x0 - 0.5, x1 + 0.5] as [number, number];
-    this.initializeService.brushRegion.call(
-      this.initializeService.brush.move,
-      d1.map(x) as [number, number],
-    );
-  }
-
-  private brushRegion(event: d3.D3BrushEvent<unknown>) {
-    if (!event.sourceEvent) return;
-    if (!event.selection && event.sourceEvent.detail === 1) {
-      // if selection is empty it means that we clicked on the canvas, so we should deselect the feature if any is selected
-      this.drawService.selectedFeatureEmit$.next(undefined);
-      return;
-    }
-
-    // Ensure that if a selection is made, at least 5 residues are selected
-    if (event.selection) {
-      let selection: [number, number] | undefined;
-
-      const x = this.initializeService.scale.x;
-      let [x0, x1] = (event.selection as [number, number]).map(x.invert);
-      let cont = Math.round(x1 - x0);
-      let toSx = false;
-
-      // If the number of residues is less than 5, add residues to the left and right evenly and respecting the limits
-      while (cont < 5) {
-        // Add a position to sx if possible
-        if (x0 > 1 && toSx) {
-          x0 -= 1;
-          cont += 1;
-        }
-        // Add a position to dx if possible
-        if (x1 <= this.sequence.length && !toSx) {
-          x1 += 1;
-          cont += 1;
-        }
-        toSx = !toSx;
-      }
-      selection = [x0, x1];
-      selection = selection!.map(x) as [number, number];
-      this.zoomService.brush$.next(selection);
-    }
   }
 }

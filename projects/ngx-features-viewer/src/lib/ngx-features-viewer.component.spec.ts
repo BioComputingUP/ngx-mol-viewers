@@ -59,12 +59,44 @@ describe('NgxFeaturesViewerComponent Race Conditions & Temporal Dependencies', (
     fixture.detectChanges();
   });
 
-  it('should successfully update label top positions dynamically when traces change (no race condition)', () => {
+  it('should ensure label layout properties do not change unnecessarily unless inputs/traces change', (done) => {
+    // Provide initial inputs
+    component.sequence = 'ACDEFGHIKLMNPQRSTVWY' as unknown as Sequence;
+    component.traces = [{ features: [] }];
+    component.ngOnChanges({
+      sequence: new SimpleChange(null, component.sequence, true)
+    });
     fixture.detectChanges();
-    const traces: Traces = [{ features: [] }];
-    component.traces = traces;
 
-    const top = component.getLabelTop(1);
-    expect(top).toBeGreaterThanOrEqual(0); // Position is calculated dynamically based on scale
+    let emissionCount = 0;
+    let firstLayout: any;
+
+    const sub = component.drawService.layoutTraces$.subscribe(layouts => {
+      emissionCount++;
+      if (emissionCount === 1) {
+        firstLayout = layouts;
+      } else if (emissionCount === 2) {
+        // Just verify the array has the exact same calculated properties for the first trace
+        expect(layouts[0].top).toEqual(firstLayout[0].top);
+        expect(layouts[0].height).toEqual(firstLayout[0].height);
+      }
+    });
+
+    // Trigger another change detection without modifying inputs
+    fixture.detectChanges();
+    expect(emissionCount).toBe(1); // No new emission
+
+    // Provide a new trace to trigger second emission
+    component.traces = [{ features: [] }, { features: [] }];
+    component.ngOnChanges({
+      traces: new SimpleChange([{ features: [] }], component.traces, false)
+    });
+    fixture.detectChanges();
+
+    setTimeout(() => {
+      expect(emissionCount).toBeGreaterThanOrEqual(2);
+      sub.unsubscribe();
+      done();
+    }, 100);
   });
 });
