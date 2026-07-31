@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import {
-  AfterContentInit,
   AfterViewInit,
   ChangeDetectionStrategy,
   Component,
@@ -10,51 +9,49 @@ import {
   ElementRef,
   HostListener,
   Input,
-  OnChanges,
   OnDestroy,
+  OnInit,
   Output,
   QueryList,
-  SimpleChanges,
   TemplateRef,
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
-import * as d3 from "d3";
+import * as d3 from 'd3';
 import { map, Observable, Subscription, switchMap, tap } from 'rxjs';
-import { Sequence } from "./sequence";
+import { Sequence } from './sequence';
 import { DrawService } from './services/draw.service';
 import { FeaturesService } from './services/features.service';
 // Custom components
-import { InitializeService, SelectionContext } from './services/initialize.service';
+import {
+  InitializeService,
+  SelectionContext,
+} from './services/initialize.service';
 import { ResizeService } from './services/resize.service';
-import { TooltipService } from "./services/tooltip.service";
+import { TooltipService } from './services/tooltip.service';
 import { ZoomService } from './services/zoom.service';
 // Custom data types
 import { Settings } from './settings';
-import { Traces } from "./trace";
-
+import { Traces } from './trace';
 
 @Directive({
   // eslint-disable-next-line @angular-eslint/directive-selector
-  selector : '[ngx-features-viewer-label]',
-  standalone : true,
+  selector: '[ngx-features-viewer-label]',
+  standalone: true,
 })
 export class NgxFeaturesViewerLabelDirective {
-
   @Input() where: 'left' | 'right' = 'left';
 
-  constructor(public templateRef: TemplateRef<unknown>) {
-  }
+  constructor(public templateRef: TemplateRef<unknown>) {}
 }
 
 @Directive({
   // eslint-disable-next-line @angular-eslint/directive-selector
-  selector : '[ngx-features-viewer-tooltip]',
-  standalone : true,
+  selector: '[ngx-features-viewer-tooltip]',
+  standalone: true,
 })
 export class NgxFeaturesViewerTooltipDirective {
-  constructor(public templateRef: TemplateRef<unknown>) {
-  }
+  constructor(public templateRef: TemplateRef<unknown>) {}
 }
 
 @Component({
@@ -78,9 +75,13 @@ export class NgxFeaturesViewerTooltipDirective {
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.Emulated
 })
-export class NgxFeaturesViewerComponent implements AfterViewInit, AfterContentInit, OnChanges, OnDestroy {
-
-  @ViewChild('root')
+export class NgxFeaturesViewerComponent
+  implements
+    OnInit,
+    AfterViewInit,
+    OnDestroy
+{
+  @ViewChild('root', { static: true })
   public _root!: ElementRef;
 
   @ContentChildren(NgxFeaturesViewerLabelDirective)
@@ -93,7 +94,7 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, AfterContentIn
   public tooltipDefaultDirective!: NgxFeaturesViewerTooltipDirective;
 
   @ViewChild('tooltip')
-  public tooltipElementRef!: ElementRef<HTMLDivElement>;  // NOTE this is the element ref to the tooltip container
+  public tooltipElementRef!: ElementRef<HTMLDivElement>; // NOTE this is the element ref to the tooltip container
 
   @Input()
   public set settings(settings: Partial<Settings> | null) {
@@ -103,14 +104,29 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, AfterContentIn
 
   @Input()
   public set traces(traces: Traces) {
+    console.log({ tracesSet: traces.length });
     // Set the initial traces
     this.featuresService.traces = traces;
     // Draw the traces on the canvas
     this.drawService.traces$.next(this.featuresService.traces);
   }
 
-  @Input() public sequence!: Sequence;
+  @Input()
+  public set sequence(sequence: Sequence) {
+    this.initializeService.sequence = sequence;
+    this.drawService.sequence$.next(sequence);
+  }
+  public get sequence(): Sequence {
+    return this.initializeService.sequence;
+  }
 
+  public get labelLeft(): NgxFeaturesViewerLabelDirective | undefined {
+    return this.labels?.find(label => label.where === 'left');
+  }
+
+  public get labelRight(): NgxFeaturesViewerLabelDirective | undefined {
+    return this.labels?.find(label => label.where === 'right');
+  }
 
   @Input()
   public set zoomOnRegion(zoomRegion: [number, number] | undefined) {
@@ -118,31 +134,44 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, AfterContentIn
     if (zoomRegion) {
       if (zoomRegion[0] >= 1 && zoomRegion[1] <= this.sequence.length) {
         const x = this.initializeService.scale.x;
-        zoomRegion = [zoomRegion[0] - .5, zoomRegion[1] + .5];
+        zoomRegion = [zoomRegion[0] - 0.5, zoomRegion[1] + 0.5];
         this.zoomService.brush$.next(zoomRegion.map(x) as [number, number]);
       } else {
-        console.warn(`Selected region [${zoomRegion[0]}, ${zoomRegion[1]}] is out of bounds (1, ${this.sequence.length})`);
+        console.warn(
+          `Selected region [${zoomRegion[0]}, ${zoomRegion[1]}] is out of bounds (1, ${this.sequence.length})`,
+        );
       }
     }
   }
 
-  @Output() public selectedFeature: Observable<SelectionContext | undefined> = this.drawService.selectedFeature$.pipe(
-    // Adjust for the .5 offset
-    map((context) => context ? {
-      ...context!,
-      range : {
-        start : context.range!.start + .5,
-        end : context.range!.end - .5,
-      },
-    } : undefined),
-  );
+  @Output() public selectedFeature: Observable<SelectionContext | undefined> =
+    this.drawService.selectedFeature$.pipe(
+      // Adjust for the .5 offset
+      map((context) =>
+        context
+          ? {
+              ...context!,
+              range: {
+                start: context.range!.start + 0.5,
+                end: context.range!.end - 0.5,
+              },
+            }
+          : undefined,
+      ),
+    );
 
-  @Output() public zoomedAt: Observable<[number, number] | undefined> = this.zoomService.brush$.pipe(
-    map((range) => {
-      const x = this.initializeService.scale.x;
-      return range ? range.map(x.invert).map((v, i) => i == 0 ? v + 0.5 : v - 0.5).map(Math.round) as [number, number] : undefined;
-    }),
-  );
+  @Output() public zoomedAt: Observable<[number, number] | undefined> =
+    this.zoomService.brush$.pipe(
+      map((range) => {
+        const x = this.initializeService.scale.x;
+        return range
+          ? (range
+              .map(x.invert)
+              .map((v, i) => (i == 0 ? v + 0.5 : v - 0.5))
+              .map(Math.round) as [number, number])
+          : undefined;
+      }),
+    );
 
   private readonly sequence$ = this.drawService.sequence$;
 
@@ -166,53 +195,7 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, AfterContentIn
       // Subscribe to resize event (set width, height)
       switchMap(() => this.resizeService.resized$),
       // Initialize zoom scale
-      tap(() => {
-        // const { width, height } = this.resizeService;
-        const {top : mt, left : ms, right : me, bottom : mb} = this.resizeService.margin;
-        const h = this.resizeService.height;
-        const w = this.resizeService.width;
-        // Define number of residues in sequence
-        const n = this.sequence.length + 1;
-        // Apply scale limit to 5 residues
-        this.initializeService.zoom
-          .translateExtent([[ms, 0], [w - me, h - mb]])
-          .scaleExtent([1, n / 5])
-          .extent([[ms, 0], [w - me, h - mb]])
-          .on('zoom', (event) => {
-            this.zoomService.zoom$.next(event);
-          });
-
-        this.initializeService.brush
-          .extent([[ms, mt], [w - me, h - mb]])
-          .on('brush', (event) => this.adjustBrushToCells(event))
-          .on('end', (event) => this.brushRegion(event));
-
-        // Initialize brush on the brush region
-        this.initializeService.brushRegion.call(this.initializeService.brush);
-
-        const focus = this.initializeService.focus;
-        const brushRegion = this.initializeService.brushRegion;
-        const focusMousedown = this.initializeService.focusMousedown.bind(this.initializeService.focus.node()!)
-
-        // Function to handle key events
-        function handleKeyEvent(event: KeyboardEvent) {
-          const isShiftOrCmd = event.metaKey || event.shiftKey;
-          const isKeyDown = event.type === 'keydown' && isShiftOrCmd
-
-          // Set cursor and mousedown event based on key press/release
-          focus
-            .style('cursor', isKeyDown ? 'grabbing' : 'auto')
-            .on('mousedown.zoom', isKeyDown ? focusMousedown : () => null)
-
-          // Toggle pointer events on the brush region
-          brushRegion
-            .select('.overlay')
-            .style('pointer-events', isKeyDown ? 'none' : 'all');
-        }
-
-        // Bind the key event handler to both keydown and keyup events
-        d3.select('body').on('keydown keyup', handleKeyEvent.bind(this));
-      }),
+      tap(() => this.zoomService.setupZoomAndBrushBounds(this.sequence.length)),
       // Subscribe to zoom event
       switchMap(() => this.zoomService.zoomed$),
       // Finally, update representation
@@ -222,48 +205,23 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, AfterContentIn
     this._update = this.update$.subscribe();
   }
 
-  public ngOnChanges(changes: SimpleChanges): void {
-    // Case input sequence changes
-    if (changes && changes['sequence']) {
-      // Store reference to sequence
-      this.initializeService.sequence = this.sequence;
-      // Emit sequence
-      this.sequence$.next(this.initializeService.sequence);
-    }
+  public ngOnInit(): void {
+    // Emit root element for SVG initialization synchronously
+    this.initializeService.initSVG(this._root);
   }
 
-  public ngAfterContentInit(): void {
-    // Case label templates are defined
-    if (this.labels) {
-      // Loop through each label template
-      this.labels.forEach((label) => {
-        // Case both labels are defined, then throw error
-        if (this.initializeService.labelLeft && this.initializeService.labelRight) {
-          throw new Error('Only one label can be defined');
-        }
-        // Case label is left
-        if (label.where === 'left') {
-          this.initializeService.labelLeft = label;
-        }
-        // Case label is right
-        if (label.where === 'right') {
-          this.initializeService.labelRight = label;
-        }
-      });
-    }
-  }
+
 
   public ngAfterViewInit(): void {
     // Get tooltip directive, fallback to default in case custom is not defined
-    const tooltipDirective = this.tooltipCustomDirective || this.tooltipDefaultDirective;
+    const tooltipDirective =
+      this.tooltipCustomDirective || this.tooltipDefaultDirective;
     // Store tooltip template in init service
     this.initializeService.tooltip = tooltipDirective;
     // Store template reference
     this.tooltipService.templateRef = tooltipDirective.templateRef;
     // Get tooltip element
     this.tooltipService.tooltip = this.tooltipElementRef.nativeElement;
-    // Emit root element
-    this.initializeService.initialize$.next(this._root);
   }
 
   public ngOnDestroy(): void {
@@ -275,59 +233,5 @@ export class NgxFeaturesViewerComponent implements AfterViewInit, AfterContentIn
   onResize(event: Event) {
     // Just emit width of container element
     this.resizeService.resize$.next(event);
-  }
-
-  private adjustBrushToCells(event: d3.D3BrushEvent<unknown>) {
-    if (!event.sourceEvent) return;
-
-    if ((event.sourceEvent as MouseEvent).shiftKey) {
-      // Do a pan
-      this.initializeService.brushRegion.select('.overlay').style('cursor', 'grabbing');
-    }
-
-    const x = this.initializeService.scale.x;
-    let [x0, x1] = (event.selection as [number, number]).map(x.invert);
-    x0 = Math.max(1, Math.round(x0));
-    x1 = Math.min(this.sequence.length, Math.round(x1));
-    const d1 = [x0 - 0.5, x1 + 0.5] as [number, number];
-    this.initializeService.brushRegion.call(this.initializeService.brush.move, d1.map(x) as [number, number]);
-  }
-
-
-  private brushRegion(event: d3.D3BrushEvent<unknown>) {
-    if (!event.sourceEvent) return;
-    if (!event.selection && event.sourceEvent.detail === 1) {
-      // if selection is empty it means that we clicked on the canvas, so we should deselect the feature if any is selected
-      this.drawService.selectedFeatureEmit$.next(undefined);
-      return;
-    }
-
-    // Ensure that if a selection is made, at least 5 residues are selected
-    if (event.selection) {
-      let selection: [number, number] | undefined;
-
-      const x = this.initializeService.scale.x;
-      let [x0, x1] = (event.selection as [number, number]).map(x.invert);
-      let cont = Math.round(x1 - x0);
-      let toSx = false;
-
-      // If the number of residues is less than 5, add residues to the left and right evenly and respecting the limits
-      while (cont < 5) {
-        // Add a position to sx if possible
-        if (x0 > 1 && toSx) {
-          x0 -= 1;
-          cont += 1;
-        }
-        // Add a position to dx if possible
-        if (x1 <= this.sequence.length && !toSx) {
-          x1 += 1;
-          cont += 1;
-        }
-        toSx = !toSx;
-      }
-      selection = [x0, x1];
-      selection = selection!.map(x) as [number, number];
-      this.zoomService.brush$.next(selection);
-    }
   }
 }

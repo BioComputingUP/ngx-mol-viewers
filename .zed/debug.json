@@ -1,0 +1,27 @@
+// Project-local debug tasks
+//
+// For more documentation on how to configure debug tasks,
+// see: https://zed.dev/docs/debugger
+[
+  {
+    "label": "Angular Debug",
+    "adapter": "JavaScript",
+    "type": "chrome",
+    "request": "launch",
+    "url": "http://localhost:4200",
+    "webRoot": "${ZED_WORKTREE_ROOT}",
+    "sourceMaps": true,
+    "sourceMapPathOverrides": {
+      "webpack:///./*": "${webRoot}/*",
+    },
+  },
+  {
+    "label": "Angular Serve",
+    "adapter": "JavaScript",
+    "type": "node-terminal",
+    "request": "launch",
+    "runtimeExecutable": "npm",
+    "runtimeArgs": ["start"],
+    "skipFiles": ["<node_internals>/**", "node_modules/**"],
+  },
+]

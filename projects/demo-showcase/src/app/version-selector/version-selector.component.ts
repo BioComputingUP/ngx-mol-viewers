@@ -1,6 +1,6 @@
 import { CommonModule, Location } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, inject, type OnInit } from '@angular/core';
+import { Component, inject, signal, type OnInit } from '@angular/core';
 import { from, map, shareReplay, switchMap, type Observable } from 'rxjs';
 
 type VersionsJson = {
@@ -20,15 +20,17 @@ type LibVersionInfo = {
 })
 export class VersionSelector implements OnInit {
   private location: Location = inject(Location);
-  versionList!: LibVersionInfo[];
-  latest!: LibVersionInfo;
+  versionList = signal<LibVersionInfo[]>([]);
+  latest = signal<LibVersionInfo | null>(null);
+  current = signal<string | null>(null);
   async ngOnInit() {
     const versionsResponse = await fetch(
       this.location.prepareExternalUrl('/versions.json'),
     );
     const versionsData: VersionsJson = await versionsResponse.json();
-    this.versionList = versionsData.versions;
-    const foundLatest = this.versionList.find(
+    this.versionList.set(versionsData.versions);
+    this.current.set(versionsData.current);
+    const foundLatest = this.versionList().find(
       (x) => x.name == versionsData.latest,
     );
     if (!foundLatest) {
@@ -36,6 +38,6 @@ export class VersionSelector implements OnInit {
         `Cannot find latest version ${versionsData.latest} in the versions array \n ${JSON.stringify(this.versionList, null, 2)}`,
       );
     }
-    this.latest = foundLatest;
+    this.latest.set(foundLatest);
   }
 }

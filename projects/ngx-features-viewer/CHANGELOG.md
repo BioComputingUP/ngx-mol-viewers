@@ -1,11 +1,18 @@
 # @biocomputingup/ngx-features-viewer
 
+## 2.0.1
+
+### Patch Changes
+
+- Reactivity refactoring for features viewer removing snapping labels and allow traces array update the rendering
+
 ## 2.0.0
 
 ### Major Changes
 
 - d73ffcd: Update to Angular 19, create subsite for V2 and replacing root demo site with V2
 - 66efcf4: Update typedoc to ^0.27 to avoid peerDeps conflict with typescript 5.8
+
 ## 1.0.1
 
 ### Patch Changes
