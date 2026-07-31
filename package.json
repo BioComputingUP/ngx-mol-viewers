@@ -1,17 +1,26 @@
 {
-  "name": "ngx-structure-viewer",
+  "name": "ngx-mol-viewers",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "start:demo": "ng serve demo-showcase",
-    "build:demo": "",
+    "build:demo": "./bin/build-demo.js",
+    "start:demo:prod": "npx live-server --mount='/ngx-mol-viewers/:./docs' --open=/ngx-mol-viewers/",
     "build:libs": "ng build -c=production ngx-structure-viewer && ng build -c=production ngx-sequence-viewer && ng build -c=production ngx-features-viewer",
+    "serve:docs": "live-server --mount='/ngx-mol-viewers/:./docs' --no-browser ./docs",
+    "changesets": "npx @changesets/cli",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint"
   },
+  "bin": {
+    "bd": "bin/build-demo.js"
+  },
+  "workspaces": [
+    "projects/*"
+  ],
   "private": true,
   "dependencies": {
     "@angular/animations": "^17.3.11",
@@ -26,7 +35,8 @@
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
     "d3": "^7.9.0",
-    "molstar": "^4.3.0",
+    "live-server": "^1.2.2",
+    "molstar": "^4.4.1",
     "rxjs": "~7.8.1",
     "tslib": "^2.6.3",
     "uuid": "^10.0.0",
