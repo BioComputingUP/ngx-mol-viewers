@@ -13,6 +13,8 @@ import {
 } from 'rxjs';
 // Custom providers
 import { InitializeService, Scale } from './initialize.service';
+import { DrawService } from './draw.service';
+import { ResizeService } from './resize.service';
 
 type D3ZoomEvent = d3.D3ZoomEvent<SVGSVGElement, undefined>;
 
@@ -39,7 +41,11 @@ export class ZoomService implements OnDestroy {
 
   private _brush: Subscription;
 
-  constructor(private initService: InitializeService) {
+  constructor(
+    private initService: InitializeService, 
+    private drawService: DrawService,
+    private resizeService: ResizeService
+  ) {
     // Define pipeline for scale initialization
     const initialized$: Observable<Scale> = this.initService.initialized$.pipe(
       // Store scale into service
@@ -157,5 +163,126 @@ export class ZoomService implements OnDestroy {
 
   ngOnDestroy(): void {
     this._brush.unsubscribe();
+  }
+
+  public adjustBrushToCells(event: d3.D3BrushEvent<unknown>) {
+    if (!event.sourceEvent) return;
+
+    if ((event.sourceEvent as MouseEvent).shiftKey) {
+      // Do a pan
+      this.initService.brushRegion
+        .select('.overlay')
+        .style('cursor', 'grabbing');
+    }
+
+    const x = this.initService.scale.x;
+    let [x0, x1] = (event.selection as [number, number]).map(x.invert);
+    x0 = Math.max(1, Math.round(x0));
+    x1 = Math.min(this.initService.sequence.length, Math.round(x1));
+    const d1 = [x0 - 0.5, x1 + 0.5] as [number, number];
+    this.initService.brushRegion.call(
+      this.initService.brush.move,
+      d1.map(x) as [number, number],
+    );
+  }
+
+  public brushRegion(event: d3.D3BrushEvent<unknown>) {
+    if (!event.sourceEvent) return;
+    if (!event.selection && event.sourceEvent.detail === 1) {
+      // if selection is empty it means that we clicked on the canvas, so we should deselect the feature if any is selected
+      this.drawService.selectedFeatureEmit$.next(undefined);
+      return;
+    }
+
+    // Ensure that if a selection is made, at least 5 residues are selected
+    if (event.selection) {
+      let selection: [number, number] | undefined;
+
+      const x = this.initService.scale.x;
+      let [x0, x1] = (event.selection as [number, number]).map(x.invert);
+      let cont = Math.round(x1 - x0);
+      let toSx = false;
+
+      // If the number of residues is less than 5, add residues to the left and right evenly and respecting the limits
+      while (cont < 5) {
+        // Add a position to sx if possible
+        if (x0 > 1 && toSx) {
+          x0 -= 1;
+          cont += 1;
+        }
+        // Add a position to dx if possible
+        if (x1 <= this.initService.sequence.length && !toSx) {
+          x1 += 1;
+          cont += 1;
+        }
+        toSx = !toSx;
+      }
+      selection = [x0, x1];
+      selection = selection!.map(x) as [number, number];
+      this.brush$.next(selection);
+    }
+  }
+
+  public setupZoomAndBrushBounds(sequenceLength: number): void {
+    const {
+      top: mt,
+      left: ms,
+      right: me,
+      bottom: mb,
+    } = this.resizeService.margin;
+    const h = this.resizeService.height;
+    const w = this.resizeService.width;
+    // Define number of residues in sequence
+    const n = sequenceLength + 1;
+    // Apply scale limit to 5 residues
+    this.initService.zoom
+      .translateExtent([
+        [ms, 0],
+        [w - me, h - mb],
+      ])
+      .scaleExtent([1, n / 5])
+      .extent([
+        [ms, 0],
+        [w - me, h - mb],
+      ])
+      .on('zoom', (event) => {
+        this.zoom$.next(event);
+      });
+
+    this.initService.brush
+      .extent([
+        [ms, mt],
+        [w - me, h - mb],
+      ])
+      .on('brush', (event) => this.adjustBrushToCells(event))
+      .on('end', (event) => this.brushRegion(event));
+
+    // Initialize brush on the brush region
+    this.initService.brushRegion.call(this.initService.brush);
+
+    const focus = this.initService.focus;
+    const brushRegion = this.initService.brushRegion;
+    const focusMousedown = this.initService.focusMousedown.bind(
+      this.initService.focus.node()!,
+    );
+
+    // Function to handle key events
+    const handleKeyEvent = (event: KeyboardEvent) => {
+      const isShiftOrCmd = event.metaKey || event.shiftKey;
+      const isKeyDown = event.type === 'keydown' && isShiftOrCmd;
+
+      // Set cursor and mousedown event based on key press/release
+      focus
+        .style('cursor', isKeyDown ? 'grabbing' : 'auto')
+        .on('mousedown.zoom', isKeyDown ? focusMousedown : () => null);
+
+      // Toggle pointer events on the brush region
+      brushRegion
+        .select('.overlay')
+        .style('pointer-events', isKeyDown ? 'none' : 'all');
+    };
+
+    // Bind the key event handler to both keydown and keyup events
+    d3.select('body').on('keydown keyup', handleKeyEvent);
   }
 }
