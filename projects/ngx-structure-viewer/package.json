@@ -1,6 +1,6 @@
 {
   "name": "@biocomputingup/ngx-structure-viewer",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "license": "MIT",
   "private": false,
   "author": {
@@ -14,8 +14,8 @@
     }
   ],
   "peerDependencies": {
-    "@angular/common": "^18.0.0",
-    "@angular/core": "^18.0.0",
+    "@angular/common": "^19.0.0",
+    "@angular/core": "^19.0.0",
     "molstar": "^4.0.0",
     "rxjs": "~7.8.1"
   },

@@ -21,21 +21,20 @@ import { SettingsService } from './services/settings.service';
 import { StructureService } from './services/structure.service';
 
 @Component({
-  // eslint-disable-next-line @angular-eslint/component-selector
-  selector : 'ngx-structure-viewer',
-  styleUrl : './ngx-structure-viewer.component.scss',
-  template : '<div [style.background-color]="background$ | async" #container></div>',
-  // Handle dependencies
-  imports : [CommonModule],
-  providers : [
-    RepresentationService,
-    // HighlightService,
-    StructureService,
-    SettingsService,
-    MolstarService,
-    PluginService,
-  ],
-  standalone : true,
+    // eslint-disable-next-line @angular-eslint/component-selector
+    selector: 'ngx-structure-viewer',
+    styleUrl: './ngx-structure-viewer.component.scss',
+    template: '<div [style.background-color]="background$ | async" #container></div>',
+    // Handle dependencies
+    imports: [CommonModule],
+    providers: [
+        RepresentationService,
+        // HighlightService,
+        StructureService,
+        SettingsService,
+        MolstarService,
+        PluginService,
+    ]
 })
 export class NgxStructureViewerComponent implements AfterViewInit, OnChanges {
 

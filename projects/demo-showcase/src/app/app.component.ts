@@ -10,30 +10,29 @@ import { VersionSelector } from './version-selector/version-selector.component';
 
 
 @Component({
-  selector: 'app-root',
-  standalone: true,
-  imports: [
-    // Custom components
-    ThemeSelectorComponent,
-    PageHomeModule,
-    VersionSelector,
-    // // TODO Import pages
-    // PageStructureViewerModule,
-    // PageFeaturesViewerModule,
-    // PageSequenceViewerModule,
-    // Core modules
-    CommonModule,
-    RouterModule,
-    RouterOutlet,
-  ],
-  providers: [
-    // Activate hash routing
-    { provide: LocationStrategy, useClass: HashLocationStrategy },
-    // Import theme selector
-    ThemeSelectorService
-  ],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+    selector: 'app-root',
+    imports: [
+        // Custom components
+        ThemeSelectorComponent,
+        PageHomeModule,
+        VersionSelector,
+        // // TODO Import pages
+        // PageStructureViewerModule,
+        // PageFeaturesViewerModule,
+        // PageSequenceViewerModule,
+        // Core modules
+        CommonModule,
+        RouterModule,
+        RouterOutlet,
+    ],
+    providers: [
+        // Activate hash routing
+        { provide: LocationStrategy, useClass: HashLocationStrategy },
+        // Import theme selector
+        ThemeSelectorService
+    ],
+    templateUrl: './app.component.html',
+    styleUrl: './app.component.scss'
 })
 export class AppComponent {
   // TODO Define demo title

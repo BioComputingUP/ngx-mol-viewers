@@ -4,10 +4,11 @@ import { Observable, interval, map, shareReplay, startWith } from 'rxjs';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
-  selector: 'app-section-chains',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './section-chains.component.html',
-  styleUrl: './section-chains.component.scss',
+    selector: 'app-section-chains',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    templateUrl: './section-chains.component.html',
+    styleUrl: './section-chains.component.scss',
+    standalone: false
 })
 export class SectionChainsComponent {
 
