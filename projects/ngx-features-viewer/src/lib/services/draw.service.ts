@@ -449,55 +449,7 @@ export class DrawService {
       .attr('width', 0);
   }
 
-  public setLabelsPosition(traces: InternalTraces) {
-    const y = this.initializeService.scale.y;
-    const { left: ml, right: mr } = this.initializeService.margin;
-    const settings = this.initializeService.settings;
 
-    for (const trace of traces) {
-      // Get identifier trace
-      const identifier = '' + trace.id;
-      for (const place of ['left', 'right']) {
-        // Get associated trace
-        const label = this.initializeService.div.querySelector<HTMLDivElement>(
-          `div#label-${place}-` + identifier,
-        );
-        // If label exists, update its positioning
-        if (label) {
-          label.classList.add('label');
-          if (place === 'left') {
-            // Position the label to the left
-            label.style.left = '0px';
-            label.style.width = `${ml}px`;
-          } else {
-            // Position the label to the right, ad add a "margin" left of 8 px to space the label from the traces
-            label.style.right = '0px';
-            label.style.width = `${mr}px`;
-          }
-          label.style.top = y(identifier) + 'px';
-          label.style.display = 'block';
-          label.style.height =
-            (trace.options?.['line-height'] || settings['line-height']) + 'px';
-        }
-      }
-    }
-  }
-
-  private hideLabels(trace: InternalTrace) {
-    // Get identifier trace
-    const identifier = trace.id;
-    for (const place of ['left', 'right']) {
-      // Get associated trace
-      const label = this.initializeService.div.querySelector<HTMLDivElement>(
-        `div#label-${place}-` + identifier,
-      );
-      // If label exists, update its positioning
-      if (label) {
-        // Hide label
-        label.style.display = 'none';
-      }
-    }
-  }
 
   private createGrid(traces: InternalTraces): void {
     const group = this.initializeService.focus

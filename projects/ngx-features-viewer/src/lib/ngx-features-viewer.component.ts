@@ -83,7 +83,6 @@ export class NgxFeaturesViewerComponent
   implements
     AfterViewInit,
     AfterContentInit,
-    AfterViewChecked,
     OnChanges,
     OnDestroy
 {
@@ -169,9 +168,6 @@ export class NgxFeaturesViewerComponent
   private update$: Observable<unknown>;
 
   private _update: Subscription;
-
-  private _tracesSubscription?: Subscription;
-  private labelsNeedRepositioning = false;
 
   constructor(
     // Dependency injection
@@ -259,19 +255,9 @@ export class NgxFeaturesViewerComponent
     );
     // Subscribe to update emission
     this._update = this.update$.subscribe();
-
-    // Track when traces change (from input changes or expand/collapse clicks)
-    this._tracesSubscription = this.drawService.traces$.subscribe(() => {
-      this.labelsNeedRepositioning = true;
-    });
   }
 
-  public ngAfterViewChecked(): void {
-    if (this.labelsNeedRepositioning) {
-      this.labelsNeedRepositioning = false;
-      this.drawService.setLabelsPosition(this.featuresService.traces);
-    }
-  }
+
 
   public ngOnChanges(changes: SimpleChanges): void {
     // Case input sequence changes
@@ -318,13 +304,27 @@ export class NgxFeaturesViewerComponent
     // Get tooltip element
     this.tooltipService.tooltip = this.tooltipElementRef.nativeElement;
     // Emit root element
-    this.initializeService.initialize$.next(this._root);
+    this.initializeService.initSVG(this._root);
   }
 
   public ngOnDestroy(): void {
     // Unsubscribe from update emission
     this._update.unsubscribe();
-    this._tracesSubscription?.unsubscribe();
+  }
+
+  public getLabelTop(traceId: string | number): number {
+    if (!this.initializeService.scale || !this.initializeService.scale.y) return 0;
+    return this.initializeService.scale.y('' + traceId) || 0;
+  }
+
+  public getLabelWidth(place: 'left' | 'right'): number {
+    const margin = this.initializeService.margin;
+    return place === 'left' ? margin.left : margin.right;
+  }
+
+  public getLabelHeight(trace: any): number {
+    const settings = this.initializeService.settings;
+    return trace.options?.['line-height'] || settings['line-height'] || 0;
   }
 
   @HostListener('window:resize', ['$event'])

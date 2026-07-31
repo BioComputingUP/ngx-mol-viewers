@@ -57,9 +57,6 @@ export interface Axes {
 
 @Injectable({ providedIn: 'platform' })
 export class InitializeService implements OnDestroy {
-  // Define emitter for root element
-  public readonly initialize$ = new ReplaySubject<ElementRef>(1);
-
   // Define root element reference
   public root!: ElementRef;
 
@@ -183,9 +180,7 @@ export class InitializeService implements OnDestroy {
   public hoverCircleMarker!: Circle;
 
   // Declare initialization pipeline
-  public readonly initialized$: Observable<
-    d3.Selection<SVGSVGElement, undefined, null, undefined>
-  >;
+  public readonly initialized$ = new ReplaySubject<d3.Selection<SVGSVGElement, undefined, null, undefined>>(1);
 
   public getCoordinates(
     mouseEvent: MouseEvent,
@@ -198,148 +193,137 @@ export class InitializeService implements OnDestroy {
     return [x, y];
   }
 
+  public initSVG(root: ElementRef): void {
+    if (this.root) return; // Prevent multiple initializations
+
+    console.log('initialized !');
+    this.root = root;
+
+    // Define SVG element
+    const svg = d3.create('svg');
+    const node = svg.node();
+    // Case node exists, then append it to root element
+    if (node) this.div.append(node);
+    // Otherwise, throw error
+    else throw new Error('Could not create SVG node');
+    // Store SVG element
+    this.svg = svg;
+
+    // Generate SVG container (draw)
+    // Define unique identifier
+    const uuidClip = '' + UUID();
+    const uuidMask = '' + UUID();
+
+    const defs = svg.append('defs');
+
+    // Define clip path: everything out of this area won't be drawn
+    this.clip = defs
+      .append('clipPath')
+      // Set clip identifier, required in <defs>
+      .attr('id', uuidClip)
+      // Add inner rectangle
+      .append('rect');
+
+    // Define the mask element to create a hole where the plot will be
+    defs
+      .append('mask')
+      .attr('id', uuidMask)
+      .append('rect')
+      .attr('width', '100%')
+      .attr('height', '100%')
+      .attr('fill', 'white');
+
+    // Create the rectangle which position and dimension will be set in the resize, to adapt to the plot dimensions
+    this.mask = svg.select('mask').append('rect');
+
+    // Create the outer rectangle and apply the mask, applying the background color set by the user
+    svg
+      .append('rect')
+      .attr('id', 'background')
+      .attr('class', 'background')
+      .attr('width', '100%')
+      .attr('height', '100%')
+      .attr('mask', `url(#${uuidMask})`);
+
+    // Add a background rectangle to the SVG to show the background color for only the plot
+    svg
+      .append('rect')
+      .attr('id', 'plot-background')
+      .attr('width', '100%')
+      .attr('height', '100%')
+      .attr('clip-path', `url(${'#' + uuidClip})`);
+
+    // NOTE Add middle layer, in order to allow both zoom and mouse events to be captured
+    // https://stackoverflow.com/questions/58125180/d3-zoom-and-mouseover-tooltip
+    this.focus = svg.append('g').attr('class', 'focus');
+
+    // Define features group
+    this.draw = this.focus
+      .append('g')
+      // Bind features group to clip path
+      .attr('class', 'features')
+      .attr('clip-path', `url(${'#' + uuidClip})`);
+    // Define zoom event
+    this.zoom = d3.zoom<SVGGElement, undefined>();
+    // Add an invisible rectangle on top of the chart.
+    // This, can recover pointer events: it is necessary to understand when the user zoom.
+    this.events = this.focus
+      .append('rect')
+      // Set style to appear invisible, but catch events
+      .attr('class', 'zoom')
+      .style('fill', 'none')
+      .style('pointer-events', 'all')
+      .lower();
+    // Set zoom behavior
+    this.focus
+      .call(this.zoom)
+      .on('dblclick.zoom', () => this.zoom.scaleTo(this.focus, 1));
+
+    // Save the mousedown.zoom event listener
+    this.focusMousedown = this.focus.on('mousedown.zoom')!;
+
+    // Remove the mousedown.zoom event listener
+    this.focus.on('mousedown.zoom', null);
+
+    this.brush = d3.brushX();
+
+    // Create a rectangle in the draw area to create a "shadow" effect when clicking on a feature
+    this.shadow = this.draw
+      .append('rect')
+      .attr('id', 'shadow')
+      .attr('fill', 'black')
+      .attr('fill-opacity', 0.15)
+      .attr('height', '100%')
+      .data([
+        {
+          trace: undefined,
+          feature: undefined,
+          range: undefined,
+        } as SelectionContext,
+      ]);
+
+    this.hoverCircleMarker = this.svg
+      .append('circle')
+      .attr('class', 'hover-circle-marker')
+      .attr('r', 4)
+      .attr('fill', 'none')
+      .attr('fill-opacity', 1);
+
+    // Initialize horizontal, vertical axis
+    // Define horizontal axis
+    const x = svg.append('g').attr('class', 'x axis');
+    // Define vertical axis
+    const y = svg.append('g').attr('class', 'y axis');
+    // Initialize axis
+    this.axes = { x, y };
+
+    // Initialize horizontal, vertical scale
+    this.scale = { x: d3.scaleLinear(), y: d3.scaleOrdinal() };
+
+    this.initialized$.next(this.svg);
+  }
+
   constructor() {
-    // Define initialization pipeline
-    this.initialized$ = this.initialize$.pipe(
-      // Store root element reference
-      tap(() => console.log('initialized !')),
-      tap((root) => (this.root = root)),
-      // Generate SVG
-      map(() => {
-        // Define SVG element
-        const svg = d3.create('svg');
-        // Get SVG node
-        const node = svg.node();
-        // Case node exists, then append it to root element
-        if (node) this.div.append(node);
-        // Otherwise, throw error
-        else throw new Error('Could not create SVG node');
-        // Finally, return SVG element
-        return svg;
-      }),
-      // Store SVG element
-      tap((svg) => (this.svg = svg)),
-      // Generate SVG container (draw)
-      tap((svg) => {
-        // Define unique identifier
-        const uuidClip = '' + UUID();
-        const uuidMask = '' + UUID();
-
-        const defs = svg.append('defs');
-
-        // Define clip path: everything out of this area won't be drawn
-        this.clip = defs
-          .append('clipPath')
-          // Set clip identifier, required in <defs>
-          .attr('id', uuidClip)
-          // Add inner rectangle
-          .append('rect');
-
-        // Define the mask element to create a hole where the plot will be
-        defs
-          .append('mask')
-          .attr('id', uuidMask)
-          .append('rect')
-          .attr('width', '100%')
-          .attr('height', '100%')
-          .attr('fill', 'white');
-
-        // Create the rectangle which position and dimension will be set in the resize, to adapt to the plot dimensions
-        this.mask = svg.select('mask').append('rect');
-
-        // Create the outer rectangle and apply the mask, applying the background color set by the user
-        svg
-          .append('rect')
-          .attr('id', 'background')
-          .attr('class', 'background')
-          .attr('width', '100%')
-          .attr('height', '100%')
-          .attr('mask', `url(#${uuidMask})`);
-
-        // Add a background rectangle to the SVG to show the background color for only the plot
-        svg
-          .append('rect')
-          .attr('id', 'plot-background')
-          .attr('width', '100%')
-          .attr('height', '100%')
-          .attr('clip-path', `url(${'#' + uuidClip})`);
-
-        // NOTE Add middle layer, in order to allow both zoom and mouse events to be captured
-        // https://stackoverflow.com/questions/58125180/d3-zoom-and-mouseover-tooltip
-        this.focus = svg.append('g').attr('class', 'focus');
-
-        // Define features group
-        this.draw = this.focus
-          .append('g')
-          // Bind features group to clip path
-          .attr('class', 'features')
-          .attr('clip-path', `url(${'#' + uuidClip})`);
-        // Define zoom event
-        this.zoom = d3.zoom<SVGGElement, undefined>();
-        // Add an invisible rectangle on top of the chart.
-        // This, can recover pointer events: it is necessary to understand when the user zoom.
-        this.events = this.focus
-          .append('rect')
-          // Set style to appear invisible, but catch events
-          .attr('class', 'zoom')
-          .style('fill', 'none')
-          .style('pointer-events', 'all')
-          .lower();
-        // Set zoom behavior
-        this.focus
-          .call(this.zoom)
-          .on('dblclick.zoom', () => this.zoom.scaleTo(this.focus, 1));
-
-        // Save the mousedown.zoom event listener
-        this.focusMousedown = this.focus.on('mousedown.zoom')!;
-
-        // Remove the mousedown.zoom event listener
-        this.focus.on('mousedown.zoom', null);
-
-        this.brush = d3.brushX();
-
-        // Create a rectangle in the draw area to create a "shadow" effect when clicking on a feature
-        this.shadow = this.draw
-          .append('rect')
-          .attr('id', 'shadow')
-          .attr('fill', 'black')
-          .attr('fill-opacity', 0.15)
-          .attr('height', '100%')
-          .data([
-            {
-              trace: undefined,
-              feature: undefined,
-              range: undefined,
-            } as SelectionContext,
-          ]);
-
-        this.hoverCircleMarker = this.svg
-          .append('circle')
-          .attr('class', 'hover-circle-marker')
-          .attr('r', 4)
-          .attr('fill', 'none')
-          .attr('fill-opacity', 1);
-      }),
-      // Initialize horizontal, vertical axis
-      tap((svg) => {
-        // Define horizontal axis
-        const x = svg.append('g').attr('class', 'x axis');
-        // .attr(
-        //   'transform',
-        //   `translate(0, ${this.height - this.margin.bottom})`
-        // );
-        // Define vertical axis
-        const y = svg.append('g').attr('class', 'y axis');
-        // .attr('transform', `translate(${this.margin.left}, 0)`);
-        // Initialize axis
-        this.axes = { x, y };
-      }),
-      // Initialize horizontal, vertical scale
-      tap(() => (this.scale = { x: d3.scaleLinear(), y: d3.scaleOrdinal() })),
-      // Avoid re-drawing the graph each time another observable subscribes
-      shareReplay(1),
-    );
-
     this.settingsSubscription = combineLatest([
       this.initialized$,
       this.settings$,
