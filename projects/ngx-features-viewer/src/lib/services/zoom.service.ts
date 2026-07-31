@@ -14,6 +14,7 @@ import {
 // Custom providers
 import { InitializeService, Scale } from './initialize.service';
 import { DrawService } from './draw.service';
+import { ResizeService } from './resize.service';
 
 type D3ZoomEvent = d3.D3ZoomEvent<SVGSVGElement, undefined>;
 
@@ -40,7 +41,11 @@ export class ZoomService implements OnDestroy {
 
   private _brush: Subscription;
 
-  constructor(private initService: InitializeService, private drawService: DrawService) {
+  constructor(
+    private initService: InitializeService, 
+    private drawService: DrawService,
+    private resizeService: ResizeService
+  ) {
     // Define pipeline for scale initialization
     const initialized$: Observable<Scale> = this.initService.initialized$.pipe(
       // Store scale into service
@@ -216,5 +221,68 @@ export class ZoomService implements OnDestroy {
       selection = selection!.map(x) as [number, number];
       this.brush$.next(selection);
     }
+  }
+
+  public setupZoomAndBrushBounds(sequenceLength: number): void {
+    const {
+      top: mt,
+      left: ms,
+      right: me,
+      bottom: mb,
+    } = this.resizeService.margin;
+    const h = this.resizeService.height;
+    const w = this.resizeService.width;
+    // Define number of residues in sequence
+    const n = sequenceLength + 1;
+    // Apply scale limit to 5 residues
+    this.initService.zoom
+      .translateExtent([
+        [ms, 0],
+        [w - me, h - mb],
+      ])
+      .scaleExtent([1, n / 5])
+      .extent([
+        [ms, 0],
+        [w - me, h - mb],
+      ])
+      .on('zoom', (event) => {
+        this.zoom$.next(event);
+      });
+
+    this.initService.brush
+      .extent([
+        [ms, mt],
+        [w - me, h - mb],
+      ])
+      .on('brush', (event) => this.adjustBrushToCells(event))
+      .on('end', (event) => this.brushRegion(event));
+
+    // Initialize brush on the brush region
+    this.initService.brushRegion.call(this.initService.brush);
+
+    const focus = this.initService.focus;
+    const brushRegion = this.initService.brushRegion;
+    const focusMousedown = this.initService.focusMousedown.bind(
+      this.initService.focus.node()!,
+    );
+
+    // Function to handle key events
+    const handleKeyEvent = (event: KeyboardEvent) => {
+      const isShiftOrCmd = event.metaKey || event.shiftKey;
+      const isKeyDown = event.type === 'keydown' && isShiftOrCmd;
+
+      // Set cursor and mousedown event based on key press/release
+      focus
+        .style('cursor', isKeyDown ? 'grabbing' : 'auto')
+        .on('mousedown.zoom', isKeyDown ? focusMousedown : () => null);
+
+      // Toggle pointer events on the brush region
+      brushRegion
+        .select('.overlay')
+        .style('pointer-events', isKeyDown ? 'none' : 'all');
+    };
+
+    // Bind the key event handler to both keydown and keyup events
+    d3.select('body').on('keydown keyup', handleKeyEvent);
   }
 }

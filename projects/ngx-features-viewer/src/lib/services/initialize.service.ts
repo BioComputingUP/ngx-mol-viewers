@@ -145,10 +145,6 @@ export class InitializeService implements OnDestroy {
 
   public tooltip!: NgxFeaturesViewerTooltipDirective;
 
-  public labelLeft!: NgxFeaturesViewerLabelDirective;
-
-  public labelRight!: NgxFeaturesViewerLabelDirective;
-
   // Define horizontal, vertical scales
   public scale!: Scale;
 

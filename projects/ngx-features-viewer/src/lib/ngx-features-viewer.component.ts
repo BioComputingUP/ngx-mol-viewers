@@ -1,8 +1,6 @@
 import { CommonModule } from '@angular/common';
 import {
-  AfterContentInit,
   AfterViewInit,
-  AfterViewChecked,
   ChangeDetectionStrategy,
   Component,
   ContentChild,
@@ -11,12 +9,10 @@ import {
   ElementRef,
   HostListener,
   Input,
-  OnChanges,
   OnDestroy,
   OnInit,
   Output,
   QueryList,
-  SimpleChanges,
   TemplateRef,
   ViewChild,
   ViewEncapsulation,
@@ -84,8 +80,6 @@ export class NgxFeaturesViewerComponent
   implements
     OnInit,
     AfterViewInit,
-    AfterContentInit,
-    OnChanges,
     OnDestroy
 {
   @ViewChild('root', { static: true })
@@ -118,7 +112,22 @@ export class NgxFeaturesViewerComponent
     this.drawService.traces$.next(this.featuresService.traces);
   }
 
-  @Input() public sequence!: Sequence;
+  @Input()
+  public set sequence(sequence: Sequence) {
+    this.initializeService.sequence = sequence;
+    this.drawService.sequence$.next(sequence);
+  }
+  public get sequence(): Sequence {
+    return this.initializeService.sequence;
+  }
+
+  public get labelLeft(): NgxFeaturesViewerLabelDirective | undefined {
+    return this.labels?.find(label => label.where === 'left');
+  }
+
+  public get labelRight(): NgxFeaturesViewerLabelDirective | undefined {
+    return this.labels?.find(label => label.where === 'right');
+  }
 
   @Input()
   public set zoomOnRegion(zoomRegion: [number, number] | undefined) {
@@ -187,69 +196,7 @@ export class NgxFeaturesViewerComponent
       // Subscribe to resize event (set width, height)
       switchMap(() => this.resizeService.resized$),
       // Initialize zoom scale
-      tap(() => {
-        // const { width, height } = this.resizeService;
-        const {
-          top: mt,
-          left: ms,
-          right: me,
-          bottom: mb,
-        } = this.resizeService.margin;
-        const h = this.resizeService.height;
-        const w = this.resizeService.width;
-        // Define number of residues in sequence
-        const n = this.sequence.length + 1;
-        // Apply scale limit to 5 residues
-        this.initializeService.zoom
-          .translateExtent([
-            [ms, 0],
-            [w - me, h - mb],
-          ])
-          .scaleExtent([1, n / 5])
-          .extent([
-            [ms, 0],
-            [w - me, h - mb],
-          ])
-          .on('zoom', (event) => {
-            this.zoomService.zoom$.next(event);
-          });
-
-        this.initializeService.brush
-          .extent([
-            [ms, mt],
-            [w - me, h - mb],
-          ])
-          .on('brush', (event) => this.zoomService.adjustBrushToCells(event))
-          .on('end', (event) => this.zoomService.brushRegion(event));
-
-        // Initialize brush on the brush region
-        this.initializeService.brushRegion.call(this.initializeService.brush);
-
-        const focus = this.initializeService.focus;
-        const brushRegion = this.initializeService.brushRegion;
-        const focusMousedown = this.initializeService.focusMousedown.bind(
-          this.initializeService.focus.node()!,
-        );
-
-        // Function to handle key events
-        function handleKeyEvent(event: KeyboardEvent) {
-          const isShiftOrCmd = event.metaKey || event.shiftKey;
-          const isKeyDown = event.type === 'keydown' && isShiftOrCmd;
-
-          // Set cursor and mousedown event based on key press/release
-          focus
-            .style('cursor', isKeyDown ? 'grabbing' : 'auto')
-            .on('mousedown.zoom', isKeyDown ? focusMousedown : () => null);
-
-          // Toggle pointer events on the brush region
-          brushRegion
-            .select('.overlay')
-            .style('pointer-events', isKeyDown ? 'none' : 'all');
-        }
-
-        // Bind the key event handler to both keydown and keyup events
-        d3.select('body').on('keydown keyup', handleKeyEvent.bind(this));
-      }),
+      tap(() => this.zoomService.setupZoomAndBrushBounds(this.sequence.length)),
       // Subscribe to zoom event
       switchMap(() => this.zoomService.zoomed$),
       // Finally, update representation
@@ -264,39 +211,7 @@ export class NgxFeaturesViewerComponent
     this.initializeService.initSVG(this._root);
   }
 
-  public ngOnChanges(changes: SimpleChanges): void {
-    // Case input sequence changes
-    if (changes && changes['sequence']) {
-      // Store reference to sequence
-      this.initializeService.sequence = this.sequence;
-      // Emit sequence
-      this.sequence$.next(this.initializeService.sequence);
-    }
-  }
 
-  public ngAfterContentInit(): void {
-    // Case label templates are defined
-    if (this.labels) {
-      // Loop through each label template
-      this.labels.forEach((label) => {
-        // Case both labels are defined, then throw error
-        if (
-          this.initializeService.labelLeft &&
-          this.initializeService.labelRight
-        ) {
-          throw new Error('Only one label can be defined');
-        }
-        // Case label is left
-        if (label.where === 'left') {
-          this.initializeService.labelLeft = label;
-        }
-        // Case label is right
-        if (label.where === 'right') {
-          this.initializeService.labelRight = label;
-        }
-      });
-    }
-  }
 
   public ngAfterViewInit(): void {
     // Get tooltip directive, fallback to default in case custom is not defined

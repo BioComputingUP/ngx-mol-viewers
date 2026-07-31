@@ -25,11 +25,6 @@ describe('NgxFeaturesViewerComponent Race Conditions & Temporal Dependencies', (
     const traces: Traces = [{ features: [] }];
     component.traces = traces;
     
-    // Trigger lifecycle hooks
-    component.ngOnChanges({
-      sequence: new SimpleChange(null, component.sequence, true)
-    });
-    
     fixture.detectChanges();
     
     // Assert initialization was successful
@@ -52,10 +47,6 @@ describe('NgxFeaturesViewerComponent Race Conditions & Temporal Dependencies', (
     const traces: Traces = [{ features: [] }];
     component.traces = traces;
     
-    component.ngOnChanges({
-      sequence: new SimpleChange(null, component.sequence, false)
-    });
-    
     fixture.detectChanges();
   });
 
@@ -63,9 +54,6 @@ describe('NgxFeaturesViewerComponent Race Conditions & Temporal Dependencies', (
     // Provide initial inputs
     component.sequence = 'ACDEFGHIKLMNPQRSTVWY' as unknown as Sequence;
     component.traces = [{ features: [] }];
-    component.ngOnChanges({
-      sequence: new SimpleChange(null, component.sequence, true)
-    });
     fixture.detectChanges();
 
     let emissionCount = 0;
@@ -88,9 +76,6 @@ describe('NgxFeaturesViewerComponent Race Conditions & Temporal Dependencies', (
 
     // Provide a new trace to trigger second emission
     component.traces = [{ features: [] }, { features: [] }];
-    component.ngOnChanges({
-      traces: new SimpleChange([{ features: [] }], component.traces, false)
-    });
     fixture.detectChanges();
 
     setTimeout(() => {
@@ -106,9 +91,6 @@ describe('NgxFeaturesViewerComponent Race Conditions & Temporal Dependencies', (
     // Provide initial inputs required for rendering
     component.sequence = 'ACDEFGHIKLMNPQRSTVWY' as unknown as Sequence;
     component.traces = [{ features: [] }];
-    component.ngOnChanges({
-      sequence: new SimpleChange(null, component.sequence, true)
-    });
 
     const sub = component.drawService.layoutTraces$.subscribe(() => {
       layoutEmittedSynchronously = true;
@@ -122,5 +104,17 @@ describe('NgxFeaturesViewerComponent Race Conditions & Temporal Dependencies', (
     expect(layoutEmittedSynchronously).withContext('layoutTraces$ should emit synchronously').toBeTrue();
     
     sub.unsubscribe();
+  });
+
+  it('should call zoomService.setupZoomAndBrushBounds during orchestration', () => {
+    const zoomSpy = spyOn(component.zoomService, 'setupZoomAndBrushBounds').and.callThrough();
+
+    component.sequence = 'ACDEFGHIKLMNPQRSTVWY' as unknown as Sequence;
+    component.traces = [{ features: [] }];
+    
+    fixture.detectChanges();
+
+    // Verify it was correctly called with the sequence length
+    expect(zoomSpy).toHaveBeenCalledWith(20);
   });
 });

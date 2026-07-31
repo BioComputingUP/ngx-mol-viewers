@@ -1,6 +1,6 @@
 <div style="position: relative; display: block; width: 100%; height: 100%;" #root>
   <!-- Case template for left label exists -->
-  @if (initializeService.labelLeft; as label) {
+  @if (labelLeft; as label) {
     <!-- Loop through each trace, generate custom tooltip -->
     @for (layout of drawService.layoutTraces$ | async; track layout.trace.id) {
       <!-- Then, generate trace as specified in the given template -->
@@ -16,7 +16,7 @@
     }
   }
   <!-- Case template for right label exists -->
-  @if (initializeService.labelRight; as label) {
+  @if (labelRight; as label) {
     <!-- Loop through each trace, generate custom tooltip -->
     @for (layout of drawService.layoutTraces$ | async; track layout.trace.id) {
       <!-- Then, generate trace as specified in the given template -->

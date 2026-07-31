@@ -205,7 +205,7 @@ export class DrawService {
         const settings = this.initializeService.settings;
         const ml = this.initializeService.margin.left;
         const mr = this.initializeService.margin.right;
-        
+
         return traces.map(trace => ({
           trace,
           top: y('' + trace.id) || 0,
@@ -898,7 +898,7 @@ export class DrawService {
           d3.select<d3.BaseType, Locus>(this)
             .selectAll<d3.BaseType, Locus>('rect')
             // Set position
-            .attr('x', (locus) => scale.x(locus.start - 0.5))
+            .attr('x', (locus) => scale.x(locus.start))
             .attr('y', top)
             // Set size
             .attr('height', feature.height !== undefined ? feature.height : cs)
