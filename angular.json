@@ -25,7 +25,8 @@
             "inlineStyleLanguage": "scss",
             "assets": [
               "projects/demo-showcase/src/favicon.ico",
-              "projects/demo-showcase/src/assets"
+              "projects/demo-showcase/src/assets",
+              "projects/demo-showcase/src/versions.json"
             ],
             "styles": ["projects/demo-showcase/src/styles.scss"],
             "scripts": [
