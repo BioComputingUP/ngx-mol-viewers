@@ -21,6 +21,7 @@ export class SectionSourcesComponent {
       format: 'mmcif',
       label: '8VAP',
       binary: false,
+      chain: "A",
     },
     {
       type: 'remote',
@@ -69,16 +70,16 @@ export class SectionSourcesComponent {
 
   // Define initial loci list
   readonly LOCI: Locus[] = [
-    { start: '1',   end: '10',  chain: 'A',   color: '#599a97' },
-    { start: '11',  end: '20',  chain: 'A',   color: '#28b525' },
-    { start: '21',  end: '30',  chain: 'A',   color: '#008a7c' },
-    { start: '31',  end: '40',  chain: 'A',   color: '#0faa05' },
-    { start: '41',  end: '50',  chain: 'A',   color: '#f8cb31' },
-    { start: '51',  end: '60',  chain: 'A',   color: '#77cb1c' },
-    { start: '61',  end: '70',  chain: 'A',   color: '#36ec09' },
-    { start: '71',  end: '80',  chain: 'A',   color: '#cbf17b' },
-    { start: '81',  end: '90',  chain: 'A',   color: '#5cb185' },
-    { start: '91',  end: '100', chain: 'A',   color: '#fee954' },
+    { start: '1', end: '10', chain: 'A', color: '#599a97' },
+    { start: '11', end: '20', chain: 'A', color: '#28b525' },
+    { start: '21', end: '30', chain: 'A', color: '#008a7c' },
+    { start: '31', end: '40', chain: 'A', color: '#0faa05' },
+    { start: '41', end: '50', chain: 'A', color: '#f8cb31' },
+    { start: '51', end: '60', chain: 'A', color: '#77cb1c' },
+    { start: '61', end: '70', chain: 'A', color: '#36ec09' },
+    { start: '71', end: '80', chain: 'A', color: '#cbf17b' },
+    { start: '81', end: '90', chain: 'A', color: '#5cb185' },
+    { start: '91', end: '100', chain: 'A', color: '#fee954' },
   ];
 
   // Define different loci to display
@@ -86,14 +87,14 @@ export class SectionSourcesComponent {
 
   // Define light settings
   readonly LIGHT: Partial<Settings> = {
-    'background-color' : '#dee2e6',
-    'backbone-color' : '#ffffff',
+    'background-color': '#dee2e6',
+    'backbone-color': '#ffffff',
   };
 
   // Define dark settings
   readonly DARK: Partial<Settings> = {
-    'background-color' : '#1a1d20',
-    'backbone-color' : '#ffffff',
+    'background-color': '#1a1d20',
+    'backbone-color': '#ffffff',
   };
 
   // Define fixed settings
