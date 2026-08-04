@@ -20,4 +20,6 @@ export type Source = (Local | Remote) & {
     label: string;
     // Whether data is binary or not
     binary: boolean;
+    // Define chain
+    chain?: string;
 }
