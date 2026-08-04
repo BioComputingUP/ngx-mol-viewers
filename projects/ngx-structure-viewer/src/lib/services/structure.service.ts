@@ -2,6 +2,8 @@ import { EventEmitter, Injectable } from '@angular/core';
 import { Structure, StructureProperties } from 'molstar/lib/mol-model/structure';
 import { StateObject, StateObjectSelector } from 'molstar/lib/mol-state';
 import { StateTransformer } from 'molstar/lib/mol-state/transformer';
+import { StateTransforms } from 'molstar/lib/mol-plugin-state/transforms';
+import { MolScriptBuilder as MS } from 'molstar/lib/mol-script/language/builder';
 import { Asset } from 'molstar/lib/mol-util/assets';
 import {
   BehaviorSubject,
@@ -180,7 +182,23 @@ export class StructureService {
     // Create model
     const model = await plugin.builders.structure.createModel(parsed, {modelIndex : 0});
     // Create structure
-    return plugin.builders.structure.createStructure(model, {name : 'model', params : {}});
+    let structure = await plugin.builders.structure.createStructure(model, {name : 'model', params : {}});
+
+    // Case chain is defined
+    if (source.chain) {
+      // Get chain property based on settings
+      const chainProperty = this.settingsService.settings.prefer_label_asym_id 
+        ? MS.struct.atomProperty.macromolecular.label_asym_id()
+        : MS.struct.atomProperty.macromolecular.auth_asym_id();
+      // Define expression
+      const expression = MS.struct.generator.atomGroups({
+        'chain-test': MS.core.rel.eq([chainProperty, source.chain])
+      });
+      // Apply selection
+      structure = await plugin.state.data.build().to(structure).apply(StateTransforms.Model.StructureSelectionFromExpression, { expression, label: `Chain ${source.chain}` }).commit();
+    }
+
+    return structure;
   }
 
   protected setResidues(structure: Structure, prefer_label_asym_id = false): void {
