@@ -64,7 +64,7 @@ type GridLines = d3.Selection<
 // Get size of 1rem in pixel
 // https://stackoverflow.com/questions/36532307/rem-px-in-javascript
 export const REM = parseFloat(
-  getComputedStyle(document.documentElement).fontSize,
+  getComputedStyle(document.documentElement).fontSize
 );
 
 // Define function for extracting identifier out of unknown object
@@ -129,7 +129,7 @@ export class DrawService {
   constructor(
     private initializeService: InitializeService,
     private featuresService: FeaturesService,
-    private tooltipService: TooltipService,
+    private tooltipService: TooltipService
   ) {
     // Define draw initialization
     this.draw$ = combineLatest([
@@ -165,7 +165,7 @@ export class DrawService {
       }),
 
       // NOTE This is required to avoid re-drawing everything on each resize/zoom event
-      shareReplay(1),
+      shareReplay(1)
     );
     // Define draw update
     this.drawn$ = combineLatest([
@@ -180,7 +180,7 @@ export class DrawService {
       tap(() => this.updateTraces()),
 
       // Move the selection shadow in correct position
-      map(() => this.updateShadowPosition()),
+      map(() => this.updateShadowPosition())
     );
 
     this.selectedFeature$ = this.selectedFeatureEmit$.pipe(
@@ -193,12 +193,12 @@ export class DrawService {
           this.removeSelectionShadow();
         }
       }),
-      shareReplay(1),
+      shareReplay(1)
     );
 
     this.layoutTraces$ = combineLatest([
       this.drawn$,
-      this.featuresService.tracesNoNesting$
+      this.featuresService.tracesNoNesting$,
     ]).pipe(
       map(([, traces]) => {
         const y = this.initializeService.scale.y;
@@ -206,12 +206,13 @@ export class DrawService {
         const ml = this.initializeService.margin.left;
         const mr = this.initializeService.margin.right;
 
-        return traces.map(trace => ({
+        return traces.map((trace) => ({
           trace,
           top: y('' + trace.id) || 0,
           widthLeft: ml,
           widthRight: mr,
-          height: trace.options?.['line-height'] || settings['line-height'] || 0
+          height:
+            trace.options?.['line-height'] || settings['line-height'] || 0,
         }));
       }),
       shareReplay(1)
@@ -252,7 +253,7 @@ export class DrawService {
       const settings = this.initializeService.settings;
       settings['margin-bottom'] = Math.max(
         settings['margin-bottom'],
-        xAxisXCharHeight + 6,
+        xAxisXCharHeight + 6
       );
     }
   }
@@ -390,7 +391,7 @@ export class DrawService {
 
       const visibleResidues = residues.slice(
         Math.max(0, domainStartFloor - 1),
-        domainEndCeil,
+        domainEndCeil
       );
 
       // Create the visible residues inside the residues container as rect with the color of the residue
@@ -464,7 +465,7 @@ export class DrawService {
     this.initializeService.shadow
       .data([selectionContext])
       .attr('x', scale.x(start))
-      .attr('width', scale.x(end) - scale.x(start));
+      .attr('width', scale.x(end) - scale.x(start) );
   }
 
   private removeSelectionShadow() {
@@ -479,8 +480,6 @@ export class DrawService {
       .attr('x', 0)
       .attr('width', 0);
   }
-
-
 
   private createGrid(traces: InternalTraces): void {
     const group = this.initializeService.focus
@@ -567,7 +566,7 @@ export class DrawService {
         .attr('y2', (d) => rescaleY(d))
         .attr(
           'stroke',
-          trace.options?.['grid-line-color'] || settings['grid-line-color'],
+          trace.options?.['grid-line-color'] || settings['grid-line-color']
         )
         .attr('stroke-width', trace.options?.['grid-line-width'] || 1);
 
@@ -653,7 +652,7 @@ export class DrawService {
             if (feature.type == 'continuous') {
               const coordinates = initializeService.getCoordinates(
                 event,
-                trace.id,
+                trace.id
               );
               if (coordinates[0] <= 0.5) {
                 return;
@@ -677,14 +676,14 @@ export class DrawService {
               initializeService,
               event,
               trace,
-              selectionEmitter$,
-            ),
+              selectionEmitter$
+            )
           );
 
           const appendElementWithAttributes = (
             parent: d3.Selection<SVGGElement, unknown, null, undefined>,
             element: string,
-            attributes: { [key: string]: number | string },
+            attributes: { [key: string]: number | string }
           ): d3.Selection<d3.BaseType, unknown, null, undefined> => {
             const el = parent.append(element);
             Object.entries(attributes).forEach(([key, value]) => {
@@ -715,7 +714,7 @@ export class DrawService {
 
               if (!textColor) {
                 const featureColor = d3.hsl(
-                  d3.color(feature.color || 'black')!,
+                  d3.color(feature.color || 'black')!
                 );
                 textColor =
                   Number.isNaN(featureColor.l) || featureColor.l > 0.5
@@ -730,10 +729,10 @@ export class DrawService {
               const text = appendElementWithAttributes(
                 container,
                 'text',
-                labelAttributes,
+                labelAttributes
               );
               text.text(feature.label);
-              text.style('text-anchor', 'left');
+              text.style('text-anchor', 'start');
               // text.style("pinter-events", "none")
             }
           }
@@ -750,7 +749,7 @@ export class DrawService {
             const line = appendElementWithAttributes(
               container,
               'path',
-              pathAttributes,
+              pathAttributes
             );
             line.style('stroke-dasharray', feature['stroke-dasharray'] || '');
           }
@@ -793,7 +792,7 @@ export class DrawService {
               appendElementWithAttributes(
                 container,
                 'polygon',
-                bSheetAttributes,
+                bSheetAttributes
               );
             }
 
@@ -803,8 +802,8 @@ export class DrawService {
                 Math.max(
                   3,
                   (trace.options?.['content-size'] ||
-                    settings['content-size']) / 8,
-                ),
+                    settings['content-size']) / 8
+                )
               );
               const coilAttributes = {
                 class: 'coil',
@@ -838,7 +837,7 @@ export class DrawService {
       const traceGroups = d3.select<d3.BaseType, InternalTraces>(this);
       // Select all feature groups
       const featureGroups = traceGroups.selectAll<d3.BaseType, Feature>(
-        'g.feature',
+        'g.feature'
       );
       // Loop through each feature group
       featureGroups.each(function (feature, featureIdx: number) {
@@ -898,7 +897,7 @@ export class DrawService {
           d3.select<d3.BaseType, Locus>(this)
             .selectAll<d3.BaseType, Locus>('rect')
             // Set position
-            .attr('x', (locus) => scale.x(locus.start))
+            .attr('x', (locus) => scale.x(locus.start - 0.5))
             .attr('y', top)
             // Set size
             .attr('height', feature.height !== undefined ? feature.height : cs)
@@ -912,9 +911,10 @@ export class DrawService {
             const labelWidth = charWidth * feature.label.length;
             d3.select<d3.BaseType, Locus>(this)
               .selectAll<d3.BaseType, Locus>('text')
-              .attr('x', scale.x(feature.start - 0.5) + 4)
+              .attr('x', scale.x(feature.start - 0.5))
               .attr('y', center)
               .attr('opacity', labelWidth + 8 < featureWidth ? 1 : 0)
+              .attr('dx',8)
               .attr('fill', feature['text-color'] || settings['text-color']);
           }
         }
@@ -969,7 +969,7 @@ export class DrawService {
             radius =
               Math.min(
                 trace.options?.['content-size'] || settings['content-size'],
-                scale.x(1) - scale.x(0),
+                scale.x(1) - scale.x(0)
               ) / 2;
           } else {
             radius = feature.radius || 8;
@@ -992,7 +992,7 @@ export class DrawService {
             radius =
               Math.min(
                 trace.options?.['content-size'] || settings['content-size'],
-                scale.x(1) - scale.x(0),
+                scale.x(1) - scale.x(0)
               ) / 2;
           } else {
             radius = feature.radius || 8;
@@ -1034,7 +1034,7 @@ export class DrawService {
           // Calculate the position in reverse order
           const xPositions = Array.from(
             { length: numBits },
-            (_, i) => startPoint + i * bitOccupancy,
+            (_, i) => startPoint + i * bitOccupancy
           ).filter((x) => x >= startPoint && x <= endPoint);
 
           if (xPositions.length < 2 && xPositions.length > 0) {
@@ -1059,13 +1059,13 @@ export class DrawService {
                       d3
                         .color(feature.color || 'white')!
                         .darker(0.5)
-                        .formatHex(),
+                        .formatHex()
                     )
                     .attr('stroke-width', shapeToDraw == 'helix' ? 0.1 : 0.7)
                     .attr('fill', feature.color || 'black')
                     .attr('transform-origin', 'center center'),
                 (update) => update,
-                (exit) => exit.remove(),
+                (exit) => exit.remove()
               )
               .attr('fill-opacity', (_, i) =>
                 feature.opacity !== undefined
@@ -1073,19 +1073,21 @@ export class DrawService {
                     ? feature.opacity - 0.2
                     : feature.opacity
                   : i % 2 == 0
-                    ? 0.5
-                    : 0.7,
+                  ? 0.5
+                  : 0.7
               )
               .attr('transform', (xPosition, i) => {
                 const flippedXScale = i % 2 == 0 ? xScale : -1 * xScale;
-                return `translate(${scale.x(xPosition)}, ${center + magicNumbers[shapeToDraw]['center']}) scale(${flippedXScale}, ${yScale})`;
+                return `translate(${scale.x(xPosition)}, ${
+                  center + magicNumbers[shapeToDraw]['center']
+                }) scale(${flippedXScale}, ${yScale})`;
               });
 
             // Create a clip-path for each feature so to remove parts outside the range of the feature
             d3.select<d3.BaseType, DSSP>(this)
               .attr(
                 'clip-path',
-                `url(#clip-path-${trace.id}-feature-${featureIdx})`,
+                `url(#clip-path-${trace.id}-feature-${featureIdx})`
               )
               .selectAll(`#clip-path-${trace.id}-feature-${featureIdx}`)
               .data([feature])
@@ -1105,12 +1107,12 @@ export class DrawService {
                     .select('rect')
                     .attr(
                       'width',
-                      totalFeatureWidth > 0 ? totalFeatureWidth : 0,
+                      totalFeatureWidth > 0 ? totalFeatureWidth : 0
                     )
                     .attr('height', cs)
                     .attr('x', scale.x(startPoint))
                     .attr('y', top),
-                (exit) => exit.remove(),
+                (exit) => exit.remove()
               );
           }
 
@@ -1222,8 +1224,8 @@ export class DrawService {
         .attr('x', scale.x(selectionContext.range!.start))
         .attr(
           'width',
-          scale.x(selectionContext.range!.end) -
-            scale.x(selectionContext.range!.start),
+          scale.x(selectionContext.range!.end + 0.5) -
+            scale.x(selectionContext.range!.start)
         );
     }
   }
@@ -1247,7 +1249,7 @@ export class DrawService {
 
     // Emit current traces
     this.traces$.next(
-      this.featuresService.tracesNoNesting$.value.filter((trace) => trace.show),
+      this.featuresService.tracesNoNesting$.value.filter((trace) => trace.show)
     );
   }
 }
@@ -1272,7 +1274,7 @@ function getStartEndPositions(feature: Feature) {
   switch (feature.type) {
     case 'locus':
       featureStart = feature.start - 0.5;
-      featureEnd = feature.end + 0.5;
+      featureEnd = feature.end; // + 0.5;
       break;
     case 'dssp':
       featureStart = feature.start - 0.5;
@@ -1302,7 +1304,7 @@ function selectFeature(
   initializeService: InitializeService,
   event: MouseEvent,
   trace: InternalTrace,
-  selectionEmitter$: EventEmitter<SelectionContext | undefined>,
+  selectionEmitter$: EventEmitter<SelectionContext | undefined>
 ) {
   let { featureStart, featureEnd } = getStartEndPositions(feature);
 
