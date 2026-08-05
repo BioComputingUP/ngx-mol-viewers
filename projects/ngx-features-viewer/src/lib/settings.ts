@@ -20,6 +20,7 @@ export interface Settings extends ContentSettings {
   'plot-background-color': string;
   'grid-line-color': string;
   'text-color': string;
+  'sort-nested-locuses': boolean;
 }
 
 
