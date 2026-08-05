@@ -1,0 +1,17 @@
+// .backportrc.json
+{
+  // example repo info
+  "repoOwner": "biocomputingup",
+  "repoName": "ngx-mol-viewers",
+
+  // `targetBranch` option allows to automatically backport every PR to a specific branch without the need for labels
+  "targetBranches": ["V0", "V1"],
+
+  // the branches available to backport to
+  "targetBranchChoices": ["V0", "V1"],
+
+  // In this case, adding the label "backport-to-production" will backport the PR to the "production" branch
+  "branchLabelMapping": {
+    "^backport-to-(.+)$": "$1"
+  }
+}
