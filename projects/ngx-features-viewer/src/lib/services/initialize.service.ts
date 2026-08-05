@@ -67,7 +67,7 @@ export class InitializeService implements OnDestroy {
   public focusMousedown!: (
     this: SVGGElement,
     event: unknown,
-    d: undefined,
+    d: undefined
   ) => void;
 
   // Get referenced HTML div
@@ -113,6 +113,8 @@ export class InitializeService implements OnDestroy {
     // Define content size (height), line height
     'content-size': 0,
     'line-height': 0,
+    /** When True, locuses are ordered to ensure nested locuses are rendered in order preventing one from covering the other */
+    'sort-nested-locuses': false
   });
 
   private settingsSubscription: Subscription;
@@ -176,11 +178,13 @@ export class InitializeService implements OnDestroy {
   public hoverCircleMarker!: Circle;
 
   // Declare initialization pipeline
-  public readonly initialized$ = new ReplaySubject<d3.Selection<SVGSVGElement, undefined, null, undefined>>(1);
+  public readonly initialized$ = new ReplaySubject<
+    d3.Selection<SVGSVGElement, undefined, null, undefined>
+  >(1);
 
   public getCoordinates(
     mouseEvent: MouseEvent,
-    traceId: unknown,
+    traceId: unknown
   ): [number, number] {
     // Define coordinates
     const x = Math.floor(this.scale.x.invert(mouseEvent.offsetX) + 0.5);
@@ -275,6 +279,11 @@ export class InitializeService implements OnDestroy {
       .call(this.zoom)
       .on('dblclick.zoom', () => this.zoom.scaleTo(this.focus, 1));
 
+    // Prevent page scroll when reaching zoom limits
+    // https://github.com/d3/d3-zoom/issues/158
+    this.focus.call(this.zoom).on('wheel', (event: WheelEvent) => {
+      event.preventDefault();
+    });
     // Save the mousedown.zoom event listener
     this.focusMousedown = this.focus.on('mousedown.zoom')!;
 
@@ -332,7 +341,7 @@ export class InitializeService implements OnDestroy {
           this.svg
             .select('#plot-background')
             .attr('fill', settings['plot-background-color']);
-        }),
+        })
       )
       .subscribe();
   }
@@ -343,7 +352,7 @@ export class InitializeService implements OnDestroy {
 }
 
 export function checkContentSettings(
-  contentSettings: Partial<ContentSettings> | undefined,
+  contentSettings: Partial<ContentSettings> | undefined
 ) {
   if (contentSettings) {
     if (contentSettings['line-height'] && contentSettings['line-height'] < 0) {
@@ -364,7 +373,7 @@ export function checkContentSettings(
       contentSettings['content-size'] > contentSettings['line-height']
     ) {
       console.warn(
-        'Content size cannot be bigger than line height, setting to line height',
+        'Content size cannot be bigger than line height, setting to line height'
       );
       contentSettings['content-size'] = contentSettings['line-height'];
     }
