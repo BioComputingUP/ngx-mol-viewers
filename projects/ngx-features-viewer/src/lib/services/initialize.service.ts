@@ -113,6 +113,8 @@ export class InitializeService implements OnDestroy {
     // Define content size (height), line height
     'content-size': 0,
     'line-height': 0,
+    /** When True, locuses are ordered to ensure nested locuses are rendered in order preventing one from covering the other */
+    'sort-nested-locuses': false
   });
 
   private settingsSubscription: Subscription;

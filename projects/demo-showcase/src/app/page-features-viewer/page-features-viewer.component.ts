@@ -334,8 +334,8 @@ export class PageFeaturesViewerComponent {
             'stroke-color': 'purple',
             'stroke-width': 4,
             height: 40,
-            start: 1,
-            end: 50,
+            start: 70,
+            end: 120,
           },
           {
             label: 'feature-2',
@@ -346,7 +346,7 @@ export class PageFeaturesViewerComponent {
             'stroke-width': 4,
             height: 40,
             start: 55,
-            end: 120,
+            end: 150,
           },
           {
             label: 'feature-3',
