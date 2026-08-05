@@ -465,7 +465,7 @@ export class DrawService {
     this.initializeService.shadow
       .data([selectionContext])
       .attr('x', scale.x(start))
-      .attr('width', scale.x(end) - scale.x(start) );
+      .attr('width', scale.x(end) - scale.x(start));
   }
 
   private removeSelectionShadow() {
@@ -592,6 +592,7 @@ export class DrawService {
     const scale = this.initializeService.scale;
     const circle = this.initializeService.hoverCircleMarker;
 
+    const featureSortingFunc = settings?.['sort-nested-locuses'] ? sortLocuses : undefined;
     // Generate and store traces groups
     this['group.traces'] = this.initializeService.draw
       .selectAll<SVGGElement | BaseType, InternalTrace>('g.trace')
@@ -615,6 +616,7 @@ export class DrawService {
         .append('g')
         .attr('class', (d) => 'feature ' + d.type)
         .attr('id', (_, i) => `trace-${trace.id}-feature-${i}`)
+        .sort(featureSortingFunc)
         .each(function (feature, index) {
           // Define current selection
           const selection = d3.select(this);
@@ -911,10 +913,10 @@ export class DrawService {
             const labelWidth = charWidth * feature.label.length;
             d3.select<d3.BaseType, Locus>(this)
               .selectAll<d3.BaseType, Locus>('text')
-              .attr('x', scale.x(feature.start - 0.5))
+              .attr('x', (locus) => scale.x(locus.start - 0.5))
               .attr('y', center)
               .attr('opacity', labelWidth + 8 < featureWidth ? 1 : 0)
-              .attr('dx',8)
+              .attr('dx', 8)
               .attr('fill', feature['text-color'] || settings['text-color']);
           }
         }
@@ -1253,7 +1255,26 @@ export class DrawService {
     );
   }
 }
-
+/**
+ * Sorts Features to ensure locuses nested on other locuses are rendered in order
+ * ensuring a locus isn't rendered over another
+ * @param a first feature
+ * @param b second feature
+ * @returns
+ */
+function sortLocuses(a: Feature, b: Feature) {
+  if (a.type == 'locus' && b.type == 'locus') {
+    const bfirst = b.start < a.start;
+    const blast = b.end > a.end;
+    if (bfirst && blast) {
+      return 1;
+    }
+    if (!bfirst && !blast) {
+      return -1;
+    }
+  }
+  return 1;
+}
 function parseSequence(sequence: Sequence): string[] {
   const residues: string[] = [];
   // Case sequence is an array
