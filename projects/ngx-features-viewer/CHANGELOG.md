@@ -1,5 +1,11 @@
 # @biocomputingup/ngx-features-viewer
 
+## 1.0.4
+
+### Patch Changes
+
+- Fixed scrolling bug and sort locus rendering to prevent oclusion
+
 ## 1.0.3
 
 ### Patch Changes
