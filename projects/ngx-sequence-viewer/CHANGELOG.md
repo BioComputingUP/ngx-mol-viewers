@@ -1,5 +1,7 @@
 # @biocomputingup/ngx-sequence-viewer
 
+## 2.0.4
+
 ## 2.0.1
 
 ### Patch Changes
