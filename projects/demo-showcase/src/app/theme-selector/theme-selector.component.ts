@@ -1,17 +1,17 @@
 import { Theme, ThemeSelectorService } from './theme-selector.service';
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
-    selector: 'app-theme-selector',
-    // Define dependencies
-    imports: [CommonModule],
-    // Define styles
-    templateUrl: './theme-selector.component.html',
-    styleUrl: './theme-selector.component.scss'
+  selector: 'app-theme-selector',
+  // Define dependencies
+  imports: [CommonModule],
+  // Define styles
+  templateUrl: './theme-selector.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrl: './theme-selector.component.scss',
 })
 export class ThemeSelectorComponent {
-
   // Bind component to logic
   public readonly theme$ = this.themeSelectorService.theme$;
 

@@ -7,6 +7,7 @@ import { NgxStructureViewerComponent } from '@ngx-structure-viewer';
 import {
   provideHttpClient,
   withInterceptorsFromDi,
+  withXhr,
 } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -27,6 +28,6 @@ import { NgModule } from '@angular/core';
     ]),
     CommonModule,
   ],
-  providers: [provideHttpClient(withInterceptorsFromDi())],
+  providers: [provideHttpClient(withXhr(), withInterceptorsFromDi())],
 })
 export class PageStructureViewerModule {}

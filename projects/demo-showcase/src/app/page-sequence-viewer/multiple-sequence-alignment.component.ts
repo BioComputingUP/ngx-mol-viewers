@@ -1,8 +1,11 @@
 import { ThemeSelectorService } from '../theme-selector/theme-selector.service';
 import { Locus, Settings } from '@ngx-sequence-viewer';
-import { Component, EventEmitter } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { map, Observable, shareReplay } from 'rxjs';
-
 
 // Define FASTA file content
 const FASTA = `>unit.1.fasta
@@ -31,13 +34,13 @@ GENYVFWGGREGYETLLNTDMEFE------LDNFARF------LHMAVDYAKEIG-----
 VKD-----`;
 
 @Component({
-    selector: 'app-multiple-sequence-alignment',
-    templateUrl: './multiple-sequence-alignment.component.html',
-    styleUrl: './multiple-sequence-alignment.component.scss',
-    standalone: false
+  selector: 'app-multiple-sequence-alignment',
+  templateUrl: './multiple-sequence-alignment.component.html',
+  styleUrl: './multiple-sequence-alignment.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  standalone: false,
 })
 export class MultipleSequenceAlignmentComponent {
-
   readonly fasta = FASTA;
 
   // Define default settings
@@ -49,7 +52,7 @@ export class MultipleSequenceAlignmentComponent {
     'chunk-size': 5,
     // Do not rotate  index
     'rotate-index': false,
-  }
+  };
 
   readonly loci = [
     { start: 20, end: 30, 'background-color': '#648FFF' },
@@ -70,25 +73,30 @@ export class MultipleSequenceAlignmentComponent {
     // Define the settings observable
     this.settings$ = theme$.pipe(
       // Get theme from document
-      map(() => document.documentElement.getAttribute('data-bs-theme') as 'dark' | 'light'),
+      map(
+        () =>
+          document.documentElement.getAttribute('data-bs-theme') as
+            | 'dark'
+            | 'light'
+      ),
       // Map theme to settings
       map((theme) => {
         // Case theme is dark
         if (theme === 'dark') {
           // Then return dark parameters
-          return { 
+          return {
             // Unpack default settings
             ...this.settings,
             // Override with dark theme settings
-            'background-color': '#212529', 
+            'background-color': '#212529',
             'text-color': 'white',
           };
         }
         // Otherwise, return light parameters
-        return this.settings
+        return this.settings;
       }),
       // Cache results
-      shareReplay(1),
+      shareReplay(1)
     );
   }
 
@@ -96,5 +104,4 @@ export class MultipleSequenceAlignmentComponent {
     // Just emit selected value
     this.selected$.emit(locus);
   }
-
 }
