@@ -61,6 +61,7 @@ export class PageFeaturesViewerComponent {
     'sequence-background-color': undefined,
     'sequence-background-height': '100%',
     'x-axis-show': true,
+    'sort-nested-locuses': true
   };
 
   public settings$: Observable<Settings>;
