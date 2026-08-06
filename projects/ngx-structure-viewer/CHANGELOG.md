@@ -1,5 +1,11 @@
 # @biocomputingup/ngx-structure-viewer
 
+## 2.0.3
+
+### Patch Changes
+
+- Add chain property
+
 ## 2.0.1
 
 ### Patch Changes
