@@ -8,6 +8,7 @@ import {
   Output,
   SimpleChanges,
   ViewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { combineLatestWith, map, shareReplay, startWith } from 'rxjs';
 import { Locus } from './interfaces/locus';
@@ -21,23 +22,24 @@ import { SettingsService } from './services/settings.service';
 import { StructureService } from './services/structure.service';
 
 @Component({
-    // eslint-disable-next-line @angular-eslint/component-selector
-    selector: 'ngx-structure-viewer',
-    styleUrl: './ngx-structure-viewer.component.scss',
-    template: '<div [style.background-color]="background$ | async" #container></div>',
-    // Handle dependencies
-    imports: [CommonModule],
-    providers: [
-        RepresentationService,
-        // HighlightService,
-        StructureService,
-        SettingsService,
-        MolstarService,
-        PluginService,
-    ]
+  // eslint-disable-next-line @angular-eslint/component-selector
+  selector: 'ngx-structure-viewer',
+  styleUrl: './ngx-structure-viewer.component.scss',
+  template:
+    '<div [style.background-color]="background$ | async" #container></div>',
+  // Handle dependencies
+  imports: [CommonModule],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  providers: [
+    RepresentationService,
+    // HighlightService,
+    StructureService,
+    SettingsService,
+    MolstarService,
+    PluginService,
+  ],
 })
 export class NgxStructureViewerComponent implements AfterViewInit, OnChanges {
-
   @ViewChild('container')
   public container!: ElementRef;
 
@@ -58,26 +60,25 @@ export class NgxStructureViewerComponent implements AfterViewInit, OnChanges {
     // Start with transparent background
     startWith('transparent'),
     // Cache result
-    shareReplay(1),
+    shareReplay(1)
   );
 
   constructor(
     public representationService: RepresentationService,
     public structureService: StructureService,
     public settingsService: SettingsService,
-    public pluginService: PluginService,
-  ) {
-  }
+    public pluginService: PluginService
+  ) {}
 
   public ngOnChanges(changes: SimpleChanges): void {
     // Handle settings changes
     if (changes['settings']) {
       // Get default settings
-      const {DEFAULT} = this.settingsService;
+      const { DEFAULT } = this.settingsService;
       // Initialize settings
       const settings = this.settings || {};
       // Emit settings
-      this.settingsService.settings$.next({...DEFAULT, ...settings});
+      this.settingsService.settings$.next({ ...DEFAULT, ...settings });
     }
     // Handle source changes
     if (changes['source']) {
@@ -95,5 +96,4 @@ export class NgxStructureViewerComponent implements AfterViewInit, OnChanges {
     // Emit container
     this.pluginService.container$.next(this.container);
   }
-
 }

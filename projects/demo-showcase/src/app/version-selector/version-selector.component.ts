@@ -1,6 +1,12 @@
 import { Location } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, inject, signal, type OnInit } from '@angular/core';
+import {
+  Component,
+  inject,
+  signal,
+  type OnInit,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { from, map, shareReplay, switchMap, type Observable } from 'rxjs';
 
 type VersionsJson = {
@@ -16,6 +22,7 @@ type LibVersionInfo = {
 @Component({
   selector: 'version-selector',
   imports: [],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './version-selector.component.html',
 })
 export class VersionSelector implements OnInit {
@@ -25,17 +32,19 @@ export class VersionSelector implements OnInit {
   current = signal<string | null>(null);
   async ngOnInit() {
     const versionsResponse = await fetch(
-      this.location.prepareExternalUrl('/versions.json'),
+      this.location.prepareExternalUrl('/versions.json')
     );
     const versionsData: VersionsJson = await versionsResponse.json();
     this.versionList.set(versionsData.versions);
     this.current.set(versionsData.current);
     const foundLatest = this.versionList().find(
-      (x) => x.name == versionsData.latest,
+      (x) => x.name == versionsData.latest
     );
     if (!foundLatest) {
       throw new Error(
-        `Cannot find latest version ${versionsData.latest} in the versions array \n ${JSON.stringify(this.versionList, null, 2)}`,
+        `Cannot find latest version ${
+          versionsData.latest
+        } in the versions array \n ${JSON.stringify(this.versionList, null, 2)}`
       );
     }
     this.latest.set(foundLatest);

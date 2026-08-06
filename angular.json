@@ -35,10 +35,7 @@
               "node_modules/@popperjs/core/dist/umd/popper.min.js",
               "node_modules/bootstrap/dist/js/bootstrap.min.js"
             ],
-            "allowedCommonJsDependencies": [
-              "inline-style-parser",
-              "extend"
-            ],
+            "allowedCommonJsDependencies": ["inline-style-parser", "extend"],
             "browser": "projects/demo-showcase/src/main.ts"
           },
           "configurations": {
@@ -65,6 +62,17 @@
                 "styles": true,
                 "vendor": false
               }
+            },
+            "testing": {
+              "aot": false,
+              "optimization": false,
+              "extractLicenses": false,
+              "assets": [
+                "projects/demo-showcase/src/favicon.ico",
+                "projects/demo-showcase/src/assets"
+              ],
+              "scripts": [],
+              "polyfills": ["zone.js", "zone.js/testing"]
             }
           },
           "defaultConfiguration": "production"
@@ -88,17 +96,11 @@
           }
         },
         "test": {
-          "builder": "@angular/build:karma",
+          "builder": "@angular/build:unit-test",
           "options": {
-            "polyfills": ["zone.js", "zone.js/testing"],
             "tsConfig": "projects/demo-showcase/tsconfig.spec.json",
-            "inlineStyleLanguage": "scss",
-            "assets": [
-              "projects/demo-showcase/src/favicon.ico",
-              "projects/demo-showcase/src/assets"
-            ],
-            "styles": ["projects/demo-showcase/src/styles.scss"],
-            "scripts": []
+            "buildTarget": ":build:testing",
+            "runner": "vitest"
           }
         },
         "lint": {
