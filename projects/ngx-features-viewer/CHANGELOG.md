@@ -1,5 +1,11 @@
 # @biocomputingup/ngx-features-viewer
 
+## 2.0.4
+
+### Patch Changes
+
+- bug fixes and improvements
+
 ## 2.0.2
 
 ### Patch Changes
