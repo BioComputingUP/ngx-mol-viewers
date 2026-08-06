@@ -1,4 +1,4 @@
-import { CommonModule, Location } from '@angular/common';
+import { Location } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, inject, signal, type OnInit } from '@angular/core';
 import { from, map, shareReplay, switchMap, type Observable } from 'rxjs';
@@ -15,7 +15,7 @@ type LibVersionInfo = {
 };
 @Component({
   selector: 'version-selector',
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './version-selector.component.html',
 })
 export class VersionSelector implements OnInit {

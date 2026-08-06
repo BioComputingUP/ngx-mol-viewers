@@ -1,6 +1,6 @@
 // Core dependencies
 import { RouterModule, RouterOutlet } from '@angular/router';
-import { CommonModule, HashLocationStrategy, LocationStrategy } from '@angular/common';
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { Component } from '@angular/core';
 // Custom dependencies
 import { ThemeSelectorComponent } from './theme-selector/theme-selector.component';
@@ -12,19 +12,12 @@ import { VersionSelector } from './version-selector/version-selector.component';
 @Component({
     selector: 'app-root',
     imports: [
-        // Custom components
-        ThemeSelectorComponent,
-        PageHomeModule,
-        VersionSelector,
-        // // TODO Import pages
-        // PageStructureViewerModule,
-        // PageFeaturesViewerModule,
-        // PageSequenceViewerModule,
-        // Core modules
-        CommonModule,
-        RouterModule,
-        RouterOutlet,
-    ],
+    ThemeSelectorComponent,
+    PageHomeModule,
+    VersionSelector,
+    RouterModule,
+    RouterOutlet
+],
     providers: [
         // Activate hash routing
         { provide: LocationStrategy, useClass: HashLocationStrategy },

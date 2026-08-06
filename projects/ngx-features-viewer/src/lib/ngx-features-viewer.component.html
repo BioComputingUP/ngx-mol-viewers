@@ -5,12 +5,12 @@
     @for (layout of drawService.layoutTraces$ | async; track layout.trace.id) {
       <!-- Then, generate trace as specified in the given template -->
       <div [id]="'label-left-' + layout.trace.id" tabindex=0 (click)="drawService.onLabelClick(layout.trace)" class="label"
-           (keyup)="drawService.onLabelClick(layout.trace)" 
-           [style.display]="layout.trace.show ? 'block' : 'none'"
-           [style.top.px]="layout.top"
-           [style.left.px]="0"
-           [style.width.px]="layout.widthLeft"
-           [style.height.px]="layout.height">
+        (keyup)="drawService.onLabelClick(layout.trace)"
+        [style.display]="layout.trace.show ? 'block' : 'none'"
+        [style.top.px]="layout.top"
+        [style.left.px]="0"
+        [style.width.px]="layout.widthLeft"
+        [style.height.px]="layout.height">
         <ng-container [ngTemplateOutlet]="label.templateRef" [ngTemplateOutletContext]="{ trace: layout.trace }"/>
       </div>
     }
@@ -21,13 +21,13 @@
     @for (layout of drawService.layoutTraces$ | async; track layout.trace.id) {
       <!-- Then, generate trace as specified in the given template -->
       <div [id]="'label-right-' + layout.trace.id" tabindex=0 class="label"
-           [style.display]="layout.trace.show ? 'block' : 'none'"
-           [style.top.px]="layout.top"
-           [style.right.px]="0"
-           [style.width.px]="layout.widthRight"
-           [style.height.px]="layout.height">
+        [style.display]="layout.trace.show ? 'block' : 'none'"
+        [style.top.px]="layout.top"
+        [style.right.px]="0"
+        [style.width.px]="layout.widthRight"
+        [style.height.px]="layout.height">
         <ng-container [ngTemplateOutlet]="label.templateRef"
-                      [ngTemplateOutletContext]="{ trace: layout.trace }"/>
+          [ngTemplateOutletContext]="{ trace: layout.trace }"/>
       </div>
     }
   }
@@ -42,17 +42,18 @@
     @if (tooltipService.tooltip$ | async; as context) {
       <!-- Show template -->
       <ng-container [ngTemplateOutlet]="tooltipService.templateRef"
-                    [ngTemplateOutletContext]="context"></ng-container>
+      [ngTemplateOutletContext]="context"></ng-container>
     }
   </div>
 </div>
 
 <ng-template let-trace="trace" let-feature="feature" let-index="index" let-coordinates="coordinates"
-             ngx-features-viewer-tooltip>
+  ngx-features-viewer-tooltip>
   Trace: {{ trace.id }}<br>
   Feature: {{ feature.type }}<br>
   Index: {{ index }}<br>
   Coordinates: ({{ coordinates[0] }}, {{ coordinates[1] }})<br>
 </ng-template>
 
-<ng-container *ngIf="drawService.selectedFeature$ | async"></ng-container>
+@if (drawService.selectedFeature$ | async) {
+}
