@@ -1,6 +1,6 @@
 {
   "name": "@biocomputingup/ngx-structure-viewer",
-  "version": "4.0.0",
+  "version": "5.0.0",
   "license": "MIT",
   "private": false,
   "author": {
@@ -13,13 +13,13 @@
       "email": "adelbouhraoua23@gmail.com"
     },
     {
-      "name": "Yousra Hind Bouhraoua",
+      "name": "Yousra Hind Bouhraoura",
       "email": "yousrabouhraoua63@gmail.com"
     }
   ],
   "peerDependencies": {
-    "@angular/common": "^21.0.0",
-    "@angular/core": "^21.0.0",
+    "@angular/common": "^22.0.0",
+    "@angular/core": "^22.0.0",
     "molstar": "^4.0.0",
     "rxjs": "~7.8.1"
   },
