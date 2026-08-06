@@ -23,7 +23,7 @@ import { Traces } from '../../../../ngx-features-viewer/src/lib/trace';
 
 // >sp|P04637|P53_HUMAN Cellular tumor antigen p53 OS=Homo sapiens OX=9606 GN=TP53 PE=1 SV=4
 const P04637 =
-  'MEEPQSDPSVEPPLSQETFSMEEPQSDPSVEPPLSQETFSMEEPQSDPSVEPPLSQETFSMEEPQSDPSVEPPLSQETFSMEEPQSDPSVEPPLSQETFSMEEPQSDPSVEPPLSQETFSMEEPQSDPSVEPPLSQETFSMEEPQSDPSVEPPLSQETFSMEEPQSDPSVEPPLSQETFSMEEPQSDPSVEPPLSQETFSMEEPQSDPSVEPPLSQE';
+  'MEEPQSDPSVEPPLSQETFSDLWKLLPENNVLSPLPSQAMDDLMLSPDDIEQWFTEDPGPDEAPRMPEAAPPVAPAPAAPTPAAPAPAPSWPLSSSVPSQKTYQGSYGFRLGFLHSGTAKSVTCTYSPALNKMFCQLAKTCPVQLWVDSTPPPGTRVRAMAIYKQSQHMTEVVRRCPHHERCSDSDGLAPPQHLIRVEGNLRVEYLDDRNTFRHSVVVPYEPPEVGSDCTTIHYNYMCNSSCMGGMNRRPILTIITLEDSSGNLLGRNSFEVRVCACPGRDRRTEEENLRKKGEPHHELPPGSTKRALPNNTSSSPQPKKKPLDGEYFTLQIRGRERFEMFRELNEALELKDAQAGKEPGGSRAHSSHLKSKKGQSTSRHKKLMFKTEGPDSD';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
@@ -61,6 +61,7 @@ export class PageFeaturesViewerComponent {
     'sequence-background-color': undefined,
     'sequence-background-height': '100%',
     'x-axis-show': true,
+    'sort-nested-locuses': true
   };
 
   public settings$: Observable<Settings>;
@@ -334,8 +335,8 @@ export class PageFeaturesViewerComponent {
             'stroke-color': 'purple',
             'stroke-width': 4,
             height: 40,
-            start: 1,
-            end: 50,
+            start: 70,
+            end: 120,
           },
           {
             label: 'feature-2',
@@ -346,7 +347,7 @@ export class PageFeaturesViewerComponent {
             'stroke-width': 4,
             height: 40,
             start: 55,
-            end: 120,
+            end: 150,
           },
           {
             label: 'feature-3',
