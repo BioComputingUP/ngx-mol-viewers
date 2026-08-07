@@ -14,15 +14,9 @@
       "@ngx-structure-viewer": [
         "./projects/ngx-structure-viewer/src/public-api"
       ],
-      "@ngx-features-viewer": [
-        "./projects/ngx-features-viewer/src/public-api"
-      ],
-      "@ngx-sequence-viewer": [
-        "./projects/ngx-sequence-viewer/src/public-api"
-      ],
-      "@utils": [
-        "./projects/utils/index"
-      ]
+      "@ngx-features-viewer": ["./projects/ngx-features-viewer/src/public-api"],
+      "@ngx-sequence-viewer": ["./projects/ngx-sequence-viewer/src/public-api"],
+      "@utils": ["./projects/utils/index"]
     },
     "sourceMap": true,
     "declaration": false,
@@ -31,11 +25,7 @@
     "importHelpers": true,
     "target": "ES2022",
     "module": "ES2022",
-    "useDefineForClassFields": false,
-    "lib": [
-      "ES2022",
-      "dom"
-    ]
+    "useDefineForClassFields": false
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

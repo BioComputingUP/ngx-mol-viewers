@@ -1,6 +1,6 @@
 {
   "name": "@biocomputingup/ngx-features-viewer",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "license": "MIT",
   "private": false,
   "author": {
@@ -36,8 +36,8 @@
     }
   ],
   "peerDependencies": {
-    "@angular/common": "^20.0.0",
-    "@angular/core": "^20.0.0",
+    "@angular/common": "^21.0.0",
+    "@angular/core": "^21.0.0",
     "rxjs": "~7.8.1",
     "d3": "^7.9.0"
   },
