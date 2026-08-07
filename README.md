@@ -23,6 +23,7 @@ Each component has its own NPM repository and can be installed without the other
 | ^19.0.0         | ^2.0.0                       |
 | ^20.0.0         | ^3.0.0                       |
 | ^21.0.0         | ^4.0.0                       |
+| ^22.0.0         | ^5.0.0                       |
 
 ## Components
 
