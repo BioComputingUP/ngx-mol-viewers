@@ -1,0 +1,630 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>ngx-features-viewer documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    </head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="../" class="navbar-brand">ngx-features-viewer documentation</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content miscellaneous-typealiases">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Miscellaneous</li>
+  <li class="breadcrumb-item">Type aliases</li>
+</ol>
+
+<section data-compodoc="block-index">
+    <h3 id="index">Index</h3>
+    <table class="table table-sm table-bordered index-table">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <ul class="index-list">
+                        <li>
+                            <a href="#Circle" title="src/lib/services/initialize.service.ts" ><b>Circle</b>&nbsp;&nbsp;&nbsp;(src/.../initialize.service.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#D3ZoomEvent" title="src/lib/services/zoom.service.ts" ><b>D3ZoomEvent</b>&nbsp;&nbsp;&nbsp;(src/.../zoom.service.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#Domain" title="src/lib/trace.ts" ><b>Domain</b>&nbsp;&nbsp;&nbsp;(src/.../trace.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#DSSPCode" title="src/lib/features/dssp.ts" ><b>DSSPCode</b>&nbsp;&nbsp;&nbsp;(src/.../dssp.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#DSSPShapes" title="src/lib/features/dssp.ts" ><b>DSSPShapes</b>&nbsp;&nbsp;&nbsp;(src/.../dssp.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#Feature" title="src/lib/features/feature.ts" ><b>Feature</b>&nbsp;&nbsp;&nbsp;(src/.../feature.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#FeatureType" title="src/lib/features/feature.ts" ><b>FeatureType</b>&nbsp;&nbsp;&nbsp;(src/.../feature.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#GridLines" title="src/lib/services/draw.service.ts" ><b>GridLines</b>&nbsp;&nbsp;&nbsp;(src/.../draw.service.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#Group" title="src/lib/services/initialize.service.ts" ><b>Group</b>&nbsp;&nbsp;&nbsp;(src/.../initialize.service.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#InternalTraces" title="src/lib/trace.ts" ><b>InternalTraces</b>&nbsp;&nbsp;&nbsp;(src/.../trace.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#LabelGroup" title="src/lib/services/draw.service.ts" ><b>LabelGroup</b>&nbsp;&nbsp;&nbsp;(src/.../draw.service.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#Range" title="src/lib/features/locus.ts" ><b>Range</b>&nbsp;&nbsp;&nbsp;(src/.../locus.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#Rect" title="src/lib/services/initialize.service.ts" ><b>Rect</b>&nbsp;&nbsp;&nbsp;(src/.../initialize.service.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#RectShadow" title="src/lib/services/initialize.service.ts" ><b>RectShadow</b>&nbsp;&nbsp;&nbsp;(src/.../initialize.service.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#Sequence" title="src/lib/sequence.ts" ><b>Sequence</b>&nbsp;&nbsp;&nbsp;(src/.../sequence.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#SequenceContainer" title="src/lib/services/draw.service.ts" ><b>SequenceContainer</b>&nbsp;&nbsp;&nbsp;(src/.../draw.service.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#SVG" title="src/lib/services/initialize.service.ts" ><b>SVG</b>&nbsp;&nbsp;&nbsp;(src/.../initialize.service.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#Trace" title="src/lib/trace.ts" ><b>Trace</b>&nbsp;&nbsp;&nbsp;(src/.../trace.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#TraceGroup" title="src/lib/services/draw.service.ts" ><b>TraceGroup</b>&nbsp;&nbsp;&nbsp;(src/.../draw.service.ts)</a>
+                        </li>
+                        <li>
+                            <a href="#Traces" title="src/lib/trace.ts" ><b>Traces</b>&nbsp;&nbsp;&nbsp;(src/.../trace.ts)</a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+    <h3>src/lib/services/initialize.service.ts</h3>
+    <section data-compodoc="block-typealias">
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="Circle"></a>
+                    <span class="name "><b>Circle</b><a href="#Circle"><span class="icon ion-ios-link"></span></a></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <code>    <code>d3.Selection&lt;SVGCircleElement | undefined |  | undefined&gt;</code>
+</code>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="Group"></a>
+                    <span class="name "><b>Group</b><a href="#Group"><span class="icon ion-ios-link"></span></a></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <code>        <code><a href="../miscellaneous/typealiases.html#SVG" target="_self" >d3.Selection&lt;SVGGElement | undefined |  | undefined&gt;</a></code>
+</code>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="Rect"></a>
+                    <span class="name "><b>Rect</b><a href="#Rect"><span class="icon ion-ios-link"></span></a></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <code>    <code>d3.Selection&lt;SVGRectElement | undefined |  | undefined&gt;</code>
+</code>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="RectShadow"></a>
+                    <span class="name "><b>RectShadow</b><a href="#RectShadow"><span class="icon ion-ios-link"></span></a></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <code>    <code>d3.Selection&lt;SVGRectElement | SelectionContext |  | undefined&gt;</code>
+</code>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="SVG"></a>
+                    <span class="name "><b>SVG</b><a href="#SVG"><span class="icon ion-ios-link"></span></a></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <code>        <code><a href="../miscellaneous/typealiases.html#SVG" target="_self" >d3.Selection&lt;SVGSVGElement | undefined |  | undefined&gt;</a></code>
+</code>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>    <h3>src/lib/services/zoom.service.ts</h3>
+    <section data-compodoc="block-typealias">
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="D3ZoomEvent"></a>
+                    <span class="name "><b>D3ZoomEvent</b><a href="#D3ZoomEvent"><span class="icon ion-ios-link"></span></a></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <code>    <code>d3.D3ZoomEvent&lt;SVGSVGElement | undefined&gt;</code>
+</code>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>    <h3>src/lib/trace.ts</h3>
+    <section data-compodoc="block-typealias">
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="Domain"></a>
+                    <span class="name "><b>Domain</b><a href="#Domain"><span class="icon ion-ios-link"></span></a></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <code>    <code>literal type</code>
+</code>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="InternalTraces"></a>
+                    <span class="name "><b>InternalTraces</b><a href="#InternalTraces"><span class="icon ion-ios-link"></span></a></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <code>        <code><a href="../interfaces/InternalTrace.html" target="_self" >Array&lt;InternalTrace&gt;</a></code>
+</code>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="Trace"></a>
+                    <span class="name "><b>Trace</b><a href="#Trace"><span class="icon ion-ios-link"></span></a></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Represents a trace in the features viewer (a single row), it can contain multiple features and has its own settings.
+This is the type used for the <strong>input</strong> of the features viewer.</p>
+</div>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <code>    <code>literal type</code>
+</code>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="Traces"></a>
+                    <span class="name "><b>Traces</b><a href="#Traces"><span class="icon ion-ios-link"></span></a></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <code>        <code><a href="../miscellaneous/typealiases.html#Trace" target="_self" >Array&lt;Trace&gt;</a></code>
+</code>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>    <h3>src/lib/features/dssp.ts</h3>
+    <section data-compodoc="block-typealias">
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="DSSPCode"></a>
+                    <span class="name "><b>DSSPCode</b><a href="#DSSPCode"><span class="icon ion-ios-link"></span></a></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>The code that represents the secondary structure of the protein.</p>
+</div>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <code>    <code>&quot;G&quot; | &quot;H&quot; | &quot;I&quot; | &quot;E&quot; | &quot;B&quot; | &quot;S&quot; | &quot;T&quot; | &quot;C&quot; | &quot;-&quot;</code>
+</code>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="DSSPShapes"></a>
+                    <span class="name "><b>DSSPShapes</b><a href="#DSSPShapes"><span class="icon ion-ios-link"></span></a></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <code>    <code>&quot;helix&quot; | &quot;sheet&quot; | &quot;coil&quot; | &quot;turn&quot;</code>
+</code>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>    <h3>src/lib/features/feature.ts</h3>
+    <section data-compodoc="block-typealias">
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="Feature"></a>
+                    <span class="name "><b>Feature</b><a href="#Feature"><span class="icon ion-ios-link"></span></a></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Any feature that can be displayed in the features viewer.</p>
+</div>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <code>    <code>Continuous | Locus | DSSP | Pin | Poly</code>
+</code>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="FeatureType"></a>
+                    <span class="name "><b>FeatureType</b><a href="#FeatureType"><span class="icon ion-ios-link"></span></a></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Type that can be associated with a feature in its <code>type</code> property.</p>
+</div>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <code>    <code>&quot;continuous&quot; | &quot;locus&quot; | &quot;dssp&quot; | &quot;pin&quot; | &quot;poly&quot;</code>
+</code>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>    <h3>src/lib/services/draw.service.ts</h3>
+    <section data-compodoc="block-typealias">
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="GridLines"></a>
+                    <span class="name "><b>GridLines</b><a href="#GridLines"><span class="icon ion-ios-link"></span></a></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <code>        <code><a href="../interfaces/InternalTrace.html" target="_self" >d3.Selection&lt;SVGGElement | d3.BaseType | InternalTrace | SVGGElement | d3.BaseType | InternalTraces&gt;</a></code>
+</code>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="LabelGroup"></a>
+                    <span class="name "><b>LabelGroup</b><a href="#LabelGroup"><span class="icon ion-ios-link"></span></a></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <code>        <code><a href="../interfaces/InternalTrace.html" target="_self" >d3.Selection&lt;SVGGElement | d3.BaseType | InternalTrace | SVGGElement | d3.BaseType | InternalTraces&gt;</a></code>
+</code>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="SequenceContainer"></a>
+                    <span class="name "><b>SequenceContainer</b><a href="#SequenceContainer"><span class="icon ion-ios-link"></span></a></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <code>    <code>d3.Selection&lt;SVGGElement | Sequence | SVGGElement | undefined&gt;</code>
+</code>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="TraceGroup"></a>
+                    <span class="name "><b>TraceGroup</b><a href="#TraceGroup"><span class="icon ion-ios-link"></span></a></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <code>        <code><a href="../interfaces/InternalTrace.html" target="_self" >d3.Selection&lt;SVGGElement | d3.BaseType | InternalTrace | SVGGElement | undefined&gt;</a></code>
+</code>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>    <h3>src/lib/features/locus.ts</h3>
+    <section data-compodoc="block-typealias">
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="Range"></a>
+                    <span class="name "><b>Range</b><a href="#Range"><span class="icon ion-ios-link"></span></a></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Range is a range of values with a start and an end.</p>
+</div>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <code>    <code>literal type</code>
+</code>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>    <h3>src/lib/sequence.ts</h3>
+    <section data-compodoc="block-typealias">
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="Sequence"></a>
+                    <span class="name "><b>Sequence</b><a href="#Sequence"><span class="icon ion-ios-link"></span></a></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Export sequence type</p>
+<p>Initially, this was an array of strings (amino acids).
+Now, it allows to decide whether to show sequence or not.
+The only required property is <code>length</code>, as it defined the domain.</p>
+</div>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <code>    <code>string | Array&lt;string&gt; | literal type</code>
+</code>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'miscellaneous-typealiases';
+            var COMPODOC_CURRENT_PAGE_URL = 'typealiases.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+       <script nomodule src="../js/menu-wc_es5.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>
