@@ -1,6 +1,6 @@
 {
   "name": "@biocomputingup/ngx-sequence-viewer",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "private": false,
   "peerDependencies": {
     "@angular/common": "^21.0.0",
