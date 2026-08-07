@@ -1,7 +1,11 @@
 {
   "$schema": "./versions.schema.json",
-  "latest": "v2",
+  "latest": "v3",
   "versions": [
+    {
+      "name": "v3",
+      "url": "/ngx-mol-viewers/v3/"
+    },
     {
       "name": "v2",
       "url": "/ngx-mol-viewers/v2/"
