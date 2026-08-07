@@ -1,8 +1,9 @@
+@use "sass:meta";
 // Add this to apply style only to elements within the `ngx-features-viewer`
 
 ::ng-deep {
   ngx-features-viewer {
-    @import '../styles/labels';
+    @include meta.load-css('../styles/labels');
 
     svg * {
       transform-box: fill-box;

@@ -59,7 +59,6 @@ export class NgxFeaturesViewerTooltipDirective {
     selector: 'ngx-features-viewer',
     imports: [
         NgxFeaturesViewerTooltipDirective,
-        NgxFeaturesViewerLabelDirective,
         CommonModule,
     ],
     providers: [

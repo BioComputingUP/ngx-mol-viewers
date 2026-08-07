@@ -17,12 +17,21 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
+            "stylePreprocessorOptions": {
+              "sass": {
+                "silenceDeprecations": [
+                  "import"
+                ]
+              }
+            },
             "outputPath": {
               "base": "docs"
             },
             "deleteOutputPath": false,
             "index": "projects/demo-showcase/src/index.html",
-            "polyfills": ["zone.js"],
+            "polyfills": [
+              "zone.js"
+            ],
             "tsConfig": "projects/demo-showcase/tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
@@ -30,12 +39,17 @@
               "projects/demo-showcase/src/assets",
               "projects/demo-showcase/src/versions.json"
             ],
-            "styles": ["projects/demo-showcase/src/styles.scss"],
+            "styles": [
+              "projects/demo-showcase/src/styles.scss"
+            ],
             "scripts": [
               "node_modules/@popperjs/core/dist/umd/popper.min.js",
               "node_modules/bootstrap/dist/js/bootstrap.min.js"
             ],
-            "allowedCommonJsDependencies": ["inline-style-parser", "extend"],
+            "allowedCommonJsDependencies": [
+              "inline-style-parser",
+              "extend"
+            ],
             "browser": "projects/demo-showcase/src/main.ts"
           },
           "configurations": {
@@ -72,7 +86,10 @@
                 "projects/demo-showcase/src/assets"
               ],
               "scripts": [],
-              "polyfills": ["zone.js", "zone.js/testing"]
+              "polyfills": [
+                "zone.js",
+                "zone.js/testing"
+              ]
             }
           },
           "defaultConfiguration": "production"
@@ -139,8 +156,13 @@
           "builder": "@angular/build:karma",
           "options": {
             "tsConfig": "projects/ngx-structure-viewer/tsconfig.spec.json",
-            "polyfills": ["zone.js", "zone.js/testing"],
-            "assets": ["projects/ngx-structure-viewer/src/assets"]
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ],
+            "assets": [
+              "projects/ngx-structure-viewer/src/assets"
+            ]
           }
         },
         "lint": {
@@ -179,7 +201,10 @@
           "builder": "@angular/build:karma",
           "options": {
             "tsConfig": "projects/ngx-features-viewer/tsconfig.spec.json",
-            "polyfills": ["zone.js", "zone.js/testing"]
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
           }
         },
         "lint": {
@@ -218,7 +243,10 @@
           "builder": "@angular/build:karma",
           "options": {
             "tsConfig": "projects/ngx-sequence-viewer/tsconfig.spec.json",
-            "polyfills": ["zone.js", "zone.js/testing"]
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
           }
         },
         "lint": {
@@ -261,7 +289,9 @@
     }
   },
   "cli": {
-    "schematicCollections": ["@angular-eslint/schematics"],
+    "schematicCollections": [
+      "@angular-eslint/schematics"
+    ],
     "analytics": false
   }
 }

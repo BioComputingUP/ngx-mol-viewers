@@ -1,3 +1,4 @@
+@use "sass:meta";
 // Custom.scss
 // Option B: Include parts of Bootstrap
 
@@ -16,6 +17,7 @@
 @import "bootstrap/scss/maps";
 @import "bootstrap/scss/mixins";
 @import "bootstrap/scss/root";
+@import "bootstrap-icons/font/bootstrap-icons.scss";
 
 // 6. Optionally include any other parts as needed
 @import "bootstrap/scss/utilities";
@@ -34,6 +36,7 @@
 @import "bootstrap/scss/placeholders";
 @import "bootstrap/scss/forms";
 
+
 // 7. Optionally include utilities API last to generate classes based on the Sass map in `_utilities.scss`
 @import "bootstrap/scss/utilities/api";
 
@@ -41,6 +44,7 @@
   .dark-only {
     display: initial;
   }
+
   .light-only {
     display: none;
   }
@@ -50,14 +54,14 @@
   .dark-only {
     display: none;
   }
+
   .light-only {
     display: initial;
   }
 }
 
 // 8. Add additional custom code here
-@import "bootstrap-icons";
-@import "./styles/background";
-@import "./styles/scaffold";
-@import "./styles/molstar";
-@import "./styles/utils";
+@import "styles/background";
+@import "styles/scaffold";
+@import "styles/molstar";
+@import "styles/utils";
