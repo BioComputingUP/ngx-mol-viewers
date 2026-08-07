@@ -1,3 +1,4 @@
+@use "sass:meta";
 :host {
     // Cover the whole container
     overflow: hidden;
@@ -13,7 +14,7 @@
     }
 
     ::ng-deep {
-        @import 'molstar/lib/mol-plugin-ui/skin/dark.scss';
+        @include meta.load-css('molstar/lib/mol-plugin-ui/skin/dark.scss');
 
         canvas {
             background-image: none !important;

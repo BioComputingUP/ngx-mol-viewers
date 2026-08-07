@@ -1,10 +1,12 @@
+@use 'variables';
+
 .msp-plugin {
-  
+
   // Define default button style
   .msp-btn {
     // Use tertiary color fro button background
-    background-color: $gradient-start !important;
-    background: $gradient !important;
+    background-color: variables.$gradient-start !important;
+    background: variables.$gradient !important;
     color: $white !important;
   }
 
@@ -14,7 +16,8 @@
   }
 
   // Show only first two child
-  .msp-viewport-controls-buttons > div {
+  .msp-viewport-controls-buttons>div {
+
     // Show first two child
     &:nth-child(n+3) {
       display: none;
