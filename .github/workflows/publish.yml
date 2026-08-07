@@ -1,0 +1,44 @@
+name: Publish to NPM
+
+on:
+  workflow_dispatch: # Allows you to manually trigger the publish from the Actions tab
+  push:
+    branches:
+      - V0
+      - V1
+      - v2
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: npm-publish
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build libraries
+        run: npm run build:libs
+
+      - name: Publish ngx-structure-viewer
+        run: npm publish ./dist/ngx-structure-viewer --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish ngx-sequence-viewer
+        run: npm publish ./dist/ngx-sequence-viewer --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish ngx-features-viewer
+        run: npm publish ./dist/ngx-features-viewer --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
