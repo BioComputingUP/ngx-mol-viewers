@@ -1,6 +1,9 @@
 {
   "name": "@biocomputingup/ngx-structure-viewer",
-  "version": "0.0.27",
+  "version": "0.0.28",
+  "publishConfig": {
+    "tag": "v0"
+  },
   "license": "MIT",
   "author": {
     "name": "Damiano Clementel",

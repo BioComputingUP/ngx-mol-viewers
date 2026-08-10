@@ -1,7 +1,10 @@
 {
   "name": "@biocomputingup/ngx-features-viewer",
-  "version": "0.0.27",
+  "version": "0.0.28",
   "license": "MIT",
+  "exports": {
+    "./.npmrc": "./.npmrc"
+  },
   "author": {
     "name": "Damiano Clementel",
     "email": "damiano.clementel@gmail.com"
