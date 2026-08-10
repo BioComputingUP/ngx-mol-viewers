@@ -2,6 +2,7 @@ import { ThemeSelectorService } from '../theme-selector/theme-selector.service';
 import { map, Observable, shareReplay } from 'rxjs';
 import { Settings } from '@ngx-sequence-viewer';
 import { Component, ChangeDetectionStrategy } from '@angular/core';
+import type { SingleSeqSettings } from '../../../../ngx-sequence-viewer/src/lib/single-sequence-viewer/util';
 
 @Component({
   selector: 'app-single-sequence-viewer',
@@ -12,14 +13,9 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
 })
 export class SingleSequenceViewerComponent {
   // Define initial settings
-  readonly settings: Partial<Settings> = {
+  readonly settings: Partial<SingleSeqSettings> = {
     // Set background, text color
-    'background-color': '#FFFFFF',
-    'text-color': 'black',
-    // Rotate index
-    'rotate-index': true,
-    // Disable splitting into chunks
-    'chunk-size': -1,
+    'chunk-size': 10,
   };
 
   // Define test sequence
@@ -59,7 +55,7 @@ export class SingleSequenceViewerComponent {
   ];
 
   // Define the sequence viewer configuration
-  public settings$: Observable<Partial<Settings>>;
+  public settings$: Observable<Partial<SingleSeqSettings>>;
 
   // Dependency injection
   constructor(public themeSelectorService: ThemeSelectorService) {
@@ -68,26 +64,24 @@ export class SingleSequenceViewerComponent {
     // Define the settings observable
     this.settings$ = theme$.pipe(
       // Get theme from document
-      map(
-        () =>
-          document.documentElement.getAttribute('data-bs-theme') as
-            | 'dark'
-            | 'light'
-      ),
+      map(() => this.settings),
+      // document.documentElement.getAttribute('data-bs-theme') as
+      //   | 'dark'
+      //   | 'light'
       // Map theme to settings
-      map((theme) => {
-        // Case theme is dark
-        if (theme === 'dark') {
-          // Then return dark parameters
-          return {
-            ...this.settings,
-            'background-color': '#212529',
-            'text-color': 'white',
-          };
-        }
-        // Otherwise, return light parameters
-        return this.settings;
-      }),
+      // map((theme) => {
+      //   // Case theme is dark
+      //   if (theme === 'dark') {
+      //     // Then return dark parameters
+      //     return {
+      //       ...this.settings,
+      //       'background-color': '#212529',
+      //       'text-color': 'white',
+      //     };
+      //   }
+      //   // Otherwise, return light parameters
+      //   return this.settings;
+      // }),
       // Cache results
       shareReplay(1)
     );

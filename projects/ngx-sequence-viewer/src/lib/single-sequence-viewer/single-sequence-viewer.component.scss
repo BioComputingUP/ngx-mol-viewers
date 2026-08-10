@@ -1,0 +1,41 @@
+:host {
+    font-family: monospace, monospace;
+    user-select: none;
+    .chunk {
+        display: flex;
+        flex-direction: column;
+        justify-content: start;
+        flex-wrap: nowrap;
+        gap: 1px;
+        .chunk-header {
+            width: 100%;
+            cursor: default;
+            user-select: none;
+            display: flex;
+            flex-direction: row;
+            justify-content: end;
+            font-size: 0.75rem;
+        }
+        .position-container {
+            display: flex;
+            flex-direction: row;
+            justify-content: start;
+            flex-wrap: nowrap;
+            gap: 1px;
+        }
+
+        .position {
+            display: contents;
+            .cell {
+                display: inline;
+                user-select: text;
+            }
+        };
+    }
+    .chunks {
+        display: flex;
+        flex-direction: row;
+        justify-content: start;
+        flex-wrap: wrap;
+    }
+}
