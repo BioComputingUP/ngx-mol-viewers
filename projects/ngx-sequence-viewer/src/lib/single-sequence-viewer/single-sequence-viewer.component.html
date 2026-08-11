@@ -1,45 +1,23 @@
 @if(data$ | async; as data) {
   @let chunks = data[0];
   @let sequence = data[1];
-  @let settings = data[2];
+  <!-- @let settings = data[2]; -->
   <div class="scaffold">
-    <!-- [class.split-chunks]="settings['split-chunks']"
-    [class.rotate-index]="settings['rotate-index']"
-    [style.background-color]="settings['background-color']"
-    [style.color]="settings['text-color']"> -->
     <!-- Show labels -->
     <div class="labels">
       <!-- Other labels are sequences -->
 
     </div>
     <!-- Show content -->
-    <div class="chunks"
-      [style.gap]="settings['chunk-gap'] + 'rem'"
-    >
+    <div class="sequence">
       <!-- Loop through each chunk -->
        @for (chunk of chunks; track $index) {
-         <div class="chunk">
-           <!-- Chunk header template -->
-           <ng-container *ngTemplateOutlet="chunkHeaderTemplate; context: chunk"></ng-container>
-           <!-- Loop through each position in chunk -->
-           <div class="position-container">
-             @for (position of chunk.text; track i; let i = $index) {
-               <!-- Define position wrapper -->
-               <span class="position">
-                 <!-- Add index (and placeholder) -->
-                 <!-- <ng-container *ngTemplateOutlet="indexCellTemplate; context: { j: chunk.start + j }"></ng-container> -->
-                 <!-- Case there is more than one sequence -->
-                   @if(sequence[i]; as aa) {
-                     <!-- Define residue wrapper -->
-                     <ng-container *ngTemplateOutlet="residueCellTemplate; context: { i, j: chunk.start + i, value: aa }"></ng-container>
-                   }
-               </span>
-             }
-           </div>
-         </div>
+         <span class="chunk">
+         @for(residue of chunk.text; track residueIndex; let residueIndex = $index) {
+           <ng-container *ngTemplateOutlet="cellTemplate, context: { i: residueIndex, name: 'residue' }"></ng-container>
+         }
+         </span>
        }
-     <!-- @if(chunks$ | async; as chunks) {
-     } -->
     </div>
   </div>
 <ng-template #chunkHeaderTemplate let-start="start" let-end="end">
@@ -48,28 +26,16 @@
   </div>
 </ng-template>
 <!-- Define cell template -->
-<ng-template let-i="i" let-j="j" #residueCellTemplate>
-  <ng-container *ngTemplateOutlet="cellTemplate, context: { i, j, name: 'residue' }"></ng-container>
+<ng-template let-i="i" #residueCellTemplate>
+  <ng-container *ngTemplateOutlet="cellTemplate, context: { i, name: 'residue' }"></ng-container>
 </ng-template>
 
 <!-- Define generic cell template -->
-<ng-template let-i="i" let-j="j" let-value="value" let-name="name" #cellTemplate>
-<!-- Get selection boundaries (if any) -->
-<!-- @if(styles$ | async; as styles) { -->
-  <!-- Get style for current cell -->
-  <!-- @if(styles[i][j]; as style) { -->
-    <!-- Define residue wrapper -->
-    <span [id]="'cell' + '-' + i + '-' + j"
+<ng-template let-i="i" let-value="value" let-name="name" #cellTemplate>
+    <span [id]="'cell' + '-' + i"
       [class]="['cell', name]" [innerHTML]="sequence[i]">
-      <!-- [style.background-color]="style['background-color']" -->
-      <!-- [style.border-color]="style['border-color']" -->
-      <!-- [style.color]="style['color']" -->
-      <!-- <!-- (mouseenter)="onMouseEnter($event, indexService.keys[j])" -->
-      <!-- (mousedown)="onMouseDown($event, indexService.keys[j])"> -->
-      <!-- {{ value ? value :  }} -->
+
     </span>
-  <!-- } -->
-<!-- } -->
 </ng-template>
 
 }

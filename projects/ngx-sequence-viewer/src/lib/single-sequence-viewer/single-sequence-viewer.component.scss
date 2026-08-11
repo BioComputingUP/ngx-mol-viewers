@@ -1,41 +1,24 @@
 :host {
     font-family: monospace, monospace;
-    user-select: none;
     .chunk {
-        display: flex;
-        flex-direction: column;
-        justify-content: start;
-        flex-wrap: nowrap;
-        gap: 1px;
-        .chunk-header {
-            width: 100%;
-            cursor: default;
-            user-select: none;
-            display: flex;
-            flex-direction: row;
-            justify-content: end;
-            font-size: 0.75rem;
-        }
-        .position-container {
-            display: flex;
-            flex-direction: row;
-            justify-content: start;
-            flex-wrap: nowrap;
-            gap: 1px;
-        }
-
-        .position {
-            display: contents;
-            .cell {
-                display: inline;
-                user-select: text;
-            }
-        };
+        white-space: nowrap;
+        width: 10ch;
+        margin: 1rem 0 1rem 1rem;
+        display: inline-block;
+        position: relative;
     }
-    .chunks {
-        display: flex;
-        flex-direction: row;
-        justify-content: start;
-        flex-wrap: wrap;
+
+    .sequence {
+        counter-reset: sequence;
+    }
+
+    .chunk::before {
+        content: counter(sequence);
+        counter-increment: sequence 10;
+        opacity: 0.8;
+        font-weight: 700;
+        position: absolute;
+        top: -1rem;
+        right: 0;
     }
 }
