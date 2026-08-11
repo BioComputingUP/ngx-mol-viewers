@@ -498,10 +498,15 @@ export class DrawService {
       .attr('class', 'grid-line-group')
       .join('line');
 
-    this['group.grid'].each((trace) => {
+    this['group.grid'].each(function (trace) {
+      const traceGroup = d3.select(this);
+      // Remove all existing grid lines to force re-render on updates
+      traceGroup.selectAll('line.grid-line').remove();
+      traceGroup.selectAll('line.zero-line').remove();
+
       if (trace.options?.['grid']) {
         // In each group of grid lines, create the lines
-        this['group.grid']
+        traceGroup
           .selectAll('line.grid-line')
           .data(trace.options?.['grid-y-values'] || [])
           .enter()
@@ -514,7 +519,7 @@ export class DrawService {
       // Create initial zero-line if defined
       if (trace.options?.['zero-line']) {
         // Create zero line
-        this['group.grid']
+        traceGroup
           .selectAll('line.zero-line')
           .data([true])
           .enter()
@@ -606,6 +611,11 @@ export class DrawService {
     this['group.traces'].each(function (trace) {
       // Define trace group
       const traceGroup = d3.select(this);
+      
+      // Remove all existing features to force a full re-render when traces update
+      // This ensures that any data mutations or property changes (like fill/stroke) are correctly applied
+      traceGroup.selectAll('g.feature').remove();
+
       // Define feature groups
       const featureGroup = traceGroup
         .selectAll<d3.BaseType, Feature>('g.feature')
