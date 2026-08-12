@@ -128,11 +128,16 @@ export class ZoomService implements OnDestroy {
         const [start, end] = x.domain();
 
         // These are needed to clamp the zoom when doing a transition
+        let newStart = start;
+        let newEnd = end;
         if (start < 0.5) {
-          x.domain([0.5, end]);
+          newStart = 0.5;
         }
-        if (end > this.initService.sequence.length + .5) {
-          x.domain([start, this.initService.sequence.length + 0.5]);
+        if (end > this.initService.sequence.length + 0.5) {
+          newEnd = this.initService.sequence.length + 0.5;
+        }
+        if (newStart !== start || newEnd !== end) {
+          x.domain([newStart, newEnd]);
         }
 
         // Define horizontal axis ticks
