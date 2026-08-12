@@ -1,5 +1,11 @@
 # @biocomputingup/ngx-features-viewer
 
+## 0.0.30
+
+### Patch Changes
+
+- Mistakenly published package with missing changes on 0.0.29
+
 ## 0.0.29
 
 ### Patch Changes
