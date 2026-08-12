@@ -1,5 +1,15 @@
 # @biocomputingup/ngx-features-viewer
 
+## 0.0.29
+
+### Patch Changes
+
+## Feature Viewer
+
+- Unify rendering pipeline to avoid discrepancies between initial rendering and updated rendering
+- Reduce bloated draw service by creating the `gridRenderer` `SequenceRenderer` and update the `TooltipService`
+- create test to ensure rendered content is consistently the same even after going through update cycles
+
 ## 0.0.28
 
 ### Patch Changes
