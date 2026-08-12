@@ -17,7 +17,6 @@ import {
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
-import * as d3 from 'd3';
 import { map, Observable, Subscription, switchMap, tap } from 'rxjs';
 import { Sequence } from './sequence';
 import { DrawService } from './services/draw.service';
