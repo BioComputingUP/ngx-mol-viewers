@@ -5,10 +5,10 @@
   "repoName": "ngx-mol-viewers",
 
   // `targetBranch` option allows to automatically backport every PR to a specific branch without the need for labels
-  "targetBranches": ["V0", "V1"],
+  "targetBranches": ["V0", "V1", "v2", "v3", "v4"],
 
   // the branches available to backport to
-  "targetBranchChoices": ["V0", "V1"],
+  "targetBranchChoices": ["V0", "V1", "v2", "v3", "v4"],
 
   // In this case, adding the label "backport-to-production" will backport the PR to the "production" branch
   "branchLabelMapping": {
