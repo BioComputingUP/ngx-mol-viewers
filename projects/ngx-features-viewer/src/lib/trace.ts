@@ -1,6 +1,5 @@
 import { TraceSettings } from "./settings";
 import { Feature } from "./features/feature";
-import { Sequence } from "./sequence";
 
 /**
  * Represents a trace in the features viewer (a single row), it can contain multiple features and has its own settings.
@@ -49,39 +48,3 @@ export interface InternalTrace extends Trace {
 }
 
 export type InternalTraces = Array<InternalTrace>;
-
-export interface LayoutTrace {
-  trace: InternalTrace;
-  top: number;
-  widthLeft: number;
-  widthRight: number;
-  height: number;
-}
-
-export type SequenceContainer = d3.Selection<
-  SVGGElement,
-  Sequence,
-  SVGGElement,
-  undefined
->;
-
-export type LabelGroup = d3.Selection<
-  SVGGElement | d3.BaseType,
-  InternalTrace,
-  SVGGElement | d3.BaseType,
-  InternalTraces
->;
-
-export type TraceGroup = d3.Selection<
-  SVGGElement | d3.BaseType,
-  InternalTrace,
-  SVGGElement,
-  undefined
->;
-
-export type GridLines = d3.Selection<
-  SVGGElement | d3.BaseType,
-  InternalTrace,
-  SVGGElement | d3.BaseType,
-  InternalTraces
->;
