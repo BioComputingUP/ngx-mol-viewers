@@ -29,6 +29,8 @@ import {
 import { ResizeService } from './services/resize.service';
 import { TooltipService } from './services/tooltip.service';
 import { ZoomService } from './services/zoom.service';
+import { SequenceRenderer } from './services/renderers/sequence.renderer';
+import { GridRenderer } from './services/renderers/grid.renderer';
 // Custom data types
 import { Settings } from './settings';
 import { Traces } from './trace';
@@ -68,6 +70,8 @@ export class NgxFeaturesViewerTooltipDirective {
         ResizeService,
         DrawService,
         ZoomService,
+        SequenceRenderer,
+        GridRenderer,
     ],
     templateUrl: './ngx-features-viewer.component.html',
     styleUrl: './ngx-features-viewer.component.scss',
