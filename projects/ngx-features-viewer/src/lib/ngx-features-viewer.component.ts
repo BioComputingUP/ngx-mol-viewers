@@ -17,7 +17,6 @@ import {
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
-import * as d3 from 'd3';
 import { map, Observable, Subscription, switchMap, tap } from 'rxjs';
 import { Sequence } from './sequence';
 import { DrawService } from './services/draw.service';
@@ -30,6 +29,8 @@ import {
 import { ResizeService } from './services/resize.service';
 import { TooltipService } from './services/tooltip.service';
 import { ZoomService } from './services/zoom.service';
+import { SequenceRenderer } from './services/renderers/sequence.renderer';
+import { GridRenderer } from './services/renderers/grid.renderer';
 // Custom data types
 import { Settings } from './settings';
 import { Traces } from './trace';
@@ -68,6 +69,8 @@ export class NgxFeaturesViewerTooltipDirective {
         ResizeService,
         DrawService,
         ZoomService,
+        SequenceRenderer,
+        GridRenderer,
     ],
     templateUrl: './ngx-features-viewer.component.html',
     styleUrl: './ngx-features-viewer.component.scss',
