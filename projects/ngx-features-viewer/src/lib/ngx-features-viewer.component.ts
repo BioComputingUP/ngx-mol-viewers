@@ -75,7 +75,8 @@ export class NgxFeaturesViewerTooltipDirective {
     templateUrl: './ngx-features-viewer.component.html',
     styleUrl: './ngx-features-viewer.component.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    encapsulation: ViewEncapsulation.Emulated
+  encapsulation: ViewEncapsulation.Emulated,
+  standalone:true,
 })
 export class NgxFeaturesViewerComponent
   implements
