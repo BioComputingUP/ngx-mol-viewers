@@ -18,3 +18,17 @@
 - Simulated an application dynamically updating `traces` with new locus features, altered dimensions, altered colors, and new nested traces.
 - Verified that the SVG markup generated from this update path exactly matches the HTML that would be generated if the component spun up perfectly fresh.
 - Ran the Angular Karma test suite (`ng test ngx-features-viewer`), and all tests, including the newly added suite, now successfully pass.
+
+4. **Implemented Strategy Pattern for Feature Rendering:**
+   - Extracted feature-specific SVG rendering logic from the main `draw.service.ts` into isolated strategy classes for each feature type (`LocusStrategy`, `ContinuousStrategy`, `PinStrategy`, `PolyStrategy`, and `DSSPStrategy`).
+   - Created a `StrategyFactory` to dynamically resolve the appropriate rendering strategy based on the feature type.
+   - Abstracted shared layout metrics and D3 scales into a structured `FeatureRenderOptions` interface.
+
+5. **Consolidated Draw Pipeline with D3 Joins:**
+   - Removed the disjointed `createTraces` and `updateTraces` methods.
+   - Replaced them with a unified `renderTraces` method that relies strictly on D3's `.join()` concept (the `enter`, `update`, `exit` pattern).
+   - This allows data changes to smoothly propagate to DOM updates without unnecessarily clearing the SVG and rebuilding the entire tree.
+   - Extracted all nested event bindings (like tooltips and hover logic) out into clean, isolated methods like `bindFeatureEvents`.
+
+## Subsequent Validation
+- Ran `ng test ngx-features-viewer` which completely exercises the dynamic DOM updating of features. The tests passed successfully, verifying that the new D3 data-join implementations exactly replicate the expected HTML structural outputs as the old manual re-creation pipeline.
