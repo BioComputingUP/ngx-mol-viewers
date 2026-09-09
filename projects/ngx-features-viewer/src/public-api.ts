@@ -8,3 +8,5 @@ export { Settings } from './lib/settings';
 export { Sequence } from './lib/sequence';
 export { Trace } from './lib/trace';
 export { SelectionContext } from './lib/services/initialize.service';
+export { Feature } from './lib/features/feature';
+export * from './lib/features';
