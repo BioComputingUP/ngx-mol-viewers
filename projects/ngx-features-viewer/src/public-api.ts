@@ -6,7 +6,8 @@ export { NgxFeaturesViewerLabelDirective } from './lib/ngx-features-viewer.compo
 export { NgxFeaturesViewerComponent } from './lib/ngx-features-viewer.component';
 export { Settings } from './lib/settings';
 export { Sequence } from './lib/sequence';
-export { Trace } from './lib/trace';
+export { Trace, InternalTrace } from './lib/trace';
 export { SelectionContext } from './lib/services/initialize.service';
-export { Feature } from './lib/features/feature';
+export { Context, TooltipService } from './lib/services/tooltip.service';
+export { Feature, featureIdentity } from './lib/features/feature';
 export * from './lib/features';
