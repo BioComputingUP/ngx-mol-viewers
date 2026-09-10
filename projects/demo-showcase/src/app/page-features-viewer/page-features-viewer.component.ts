@@ -183,10 +183,10 @@ export class PageFeaturesViewerComponent {
             code: 'E',
           },
           {
-            label: 'feature-3',
+            label: 'feature-6',
             type: 'dssp',
             color: 'red',
-            start: 141,
+            start: 50,
             end: 217,
             opacity: 1,
             code: 'C',

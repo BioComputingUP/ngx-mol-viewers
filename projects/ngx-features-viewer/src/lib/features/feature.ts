@@ -34,3 +34,19 @@ export interface BaseFeature {
  * Any feature that can be displayed in the features viewer.
  */
 export type Feature = Continuous | Locus | DSSP | Pin | Poly;
+
+const featureIds = new WeakMap<Feature, number>();
+let nextFeatureId = 0;
+
+/**
+ * Returns a stable, unique numeric identity for a feature object.
+ * Uses a WeakMap so no memory leaks occur when features are garbage-collected.
+ */
+export const featureIdentity = (f: Feature): number => {
+  let id = featureIds.get(f);
+  if (id === undefined) {
+    id = ++nextFeatureId;
+    featureIds.set(f, id);
+  }
+  return id;
+};

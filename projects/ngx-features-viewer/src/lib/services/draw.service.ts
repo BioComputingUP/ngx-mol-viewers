@@ -11,7 +11,9 @@ import {
     tap,
     throttleTime,
 } from 'rxjs';
-import { Feature } from '../features/feature';
+import { Feature, featureIdentity } from '../features/feature';
+import { Locus } from '../features/locus';
+import { DSSP } from '../features/dssp';
 import { StrategyFactory } from './strategies/strategy.factory';
 import { FeatureRenderOptions } from './strategies/feature-strategy.interface';
 import { Sequence, sequenceColors } from '../sequence';
@@ -43,10 +45,10 @@ export const index = (f: InternalTraces) => {
   return f.map((t) => t.id).join('-');
 };
 
-const alreadyExitedFromView = new Set<Feature>();
-
 @Injectable({ providedIn: 'platform' })
 export class DrawService {
+  private alreadyExitedFromView = new Set<Feature>();
+
   public readonly traces$ = new ReplaySubject<InternalTraces>(1);
 
   public readonly sequence$ = new ReplaySubject<Sequence>(1);
@@ -268,6 +270,7 @@ export class DrawService {
     const charWidth = this.sequenceRenderer.featureLabelCharWidth;
     const cw = scale.x(1) - scale.x(0);
     const coilPoints = this.coilPoints;
+    const alreadyExitedFromView = this.alreadyExitedFromView;
 
     this.initializeService.hoverCircleMarker.attr('display', 'none');
 
@@ -282,17 +285,24 @@ export class DrawService {
     // 2. Data-join on features
     this['group.traces'].each((trace, i, nodes) => {
       const traceGroup = d3.select(nodes[i]);
+
+      if (featureSortingFunc) {
+        trace.features.sort(featureSortingFunc);
+      }
+
       const featureGroup = traceGroup
         .selectAll<SVGGElement, Feature>('g.feature')
-        .data(trace.features);
+        .data(trace.features, featureIdentity);
 
-      featureGroup
+      const featureSelection = featureGroup
         .join(
           enter => this.setupFeatureGroup(enter, trace),
           update => update,
           exit => exit.remove()
         )
-        .call(g => featureSortingFunc ? g.sort(featureSortingFunc) : g)
+        .order();
+
+      featureSelection
         .call(g => this.tooltipService.bindFeatureEvents(g, trace, this.selectedFeatureEmit$))
         .each((feature, featureIdx, featureNodes) => {
           // Calculate trace-specific layout values
@@ -348,7 +358,7 @@ export class DrawService {
     const g = enterSelection
       .append('g')
       .attr('class', (d) => 'feature ' + d.type)
-      .attr('id', (_, i) => `trace-${trace.id}-feature-${i}`);
+      .attr('id', (f) => `trace-${trace.id}-feature-${featureIdentity(f)}`);
 
     return g;
   }
@@ -404,17 +414,24 @@ export class DrawService {
  * @returns
  */
 export const sortLocuses = (a: Feature, b: Feature) => {
-  if (a.type == 'locus' && b.type == 'locus') {
-    const bfirst = b.start < a.start;
-    const blast = b.end > a.end;
-    if (bfirst && blast) {
+  const isInterval = (f: Feature): f is Locus | DSSP =>
+    (f.type === 'locus' || f.type === 'dssp') && 'start' in f && 'end' in f;
+
+  if (isInterval(a) && isInterval(b)) {
+    // If b contains a, a should be drawn after b (on top)
+    if (b.start <= a.start && b.end >= a.end && (b.start < a.start || b.end > a.end)) {
       return 1;
     }
-    if (!bfirst && !blast) {
+    // If a contains b, a should be drawn before b (underneath)
+    if (a.start <= b.start && a.end >= b.end && (a.start < b.start || a.end > b.end)) {
       return -1;
     }
+    if (a.start !== b.start) {
+      return a.start - b.start;
+    }
+    return (b.end - b.start) - (a.end - a.start);
   }
-  return 1;
+  return 0;
 }
 function parseSequence(sequence: Sequence): string[] {
   const residues: string[] = [];
