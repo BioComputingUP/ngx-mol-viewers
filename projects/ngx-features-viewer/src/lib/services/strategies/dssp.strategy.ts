@@ -1,7 +1,7 @@
 import * as d3 from 'd3';
 import { FeatureStrategy, FeatureRenderOptions } from './feature-strategy.interface';
 import { DSSP, DSSPPaths, dsspShape } from '../../features/dssp';
-import { Feature } from '../../features/feature';
+import { Feature, featureIdentity } from '../../features/feature';
 
 export class DSSPStrategy implements FeatureStrategy {
   render(
@@ -96,7 +96,7 @@ export class DSSPStrategy implements FeatureStrategy {
         });
 
       // clip path update
-      const clipId = `clip-path-${trace.id}-feature-${featureIdx}`;
+      const clipId = `clip-path-${trace.id}-feature-${featureIdentity(feature)}`;
       container
         .attr('clip-path', `url(#${clipId})`)
         .selectAll(`clipPath#${clipId}`)
@@ -175,7 +175,7 @@ export class DSSPStrategy implements FeatureStrategy {
     }
 
     if (shapeToDraw === 'coil') {
-      const featureKey = `${trace.id}-feature-${featureIdx}`;
+      const featureKey = `${trace.id}-feature-${featureIdentity(feature)}`;
 
       if (coilPoints && !coilPoints.has(featureKey)) {
         coilPoints.set(featureKey, []);

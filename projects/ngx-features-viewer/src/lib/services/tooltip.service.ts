@@ -1,16 +1,18 @@
 import { Injectable, TemplateRef } from '@angular/core';
+import * as d3 from 'd3';
 import { Selection, select } from 'd3';
 import { ReplaySubject } from 'rxjs'
 import { InitializeService } from './initialize.service';
 import { InternalTrace, Trace } from '../trace';
-import { Feature } from '../features/feature';
+import { Feature, featureIdentity } from '../features/feature';
 
 export interface Context {
   // Trace is available in both trace and feature context
-  trace: Trace;
-  // Feature, index are available in feature context, but not in trace context
+  trace: InternalTrace;
+  // Feature, index, and stable featureId are available in feature context, but not in trace context
   feature?: Feature;
   index?: number;
+  featureId?: number;
   // Define specific coordinates
   coordinates: [number, number];
 }
@@ -73,8 +75,9 @@ export class TooltipService {
     const tooltip = this._tooltip;
     // Define coordinates
     const coordinates = this.initializeService.getCoordinates(event, trace.id);
+    const featureId = feature ? featureIdentity(feature) : undefined;
     // Emit tooltip context
-    this.tooltip$.next({ trace, feature, index, coordinates });
+    this.tooltip$.next({ trace, feature, index, featureId, coordinates });
     // Set tooltip visible
     tooltip.style("opacity", "1");
     tooltip.style("visibility", "visible");
@@ -87,8 +90,9 @@ export class TooltipService {
     if (feature && feature.type === 'continuous') {
       // Define coordinates
       const coordinates = this.initializeService.getCoordinates(event, trace.id);
+      const featureId = featureIdentity(feature);
       // Emit tooltip context
-      this.tooltip$.next({ trace, feature, index, coordinates });
+      this.tooltip$.next({ trace, feature, index, featureId, coordinates });
     }
     this.setTooltipPosition(event);
   }
@@ -111,29 +115,44 @@ export class TooltipService {
     const scale = this.initializeService.scale;
     const circle = this.initializeService.hoverCircleMarker;
 
+    const getTrace = (event: MouseEvent): InternalTrace => {
+      const parentNode = (event.currentTarget as Element)?.parentElement;
+      return (parentNode ? (d3.select(parentNode).datum() as InternalTrace) : undefined) || trace;
+    };
+
+    const getFeatureIdx = (currentTrace: InternalTrace, f: Feature): number => {
+      let idx = currentTrace.features.indexOf(f);
+      if (idx === -1) {
+        idx = currentTrace.features.findIndex(item => featureIdentity(item) === featureIdentity(f));
+      }
+      return idx;
+    };
+
     selection.on('mouseenter', (event: MouseEvent, feature: Feature) => {
-      const featureIdx = trace.features.indexOf(feature);
-      this.onMouseEnter(event, trace, feature, featureIdx);
+      const currentTrace = getTrace(event);
+      const featureIdx = getFeatureIdx(currentTrace, feature);
+      this.onMouseEnter(event, currentTrace, feature, featureIdx);
     });
 
     selection.on('mousemove', (event: MouseEvent, feature: Feature) => {
-      const featureIdx = trace.features.indexOf(feature);
-      this.onMouseMove(event, trace, feature, featureIdx);
+      const currentTrace = getTrace(event);
+      const featureIdx = getFeatureIdx(currentTrace, feature);
+      this.onMouseMove(event, currentTrace, feature, featureIdx);
 
       if (feature.type === 'continuous') {
-        const coordinates = this.initializeService.getCoordinates(event, trace.id);
+        const coordinates = this.initializeService.getCoordinates(event, currentTrace.id);
         if (coordinates[0] <= 0.5) return;
 
-        const mt = scale.y('' + trace.id) || 0;
-        const lh = trace.options?.['line-height'] || this.initializeService.settings['line-height'];
-        const cs = trace.options?.['content-size'] || this.initializeService.settings['content-size'];
+        const mt = scale.y('' + currentTrace.id) || 0;
+        const lh = currentTrace.options?.['line-height'] || this.initializeService.settings['line-height'];
+        const cs = currentTrace.options?.['content-size'] || this.initializeService.settings['content-size'];
         const center = mt + lh / 2;
         const bottom = center + cs / 2;
         const top = center - cs / 2;
 
         const rescaleY = (yValue: number) => (
           bottom +
-          ((yValue - trace.domain.min) / (trace.domain.max - trace.domain.min)) * (top - bottom)
+          ((yValue - currentTrace.domain.min) / (currentTrace.domain.max - currentTrace.domain.min)) * (top - bottom)
         );
 
         circle
@@ -149,7 +168,8 @@ export class TooltipService {
     });
 
     selection.on('click', (event: MouseEvent, feature: Feature) => {
-      this.selectFeature(feature, event, trace, selectionEmitter$);
+      const currentTrace = getTrace(event);
+      this.selectFeature(feature, event, currentTrace, selectionEmitter$);
     });
   }
 
