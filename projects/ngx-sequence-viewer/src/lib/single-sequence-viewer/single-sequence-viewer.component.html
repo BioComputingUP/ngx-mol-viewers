@@ -1,25 +1,26 @@
 @if(data$ | async; as data) {
-  @let chunks = data[0];
-  @let sequence = data[1];
-  <!-- @let settings = data[2]; -->
-  <div class="scaffold">
-    <!-- Show labels -->
-    <div class="labels">
-      <!-- Other labels are sequences -->
+@let chunks = data[0];
+@let sequence = data[1];
+<!-- @let settings = data[2]; -->
+<div class="scaffold">
+  <!-- Show labels -->
+  <div class="labels">
+    <!-- Other labels are sequences -->
 
-    </div>
-    <!-- Show content -->
-    <div class="sequence">
-      <!-- Loop through each chunk -->
-       @for (chunk of chunks; track $index) {
-         <span class="chunk">
-         @for(residue of chunk.text; track residueIndex; let residueIndex = $index) {
-           <ng-container *ngTemplateOutlet="cellTemplate, context: { i: residueIndex, name: 'residue' }"></ng-container>
-         }
-         </span>
-       }
-    </div>
   </div>
+  <!-- Show content -->
+  <div class="sequence">
+    <!-- Loop through each chunk -->
+    @for (chunk of chunks; track $index) {
+    <span class="chunk">
+      @for (residue of chunk.text; track $index; let residueIndex = $index) {
+      <ng-container *ngTemplateOutlet="cellTemplate, context: { i: chunk.start + residueIndex, name: 'residue' }">
+      </ng-container>
+      }
+    </span>
+    }
+  </div>
+</div>
 <ng-template #chunkHeaderTemplate let-start="start" let-end="end">
   <div class="chunk-header">
     <span style="text-align: end;">{{ start }}</span>
@@ -32,10 +33,9 @@
 
 <!-- Define generic cell template -->
 <ng-template let-i="i" let-value="value" let-name="name" #cellTemplate>
-    <span [id]="'cell' + '-' + i"
-      [class]="['cell', name]" [innerHTML]="sequence[i]">
+  <span [id]="'cell' + '-' + i" [class]="['cell', name]" [innerHTML]="sequence[i]">
 
-    </span>
+  </span>
 </ng-template>
 
 }
