@@ -1,5 +1,6 @@
 :host {
     font-family: monospace, monospace;
+
     .chunk {
         white-space: nowrap;
         width: 10ch;
@@ -12,13 +13,12 @@
         counter-reset: sequence;
     }
 
-    .chunk::before {
-        content: counter(sequence);
-        counter-increment: sequence 10;
-        opacity: 0.8;
-        font-weight: 700;
+    .chunk-header {
         position: absolute;
         top: -1rem;
         right: 0;
+        opacity: 0.7;
+        font-weight: 700;
+        user-select: none;
     }
 }

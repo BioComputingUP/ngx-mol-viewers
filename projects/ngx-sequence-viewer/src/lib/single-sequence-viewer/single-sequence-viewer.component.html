@@ -1,6 +1,7 @@
 @if(data$ | async; as data) {
 @let chunks = data[0];
 @let sequence = data[1];
+@let chunkSize = data[2]['chunk-size'];
 <!-- @let settings = data[2]; -->
 <div class="scaffold">
   <!-- Show labels -->
@@ -13,19 +14,26 @@
     <!-- Loop through each chunk -->
     @for (chunk of chunks; track $index) {
     <span class="chunk">
+      @if (chunk.size === chunkSize) {
+      <ng-container *ngTemplateOutlet="chunkHeaderTemplate; context: { start: chunk.start, end: chunk.end }">
+      </ng-container>
+      }
       @for (residue of chunk.text; track $index; let residueIndex = $index) {
-      <ng-container *ngTemplateOutlet="cellTemplate, context: { i: chunk.start + residueIndex, name: 'residue' }">
+      <ng-container *ngTemplateOutlet="cellTemplate; context: { i: chunk.start + residueIndex, name: 'residue' }">
       </ng-container>
       }
     </span>
     }
   </div>
 </div>
+
+<!-- Define chunk header template -->
 <ng-template #chunkHeaderTemplate let-start="start" let-end="end">
   <div class="chunk-header">
-    <span style="text-align: end;">{{ start }}</span>
+    <span style="text-align: end;">{{ end }}</span>
   </div>
 </ng-template>
+
 <!-- Define cell template -->
 <ng-template let-i="i" #residueCellTemplate>
   <ng-container *ngTemplateOutlet="cellTemplate, context: { i, name: 'residue' }"></ng-container>
