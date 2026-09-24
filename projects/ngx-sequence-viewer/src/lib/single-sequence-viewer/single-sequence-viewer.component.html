@@ -13,7 +13,7 @@
   <div class="sequence">
     <!-- Loop through each chunk -->
     @for (chunk of chunks; track $index) {
-    <span class="chunk">
+    <span class="chunk" [style.width.ch]="chunkSize > 0 ? chunkSize : null">
       @if (chunk.size === chunkSize) {
       <ng-container *ngTemplateOutlet="chunkHeaderTemplate; context: { start: chunk.start, end: chunk.end }">
       </ng-container>
