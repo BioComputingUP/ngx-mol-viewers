@@ -1,8 +1,7 @@
-import { ThemeSelectorService } from '../theme-selector/theme-selector.service';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { map, Observable, shareReplay } from 'rxjs';
-import { Settings } from '@ngx-sequence-viewer';
-import { Component, ChangeDetectionStrategy } from '@angular/core';
 import type { SingleSeqSettings } from '../../../../ngx-sequence-viewer/src/lib/single-sequence-viewer/util';
+import { ThemeSelectorService } from '../theme-selector/theme-selector.service';
 
 @Component({
   selector: 'app-single-sequence-viewer',
@@ -20,39 +19,7 @@ export class SingleSequenceViewerComponent {
 
   // Define test sequence
   readonly sequence =
-    'MTEITAAMVKELRESTGAGMMDCKNALSETNGDFDKAVQLLREKGLGKAAKKADRLAAEGMTEITAAMVKELRESTGAGMMDCKNALSETNGDFDKAVQLLREKGLGKAAKKADRLAAEGMTEITAAMVKELRESTGAGMMDCKNALSETNGDFDKAVQLLREKGLGKAAKKADRLAAEGMTEITAAMVKELRESTGAGMMDCKNALSETNGDFDKAVQLLREKGLGKAAKKADRLAAEG';
-
-  // Define custom index
-  readonly index = this.sequence.split('').map((v, i) => {
-    // Initialize index to be returned
-    let index = '' + i;
-    // If value is a vowel, then add it to the index
-    if (['A', 'E', 'I', 'O', 'U'].includes(v)) {
-      index = index + v;
-    }
-    // If index is even, then return negative index
-    if (i % 2 === 1) {
-      index = '-' + index;
-    }
-    // Return changed index
-    return index;
-  });
-
-  // Define loci
-  readonly loci = [
-    {
-      start: '-1',
-      end: '10E',
-      'background-color': '#648FFF',
-      text: 'Region 1',
-    },
-    {
-      start: '-23',
-      end: '36A',
-      'background-color': '#DC267F',
-      text: 'Region 2',
-    },
-  ];
+    'MPRRAENWDEAEVGAEEAGVEEYGPEEDGGEESGAEESGPEESGPEELGAEEEMEAGRPRPVLRSVNSREPSQVIFCNRSPRVVLPVWLNFDGEPQPYPTLPPGTGRRIHSYRGHLWLFRDAGTHDGLLVNQTELFVPSLNVDGQPIFANITLPVYTLKERCLQVVRSLVKPENYRRLDIVRSLYEDLEDHPNVQKDLERLTQERIAHQRMGD';
 
   // Define the sequence viewer configuration
   public settings$: Observable<Partial<SingleSeqSettings>>;
