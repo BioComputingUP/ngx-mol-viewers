@@ -40,9 +40,8 @@
 </ng-template>
 
 <!-- Define generic cell template -->
-<ng-template let-i="i" let-value="value" let-name="name" #cellTemplate>
-  <span [id]="'cell' + '-' + i" [class]="['cell', name]" [innerHTML]="sequence[i]">
-
+<ng-template let-i="i" let-name="name" #cellTemplate>
+  <span [id]="'cell-' + i" [class]="['cell', name]" [style.background-color]="getColor(i)" [innerHTML]="sequence[i]">
   </span>
 </ng-template>
 

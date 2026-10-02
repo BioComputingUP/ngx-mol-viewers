@@ -5,7 +5,7 @@
   <!-- Show single sequence viewer -->
   <div class="mb-3">
     @if(settings$ | async; as sets){
-      <ngx-single-sequence-viewer [sequence]="sequence" [settings]="sets"></ngx-single-sequence-viewer>
+    <ngx-single-sequence-viewer [sequence]="sequence" [settings]="sets" [loci]="loci"></ngx-single-sequence-viewer>
     }
   </div>
   <!-- Explain example -->
@@ -19,8 +19,19 @@
     <p class="mb-0">
       A custom index has been set in this specific example. Doing so, not only we allow to show sequences with a numeric
       index (e.g. protein sequences from the UniProtKB). Instead, we allow also other kind of sequences, such as those
-      underlying protein structures from the PDB to be represented. In fact, those have a particular <b>alpha-numeric</b>
+      underlying protein structures from the PDB to be represented. In fact, those have a particular
+      <b>alpha-numeric</b>
       index.
+    </p>
+
+    <p class="mb-0">
+      Currently highlighted loci are: <code>
+          [<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;{{ loci[0] | json }}<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;{{ loci[1] | json }}<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;{{ loci[2] | json }}<br>
+          ]
+        </code>
     </p>
   </div>
 </div>

@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { map, Observable, shareReplay } from 'rxjs';
+import { ColoredLocus } from '../../../../ngx-sequence-viewer/src/lib/single-sequence-viewer/single-sequence-viewer.component';
 import type { SingleSeqSettings } from '../../../../ngx-sequence-viewer/src/lib/single-sequence-viewer/util';
 import { ThemeSelectorService } from '../theme-selector/theme-selector.service';
 
@@ -23,6 +24,12 @@ export class SingleSequenceViewerComponent {
 
   // Define the sequence viewer configuration
   public settings$: Observable<Partial<SingleSeqSettings>>;
+
+  public loci: ColoredLocus[] = [
+    { start: 15, end: 45, 'background-color': '#648FFF' },
+    { start: 45, end: 50, 'background-color': '#FE6100' },
+    { start: 55, end: 123, 'background-color': '#FF0000' },
+  ];
 
   // Dependency injection
   constructor(public themeSelectorService: ThemeSelectorService) {

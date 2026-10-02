@@ -1,4 +1,6 @@
+import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
+import { Locus } from '@ngx-sequence-viewer';
 import {
   BehaviorSubject,
   combineLatest,
@@ -12,7 +14,8 @@ import {
   type Chunks,
   type SingleSeqSettings,
 } from './util';
-import { CommonModule } from '@angular/common';
+
+export type ColoredLocus = Locus<number> & { 'background-color': string };
 
 @Component({
   selector: 'ngx-single-sequence-viewer',
@@ -26,6 +29,18 @@ export class NgxSingleSequenceViewerComponent {
   @Input() set sequence(value: string) {
     this.sequence$.next(value);
   }
+
+  private colorMap = new Map<number, string>();
+
+  @Input() set loci(value: ColoredLocus[]) {
+    this._loci = value;
+    this.colorMap = this.buildColorMap(value);
+  }
+  get loci() {
+    return this._loci;
+  }
+
+  private _loci: ColoredLocus[] = [];
 
   @Input() set settings(value: Partial<SingleSeqSettings>) {
     this.settings$.next(Object.assign({}, defaultSingleSeqSettings, value));
@@ -41,6 +56,24 @@ export class NgxSingleSequenceViewerComponent {
   );
 
   data$ = combineLatest([this.chunks$, this.sequence$, this.settings$]);
+
+  constructor() {
+    this.colorMap = this.buildColorMap(this._loci);
+  }
+
+  private buildColorMap(loci: ColoredLocus[]): Map<number, string> {
+    const m = new Map<number, string>();
+    for (const l of loci) {
+      for (let i = l.start; i < l.end; i++) {
+        m.set(i, l['background-color']);
+      }
+    }
+    return m;
+  }
+
+  getColor(i: number): string | null {
+    return this.colorMap.get(i) ?? null;
+  }
 
   seqToChunks(sequence: string, settings: SingleSeqSettings): Chunks {
     const chunkSize = settings['chunk-size'];
